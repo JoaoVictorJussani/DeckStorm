@@ -1,181 +1,114 @@
+/* Corps principal */
 body {
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  margin: auto;
+  margin: 0;
+  padding: 0;
+  background-color: #f9f9f9;
+  color: #333;
+}
+
+/* Navbar */
+nav {
+  background-color: #d9534f;  /* Rouge pour la navbar */
+  padding: 15px 30px;
+  border-bottom: 3px solid #c9302c; /* Rouge plus foncé */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+nav a {
+  text-decoration: none;
+  color: white;
+  font-size: 18px;
+  margin-right: 25px;
+  font-weight: bold;
+}
+
+nav a:hover {
+  color: #f1f1f1;
+}
+
+/* Titre principal */
+h2, h3 {
+  font-size: 2rem;
+  color: #333;
+  margin-bottom: 15px;
+}
+
+/* Section d'introduction */
+section {
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 25px;
+  margin: 20px auto;
   width: 80%;
 }
 
-nav {
-  border: black solid 3px;
-  background-color: hsl(0, 0%, 90%);
-  height: 50px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+section p {
+  font-size: 1.1rem;
+  color: #555;
+  line-height: 1.6;
+  margin-bottom: 20px;
 }
 
-.container {
-  height: 50%;
-}
-
-footer {
-  border-top: black solid 1px;
-  text-align: center;
-  margin-top: 3vw;
-}
-
+/* Table des enseignants */
 table {
   width: 100%;
   border-collapse: collapse;
+  margin-top: 30px;
+}
+
+table th, table td {
+  padding: 15px;
   text-align: left;
+  font-size: 1rem;
+  border-bottom: 1px solid #ddd;
 }
 
-th,
-td {
-  padding: 1vw;
-  border-bottom: #ddd solid 1px;
+table th {
+  background-color: #d9534f;
+  color: #fff;
 }
 
-.containerOptions a,
-.containerOptions form,
-.user-head a {
- text-decoration: none;
- height: 100%;
- margin-left: 1vw;
+table td {
+  background-color: #fff;
 }
 
-.user-head {
-  width: 100%;
+table tr:hover {
+  background-color: #f1f1f1;
+}
+
+/* Conteneur des options */
+.containerOptions {
   display: flex;
-  flex-direction: row;
-  justify-content: space-between;
+  justify-content: space-evenly;
   align-items: center;
+  margin-top: 30px;
 }
 
-.user-footer {
-  text-align: right;
-}
-
-.left,
-.rigth {
-  display: inline-block;
-}
-
-.left {
-  width: 70%;
-}
-
-label {
-  display: inline-block;
-  width: 10%;
-}
-
-.container-header {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding-top: 5%;
-}
-
-.titre-header {
-  width: 60%;
-  height: 100%;
-}
-
-.login-container {
-  width: 40%;
-  height: 100%;
-  display: flex;
-  justify-content: end;
-  align-items: center;
-}
-
-.login-container form {
-  display: flex;
-  justify-content: space-between;
-}
-
-.login-container label {
-  display: none;
-}
-
-.login-container input,
-.login-container .btn-login {
-  width: 30%;
-  display: inline-block;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-}
-
-.login-container h3 {
-  display: inline-block;
-  width: 30%;
-  text-align: right;
-  margin-right: 1vw;
-}
-
-.login-container input {
-  height: 4em;
-  margin-bottom: auto;
-  margin-top: auto;
-}
-
-.btn-login {
-  background-color: #00b4cc;
-}
-
-.btn {
-  text-align: center;
-  color: white;
-  width: 100%;
-  border: none;
+.containerOptions a img,
+.containerOptions form button img {
+  width: 25px;
+  height: 25px;
   cursor: pointer;
-  height: 4.5em;
-  border-radius: 8px;
 }
 
-.btn:hover {
-  opacity: 0.8;
-}
-
-.btn-logout {
-  background-color: coral;
+/* Footer */
+footer {
+  background-color: #d9534f;
+  text-align: center;
   padding: 20px;
-  margin: 10px;
+  margin-top: 30px;
+  font-size: 14px;
 }
 
-.text-danger {
-  color: red;
+footer a {
+  color: white;
+  text-decoration: none;
 }
 
-.alert {
-  padding: 15px;
-  border-radius: 4px;
-  font-size: 16px;
-  margin: 10px 0;
-}
-
-.alert-success {
-  background-color: #d4edda;
-  border: 1px solid #c3e6cb;
-  color: #155724;
-}
-
-.alert-danger {
-  background-color: #f8d7da;
-  border: 1px solid #f5c6cb;
-  color: #721c24;
-  padding: 15px;
-  border-radius: 4px;
-  font-size: 16px;
-  margin: 10px 0;
-}
-
-.field {
-  margin-top: 10px;
-  margin-bottom: 10px;
-}
-
-.radio {
-  margin-top: 5px;
-  margin-bottom: 15px;
+footer a:hover {
+  text-decoration: underline;
 }

@@ -1,54 +1,45 @@
 @component('components/layout', { title: 'Accueil' })
- <h3>
- Liste des enseignants
- </h3>
- 
- <table>
- <thead>
- <tr>
- <th>
- Nom
- </th>
- <th>
- Surnom
- </th>
- <th>
- Options
- </th>
- </tr>
- </thead>
- <tbody>
- @each ((teacher, index) in teachers)
- <tr>
- <td>
- {{ teacher.lastname }} {{ teacher.firstname }}
- </td>
- <td>
- {{ teacher.nickname }}
- </td>
- <td class="containerOptions">
-    <a href="{{ route('teacher.edit', {id: teacher.id}) }}">
-        <img height="20em" src="/img/edit.png" alt="edit" />
-       </a>
-       
- <form
- action="{{ route('teacher.destroy', { id: teacher.id }) }}?_method=DELETE"
- method="POST"
- style="display: inline"
->
- {{ csrfField() }}
- <button type="submit" style="background: none; border: none; padding: 0; cursor:
-pointer;">
- <img height="20em" src="/img/delete.png" alt="delete" />
- </button>
-</form>
+@vite(['resources/css/app.css', 'resources/js/app.js'])
+    <body>
 
- <a href="{{ route('teacher.show', {id: teacher.id}) }}">
-  <img height="20em" src="/img/detail.png" alt="detail" />
- </a>
- </td>
- </tr>
- @end
- </tbody>
- </table>
+        <!-- Section de bienvenue -->
+        <section>
+            <h2>Bienvenue sur la plateforme de gestion des enseignants</h2>
+            <p>Vous pouvez consulter la liste des enseignants, ajouter de nouveaux enseignants et gérer les informations existantes.</p>
+        </section>
+
+        <!-- Liste des enseignants -->
+        <h3>Liste des enseignants</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Nom</th>
+                    <th>Surnom</th>
+                    <th>Options</th>
+                </tr>
+            </thead>
+            <tbody>
+                @each ((teacher, index) in teachers)
+                <tr>
+                    <td>{{ teacher.lastname }} {{ teacher.firstname }}</td>
+                    <td>{{ teacher.nickname }}</td>
+                    <td class="containerOptions">
+                        <a href="{{ route('teacher.edit', {id: teacher.id}) }}">
+                            <img height="20em" src="/img/edit.png" alt="Modifier" />
+                        </a>
+                        <form action="{{ route('teacher.destroy', { id: teacher.id }) }}?_method=DELETE" method="POST" style="display: inline">
+                            {{ csrfField() }}
+                            <button type="submit" style="background: none; border: none; padding: 0; cursor: pointer;">
+                                <img height="20em" src="/img/delete.png" alt="Supprimer" />
+                            </button>
+                        </form>
+                        <a href="{{ route('teacher.show', {id: teacher.id}) }}">
+                            <img height="20em" src="/img/detail.png" alt="Détails" />
+                        </a>
+                    </td>
+                </tr>
+                @end
+            </tbody>
+        </table>
+    </body>
 @endcomponent
