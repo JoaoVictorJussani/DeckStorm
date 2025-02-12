@@ -38,10 +38,10 @@
 │└───────────┘
 │225minutes
 │
-│(temps)	• 
-│(temps)	• 
-│(temps)	• 
-│(temps)	• 
+│(100min)	• Tentative de créer des flashcards (échec) 
+│(90min)	• Tentative de s'authentifier (échec)
+│(20min)	• Recherche d'une façon de créer des flashcards
+│(15min)	• Recherche d'une façon de s'authentifier
 │(temps) 	•  
 │(temps) 	•  
 │(temps) 	•  

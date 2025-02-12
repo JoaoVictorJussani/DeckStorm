@@ -1,114 +1,129 @@
-/* Corps principal */
-body {
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  margin: 0;
-  padding: 0;
-  background-color: #f9f9f9;
-  color: #333;
+.hero {
+    text-align: center;
+    background: linear-gradient(to right, #4A90E2, #9013FE);
+    color: white;
+    padding: 50px 20px;
+}
+
+.hero h1 {
+    font-size: 2.5rem;
+}
+
+.hero-buttons {
+    margin-top: 20px;
+}
+
+.btn-primary, .btn-secondary {
+    display: inline-block;
+    padding: 12px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.btn-primary {
+    background-color: #FFD700;
+    color: black;
+}
+
+.btn-primary:hover {
+    background-color: #FFC300;
+}
+
+.btn-secondary {
+    background-color: white;
+    color: #4A90E2;
+}
+
+.btn-secondary:hover {
+    background-color: #f1f1f1;
+}
+
+/* Estilo dos cartões de quiz */
+.quiz-container {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 20px;
+}
+
+.quiz-card {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 250px;
+    text-align: center;
+}
+
+.quiz-card h3 {
+    color: #4A90E2;
+}
+
+.btn-quiz {
+    display: block;
+    margin-top: 10px;
+    background-color: #4A90E2;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 5px;
+    text-decoration: none;
+}
+
+.btn-quiz:hover {
+    background-color: #357ABD;
+}
+/* Container do header */
+.container-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 30px;
+  background: linear-gradient(to right, #4A90E2, #9013FE); /* Azul e roxo */
 }
 
 /* Navbar */
 nav {
-  background-color: #d9534f;  /* Rouge pour la navbar */
-  padding: 15px 30px;
-  border-bottom: 3px solid #c9302c; /* Rouge plus foncé */
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  gap: 15px;
 }
 
+/* Links normais */
 nav a {
   text-decoration: none;
   color: white;
   font-size: 18px;
-  margin-right: 25px;
   font-weight: bold;
+  transition: color 0.3s ease;
 }
 
 nav a:hover {
-  color: #f1f1f1;
+  color: #FFD700; /* Dourado no hover */
 }
 
-/* Titre principal */
-h2, h3 {
-  font-size: 2rem;
-  color: #333;
-  margin-bottom: 15px;
-}
-
-/* Section d'introduction */
-section {
-  background-color: #ffffff;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  padding: 25px;
-  margin: 20px auto;
-  width: 80%;
-}
-
-section p {
-  font-size: 1.1rem;
-  color: #555;
-  line-height: 1.6;
-  margin-bottom: 20px;
-}
-
-/* Table des enseignants */
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 30px;
-}
-
-table th, table td {
-  padding: 15px;
-  text-align: left;
-  font-size: 1rem;
-  border-bottom: 1px solid #ddd;
-}
-
-table th {
-  background-color: #d9534f;
-  color: #fff;
-}
-
-table td {
-  background-color: #fff;
-}
-
-table tr:hover {
-  background-color: #f1f1f1;
-}
-
-/* Conteneur des options */
-.containerOptions {
-  display: flex;
-  justify-content: space-evenly;
-  align-items: center;
-  margin-top: 30px;
-}
-
-.containerOptions a img,
-.containerOptions form button img {
-  width: 25px;
-  height: 25px;
-  cursor: pointer;
-}
-
-/* Footer */
-footer {
-  background-color: #d9534f;
-  text-align: center;
-  padding: 20px;
-  margin-top: 30px;
-  font-size: 14px;
-}
-
-footer a {
-  color: white;
+/* Botões no header */
+.btn-nav {
+  background-color: #FFD700; /* Dourado */
+  color: black;
+  padding: 10px 15px;
+  border-radius: 5px;
   text-decoration: none;
+  font-weight: bold;
+  transition: 0.3s;
 }
 
-footer a:hover {
-  text-decoration: underline;
+.btn-nav:hover {
+  background-color: #FFC300; /* Dourado mais escuro */
+}
+
+/* Botão secundário para "Explorer" */
+.btn-nav.secondary {
+  background-color: white;
+  color: #4A90E2; /* Azul */
+}
+
+.btn-nav.secondary:hover {
+  background-color: #f1f1f1;
 }

@@ -1,45 +1,26 @@
 @component('components/layout', { title: 'Accueil' })
 @vite(['resources/css/app.css', 'resources/js/app.js'])
-    <body>
+<body>
+    <section class="hero">
+        <h1>Apprendre d'une forme plus divertissante avec QuizJS</h1>
+        <p>Crie e estude seus quizzes personalizados!</p>
+        <div class="hero-buttons">
+            <a href="/create-quiz" class="btn-primary">Créer un Quiz</a>
+            <a href="/explore" class="btn-secondary">Explorer</a>
+        </div>
+    </section>
 
-        <!-- Section de bienvenue -->
-        <section>
-            <h2>Bienvenue sur la plateforme de gestion des enseignants</h2>
-            <p>Vous pouvez consulter la liste des enseignants, ajouter de nouveaux enseignants et gérer les informations existantes.</p>
-        </section>
-
-        <!-- Liste des enseignants -->
-        <h3>Liste des enseignants</h3>
-        <table>
-            <thead>
-                <tr>
-                    <th>Nom</th>
-                    <th>Surnom</th>
-                    <th>Options</th>
-                </tr>
-            </thead>
-            <tbody>
-                @each ((teacher, index) in teachers)
-                <tr>
-                    <td>{{ teacher.lastname }} {{ teacher.firstname }}</td>
-                    <td>{{ teacher.nickname }}</td>
-                    <td class="containerOptions">
-                        <a href="{{ route('teacher.edit', {id: teacher.id}) }}">
-                            <img height="20em" src="/img/edit.png" alt="Modifier" />
-                        </a>
-                        <form action="{{ route('teacher.destroy', { id: teacher.id }) }}?_method=DELETE" method="POST" style="display: inline">
-                            {{ csrfField() }}
-                            <button type="submit" style="background: none; border: none; padding: 0; cursor: pointer;">
-                                <img height="20em" src="/img/delete.png" alt="Supprimer" />
-                            </button>
-                        </form>
-                        <a href="{{ route('teacher.show', {id: teacher.id}) }}">
-                            <img height="20em" src="/img/detail.png" alt="Détails" />
-                        </a>
-                    </td>
-                </tr>
-                @end
-            </tbody>
-        </table>
-    </body>
+    <section class="popular-quizzes">
+        <h2>Quizs Populaires</h2>
+        <div class="quiz-container">
+            @each ((quiz, index) in quizzes)
+            <div class="quiz-card">
+                <h3>{{ quiz.title }}</h3>
+                <p>{{ quiz.description }}</p>
+                <a href="{{ route('quiz.show', {id: quiz.id}) }}" class="btn-quiz">Jogar</a>
+            </div>
+            @end
+        </div>
+    </section>
+</body>
 @endcomponent
