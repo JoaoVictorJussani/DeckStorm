@@ -16,6 +16,7 @@
 |
 */
 
+
 import router from '@adonisjs/core/services/router'
 
 // Route pour la page d'accueil
@@ -32,20 +33,20 @@ router.get('/login', async ({ view }) => {
 
 
 router.post('/login', async ({ request, response, auth }) => {
-    const email = request.input('email')
-    const password = request.input('password')
-  
-    try {
-      // Tente autenticar o usuário
-      await auth.use('web').attempt(email, password)  // Certifique-se de usar o 'web' como autenticador
-  
-      // Redireciona para a página inicial ou outra página após login bem-sucedido
-      return response.redirect('/')
-    } catch (error) {
-      // Caso o login falhe, redireciona para a página de login com uma mensagem de erro
-      return response.redirect('/login').with('error', 'Credenciais inválidas')
-    }
-  })
+  const email = request.input('email')
+  const password = request.input('password')
+
+  try {
+    // Tente autenticar o usuário
+    await auth.use('web').attempt(email, password)  // Certifique-se de usar o 'web' como autenticador
+
+    // Redireciona para a página inicial ou outra página após login bem-sucedido
+    return response.redirect('/')
+  } catch (error) {
+    // Caso o login falhe, redireciona para a página de login com uma mensagem de erro
+    return response.redirect('/login').with('error', 'Credenciais inválidas')
+  }
+})
 
 
 // Route pour afficher la page de création de quiz

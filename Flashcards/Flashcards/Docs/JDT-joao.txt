@@ -55,7 +55,7 @@
 │└───────────┘
 │225minutes
 │
-│(temps)	• 
+│(total)	• VACANCES
 │(temps)	• 
 │(temps)	• 
 │(temps)	• 
@@ -72,7 +72,7 @@
 │└───────────┘
 │225minutes
 │
-│(temps)	• 
+│(225min)	• essai de connexion + inscription (échec)
 │(temps)	• 
 │(temps)	• 
 │(temps)	• 
