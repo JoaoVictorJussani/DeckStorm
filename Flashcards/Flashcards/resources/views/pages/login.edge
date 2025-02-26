@@ -1,0 +1,24 @@
+@component('components/layout', { title: 'Accueil' })
+@vite(['resources/css/login.css', 'resources/js/app.js'])
+<main>
+    <!-- Fond semi-transparent pour la fenêtre modale -->
+    <div class="login-background">
+        <div class="login-container">
+            <h2>Connexion</h2>
+            
+            <form action="/login" method="POST">
+                {{ csrfField() }}
+                
+                <label for="email">Email :</label>
+                <input type="email" id="email" name="email" required>
+                
+                <label for="password">Mot de passe :</label>
+                <input type="password" id="password" name="password" required>
+                
+                <button type="submit">Se connecter</button>
+            </form>
+            <p>Pas encore inscrit ? <a href="/register">Créer un compte</a></p>
+        </div>
+    </div>
+</main>
+@endcomponent

@@ -1,0 +1,37 @@
+@component('components/layout', { title: 'Liste des Quiz' })
+@vite(['resources/css/app.css', 'resources/js/app.js'])
+
+<main>
+    <section>
+        <h2>Liste des Quiz</h2>
+        
+        <!-- Si des quizzes existent -->
+        @if (quizzes.size() > 0)
+            <table>
+                <thead>
+                    <tr>
+                        <th>Titre</th>
+                        <th>Description</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Affiche les quizzes -->
+                    @each((quiz, index) in quizzes)
+                    <tr>
+                        <td>{{ quiz.title }}</td>
+                        <td>{{ quiz.description }}</td>
+                        <td>
+                            <!-- Lien pour afficher les détails du quiz -->
+                            <a href="/quiz/{{ quiz.id }}">Voir</a>
+                        </td>
+                    </tr>
+                    @end
+                </tbody>
+            </table>
+        @else
+            <p>Aucun quiz n'a été créé pour le moment.</p>
+        @endif
+    </section>
+</main>
+@endcomponent

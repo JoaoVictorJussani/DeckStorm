@@ -1,0 +1,26 @@
+@component('components/layout', { title: 'Accueil' })
+@vite(['resources/css/app.css', 'resources/js/app.js'])
+<body>
+    <section class="hero">
+        <h1>Apprendre d'une forme plus divertissante avec QuizJS</h1>
+        <p>Crie e estude seus quizzes personalizados!</p>
+        <div class="hero-buttons">
+            <a href="/create-quiz" class="btn-primary">Créer un Quiz</a>
+            <a href="/explore" class="btn-secondary">Explorer</a>
+        </div>
+    </section>
+
+    <section class="popular-quizzes">
+        <h2>Quizs Populaires</h2>
+        <div class="quiz-container">
+            @each ((quiz, index) in quizzes)
+            <div class="quiz-card">
+                <h3>{{ quiz.title }}</h3>
+                <p>{{ quiz.description }}</p>
+                <a href="{{ route('quiz.show', {id: quiz.id}) }}" class="btn-quiz">Jogar</a>
+            </div>
+            @end
+        </div>
+    </section>
+</body>
+@endcomponent
