@@ -89,11 +89,11 @@
 │└───────────┘
 │225minutes
 │
-│(temps)	• 
-│(temps)	• 
-│(temps)	• 
-│(temps)	• 
-│(temps) 	•  
+│(60min)	• route connexion + fonctionnement
+│(60min)	• route inscription + fonctionnement
+│(30min)	• connexion de compte 
+│(30min)	• création de deck (sans carte)
+│(45min) 	• Début de gérer les cartes d'un deck
 │(temps) 	•  
 │(temps) 	•  
 │(temps) 	•  
