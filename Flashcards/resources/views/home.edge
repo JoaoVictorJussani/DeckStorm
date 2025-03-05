@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>HomePage</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background: #000;
+      color: #e0e0e0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      font-size: 1rem;
+    }
+
+    .navbar {
+      width: 100%;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #000;
+      border-bottom: 2px solid #00adb5;
+      color: white;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 10;
+    }
+
+    .navbar h2 {
+      font-size: 1.8rem;
+      font-weight: 700;
+    }
+
+    .navbar button {
+      background: #00adb5;
+      color: white;
+      border: 2px solid #00adb5;
+      padding: 0.7rem 1.2rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: background 0.3s ease;
+    }
+
+    .navbar button:hover {
+      background: #008c95;
+    }
+
+    .navbar a {
+      text-decoration: none;
+      color: #00adb5;
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+
+    .main-content {
+      margin-top: 120px;
+      text-align: center;
+      padding: 3rem 2rem;
+      width: 100%;
+    }
+
+    h1 {
+      font-size: 3rem;
+      margin-bottom: 1.5rem;
+      color: #00adb5;
+      font-weight: 700;
+    }
+
+    .decks-container {
+      width: 95%;
+      max-width: 1200px;
+      margin: auto;
+    }
+
+    table {
+      width: 100%;
+      text-align: left;
+      background: #000;
+      border: 2px solid #00adb5;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    th, td {
+      padding: 15px;
+      border-bottom: 1px solid #00adb5;
+    }
+
+    th {
+      font-size: 1.4rem;
+      font-weight: bold;
+      background: #000;
+      color: #00adb5;
+      border-bottom: 2px solid #00adb5;
+    }
+
+    td {
+      font-size: 1.2rem;
+    }
+
+    .button-container {
+      text-align: center;
+      margin-top: 2rem;
+      margin-bottom: 3rem;
+    }
+
+    .add-button {
+      background: #000;
+      color: #00adb5;
+      border: 2px solid #00adb5;
+      padding: 0.8rem 1.5rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1.1rem;
+      font-weight: 600;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    .add-button:hover {
+      background: #00adb5;
+      color: black;
+    }
+  </style>
+</head>
+<body>
+  <div class="navbar">
+    <a href="{{ route('home') }}">Flashcards</a>
+    <div>
+      <span>Bienvenue {{ user?.username }}</span>
+      <form action="/logout" method="POST" style="display: inline;">
+        {{ csrfField() }}
+        <button type="submit">Se déconnecter</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="main-content">
+    <h1>Mes decks</h1>
+
+    <div class="decks-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Titre</th>
+            <th>Description</th>
+            <th>Cartes</th>
+          </tr>
+        </thead>
+        <tbody>
+          @if(decks.length)
+            @each(deck in decks)
+              <tr>
+                <td>{{ deck.title }}</td>
+                <td>{{ deck.description }}</td>
+                <td>0</td>
+              </tr>
+            @endeach
+          @else
+            <tr>
+              <td colspan="3">Aucun deck disponible.</td>
+            </tr>
+          @endif
+        </tbody>
+      </table>
+    </div>
+
+    <div class="button-container">
+      <button class="add-button" onclick="ajouterDeck()">+ Ajouter</button>
+    </div>
+
+    <script>
+      function ajouterDeck() {
+        window.location.href = "{{ route('decks.create') }}";
+      }
+    </script>
+  </div>
+</body>
+</html>

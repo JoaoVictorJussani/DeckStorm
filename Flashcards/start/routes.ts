@@ -4,60 +4,57 @@
 |--------------------------------------------------------------------------
 |
 | The routes file is used for defining the HTTP routes.
-|
+| 
 */
-
-/*
-|---------------------------------------------------------------------------
-| Routes file
-|---------------------------------------------------------------------------
-|
-| The routes file is used for defining the HTTP routes.
-|
-*/
-
-
+import AuthController from '#controllers/auth_controller'
+import PageController from '#controllers/page_controller'
+import DeckController from '#controllers/deck_controller'
 import router from '@adonisjs/core/services/router'
+import { middleware } from './kernel.js'
 
-// Route pour la page d'accueil
-router.on('/').render('pages/home')
 
-// Route pour afficher la liste des quiz
-router.get('/quiz', async ({ view }) => {
-    return view.render('pages/quiz')
-})
+//http://localhost:3333/
+router
+  .get('/', [PageController, 'home']) // Utilise le contrôleur
+  .use(middleware.auth()) // Vérifie que l'utilisateur est authentifié
+  .as('home')
 
+ 
+//http://localhost:3333/login
 router.get('/login', async ({ view }) => {
-  return view.render('pages/login')
+  return view.render('auth/login')
 })
 
-
-router.post('/login', async ({ request, response, auth }) => {
-  const email = request.input('email')
-  const password = request.input('password')
-
-  try {
-    // Tente autenticar o usuário
-    await auth.use('web').attempt(email, password)  // Certifique-se de usar o 'web' como autenticador
-
-    // Redireciona para a página inicial ou outra página após login bem-sucedido
-    return response.redirect('/')
-  } catch (error) {
-    // Caso o login falhe, redireciona para a página de login com uma mensagem de erro
-    return response.redirect('/login').with('error', 'Credenciais inválidas')
-  }
+//http://localhost:3333/register
+router.get('/register', async ({ view }) => {
+  return view.render('auth/register')
 })
 
+router
+  .post('/register', [AuthController, 'handleRegister'])
+  .as('auth.handleRegister')
+  .use(middleware.guest())
 
-// Route pour afficher la page de création de quiz
-router.get('/create-quiz', async ({ view }) => {
-    return view.render('pages/create-quiz')
-})
+router
+  .post('/login', [AuthController, 'handleLogin'])
+  .as('auth.handleLogin')
+  .use(middleware.guest())
 
-// Route pour afficher un quiz spécifique par son ID
-router.get('/quiz/:id', async ({ params, view }) => {
-    const quizId = params.id
-    // Récupère les détails du quiz ici (à adapter en fonction de ta logique backend)
-    return view.render('pages/quiz', { quizId })
-})
+// http://localhost:3333/logout
+router
+  .post('/logout', [AuthController, 'handleLogout'])
+  .as('auth.handleLogout')
+  .use(middleware.auth())
 
+  // Deck routes
+// Route pour afficher la page de création d'un deck
+// Cette route sert à afficher le formulaire de création de deck
+router.get('/deck/create', async ({ view }) => {
+  return view.render('deck'); 
+}).as('decks.create');
+
+// Routes pour la gestion des decks
+// Route pour enregistrer un nouveau deck en base de données
+router
+.post('/decks', [DeckController, 'store']) // Cette route est appelée quand on soumet le formulaire
+.as('decks.store');
