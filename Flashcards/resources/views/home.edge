@@ -161,9 +161,9 @@
           @if(decks.length)
             @each(deck in decks)
               <tr>
-                <td>{{ deck.title }}</td>
+                <td><a href="/deck/{{ deck.id }}">{{ deck.title }}</a></td>
                 <td>{{ deck.description }}</td>
-                <td>0</td>
+                <td>{{ deck.cards.length }}</td>
               </tr>
             @endeach
           @else
@@ -173,6 +173,7 @@
           @endif
         </tbody>
       </table>
+      
     </div>
 
     <div class="button-container">
