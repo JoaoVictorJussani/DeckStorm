@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <title>HomePage</title>
+  <title>Visualisation du deck</title>
   <style>
     * {
       box-sizing: border-box;
@@ -34,11 +34,6 @@
       top: 0;
       left: 0;
       z-index: 10;
-    }
-
-    .navbar h2 {
-      font-size: 1.8rem;
-      font-weight: 700;
     }
 
     .navbar button {
@@ -77,49 +72,28 @@
       font-weight: 700;
     }
 
-    .decks-container {
+    .deck-details {
       width: 95%;
-      max-width: 1200px;
+      max-width: 600px;
       margin: auto;
-    }
-
-    table {
-      width: 100%;
-      text-align: left;
       background: #000;
+      padding: 2rem;
+      border-radius: 12px;
       border: 2px solid #00adb5;
-      border-radius: 10px;
-      overflow: hidden;
+      box-shadow: 0 5px 15px rgba(0, 173, 181, 0.3);
     }
 
-    th, td {
-      padding: 15px;
-      border-bottom: 1px solid #00adb5;
-    }
-
-    th {
-      font-size: 1.4rem;
-      font-weight: bold;
-      background: #000;
-      color: #00adb5;
-      border-bottom: 2px solid #00adb5;
-    }
-
-    td {
+    .deck-details p {
       font-size: 1.2rem;
-    }
-
-    tr:hover {
-      cursor: pointer;
+      margin-bottom: 1rem;
     }
 
     .button-container {
       text-align: center;
       margin-top: 2rem;
-      margin-bottom: 3rem;
     }
 
-    .add-button {
+    .button-container button {
       background: #000;
       color: #00adb5;
       border: 2px solid #00adb5;
@@ -128,61 +102,50 @@
       cursor: pointer;
       font-size: 1.1rem;
       font-weight: 600;
+      margin: 0 10px;
       transition: background 0.3s ease, color 0.3s ease;
     }
 
-    .add-button:hover {
+    .button-container button:hover {
       background: #00adb5;
       color: black;
     }
   </style>
 </head>
 <body>
-  <div class="navbar">
-    <a href="{{ route('home') }}">Flashcards</a>
-    <div>
-      <span>Bienvenue {{ user?.username }}</span>
-      <form action="/logout" method="POST" style="display: inline;">
-        {{ csrfField() }}
-        <button type="submit">Se déconnecter</button>
-      </form>
-    </div>
-  </div>
+    <div class="navbar">
+        <a href="{{ route('home') }}">Flashcards</a>
+        <div>
+          <span>Bienvenue {{ user?.username }}</span>
+          <form action="/logout" method="POST" style="display: inline;">
+            {{ csrfField() }}
+            <button type="submit">Se déconnecter</button>
+          </form>
+        </div>
+      </div>
 
   <div class="main-content">
-    <h1>Mes decks</h1>
-
-    <div class="decks-container">
-      <table>
-        <thead>
-          <tr>
-            <th>Titre</th>
-            <th>Description</th>
-            <th>Cartes</th>
-          </tr>
-        </thead>
-        <tbody>
-          @if(decks.length)
-            @each(deck in decks)
-              <tr onclick="window.location.href='/deck/{{ deck.id }}'">
-                <td><a style="text-decoration: none; color: white" href="/deck/{{ deck.id }}">{{ deck.title }}</a></td>
-                <td>{{ deck.description }}</td>
-                <td>0</td>
-              </tr>
-            @endeach
-          @else
-            <tr>
-              <td colspan="3">Aucun deck disponible.</td>
-            </tr>
-          @endif
-        </tbody>
-      </table>
-      
+    <h1>{{ deck.title }}</h1>
+    <div class="deck-details">
+      <p><strong>Description:</strong> {{ deck.description }}</p>
     </div>
 
     <div class="button-container">
-      <button class="add-button" onclick="window.location.href='{{ route('decks.create') }}'">+ Ajouter</button>
+      <button onclick="window.location.href='{{ route('decks.edit', { id: deck.id }) }}'">Modifier</button>
+      <button onclick="confirmDelete()">Supprimer</button>
     </div>
   </div>
+
+  <script>
+    function confirmDelete() {
+      if (confirm('Êtes-vous sûr de vouloir supprimer ce deck ?')) {
+        document.getElementById('delete-form').submit();
+      }
+    }
+  </script>
+
+  <form id="delete-form" action="{{ route('decks.delete', { id: deck.id }) }}" method="POST" style="display: none;">
+    {{ csrfField() }}
+  </form>
 </body>
 </html>

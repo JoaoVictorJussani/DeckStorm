@@ -13,6 +13,9 @@ export default class Deck extends BaseModel {
   @column()
   declare description: string
 
+  @column()
+  declare user_id: number // Ajout de la colonne user_id
+
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
 

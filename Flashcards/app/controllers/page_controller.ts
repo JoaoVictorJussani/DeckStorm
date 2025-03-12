@@ -3,7 +3,8 @@ import Deck from '#models/deck'
 
 export default class PageController {
   async home({ view, auth }: HttpContext) {
-    const decks = await Deck.all() // Récupérer tous les decks depuis la base de données
-    return view.render('home', { user: auth.use('web').user, decks }) // Passe les decks à la vue
+    const user = auth.use('web').user
+    const decks = await Deck.query().where('user_id', user.id) // Filter decks by user ID
+    return view.render('home', { user, decks }) // Pass the decks to the view
   }
 }

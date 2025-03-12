@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <title>Créer un deck</title>
+  <title>Modifier un deck</title>
   <style>
     * {
       box-sizing: border-box;
@@ -83,23 +83,6 @@
       box-shadow: 0 5px 15px rgba(0, 173, 181, 0.3);
     }
 
-    .error, .success {
-      margin-bottom: 1rem;
-      padding: 1rem;
-      border-radius: 5px;
-      text-align: center;
-    }
-
-    .error {
-      background-color: #ff4d4d;
-      color: #fff;
-    }
-
-    .success {
-      background-color: #4caf50;
-      color: #fff;
-    }
-
     label {
       font-size: 1.2rem;
       display: block;
@@ -169,27 +152,17 @@
   </div>
 
   <div class="main-content">
-    <h1>Créer un nouveau deck</h1>
+    <h1>Modifier le deck</h1>
     <div class="form-container">
-      @if (flashMessages.has('error'))
-        <div class="error">
-          {{ flashMessages.get('error') }}
-        </div>
-      @endif
-      @if (flashMessages.has('success'))
-        <div class="success">
-          {{ flashMessages.get('success') }}
-        </div>
-      @endif
-      <form action="{{ route('decks.store') }}" method="POST">
+      <form action="{{ route('decks.update', { id: deck.id }) }}" method="POST">
         {{ csrfField() }}
         <label for="title">Titre du deck :</label>
-        <input type="text" id="title" name="title" required />
+        <input type="text" id="title" name="title" value="{{ deck.title }}" required />
 
         <label for="description">Description :</label>
-        <textarea id="description" name="description" required></textarea>
+        <textarea id="description" name="description" required>{{ deck.description }}</textarea>
 
-        <button type="submit" class="submit-button">Créer</button>
+        <button type="submit" class="submit-button">Enregistrer</button>
         <button type="button" class="abandon-button" onclick="window.location.href='{{ route('home') }}'">Abandonner</button>
       </form>
     </div>

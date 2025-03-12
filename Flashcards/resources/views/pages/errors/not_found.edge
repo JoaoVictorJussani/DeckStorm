@@ -1,8 +1,88 @@
-<h1>
-  404 - Page not found
-</h1>
-<p>
-  This template is rendered by the
-  <a href="http://docs.adonisjs.com/guides/exception-handling#status-pages">status pages feature</a>
-  of the global exception handler.
-</p>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>404 - Page non trouvée</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background: #000;
+      color: #e0e0e0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      font-size: 1rem;
+    }
+
+    .navbar {
+      width: 100%;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #000;
+      border-bottom: 2px solid #00adb5;
+      color: white;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 10;
+    }
+
+    .navbar a {
+      text-decoration: none;
+      color: #00adb5;
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+
+    .main-content {
+      margin-top: 120px;
+      text-align: center;
+      padding: 3rem 2rem;
+      width: 100%;
+    }
+
+    h1 {
+      font-size: 3rem;
+      margin-bottom: 1.5rem;
+      color: #00adb5;
+      font-weight: 700;
+    }
+
+    p {
+      font-size: 1.2rem;
+      margin-top: 1rem;
+    }
+
+    a {
+      color: #00adb5;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="navbar">
+    <a href="{{ route('home') }}">Flashcards</a>
+  </div>
+
+  <div class="main-content">
+    <h1>404 - Page non trouvée</h1>
+    <p>
+      Cette page n'existe pas. Retournez à la 
+      <a href="{{ route('home') }}">page d'accueil</a>.
+    </p>
+  </div>
+</body>
+</html>
