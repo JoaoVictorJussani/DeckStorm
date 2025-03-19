@@ -32,4 +32,30 @@ export default class DeckController {
     session.flash('success', 'Deck créé avec succès !')
     return response.redirect().toRoute('home')
   }
+
+  // Mise à jour d'un deck
+  async update({ params, request, response, session }: HttpContext) {
+    const deck = await Deck.find(params.id)
+    if (deck) {
+      const data = request.only(['title', 'description'])
+      deck.merge(data)
+      await deck.save()
+      session.flash('success', 'Deck mis à jour avec succès !')
+    } else {
+      session.flash('error', 'Deck non trouvé.')
+    }
+    return response.redirect().toRoute('home')
+  }
+
+  // Suppression d'un deck
+  async destroy({ params, response, session }: HttpContext) {
+    const deck = await Deck.find(params.id)
+    if (deck) {
+      await deck.delete()
+      session.flash('success', 'Deck supprimé avec succès !')
+    } else {
+      session.flash('error', 'Deck non trouvé.')
+    }
+    return response.redirect().toRoute('home')
+  }
 }

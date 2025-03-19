@@ -1,5 +1,6 @@
 import { DateTime } from 'luxon'
-import { BaseModel, column } from '@adonisjs/lucid/orm'
+import { BaseModel, column, hasMany } from '@adonisjs/lucid/orm'
+import Card from '#models/card'
 
 export default class Deck extends BaseModel {
   public static table = 't_deck' // Nom de la table
@@ -21,4 +22,7 @@ export default class Deck extends BaseModel {
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime
+
+  @hasMany(() => Card, { foreignKey: 'deck_id' })
+  public cards: Card[]
 }

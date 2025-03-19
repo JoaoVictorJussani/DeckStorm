@@ -135,6 +135,24 @@
       background: #00adb5;
       color: black;
     }
+
+    /* Add red button styles for "Supprimer" and "Abandonner" */
+    .abandon-button {
+      background: #000;
+      color: #ff4d4d;
+      border: 2px solid #ff4d4d;
+      padding: 0.8rem 1.5rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1.1rem;
+      font-weight: 600;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    .abandon-button:hover {
+      background: #ff4d4d;
+      color: black;
+    }
   </style>
 </head>
 <body>
@@ -144,7 +162,7 @@
       <span>Bienvenue {{ user?.username }}</span>
       <form action="/logout" method="POST" style="display: inline;">
         {{ csrfField() }}
-        <button type="submit">Se déconnecter</button>
+        <button type="submit" class="abandon-button">Se déconnecter</button>
       </form>
     </div>
   </div>
@@ -167,7 +185,7 @@
               <tr onclick="window.location.href='/deck/{{ deck.id }}'">
                 <td><a style="text-decoration: none; color: white" href="/deck/{{ deck.id }}">{{ deck.title }}</a></td>
                 <td>{{ deck.description }}</td>
-                <td>0</td>
+                <td>{{ deck.cards.length }}</td> <!-- Display the number of cards -->
               </tr>
             @endeach
           @else

@@ -110,6 +110,213 @@
       background: #00adb5;
       color: black;
     }
+
+    /* Add styles for the card flip effect */
+    .card-container {
+      perspective: 1000px;
+      margin: 10px 0;
+      display: inline-block;
+      position: relative;
+    }
+
+    .card {
+      width: 300px;
+      height: 150px;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 0.6s;
+      cursor: pointer;
+    }
+
+    .card.is-flipped {
+      transform: rotateY(180deg);
+    }
+
+    .card-face {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid #00adb5;
+      border-radius: 10px;
+      background: #000;
+      color: #e0e0e0;
+      font-size: 1.2rem;
+      text-align: center;
+    }
+
+    .card-face.front {
+      background: #00adb5;
+      color: #000;
+    }
+
+    .card-face.back {
+      transform: rotateY(180deg);
+      position: relative;
+    }
+
+    .card-buttons {
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      display: flex;
+      gap: 10px;
+    }
+
+    .card-buttons button {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: none;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .check-button {
+      background: #4caf50;
+      color: white;
+    }
+
+    .check-button:hover {
+      background: #3e8e41;
+    }
+
+    .cross-button {
+      background: #ff4d4d;
+      color: white;
+    }
+
+    .cross-button:hover {
+      background: #d43c3c;
+    }
+
+    .card-actions {
+      display: flex;
+      justify-content: center;
+      margin-top: 5px;
+    }
+
+    .action-button {
+      width: 20px;
+      height: 20px;
+      margin: 0 5px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .delete-button {
+      background: #ff4d4d;
+      color: white;
+      border: none;
+    }
+
+    .edit-button {
+      background: #00adb5;
+      color: white;
+      border: none;
+    }
+
+    .delete-button:hover {
+      background: #d43c3c;
+    }
+
+    .edit-button:hover {
+      background: #008c95;
+    }
+
+    .summary-container {
+      display: none;
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .summary-container.active {
+      display: block;
+    }
+
+    .summary-buttons button {
+      margin: 10px;
+      padding: 10px 20px;
+      font-size: 16px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .retry-button {
+      background: #00adb5;
+      color: white;
+    }
+
+    .retry-button:hover {
+      background: #008c95;
+    }
+
+    .restart-button {
+      background: #4caf50;
+      color: white;
+    }
+
+    .restart-button:hover {
+      background: #3e8e41;
+    }
+
+    /* Add red button styles for "Supprimer" and "Abandonner" */
+    .abandon-button {
+      background: #000;
+      color: #ff4d4d;
+      border: 2px solid #ff4d4d;
+      padding: 0.8rem 1.5rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1.1rem;
+      font-weight: 600;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    .abandon-button:hover {
+      background: #ff4d4d;
+      color: black;
+    }
+
+    .message {
+      margin-bottom: 1rem;
+      padding: 1rem;
+      border-radius: 5px;
+      text-align: center;
+      background-color: #ff4d4d; /* Blue background */
+      color: #fff;
+    }
+
+    .message.error {
+      margin-bottom: 1rem;
+      padding: 1rem;
+      border-radius: 5px;
+      text-align: center;
+      background-color: #ff4d4d; /* Red background */
+      color: #fff;
+    }
+
+    .message.success {
+      margin-bottom: 1rem;
+      padding: 1rem;
+      border-radius: 5px;
+      text-align: center;
+      background-color: #4caf50; /* Green background */
+      color: #fff;
+    }
   </style>
 </head>
 <body>
@@ -127,22 +334,147 @@
   <div class="main-content">
     <h1>{{ deck.title }}</h1>
     <div class="deck-details">
+      @if (flashMessages.has('error'))
+        <div class="message error">
+          {{ flashMessages.get('error') }}
+        </div>
+      @endif
+      @if (flashMessages.has('success'))
+        <div class="message success">
+          {{ flashMessages.get('success') }}
+        </div>
+      @endif
       <p><strong>Description:</strong> {{ deck.description }}</p>
+      <div class="button-container">
+        <button onclick="window.location.href='{{ route('decks.edit', { id: deck.id }) }}'">Modifier</button>
+        <button class="abandon-button" onclick="confirmDelete()">Supprimer</button>
+        <button onclick="window.location.href='{{ route('exercise.start', { deckId: deck.id }) }}'">Exercer</button>
+      </div>
+    </div>
+
+    <h2>Cartes</h2>
+    <div id="cards-container">
+      @if(deck.cards.length)
+        @each(card in deck.cards)
+          <div class="card-container" data-card-id="{{ card.id }}">
+            <div class="card" onclick="flipCard(this)">
+              <div class="card-face front">
+                {{ card.question }}
+              </div>
+              <div class="card-face back">
+                {{ card.answer }}
+                <div class="card-buttons">
+                  <button class="check-button" onclick="markCard(this, true)">✔</button>
+                  <button class="cross-button" onclick="markCard(this, false)">✘</button>
+                </div>
+              </div>
+            </div>
+            <div class="card-actions">
+              <button class="action-button delete-button" onclick="confirmDeleteCard({{ card.id }})">X</button>
+              <button class="action-button edit-button" onclick="window.location.href='{{ route('cards.edit', { deckId: deck.id, cardId: card.id }) }}'">✎</button>
+            </div>
+          </div>
+        @endeach
+      @else
+        <p>Aucune carte disponible.</p>
+      @endif
+    </div>
+
+    <div id="summary-container" class="summary-container">
+      <h2>Vous avez terminé !</h2>
+      <p>Que voulez-vous faire ensuite ?</p>
+      <div class="summary-buttons">
+        <button class="retry-button" id="retry-button" onclick="retryIncorrect()" style="display: none;">Revoir les cartes ratées</button>
+        <button class="restart-button" onclick="restartAll()">Recommencer avec toutes les cartes</button>
+      </div>
     </div>
 
     <div class="button-container">
-      <button onclick="window.location.href='{{ route('decks.edit', { id: deck.id }) }}'">Modifier</button>
-      <button onclick="confirmDelete()">Supprimer</button>
+      <button onclick="window.location.href='{{ route('cards.create', { deckId: deck.id }) }}'">Ajouter une carte</button>
     </div>
+
   </div>
 
   <script>
+    let incorrectCards = [];
+    let remainingCards = [...document.querySelectorAll('.card-container')];
+
+    function flipCard(cardElement) {
+      cardElement.classList.toggle('is-flipped');
+    }
+
+    function markCard(button, isCorrect) {
+      const cardContainer = button.closest('.card-container');
+      const cardId = cardContainer.dataset.cardId;
+
+      if (!isCorrect) {
+        // Store the card's HTML and ID in the incorrectCards array
+        incorrectCards.push({
+          id: cardId,
+          html: cardContainer.outerHTML,
+        });
+      }
+
+      cardContainer.remove();
+      remainingCards = remainingCards.filter((card) => card !== cardContainer);
+
+      if (remainingCards.length === 0) {
+        showSummary();
+      }
+    }
+
+    function showSummary() {
+      document.getElementById('cards-container').style.display = 'none';
+      document.getElementById('summary-container').classList.add('active');
+
+      // Ensure the "Revoir les cartes ratées" button is hidden if there are no incorrect cards
+      const retryButton = document.getElementById('retry-button');
+      retryButton.style.display = incorrectCards.length > 0 ? 'inline-block' : 'none';
+    }
+
+    function retryIncorrect() {
+      const cardsContainer = document.getElementById('cards-container');
+      cardsContainer.style.display = 'block';
+      document.getElementById('summary-container').classList.remove('active');
+
+      // Re-add incorrect cards to the DOM
+      incorrectCards.forEach((card) => {
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = card.html.trim();
+        const cardElement = tempDiv.firstChild;
+        cardsContainer.appendChild(cardElement);
+      });
+
+      // Clear the incorrectCards array and update remainingCards
+      incorrectCards = [];
+      remainingCards = [...document.querySelectorAll('.card-container')];
+    }
+
+    function restartAll() {
+      location.reload();
+    }
+
     function confirmDelete() {
       if (confirm('Êtes-vous sûr de vouloir supprimer ce deck ?')) {
         document.getElementById('delete-form').submit();
       }
     }
+
+    function confirmDeleteCard(cardId) {
+      if (confirm('Êtes-vous sûr de vouloir supprimer cette carte ?')) {
+        const form = document.getElementById(`delete-card-form-${cardId}`);
+        if (form) {
+          form.submit();
+        }
+      }
+    }
   </script>
+
+  @each(card in deck.cards)
+    <form id="delete-card-form-{{ card.id }}" action="{{ route('cards.delete', { deckId: deck.id, cardId: card.id }) }}" method="POST" style="display: none;">
+      {{ csrfField() }}
+    </form>
+  @endeach
 
   <form id="delete-form" action="{{ route('decks.delete', { id: deck.id }) }}" method="POST" style="display: none;">
     {{ csrfField() }}

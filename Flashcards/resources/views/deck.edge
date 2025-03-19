@@ -83,20 +83,21 @@
       box-shadow: 0 5px 15px rgba(0, 173, 181, 0.3);
     }
 
-    .error, .success {
+    .message.error {
       margin-bottom: 1rem;
       padding: 1rem;
       border-radius: 5px;
       text-align: center;
-    }
-
-    .error {
-      background-color: #ff4d4d;
+      background-color: #ff4d4d; /* Red background */
       color: #fff;
     }
 
-    .success {
-      background-color: #4caf50;
+    .message.success {
+      margin-bottom: 1rem;
+      padding: 1rem;
+      border-radius: 5px;
+      text-align: center;
+      background-color: #4caf50; /* Green background */
       color: #fff;
     }
 
@@ -154,6 +155,17 @@
       background: #ff4d4d;
       color: black;
     }
+
+    .error{
+      
+      margin-bottom: 1rem;
+      padding: 1rem;
+      border-radius: 5px;
+      text-align: center;
+      background-color: #ff4d4d; /* Blue background */
+      color: #fff;
+    
+    }
   </style>
 </head>
 <body>
@@ -172,22 +184,22 @@
     <h1>Créer un nouveau deck</h1>
     <div class="form-container">
       @if (flashMessages.has('error'))
-        <div class="error">
+        <div class="message error">
           {{ flashMessages.get('error') }}
         </div>
       @endif
       @if (flashMessages.has('success'))
-        <div class="success">
+        <div class="message success">
           {{ flashMessages.get('success') }}
         </div>
       @endif
       <form action="{{ route('decks.store') }}" method="POST">
         {{ csrfField() }}
         <label for="title">Titre du deck :</label>
-        <input type="text" id="title" name="title" required />
+        <input type="text" id="title" name="title" value="{{ old('title', '') }}" required />
 
         <label for="description">Description :</label>
-        <textarea id="description" name="description" required></textarea>
+        <textarea id="description" name="description" required>{{ old('description', '') }}</textarea>
 
         <button type="submit" class="submit-button">Créer</button>
         <button type="button" class="abandon-button" onclick="window.location.href='{{ route('home') }}'">Abandonner</button>

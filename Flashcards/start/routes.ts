@@ -12,6 +12,9 @@ import DeckController from '#controllers/deck_controller'
 import router from '@adonisjs/core/services/router'
 import { middleware } from './kernel.js'
 import Deck from '#models/deck'
+import CardController from '#controllers/card_controller' // Fix the import path
+import Card from '#models/card'; // Ensure the Card model is imported
+import ExerciseController from '#controllers/exercise_controller' // New controller for exercises
 
 
 //http://localhost:3333/
@@ -53,35 +56,13 @@ router
 
 // Route pour mettre à jour un deck
 router
-  .post('/deck/:id/update', async ({ params, request, response, session }) => {
-    const deck = await Deck.find(params.id)
-    if (deck) {
-      const data = request.only(['title', 'description'])
-      deck.merge(data)
-      await deck.save()
-      session.flash('success', 'Deck mis à jour avec succès !')
-      return response.redirect().toRoute('home')
-    } else {
-      session.flash('error', 'Deck non trouvé')
-      return response.redirect().toRoute('home')
-    }
-  })
+  .post('/deck/:id/update', [DeckController, 'update'])
   .as('decks.update')
   .use(middleware.auth())
 
 // Route pour supprimer un deck
 router
-  .post('/deck/:id/delete', async ({ params, response, session }) => {
-    const deck = await Deck.find(params.id)
-    if (deck) {
-      await deck.delete()
-      session.flash('success', 'Deck supprimé avec succès !')
-      return response.redirect().toRoute('home')
-    } else {
-      session.flash('error', 'Deck non trouvé')
-      return response.redirect().toRoute('home')
-    }
-  })
+  .post('/deck/:id/delete', [DeckController, 'destroy'])
   .as('decks.delete')
   .use(middleware.auth())
 
@@ -108,7 +89,12 @@ router
 // Route pour afficher un deck spécifique
 router
   .get('/deck/:id', async ({ params, view, auth }) => {
-    const deck = await Deck.find(params.id)
+    const deck = await Deck.query()
+      .where('id', params.id)
+      .andWhere('user_id', auth.user.id)
+      .preload('cards') // Preload cards
+      .first()
+
     if (deck) {
       return view.render('show_deck', { deck, user: auth.use('web').user })
     } else {
@@ -128,33 +114,53 @@ router
 // Routes pour la gestion des decks
 // Route pour enregistrer un nouveau deck en base de données
 router
-  .post('/decks', async ({ request, response, session, auth }) => {
-    const data = request.only(['title', 'description'])
-    const existingDeck = await Deck.findBy('title', data.title)
-
-    if (existingDeck) {
-      session.flash('error', 'Un deck avec ce titre existe déjà.')
-      return response.redirect().toRoute('home')
-    }
-
-    if (data.description.length < 10) {
-      session.flash('error', 'La description doit contenir au moins 10 caractères.')
-      return response.redirect().toRoute('home')
-    }
-
-    const deck = new Deck()
-    deck.title = data.title
-    deck.description = data.description
-    if (auth.user) {
-      deck.user_id = auth.user.id
-    } else {
-      return response.unauthorized('User not authenticated')
-    }
-
-    await deck.save()
-
-    session.flash('success', 'Deck créé avec succès !')
-    return response.redirect().toRoute('home')
-  })
+  .post('/decks', [DeckController, 'store'])
   .as('decks.store')
   .use(middleware.auth()) // Add auth middleware
+
+// Card routes
+router
+  .get('/deck/:deckId/card/create', [CardController, 'create'])
+  .as('cards.create')
+  .use(middleware.auth())
+
+router
+  .post('/deck/:deckId/card', [CardController, 'store'])
+  .as('cards.store')
+  .use(middleware.auth())
+
+router
+  .get('/deck/:deckId/card/:cardId', [CardController, 'show'])
+  .as('cards.show')
+  .use(middleware.auth())
+
+router
+  .get('/deck/:deckId/card/:cardId/edit', [CardController, 'edit'])
+  .as('cards.edit')
+  .use(middleware.auth())
+
+router
+  .post('/deck/:deckId/card/:cardId/update', [CardController, 'update'])
+  .as('cards.update')
+  .use(middleware.auth())
+
+router
+  .post('/deck/:deckId/card/:cardId/delete', [CardController, 'destroy'])
+  .as('cards.delete')
+  .use(middleware.auth())
+
+// Exercise routes
+router
+  .get('/deck/:deckId/start', [ExerciseController, 'start'])
+  .as('exercise.start')
+  .use(middleware.auth())
+
+router
+  .get('/deck/:deckId/question/:questionIndex', [ExerciseController, 'presentQuestion'])
+  .as('exercise.presentQuestion')
+  .use(middleware.auth())
+
+router
+  .post('/deck/:deckId/finish', [ExerciseController, 'finish'])
+  .as('exercise.finish')
+  .use(middleware.auth())
