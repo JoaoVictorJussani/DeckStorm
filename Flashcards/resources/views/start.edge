@@ -51,8 +51,9 @@
 <body>
   <h1>Commencer l'exercice pour le deck "{{ deck.title }}"</h1>
   <form action="{{ route('exercise.presentQuestion', { deckId: deck.id, questionIndex: 0 }) }}" method="GET">
-    <input type="hidden" name="startTime" value="{{ Date.now() }}" />
-    <button type="submit">C'est parti</button>
+    <input type="hidden" name="startTime" id="startTime" />
+    <input type="hidden" name="results" value="[]" /> <!-- Initialize results array -->
+    <button type="submit" onclick="document.getElementById('startTime').value = Date.now()">C'est parti</button>
   </form>
 </body>
 </html>

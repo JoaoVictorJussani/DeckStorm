@@ -348,7 +348,9 @@
       <div class="button-container">
         <button onclick="window.location.href='{{ route('decks.edit', { id: deck.id }) }}'">Modifier</button>
         <button class="abandon-button" onclick="confirmDelete()">Supprimer</button>
-        <button onclick="window.location.href='{{ route('exercise.start', { deckId: deck.id }) }}'">Exercer</button>
+        @if(deck.cards.length > 0)
+          <button onclick="window.location.href='{{ route('exercise.start', { deckId: deck.id }) }}'">Exercer</button>
+        @endif
       </div>
     </div>
 

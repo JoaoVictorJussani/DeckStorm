@@ -21,10 +21,14 @@ export default class ExerciseController {
   }
 
   async finish({ params, request, view }: HttpContext) {
-    const deck = await Deck.find(params.deckId)
-    const elapsedTime = request.input('elapsedTime')
-    const results = request.input('results') // Collect results from the session
+    const deck = await Deck.query().where('id', params.deckId).preload('cards').first(); // Preload cards
+    if (!deck) {
+      return view.render('./pages/errors/not_found'); // Handle case where deck is not found
+    }
 
-    return view.render('finish_with_time', { deck, elapsedTime, results })
+    const elapsedTime = parseInt(request.input('elapsedTime', '0'), 10); // Parse elapsed time
+    const results = JSON.parse(request.input('results', '[]')); // Parse results array
+
+    return view.render('finish_with_time', { deck, elapsedTime, results });
   }
 }
