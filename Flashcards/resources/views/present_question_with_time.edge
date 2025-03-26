@@ -163,32 +163,40 @@
     action="{{ questionIndex + 1 < deck.cards.length 
       ? route('exercise.presentQuestion', { deckId: deck.id, questionIndex: questionIndex + 1 }) 
       : route('exercise.finish', { deckId: deck.id }) }}" 
-    method="{{ questionIndex + 1 < deck.cards.length ? 'GET' : 'POST' }}" id="next-form" style="display: none;">
+    method="{{ questionIndex + 1 < deck.cards.length ? 'GET' : 'POST' }}" id="next-form" style="display: none;"> <!-- Initially hidden -->
     {{ csrfField() }}
     <input type="hidden" name="startTime" value="{{ startTime }}" />
     <input type="hidden" name="elapsedTime" value="0" />
-    <input type="hidden" name="results" id="results" value="{{ results }}" /> <!-- Pass accumulated results -->
-    <button type="submit">{{ questionIndex + 1 < deck.cards.length ? 'Suivant' : 'Terminer' }}</button>
+    <input type="hidden" name="results" id="results" value="" /> <!-- Results will be serialized here -->
+    <button type="submit" onclick="prepareResults()">{{ questionIndex + 1 < deck.cards.length ? 'Suivant' : 'Terminer' }}</button>
   </form>
 
   <script>
     const startTime = parseInt('{{ startTime }}', 10);
-    const results = JSON.parse('{{ results || "[]" }}'); // Initialize results array
+    const results = JSON.parse(localStorage.getItem('exerciseResults') || '[]'); // Load results from localStorage or initialize
 
     function flipCard(cardElement) {
       cardElement.classList.toggle('is-flipped');
     }
 
     function markCard(isCorrect) {
-      results.push(isCorrect); // Add the result for the current card
-      document.getElementById('results').value = JSON.stringify(results); // Serialize results
+      results[{{ questionIndex }}] = isCorrect; // Save the result for the current question index
+      localStorage.setItem('exerciseResults', JSON.stringify(results)); // Persist results in localStorage
       document.getElementById('next-form').style.display = 'block'; // Show the "Suivant" or "Terminer" button
+    }
+
+    function prepareResults() {
+      if ({{ questionIndex + 1 }} === {{ deck.cards.length }}) {
+        // If it's the last question, clear localStorage and pass results to the server
+        document.getElementById('results').value = JSON.stringify(results);
+        localStorage.removeItem('exerciseResults');
+      }
     }
 
     setInterval(() => {
       const elapsedTime = Math.floor((Date.now() - startTime) / 1000);
-      document.getElementById('elapsed-time').textContent = `${Math.floor(elapsedTime / 60)}m ${elapsedTime % 60}s`;
       document.querySelector('input[name="elapsedTime"]').value = elapsedTime; // Pass elapsed time
+      document.getElementById('elapsed-time').textContent = `${Math.floor(elapsedTime / 60)}m ${elapsedTime % 60}s`;
     }, 1000);
   </script>
 </body>
