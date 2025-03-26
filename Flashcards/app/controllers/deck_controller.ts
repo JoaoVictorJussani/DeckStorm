@@ -4,33 +4,37 @@ import Deck from '#models/deck'
 export default class DeckController {
   // Création d'un deck
   async store({ request, response, session, auth }: HttpContext) {
-    const data = request.only(['title', 'description'])
+    const data = request.only(['title', 'description']);
 
-    const existingDeck = await Deck.findBy('title', data.title)
+    // Check if a deck with the same title already exists
+    const existingDeck = await Deck.findBy('title', data.title);
     if (existingDeck) {
-      session.flash('error', 'Un deck avec ce titre existe déjà.')
-      return response.redirect().toRoute('home')
+      session.flash('error', 'Un deck avec ce titre existe déjà.');
+      session.flash('old', data); // Preserve old input
+      return response.redirect().back();
     }
 
+    // Check if the description is less than 10 characters
     if (data.description.length < 10) {
-      session.flash('error', 'La description doit contenir au moins 10 caractères.')
-      return response.redirect().toRoute('home')
+      session.flash('error', 'La description doit contenir au moins 10 caractères.');
+      session.flash('old', data); // Preserve old input
+      return response.redirect().back();
     }
 
-    const deck = new Deck()
-    deck.title = data.title
-    deck.description = data.description
+    const deck = new Deck();
+    deck.title = data.title;
+    deck.description = data.description;
     if (auth.user) {
-      deck.user_id = auth.user.id
+      deck.user_id = auth.user.id;
     } else {
-      session.flash('error', 'Utilisateur non authentifié.')
-      return response.unauthorized('User not authenticated')
+      session.flash('error', 'Utilisateur non authentifié.');
+      return response.unauthorized('User not authenticated');
     }
 
-    await deck.save()
+    await deck.save();
 
-    session.flash('success', 'Deck créé avec succès !')
-    return response.redirect().toRoute('home')
+    session.flash('success', 'Deck créé avec succès !');
+    return response.redirect().toRoute('home');
   }
 
   // Mise à jour d'un deck

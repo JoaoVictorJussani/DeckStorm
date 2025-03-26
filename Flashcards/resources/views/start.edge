@@ -40,6 +40,7 @@
       font-size: 1.2rem;
       font-weight: 600;
       transition: background 0.3s ease, color 0.3s ease;
+      margin: 10px;
     }
 
     button:hover {
@@ -49,11 +50,14 @@
   </style>
 </head>
 <body>
-  <h1>Commencer l'exercice pour le deck "{{ deck.title }}"</h1>
+  <h1>Choisissez un mode pour le deck "{{ deck.title }}"</h1>
   <form action="{{ route('exercise.presentQuestion', { deckId: deck.id, questionIndex: 0 }) }}" method="GET">
-    <input type="hidden" name="startTime" id="startTime" />
-    <input type="hidden" name="results" value="[]" /> <!-- Initialize results array -->
-    <button type="submit" onclick="document.getElementById('startTime').value = Date.now()">C'est parti</button>
+    <input type="hidden" name="mode" value="timed" />
+    <button type="submit">Mode Chronométré</button>
+  </form>
+  <form action="{{ route('exercise.presentQuestion', { deckId: deck.id, questionIndex: 0 }) }}" method="GET">
+    <input type="hidden" name="mode" value="basic" />
+    <button type="submit">Mode Basique</button>
   </form>
 </body>
 </html>

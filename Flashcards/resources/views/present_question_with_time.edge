@@ -168,11 +168,12 @@
     <input type="hidden" name="startTime" value="{{ startTime }}" />
     <input type="hidden" name="elapsedTime" value="0" />
     <input type="hidden" name="results" id="results" value="" /> <!-- Results will be serialized here -->
+    <input type="hidden" name="mode" value="timed" /> <!-- Pass the mode -->
     <button type="submit" onclick="prepareResults()">{{ questionIndex + 1 < deck.cards.length ? 'Suivant' : 'Terminer' }}</button>
   </form>
 
   <script>
-    const startTime = parseInt('{{ startTime }}', 10);
+    const startTime = parseInt('{{ startTime }}', 10); // Ensure startTime is parsed as an integer
     const results = JSON.parse(localStorage.getItem('exerciseResults') || '[]'); // Load results from localStorage or initialize
 
     function flipCard(cardElement) {
@@ -194,9 +195,13 @@
     }
 
     setInterval(() => {
-      const elapsedTime = Math.floor((Date.now() - startTime) / 1000);
-      document.querySelector('input[name="elapsedTime"]').value = elapsedTime; // Pass elapsed time
-      document.getElementById('elapsed-time').textContent = `${Math.floor(elapsedTime / 60)}m ${elapsedTime % 60}s`;
+      if (!isNaN(startTime)) {
+        const elapsedTime = Math.floor((Date.now() - startTime) / 1000);
+        document.querySelector('input[name="elapsedTime"]').value = elapsedTime; // Pass elapsed time
+        document.getElementById('elapsed-time').textContent = `${Math.floor(elapsedTime / 60)}m ${elapsedTime % 60}s`;
+      } else {
+        document.getElementById('elapsed-time').textContent = '0m 0s'; // Fallback if startTime is invalid
+      }
     }, 1000);
   </script>
 </body>

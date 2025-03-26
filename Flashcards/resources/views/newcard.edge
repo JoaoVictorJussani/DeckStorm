@@ -132,15 +132,10 @@
           {{ flashMessages.get('error') }}
         </div>
       @endif
-      @if (flashMessages.has('success'))
-        <div class="message success">
-          {{ flashMessages.get('success') }}
-        </div>
-      @endif
       <label for="question">Question :</label>
-      <input type="text" id="question" name="question" value="{{ session.get('old.question', '') }}" />
+      <input type="text" id="question" name="question" value="{{ flashMessages.get('old.question', '') }}" />
       <label for="answer">Réponse :</label>
-      <textarea id="answer" name="answer">{{ session.get('old.answer', '') }}</textarea>
+      <textarea id="answer" name="answer">{{ flashMessages.get('old.answer', '') }}</textarea>
       <div class="button-container">
         <button type="submit">OK</button>
         <button type="button" class="abandon-button" onclick="window.location.href='{{ route('decks.show', { id: deck.id }) }}'">Abandonner</button>

@@ -196,10 +196,10 @@
       <form action="{{ route('decks.store') }}" method="POST">
         {{ csrfField() }}
         <label for="title">Titre du deck :</label>
-        <input type="text" id="title" name="title" value="{{ old('title', '') }}" required />
+        <input type="text" id="title" name="title" value="{{ flashMessages.get('old.title', '') }}" required />
 
         <label for="description">Description :</label>
-        <textarea id="description" name="description" required>{{ old('description', '') }}</textarea>
+        <textarea id="description" name="description" required>{{ flashMessages.get('old.description', '') }}</textarea>
 
         <button type="submit" class="submit-button">Créer</button>
         <button type="button" class="abandon-button" onclick="window.location.href='{{ route('home') }}'">Abandonner</button>
