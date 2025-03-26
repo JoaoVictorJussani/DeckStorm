@@ -47,7 +47,7 @@ export default class CardController {
     // Create the new card
     await Card.create({ question: question.trim(), answer: answer.trim(), deck_id: params.deckId });
 
-    session.flash('success', 'Carte créée avec succès !');
+    session.flash('success', 'Carte créée avec succès !'); // Flash message for card creation
     return response.redirect().toRoute('decks.show', { id: params.deckId });
   }
 
@@ -62,28 +62,28 @@ export default class CardController {
   }
 
   async update({ params, request, response, session }: HttpContext) {
-    const card = await Card.find(params.cardId)
-    const { question, answer } = request.only(['question', 'answer'])
+    const card = await Card.find(params.cardId);
+    const { question, answer } = request.only(['question', 'answer']);
 
     if (card) {
-      card.merge({ question, answer })
-      await card.save()
-      session.flash('success', 'Carte mise à jour avec succès !')
+      card.merge({ question, answer });
+      await card.save();
+      session.flash('success', 'Carte mise à jour avec succès !'); // Flash message for card modification
     } else {
-      session.flash('error', 'Carte non trouvée.')
+      session.flash('error', 'Carte non trouvée.');
     }
 
-    return response.redirect().toRoute('decks.show', { id: params.deckId })
+    return response.redirect().toRoute('decks.show', { id: params.deckId });
   }
 
   async destroy({ params, response, session }: HttpContext) {
-    const card = await Card.find(params.cardId)
+    const card = await Card.find(params.cardId);
     if (card) {
-      await card.delete()
-      session.flash('success', 'Carte supprimée avec succès !')
+      await card.delete();
+      session.flash('success', 'Carte supprimée avec succès !'); // Flash message for card deletion
     } else {
-      session.flash('error', 'Carte non trouvée.')
+      session.flash('error', 'Carte non trouvée.');
     }
-    return response.redirect().toRoute('decks.show', { id: params.deckId })
+    return response.redirect().toRoute('decks.show', { id: params.deckId });
   }
 }

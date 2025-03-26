@@ -32,23 +32,19 @@ export default class ExerciseController {
   }
 
   async finish({ params, request, response, view }: HttpContext) {
-    const deck = await Deck.query().where('id', params.deckId).preload('cards').first(); // Preload cards
+    const deck = await Deck.query().where('id', params.deckId).preload('cards').first();
     if (!deck) {
-      return response.redirect().toRoute('home'); // Redirect to home if deck is not found
+      return response.redirect().toRoute('home');
     }
 
-    const mode = request.input('mode', 'timed'); // Default to "timed" mode
-
+    const mode = request.input('mode', 'timed');
     if (mode === 'basic') {
-      // Redirect to the deck page in basic mode
       return response.redirect().toRoute('decks.show', { id: deck.id });
     }
 
-    // Handle timed mode
-    const elapsedTime = parseInt(request.input('elapsedTime', '0'), 10); // Parse elapsed time
-    const results = JSON.parse(request.input('results', '[]')); // Parse results array
+    const elapsedTime = parseInt(request.input('elapsedTime', '0'), 10);
+    const results = JSON.parse(request.input('results', '[]'));
 
-    // Render the finish page for timed mode
     return view.render('finish_with_time', { deck, elapsedTime, results });
   }
 }

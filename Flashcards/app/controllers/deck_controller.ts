@@ -33,7 +33,7 @@ export default class DeckController {
 
     await deck.save();
 
-    session.flash('success', 'Deck créé avec succès !');
+    session.flash('success', 'Deck créé avec succès !'); // Flash message for deck creation
     return response.redirect().toRoute('home');
   }
 
@@ -44,7 +44,7 @@ export default class DeckController {
       const data = request.only(['title', 'description'])
       deck.merge(data)
       await deck.save()
-      session.flash('success', 'Deck mis à jour avec succès !')
+      session.flash('success', 'Deck mis à jour avec succès !'); // Flash message for deck modification
     } else {
       session.flash('error', 'Deck non trouvé.')
     }
@@ -56,7 +56,7 @@ export default class DeckController {
     const deck = await Deck.find(params.id)
     if (deck) {
       await deck.delete()
-      session.flash('success', 'Deck supprimé avec succès !')
+      session.flash('success', 'Deck supprimé avec succès !'); // Flash message for deck deletion
     } else {
       session.flash('error', 'Deck non trouvé.')
     }

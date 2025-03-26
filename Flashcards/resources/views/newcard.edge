@@ -132,6 +132,11 @@
           {{ flashMessages.get('error') }}
         </div>
       @endif
+      @if (flashMessages.has('success'))
+        <div class="message success">
+          {{ flashMessages.get('success') }}
+        </div>
+      @endif
       <label for="question">Question :</label>
       <input type="text" id="question" name="question" value="{{ flashMessages.get('old.question', '') }}" />
       <label for="answer">Réponse :</label>

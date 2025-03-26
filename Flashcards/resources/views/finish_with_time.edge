@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <title>Fin de l'exercice</title>
+  <title>Résultats</title>
   <style>
     * {
       box-sizing: border-box;
@@ -55,9 +55,11 @@
   </style>
 </head>
 <body>
-  <h1>Exercice terminé pour le deck "{{ deck.title }}"</h1>
-  <p>Temps total : {{ Math.floor(elapsedTime / 60) }}m {{ elapsedTime % 60 }}s</p>
-  <p>Résultats : {{ results.filter(r => r === true).length }} / {{ deck.cards.length }} cartes correctes</p>
-  <button onclick="window.location.href='{{ route('home') }}'">OK</button>
+  <h1>Résultats pour le deck "{{ deck.title }}"</h1>
+  <p>Temps écoulé : {{ Math.floor(elapsedTime / 60) }}m {{ elapsedTime % 60 }}s</p>
+  <p>Score : {{ results.filter(r => r).length }} sur {{ deck.cards.length }} cartes correctes</p>
+  <form action="{{ route('home') }}" method="GET">
+    <button type="submit">OK</button>
+  </form>
 </body>
 </html>
