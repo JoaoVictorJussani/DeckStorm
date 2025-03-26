@@ -350,6 +350,8 @@
           {{ deck.visibility === 'public' ? '🔓 Public' : '🔒 Privé' }}
         </span>
       </p>
+      <p><strong>Créateur: </strong>
+      <span>{{deck.user.username}}</span></p>
       <div class="button-container">
         
         @if(deck.user_id === user.id)
