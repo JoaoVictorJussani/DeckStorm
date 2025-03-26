@@ -20,4 +20,18 @@ export default class PageController {
 
     return view.render('home', { user, userDecks, publicDecks });
   }
+
+  async searchPublicDecks({ request, view, auth }: HttpContext) {
+    const user = auth.use('web').user;
+    const query = request.input('query', '').trim();
+
+    const publicDecks = await Deck.query()
+      .where('visibility', 'public')
+      .andWhereNot('user_id', user.id)
+      .andWhere('title', 'like', `%${query}%`) // Search by title
+      .preload('cards') // Preload cards to get the count
+      .preload('user'); // Preload the user relationship
+
+    return view.render('home', { user, userDecks: [], publicDecks, query });
+  }
 }

@@ -186,4 +186,9 @@ router
 router
   .post('/deck/:deckId/finish', [ExerciseController, 'finish']) // Change to POST
   .as('exercise.finish')
+  .use(middleware.auth())
+
+router
+  .get('/search', [PageController, 'searchPublicDecks'])
+  .as('search.publicDecks')
   .use(middleware.auth());
