@@ -102,6 +102,23 @@
       margin-top: 5px;
     }
 
+    select {
+      width: 100%;
+      padding: 10px;
+      border-radius: 5px;
+      border: 2px solid #00adb5;
+      font-size: 1rem;
+      background: #000;
+      color: #e0e0e0;
+      margin-top: 5px;
+      appearance: none; /* Remove default dropdown arrow */
+    }
+
+    select:focus {
+      outline: none;
+      border-color: #00adb5;
+    }
+
     .submit-button {
       background: #000;
       color: #00adb5;
@@ -161,6 +178,12 @@
 
         <label for="description">Description :</label>
         <textarea id="description" name="description" required>{{ deck.description }}</textarea>
+
+        <label for="visibility">Visibilité :</label>
+        <select id="visibility" name="visibility" required>
+          <option value="private" {{ deck.visibility === 'private' ? 'selected' : '' }}>Privé</option>
+          <option value="public" {{ deck.visibility === 'public' ? 'selected' : '' }}>Public</option>
+        </select>
 
         <button type="submit" class="submit-button">Enregistrer</button>
         <button type="button" class="abandon-button" onclick="window.location.href='{{ route('home') }}'">Abandonner</button>

@@ -10,6 +10,7 @@ export default class extends BaseSchema {
       table.text('description')
       table.integer('user_id').unsigned().notNullable() // Colonne pour la clé étrangère
       table.foreign('user_id').references('id').inTable('t_user').onDelete('CASCADE') // Définir la clé étrangère
+      table.string('visibility').notNullable().defaultTo('private'); // Add visibility column
       table.timestamps(true)
     })
   }

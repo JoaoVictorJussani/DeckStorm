@@ -43,13 +43,12 @@ router
 
 // Route pour afficher la page d'édition d'un deck
 router
-  .get('/deck/:id/edit', async ({ params, view, auth }) => {
-    const deck = await Deck.find(params.id)
-    if (deck) {
-      return view.render('edit_deck', { deck, user: auth.use('web').user })
-    } else {
-      return view.render('./pages/errors/not_found')
+  .get('/deck/:id/edit', async ({ params, view, auth, response }) => {
+    const deck = await Deck.find(params.id);
+    if (deck && deck.user_id === auth.user.id) { // Ensure the user owns the deck
+      return view.render('edit_deck', { deck, user: auth.use('web').user });
     }
+    return response.redirect().toRoute('home'); // Redirect if the user does not own the deck
   })
   .as('decks.edit')
   .use(middleware.auth())
@@ -91,14 +90,17 @@ router
   .get('/deck/:id', async ({ params, view, auth }) => {
     const deck = await Deck.query()
       .where('id', params.id)
-      .andWhere('user_id', auth.user.id)
+      .andWhere((query) => {
+        query.where('user_id', auth.user.id).orWhere('visibility', 'public'); // Allow access to public decks
+      })
       .preload('cards') // Preload cards
-      .first()
+      .preload('user') // Preload the user relationship
+      .first();
 
     if (deck) {
-      return view.render('show_deck', { deck, user: auth.use('web').user })
+      return view.render('show_deck', { deck, user: auth.use('web').user });
     } else {
-      return view.render('./pages/errors/not_found')
+      return view.render('./pages/errors/not_found'); // Render 404 page if deck is not found
     }
   })
   .as('decks.show')
@@ -135,9 +137,18 @@ router
   .use(middleware.auth())
 
 router
-  .get('/deck/:deckId/card/:cardId/edit', [CardController, 'edit'])
+  .get('/deck/:deckId/card/:cardId/edit', async ({ params, view, auth, response }) => {
+    const deck = await Deck.find(params.deckId);
+    if (deck && deck.user_id === auth.user.id) { // Ensure the user owns the deck
+      const card = await Card.find(params.cardId);
+      if (card) {
+        return view.render('edit_card', { card, deck });
+      }
+    }
+    return response.redirect().toRoute('home'); // Redirect if the user does not own the deck or card
+  })
   .as('cards.edit')
-  .use(middleware.auth())
+  .use(middleware.auth());
 
 router
   .post('/deck/:deckId/card/:cardId/update', [CardController, 'update'])
@@ -145,9 +156,21 @@ router
   .use(middleware.auth())
 
 router
-  .post('/deck/:deckId/card/:cardId/delete', [CardController, 'destroy'])
+  .post('/deck/:deckId/card/:cardId/delete', async ({ params, auth, response, session }) => {
+    const deck = await Deck.find(params.deckId);
+    if (deck && deck.user_id === auth.user.id) { // Ensure the user owns the deck
+      const card = await Card.find(params.cardId);
+      if (card) {
+        await card.delete();
+        session.flash('success', 'Carte supprimée avec succès.');
+        return response.redirect().toRoute('decks.show', { id: deck.id });
+      }
+    }
+    session.flash('error', 'Vous ne pouvez pas supprimer cette carte.');
+    return response.redirect().toRoute('home'); // Redirect if the user does not own the deck or card
+  })
   .as('cards.delete')
-  .use(middleware.auth())
+  .use(middleware.auth());
 
 // Exercise routes
 router
@@ -161,6 +184,6 @@ router
   .use(middleware.auth())
 
 router
-  .post('/deck/:deckId/finish', [ExerciseController, 'finish'])
+  .post('/deck/:deckId/finish', [ExerciseController, 'finish']) // Change to POST
   .as('exercise.finish')
-  .use(middleware.auth())
+  .use(middleware.auth());

@@ -32,19 +32,19 @@ export default class ExerciseController {
   }
 
   async finish({ params, request, response, view }: HttpContext) {
-    const deck = await Deck.query().where('id', params.deckId).preload('cards').first();
+    const deck = await Deck.query().where('id', params.deckId).preload('cards').first(); // Preload cards
     if (!deck) {
-      return response.redirect().toRoute('home');
+      return view.render('./pages/errors/not_found'); // Render 404 if the deck is not found
     }
 
-    const mode = request.input('mode', 'timed');
-    if (mode === 'basic') {
-      return response.redirect().toRoute('decks.show', { id: deck.id });
+    const mode = request.input('mode', 'timed'); // Default to "timed" mode
+    const results = JSON.parse(request.input('results', '[]')) || []; // Ensure results is an array
+    const elapsedTime = parseInt(request.input('elapsedTime', '0'), 10); // Parse elapsedTime from the request
+
+    if (mode === 'timed') {
+      return view.render('finish_with_time', { deck, results, elapsedTime }); // Pass elapsedTime to the view
+    } else {
+      return response.redirect().toRoute('decks.show', { id: deck.id }); // Redirect directly for basic mode
     }
-
-    const elapsedTime = parseInt(request.input('elapsedTime', '0'), 10);
-    const results = JSON.parse(request.input('results', '[]'));
-
-    return view.render('finish_with_time', { deck, elapsedTime, results });
   }
 }

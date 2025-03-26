@@ -183,14 +183,14 @@
     function markCard(isCorrect) {
       results[{{ questionIndex }}] = isCorrect; // Save the result for the current question index
       localStorage.setItem('exerciseResults', JSON.stringify(results)); // Persist results in localStorage
+      document.getElementById('results').value = JSON.stringify(results); // Ensure results are passed to the server
       document.getElementById('next-form').style.display = 'block'; // Show the "Suivant" or "Terminer" button
     }
 
     function prepareResults() {
+      document.getElementById('results').value = JSON.stringify(results); // Ensure results are passed to the server
       if ({{ questionIndex + 1 }} === {{ deck.cards.length }}) {
-        // If it's the last question, clear localStorage and pass results to the server
-        document.getElementById('results').value = JSON.stringify(results);
-        localStorage.removeItem('exerciseResults');
+        localStorage.removeItem('exerciseResults'); // Clear localStorage on the last question
       }
     }
 

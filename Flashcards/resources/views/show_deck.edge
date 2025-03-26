@@ -345,9 +345,17 @@
         </div>
       @endif
       <p><strong>Description:</strong> {{ deck.description }}</p>
+      <p><strong>Visibilité:</strong> 
+        <span title="{{ deck.visibility === 'public' ? 'Public' : 'Privé' }}">
+          {{ deck.visibility === 'public' ? '🔓 Public' : '🔒 Privé' }}
+        </span>
+      </p>
       <div class="button-container">
-        <button onclick="window.location.href='{{ route('decks.edit', { id: deck.id }) }}'">Modifier</button>
-        <button class="abandon-button" onclick="confirmDelete()">Supprimer</button>
+        
+        @if(deck.user_id === user.id)
+          <button onclick="window.location.href='{{ route('decks.edit', { id: deck.id }) }}'">Modifier</button>
+          <button class="abandon-button" onclick="confirmDelete()">Supprimer</button>
+        @endif
         @if(deck.cards.length > 0)
           <button onclick="window.location.href='{{ route('exercise.start', { deckId: deck.id }) }}'">Exercer</button>
         @endif
@@ -372,8 +380,10 @@
               </div>
             </div>
             <div class="card-actions">
-              <button class="action-button delete-button" onclick="confirmDeleteCard({{ card.id }})">X</button>
-              <button class="action-button edit-button" onclick="window.location.href='{{ route('cards.edit', { deckId: deck.id, cardId: card.id }) }}'">✎</button>
+              @if(deck.user_id === user.id) 
+                <button class="action-button delete-button" onclick="confirmDeleteCard({{ card.id }})">X</button>
+                <button class="action-button edit-button" onclick="window.location.href='{{ route('cards.edit', { deckId: deck.id, cardId: card.id }) }}'">✎</button>
+              @endif
             </div>
           </div>
         @endeach
@@ -382,6 +392,12 @@
       @endif
     </div>
 
+    @if(deck.user_id === user.id)
+      <div class="button-container">
+        <button onclick="window.location.href='{{ route('cards.create', { deckId: deck.id }) }}'">Ajouter une carte</button>
+      </div>
+    @endif
+
     <div id="summary-container" class="summary-container">
       <h2>Vous avez terminé !</h2>
       <p>Que voulez-vous faire ensuite ?</p>
@@ -389,10 +405,6 @@
         <button class="retry-button" id="retry-button" onclick="retryIncorrect()" style="display: none;">Revoir les cartes ratées</button>
         <button class="restart-button" onclick="restartAll()">Recommencer avec toutes les cartes</button>
       </div>
-    </div>
-
-    <div class="button-container">
-      <button onclick="window.location.href='{{ route('cards.create', { deckId: deck.id }) }}'">Ajouter une carte</button>
     </div>
 
   </div>

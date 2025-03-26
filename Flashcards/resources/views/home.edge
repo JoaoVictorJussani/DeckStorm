@@ -177,29 +177,66 @@
             <th>Titre</th>
             <th>Description</th>
             <th>Cartes</th>
+            <th>Visibilité</th> <!-- Add a new column for visibility -->
           </tr>
         </thead>
         <tbody>
-          @if(decks.length)
-            @each(deck in decks)
+          @if(userDecks.length)
+            @each(deck in userDecks)
               <tr onclick="window.location.href='/deck/{{ deck.id }}'">
                 <td><a style="text-decoration: none; color: white" href="/deck/{{ deck.id }}">{{ deck.title }}</a></td>
                 <td>{{ deck.description }}</td>
                 <td>{{ deck.cards.length }}</td> <!-- Display the number of cards -->
+                <td>
+                  <span title="{{ deck.visibility === 'public' ? 'Public' : 'Privé' }}">
+                    {{ deck.visibility === 'public' ? '🔓' : '🔒' }}
+                  </span>
+                </td> <!-- Display lock icon based on visibility -->
               </tr>
             @endeach
           @else
             <tr>
-              <td colspan="3">Aucun deck disponible.</td>
+              <td colspan="4">Aucun deck disponible.</td>
             </tr>
           @endif
         </tbody>
       </table>
-      
     </div>
 
     <div class="button-container">
       <button class="add-button" onclick="window.location.href='{{ route('decks.create') }}'">+ Ajouter</button>
+    </div>
+
+    <div class="public-decks">
+      <h2>Decks publics : {{ publicDecks.length }}</h2>
+      <div class="decks-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Titre</th>
+              <th>Description</th>
+              <th>Cartes</th>
+              <th>Créé par</th>
+            </tr>
+          </thead>
+          <tbody>
+            @if(publicDecks.length)
+              @each(deck in publicDecks)
+                <tr onclick="window.location.href='/deck/{{ deck.id }}'">
+                  <td><a style="text-decoration: none; color: white" href="/deck/{{ deck.id }}">{{ deck.title }}</a></td>
+                  <td>{{ deck.description }}</td>
+                  <td>{{ deck.cards.length }}</td>
+                  <td>{{ deck.user.username }}</td> <!-- Display the creator's username -->
+                </tr>
+              @endeach
+            @else
+              <tr>
+                <td colspan="4">Aucun deck public disponible.</td>
+              </tr>
+            @endif
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 </body>

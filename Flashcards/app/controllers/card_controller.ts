@@ -61,29 +61,33 @@ export default class CardController {
     return view.render('editcard', { card })
   }
 
-  async update({ params, request, response, session }: HttpContext) {
-    const card = await Card.find(params.cardId);
-    const { question, answer } = request.only(['question', 'answer']);
-
-    if (card) {
-      card.merge({ question, answer });
-      await card.save();
-      session.flash('success', 'Carte mise à jour avec succès !'); // Flash message for card modification
-    } else {
-      session.flash('error', 'Carte non trouvée.');
+  async update({ params, request, response, session, auth }: HttpContext) {
+    const deck = await Deck.find(params.deckId);
+    if (deck && deck.user_id === auth.user.id) { // Ensure the user owns the deck
+      const card = await Card.find(params.cardId);
+      if (card) {
+        const data = request.only(['question', 'answer']);
+        card.merge(data);
+        await card.save();
+        session.flash('success', 'Carte mise à jour avec succès.');
+        return response.redirect().toRoute('decks.show', { id: deck.id });
+      }
     }
-
-    return response.redirect().toRoute('decks.show', { id: params.deckId });
+    session.flash('error', 'Vous ne pouvez pas modifier cette carte.');
+    return response.redirect().toRoute('home'); // Redirect if the user does not own the deck or card
   }
 
-  async destroy({ params, response, session }: HttpContext) {
-    const card = await Card.find(params.cardId);
-    if (card) {
-      await card.delete();
-      session.flash('success', 'Carte supprimée avec succès !'); // Flash message for card deletion
-    } else {
-      session.flash('error', 'Carte non trouvée.');
+  async destroy({ params, response, session, auth }: HttpContext) {
+    const deck = await Deck.find(params.deckId);
+    if (deck && deck.user_id === auth.user.id) { // Ensure the user owns the deck
+      const card = await Card.find(params.cardId);
+      if (card) {
+        await card.delete();
+        session.flash('success', 'Carte supprimée avec succès.');
+        return response.redirect().toRoute('decks.show', { id: deck.id });
+      }
     }
-    return response.redirect().toRoute('decks.show', { id: params.deckId });
+    session.flash('error', 'Vous ne pouvez pas supprimer cette carte.');
+    return response.redirect().toRoute('home'); // Redirect if the user does not own the deck or card
   }
 }
