@@ -203,6 +203,35 @@
       background: #008c95;
       transform: translateY(-1px);
     }
+
+    /* Flash message styles */
+    .flash-message {
+      width: 100%;
+      max-width: 800px;
+      margin: 0 auto 2rem auto;
+      padding: 1rem;
+      border-radius: 8px;
+      text-align: center;
+      font-weight: 600;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .flash-success {
+      background: rgba(0, 173, 181, 0.2);
+      border: 2px solid #00adb5;
+      color: #00adb5;
+    }
+
+    .flash-error {
+      background: rgba(255, 77, 77, 0.2);
+      border: 2px solid #ff4d4d;
+      color: #ff4d4d;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
   </style>
 </head>
 <body>
@@ -218,6 +247,18 @@
   </div>
 
   <div class="main-content">
+    @if(flashMessages.has('success'))
+      <div class="flash-message flash-success">
+        {{ flashMessages.get('success') }}
+      </div>
+    @endif
+
+    @if(flashMessages.has('error'))
+      <div class="flash-message flash-error">
+        {{ flashMessages.get('error') }}
+      </div>
+    @endif
+
     <h1>Mes decks</h1>
 
     <div class="decks-container">
