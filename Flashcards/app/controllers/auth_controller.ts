@@ -39,7 +39,6 @@ export default class AuthController {
     const user = await User.create({
       username,
       password,
-      isAdmin: false,
     })
 
     await auth.use('web').login(user)

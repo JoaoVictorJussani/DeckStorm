@@ -8,43 +8,27 @@ export default class ExerciseController {
   }
 
   async presentQuestion({ params, request, view }: HttpContext) {
-    const deck = await Deck.query().where('id', params.deckId).preload('cards').first();
-    const questionIndex = parseInt(params.questionIndex, 10);
-    const mode = request.input('mode', 'timed'); // Default to "timed" mode
-    let startTime = request.input('startTime'); // Pass start time for elapsed time calculation
+    const deck = await Deck.query().where('id', params.deckId).preload('cards').first()
+    const questionIndex = parseInt(params.questionIndex, 10)
+    const startTime = request.input('startTime') // Pass start time for elapsed time calculation
 
     if (!deck || questionIndex >= deck.cards.length) {
-      return view.render('./pages/errors/not_found');
+      return view.render('./pages/errors/not_found')
     }
 
-    const card = deck.cards[questionIndex];
-
-    // Initialize startTime if not provided
-    if (mode === 'timed' && !startTime) {
-      startTime = Date.now();
-    }
-
-    if (mode === 'timed') {
-      return view.render('present_question_with_time', { deck, card, questionIndex, startTime });
-    } else {
-      return view.render('present_question_basic', { deck, card, questionIndex });
-    }
+    const card = deck.cards[questionIndex]
+    return view.render('present_question_with_time', { deck, card, questionIndex, startTime })
   }
 
-  async finish({ params, request, response, view }: HttpContext) {
+  async finish({ params, request, view }: HttpContext) {
     const deck = await Deck.query().where('id', params.deckId).preload('cards').first(); // Preload cards
     if (!deck) {
-      return view.render('./pages/errors/not_found'); // Render 404 if the deck is not found
+      return view.render('./pages/errors/not_found'); // Handle case where deck is not found
     }
 
-    const mode = request.input('mode', 'timed'); // Default to "timed" mode
-    const results = JSON.parse(request.input('results', '[]')) || []; // Ensure results is an array
-    const elapsedTime = parseInt(request.input('elapsedTime', '0'), 10); // Parse elapsedTime from the request
+    const elapsedTime = parseInt(request.input('elapsedTime', '0'), 10); // Parse elapsed time
+    const results = JSON.parse(request.input('results', '[]')); // Parse results array
 
-    if (mode === 'timed') {
-      return view.render('finish_with_time', { deck, results, elapsedTime }); // Pass elapsedTime to the view
-    } else {
-      return response.redirect().toRoute('decks.show', { id: deck.id }); // Redirect directly for basic mode
-    }
+    return view.render('finish_with_time', { deck, elapsedTime, results });
   }
 }
