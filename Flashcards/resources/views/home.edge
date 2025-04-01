@@ -103,6 +103,7 @@
       background: #000;
       color: #00adb5;
       border-bottom: 2px solid #00adb5;
+      cursor: pointer;
     }
 
     td {
@@ -259,16 +260,59 @@
       </div>
     @endif
 
+    <script>
+      let sortDirection = {}; // Track sorting direction for each column
+
+      function sortTable(tableId, columnIndex, isNumeric = false) {
+        const table = document.getElementById(tableId);
+        const tbody = table.querySelector('tbody');
+        const rows = Array.from(tbody.rows);
+
+        // Toggle sorting direction
+        sortDirection[tableId] = sortDirection[tableId] || {};
+        sortDirection[tableId][columnIndex] = !sortDirection[tableId][columnIndex];
+
+        rows.sort((a, b) => {
+          const aText = a.cells[columnIndex].innerText.trim();
+          const bText = b.cells[columnIndex].innerText.trim();
+
+          if (isNumeric) {
+            return sortDirection[tableId][columnIndex]
+              ? parseInt(aText) - parseInt(bText)
+              : parseInt(bText) - parseInt(aText);
+          } else {
+            return sortDirection[tableId][columnIndex]
+              ? aText.localeCompare(bText)
+              : bText.localeCompare(aText);
+          }
+        });
+
+        // Update table rows
+        rows.forEach(row => tbody.appendChild(row));
+
+        // Update arrow indicators
+        const headers = table.querySelectorAll('th');
+        headers.forEach((header, index) => {
+          const arrow = header.querySelector('.sort-arrow');
+          if (arrow) {
+            arrow.innerHTML = index === columnIndex
+              ? (sortDirection[tableId][columnIndex] ? '↓' : '↑')
+              : '';
+          }
+        });
+      }
+    </script>
+
     <h1>Mes decks</h1>
 
     <div class="decks-container">
-      <table>
+      <table id="userDecksTable">
         <thead>
           <tr>
-            <th>Titre</th>
-            <th>Description</th>
-            <th>Cartes</th>
-            <th>Visibilité</th> <!-- Add a new column for visibility -->
+            <th onclick="sortTable('userDecksTable', 0)">Titre <span class="sort-arrow"></span></th>
+            <th onclick="sortTable('userDecksTable', 1)">Description <span class="sort-arrow"></span></th>
+            <th onclick="sortTable('userDecksTable', 2, true)">Cartes <span class="sort-arrow"></span></th>
+            <th onclick="sortTable('userDecksTable', 3)">Visibilité <span class="sort-arrow"></span></th>
           </tr>
         </thead>
         <tbody>
@@ -277,12 +321,12 @@
               <tr onclick="window.location.href='/deck/{{ deck.id }}'">
                 <td><a style="text-decoration: none; color: white" href="/deck/{{ deck.id }}">{{ deck.title }}</a></td>
                 <td>{{ deck.description }}</td>
-                <td>{{ deck.cards.length }}</td> <!-- Display the number of cards -->
+                <td>{{ deck.cards.length }}</td>
                 <td>
                   <span title="{{ deck.visibility === 'public' ? 'Public' : 'Privé' }}">
                     {{ deck.visibility === 'public' ? '🔓' : '🔒' }}
                   </span>
-                </td> <!-- Display lock icon based on visibility -->
+                </td>
               </tr>
             @endeach
           @else
@@ -313,13 +357,13 @@
         </button>
       </form>
       <div class="decks-container">
-        <table>
+        <table id="publicDecksTable">
           <thead>
             <tr>
-              <th>Titre</th>
-              <th>Description</th>
-              <th>Cartes</th>
-              <th>Créé par</th>
+              <th onclick="sortTable('publicDecksTable', 0)">Titre <span class="sort-arrow"></span></th>
+              <th onclick="sortTable('publicDecksTable', 1)">Description <span class="sort-arrow"></span></th>
+              <th onclick="sortTable('publicDecksTable', 2, true)">Cartes <span class="sort-arrow"></span></th>
+              <th onclick="sortTable('publicDecksTable', 3)">Créé par <span class="sort-arrow"></span></th>
             </tr>
           </thead>
           <tbody>
@@ -329,7 +373,7 @@
                   <td><a style="text-decoration: none; color: white" href="/deck/{{ deck.id }}">{{ deck.title }}</a></td>
                   <td>{{ deck.description }}</td>
                   <td>{{ deck.cards.length }}</td>
-                  <td>{{ deck.user.username }}</td> <!-- Display the creator's username -->
+                  <td>{{ deck.user.username }}</td>
                 </tr>
               @endeach
             @else
