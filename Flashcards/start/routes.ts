@@ -189,6 +189,49 @@ router
   .use(middleware.auth())
 
 router
-  .get('/search', [PageController, 'searchPublicDecks'])
+  .get('/search/user-decks', async ({ request, view, auth }: HttpContext) => {
+    const user = auth.use('web').user;
+    const userQuery = request.input('userQuery', '').trim();
+
+    // Search for user decks matching the query
+    const userDecks = await Deck.query()
+      .where('user_id', user.id)
+      .andWhere('title', 'like', `%${userQuery}%`)
+      .preload('cards') // Preload cards
+      .preload('user'); // Preload user relationship
+
+    // Fetch all public decks (unaffected by the personal search)
+    const publicDecks = await Deck.query()
+      .where('visibility', 'public')
+      .andWhereNot('user_id', user.id)
+      .preload('cards') // Preload cards
+      .preload('user'); // Preload user relationship
+
+    return view.render('home', { user, userDecks, publicDecks, userQuery, publicQuery: '' });
+  })
+  .as('search.userDecks')
+  .use(middleware.auth());
+
+router
+  .get('/search', async ({ request, view, auth }: HttpContext) => {
+    const user = auth.use('web').user;
+    const publicQuery = request.input('publicQuery', '').trim();
+
+    // Fetch all personal decks (unaffected by the public search)
+    const userDecks = await Deck.query()
+      .where('user_id', user.id)
+      .preload('cards') // Preload cards
+      .preload('user'); // Preload user relationship
+
+    // Search for public decks matching the query
+    const publicDecks = await Deck.query()
+      .where('visibility', 'public')
+      .andWhereNot('user_id', user.id)
+      .andWhere('title', 'like', `%${publicQuery}%`)
+      .preload('cards') // Preload cards
+      .preload('user'); // Preload user relationship
+
+    return view.render('home', { user, userDecks, publicDecks, userQuery: '', publicQuery });
+  })
   .as('search.publicDecks')
   .use(middleware.auth());

@@ -305,6 +305,19 @@
 
     <h1>Mes decks</h1>
 
+    <form action="{{ route('search.userDecks') }}" method="GET" class="search-form">
+      <input 
+        type="text" 
+        name="userQuery" 
+        placeholder="Rechercher un deck personnel..." 
+        value="{{ userQuery || '' }}"
+        class="search-input"
+      />
+      <button type="submit" class="search-button">
+        Rechercher
+      </button>
+    </form>
+
     <div class="decks-container">
       <table id="userDecksTable">
         <thead>
@@ -347,9 +360,9 @@
       <form action="{{ route('search.publicDecks') }}" method="GET" class="search-form">
         <input 
           type="text" 
-          name="query" 
+          name="publicQuery" 
           placeholder="Rechercher un deck public..." 
-          value="{{ query || '' }}"
+          value="{{ publicQuery || '' }}"
           class="search-input"
         />
         <button type="submit" class="search-button">
