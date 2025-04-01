@@ -317,6 +317,42 @@
       background-color: #4caf50; /* Green background */
       color: #fff;
     }
+
+.exercice-container button{
+  background: #000;
+  color: #4caf50;
+  border: 2px solid #4caf50;
+  padding: 0.8rem 1.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0 10px;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+.exercice-container button:hover {
+  background: #4caf50;
+  color: black;
+}
+
+.supprimer-container button{
+  background: #000;
+  color: rgb(209, 60, 60);
+  border: 2px solid rgb(209, 60, 60);
+  padding: 0.8rem 1.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0 10px;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+.supprimer-container button:hover {
+  background:rgb(209, 60, 60);
+  color: black;
+}
   </style>
 </head>
 <body>
@@ -356,10 +392,14 @@
         
         @if(deck.user_id === user.id)
           <button onclick="window.location.href='{{ route('decks.edit', { id: deck.id }) }}'">Modifier</button>
+          @if(deck.cards.length > 0)
+          <div class="exercice-container" style="display: inline-block;">
+            <button onclick="window.location.href='{{ route('exercise.start', { deckId: deck.id }) }}'">Exercer</button>
+          </div>
+          @endif
+          <div class="supprimer-container" style="display: inline-block;">
           <button class="abandon-button" onclick="confirmDelete()">Supprimer</button>
-        @endif
-        @if(deck.cards.length > 0)
-          <button onclick="window.location.href='{{ route('exercise.start', { deckId: deck.id }) }}'">Exercer</button>
+          </div>
         @endif
       </div>
     </div>
