@@ -356,20 +356,23 @@
   </style>
 </head>
 <body>
+    <!-- Barre de navigation -->
     <div class="navbar">
         <a href="{{ route('home') }}">Flashcards</a>
         <div>
           <span>Bienvenue {{ user?.username }}</span>
           <form action="/logout" method="POST" style="display: inline;">
-            {{ csrfField() }}
+            {{ csrfField() }} <!-- Protection CSRF -->
             <button type="submit">Se déconnecter</button>
           </form>
         </div>
       </div>
 
+  <!-- Contenu principal -->
   <div class="main-content">
-    <h1>{{ deck.title }}</h1>
+    <h1>{{ deck.title }}</h1> <!-- Titre du deck -->
     <div class="deck-details">
+      <!-- Messages flash -->
       @if (flashMessages.has('error'))
         <div class="message error">
           {{ flashMessages.get('error') }}
@@ -380,16 +383,16 @@
           {{ flashMessages.get('success') }}
         </div>
       @endif
-      <p><strong>Description:</strong> {{ deck.description }}</p>
+      <p><strong>Description:</strong> {{ deck.description }}</p> <!-- Description du deck -->
       <p><strong>Visibilité:</strong> 
         <span title="{{ deck.visibility === 'public' ? 'Public' : 'Privé' }}">
           {{ deck.visibility === 'public' ? '🔓 Public' : '🔒 Privé' }}
         </span>
       </p>
       <p><strong>Créateur: </strong>
-      <span>{{deck.user.username}}</span></p>
+      <span>{{deck.user.username}}</span></p> <!-- Nom du créateur -->
       <div class="button-container">
-        
+        <!-- Boutons pour modifier ou supprimer le deck -->
         @if(deck.user_id === user.id)
           <button onclick="window.location.href='{{ route('decks.edit', { id: deck.id }) }}'">Modifier</button>
           @if(deck.cards.length > 0)
@@ -404,6 +407,7 @@
       </div>
     </div>
 
+    <!-- Liste des cartes -->
     <h2>Cartes</h2>
     <div id="cards-container">
       @if(deck.cards.length)
@@ -434,12 +438,14 @@
       @endif
     </div>
 
+    <!-- Bouton pour ajouter une carte -->
     @if(deck.user_id === user.id)
       <div class="button-container">
         <button onclick="window.location.href='{{ route('cards.create', { deckId: deck.id }) }}'">Ajouter une carte</button>
       </div>
     @endif
 
+    <!-- Résumé après l'exercice -->
     <div id="summary-container" class="summary-container">
       <h2>Vous avez terminé !</h2>
       <p>Que voulez-vous faire ensuite ?</p>
@@ -464,7 +470,7 @@
       const cardId = cardContainer.dataset.cardId;
 
       if (!isCorrect) {
-        // Store the card's HTML and ID in the incorrectCards array
+        // Stocker l'HTML et l'ID de la carte dans le tableau incorrectCards
         incorrectCards.push({
           id: cardId,
           html: cardContainer.outerHTML,
@@ -483,7 +489,7 @@
       document.getElementById('cards-container').style.display = 'none';
       document.getElementById('summary-container').classList.add('active');
 
-      // Ensure the "Revoir les cartes ratées" button is hidden if there are no incorrect cards
+      // Assurez-vous que le bouton "Revoir les cartes ratées" est caché s'il n'y a pas de cartes incorrectes
       const retryButton = document.getElementById('retry-button');
       retryButton.style.display = incorrectCards.length > 0 ? 'inline-block' : 'none';
     }
@@ -493,7 +499,7 @@
       cardsContainer.style.display = 'block';
       document.getElementById('summary-container').classList.remove('active');
 
-      // Re-add incorrect cards to the DOM
+      // Ré-ajouter les cartes incorrectes au DOM
       incorrectCards.forEach((card) => {
         const tempDiv = document.createElement('div');
         tempDiv.innerHTML = card.html.trim();
@@ -501,7 +507,7 @@
         cardsContainer.appendChild(cardElement);
       });
 
-      // Clear the incorrectCards array and update remainingCards
+      // Vider le tableau incorrectCards et mettre à jour remainingCards
       incorrectCards = [];
       remainingCards = [...document.querySelectorAll('.card-container')];
     }
@@ -526,6 +532,7 @@
     }
   </script>
 
+  <!-- Formulaires cachés pour la suppression -->
   @each(card in deck.cards)
     <form id="delete-card-form-{{ card.id }}" action="{{ route('cards.delete', { deckId: deck.id, cardId: card.id }) }}" method="POST" style="display: none;">
       {{ csrfField() }}

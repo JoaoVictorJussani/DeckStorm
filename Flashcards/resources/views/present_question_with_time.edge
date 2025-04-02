@@ -143,7 +143,9 @@
 <body>
   <h1>Question {{ questionIndex + 1 }} sur {{ deck.cards.length }}</h1>
 
-    <p>Temps écoulé : <span id="elapsed-time"></span></p>
+    @if(mode === 'chronometre')
+      <p>Temps écoulé : <span id="elapsed-time"></span></p>
+    @endif
 
 
   <div class="card-container">

@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <title>Commencer l'exercice</title>
   <style>
+    /* Styles globaux pour une mise en page cohérente */
     * {
       box-sizing: border-box;
       margin: 0;
@@ -11,6 +12,7 @@
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
 
+    /* Style du corps de la page */
     body {
       background: #000;
       color: #e0e0e0;
@@ -22,6 +24,7 @@
       font-size: 1rem;
     }
 
+    /* Style pour le titre principal */
     h1 {
       font-size: 2.5rem;
       margin-bottom: 2rem;
@@ -30,6 +33,7 @@
       text-align: center;
     }
 
+    /* Style pour les boutons */
     button {
       background: #00adb5;
       color: #000;
@@ -42,6 +46,7 @@
       transition: background 0.3s ease, color 0.3s ease;
     }
 
+    /* Effet au survol des boutons */
     button:hover {
       background: #008c95;
       color: white;
@@ -49,25 +54,35 @@
   </style>
 </head>
 <body>
+  <!-- Titre dynamique basé sur le deck -->
   <h1>Commencer l'exercice pour le deck "{{ deck.title }}"</h1>
+
+  <!-- Formulaire pour démarrer l'exercice -->
   <form action="{{ route('exercise.presentQuestion', { deckId: deck.id, questionIndex: 0 }) }}" method="GET" onsubmit="handleSubmit(this)">
+    <!-- Champ caché pour enregistrer l'heure de début -->
     <input type="hidden" name="startTime" id="startTime" />
-    <input type="hidden" name="results" value="[]" /> <!-- Initialize results array -->
+    <!-- Champ caché pour initialiser les résultats -->
+    <input type="hidden" name="results" value="[]" />
+
+    <!-- Sélecteur pour choisir le mode d'exercice -->
     <label for="mode-select" style="margin-bottom: 1rem; font-size:1.2rem;">Choisissez un mode :</label>
     <select id="mode-select" name="mode" style="background: #00adb5; color: #000; border: 2px solid #00adb5; padding: 0.8rem 1.5rem; border-radius: 8px; cursor: pointer; font-size: 1.2rem; font-weight: 600; transition: background 0.3s ease, color 0.3s ease; margin-bottom: 1.5rem;">
-      <option value="chronometre">Mode chronométré</option>
-      <option value="basique">Mode basique</option>
-      <option value="jusquauboutiste">Mode jusqu'au-bout-iste</option>
+      <option value="chronometre">Mode chronométré</option> <!-- Option pour le mode chronométré -->
+      <option value="basique">Mode basique</option> <!-- Option pour le mode basique -->
     </select>
+
+    <!-- Bouton pour soumettre le formulaire -->
     <button type="submit">C'est parti</button>
   </form>
+
   <script>
+    // Fonction pour gérer la soumission du formulaire
     function handleSubmit(form) {
-      const mode = form.mode.value;
+      const mode = form.mode.value; // Récupère le mode sélectionné
       if(mode === 'chronometre'){
-        document.getElementById('startTime').value = Date.now();
+        document.getElementById('startTime').value = Date.now(); // Enregistre l'heure actuelle si mode chronométré
       }
-      return true;
+      return true; // Permet la soumission du formulaire
     }
   </script>
 </body>

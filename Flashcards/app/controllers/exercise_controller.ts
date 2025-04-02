@@ -8,33 +8,32 @@ export default class ExerciseController {
   }
 
   async presentQuestion({ params, request, view }: HttpContext) {
-    const deck = await Deck.query().where('id', params.deckId).preload('cards').first()
-    const questionIndex = parseInt(params.questionIndex, 10)
-    const startTime = request.input('startTime')
-    const results = request.input('results', '[]') // Retrieve accumulated results
+    const deck = await Deck.query().where('id', params.deckId).preload('cards').first();
+    const questionIndex = parseInt(params.questionIndex, 10);
+    const startTime = request.input('startTime');
+    const results = request.input('results', '[]'); // Retrieve accumulated results
+    const mode = request.input('mode', 'chronometre'); // Retrieve mode
 
     if (!deck || questionIndex >= deck.cards.length) {
-      return view.render('./pages/errors/not_found')
+      return view.render('./pages/errors/not_found');
     }
 
-    const card = deck.cards[questionIndex]
-    return view.render('present_question_with_time', { deck, card, questionIndex, startTime, results })
+    const card = deck.cards[questionIndex];
+    return view.render('present_question_with_time', { deck, card, questionIndex, startTime, results, mode });
   }
 
   async finish({ params, request, view }: HttpContext) {
-    const deck = await Deck.query().where('id', params.deckId).preload('cards').first(); // Preload cards
+    const deck = await Deck.query().where('id', params.deckId).preload('cards').first();
     if (!deck) {
-      return view.render('./pages/errors/not_found'); // Handle case where deck is not found
+      return view.render('./pages/errors/not_found');
     }
 
     const mode = request.input('mode', 'chronometre'); // Retrieve mode
     const elapsedTime = parseInt(request.input('elapsedTime', '0'), 10); // Parse elapsed time
     const results = JSON.parse(request.input('results', '[]')); // Parse results array
 
-    if (mode === 'basique') {
-      return view.render('finish_basic', { deck, results }); // Render view without time
-    }
+    const incorrectCards = deck.cards.filter((card) => !results.includes(card.id)); // Identify incorrect cards
 
-    return view.render('finish_with_time', { deck, elapsedTime, results, mode });
+    return view.render('finish_with_time', { deck, elapsedTime, results, mode, incorrectCards });
   }
 }

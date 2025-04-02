@@ -104,15 +104,16 @@
 </head>
 <body>
   <h1>Modifier la carte</h1>
+  <!-- Formulaire pour modifier une carte -->
   <form action="{{ route('cards.update', { deckId: card.deck_id, cardId: card.id }) }}" method="POST">
-    {{ csrfField() }}
+    {{ csrfField() }} <!-- Protection CSRF -->
     <label for="question">Question :</label>
-    <input type="text" id="question" name="question" value="{{ card.question }}" required />
+    <input type="text" id="question" name="question" value="{{ card.question }}" required /> <!-- Champ pour la question -->
     <label for="answer">Réponse :</label>
-    <textarea id="answer" name="answer" required>{{ card.answer }}</textarea>
+    <textarea id="answer" name="answer" required>{{ card.answer }}</textarea> <!-- Champ pour la réponse -->
     <div class="button-container">
-      <button type="submit">Enregistrer</button>
-      <button type="button" class="abandon-button" onclick="window.location.href='{{ route('decks.show', { id: card.deck_id }) }}'">Abandonner</button>
+      <button type="submit">Enregistrer</button> <!-- Bouton pour enregistrer -->
+      <button type="button" class="abandon-button" onclick="window.location.href='{{ route('decks.show', { id: card.deck_id }) }}'">Abandonner</button> <!-- Bouton pour abandonner -->
     </div>
   </form>
 </body>
