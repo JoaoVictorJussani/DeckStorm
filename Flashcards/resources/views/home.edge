@@ -316,6 +316,12 @@
           }
         });
       }
+
+      // Trier par défaut la colonne "Titre" par ordre alphabétique pour les decks personnels et publics
+      document.addEventListener('DOMContentLoaded', () => {
+        sortTable('userDecksTable', 0);
+        sortTable('publicDecksTable', 0);
+      });
     </script>
 
     <!-- Titre des decks -->
@@ -340,7 +346,7 @@
       <table id="userDecksTable">
         <thead>
           <tr>
-            <th onclick="sortTable('userDecksTable', 0)">Titre <span class="sort-arrow"></span></th>
+            <th onclick="sortTable('userDecksTable', 0)">Titre <span class="sort-arrow">↓</span></th>
             <th onclick="sortTable('userDecksTable', 1)">Description <span class="sort-arrow"></span></th>
             <th onclick="sortTable('userDecksTable', 2, true)">Cartes <span class="sort-arrow"></span></th>
             <th onclick="sortTable('userDecksTable', 3)">Visibilité <span class="sort-arrow"></span></th>
@@ -393,7 +399,7 @@
         <table id="publicDecksTable">
           <thead>
             <tr>
-              <th onclick="sortTable('publicDecksTable', 0)">Titre <span class="sort-arrow"></span></th>
+              <th onclick="sortTable('publicDecksTable', 0)">Titre <span class="sort-arrow">↓</span></th>
               <th onclick="sortTable('publicDecksTable', 1)">Description <span class="sort-arrow"></span></th>
               <th onclick="sortTable('publicDecksTable', 2, true)">Cartes <span class="sort-arrow"></span></th>
               <th onclick="sortTable('publicDecksTable', 3)">Créé par <span class="sort-arrow"></span></th>
