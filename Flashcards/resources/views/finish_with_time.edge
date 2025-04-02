@@ -57,7 +57,7 @@
 <body>
   <h1>Résultats pour le deck "{{ deck.title }}"</h1>
   <p>Temps écoulé : {{ Math.floor((elapsedTime || 0) / 60) }}m {{ (elapsedTime || 0) % 60 }}s</p>
-  <p>Score : {{ (results || []).filter(r => r).length }} sur {{ deck.cards?.length || 0 }} cartes correctes</p>
+  <p>Score : {{ (results || []).length }} sur {{ deck.cards?.length || 0 }} cartes correctes</p>
   <form action="{{ route('home') }}" method="GET">
     <button type="submit">OK</button>
   </form>

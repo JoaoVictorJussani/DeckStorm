@@ -10,14 +10,15 @@ export default class ExerciseController {
   async presentQuestion({ params, request, view }: HttpContext) {
     const deck = await Deck.query().where('id', params.deckId).preload('cards').first()
     const questionIndex = parseInt(params.questionIndex, 10)
-    const startTime = request.input('startTime') // Pass start time for elapsed time calculation
+    const startTime = request.input('startTime')
+    const results = request.input('results', '[]') // Retrieve accumulated results
 
     if (!deck || questionIndex >= deck.cards.length) {
       return view.render('./pages/errors/not_found')
     }
 
     const card = deck.cards[questionIndex]
-    return view.render('present_question_with_time', { deck, card, questionIndex, startTime })
+    return view.render('present_question_with_time', { deck, card, questionIndex, startTime, results })
   }
 
   async finish({ params, request, view }: HttpContext) {

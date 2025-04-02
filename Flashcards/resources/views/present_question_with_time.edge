@@ -152,8 +152,8 @@
       <div class="card-face back">
         {{ card.answer }}
         <div class="card-buttons">
-          <button class="check-button" onclick="markCard(true)">✔</button>
-          <button class="cross-button" onclick="markCard(false)">✘</button>
+          <button class="check-button" onclick="markCard(event, true)">✔</button>
+          <button class="cross-button" onclick="markCard(event, false)">✘</button>
         </div>
       </div>
     </div>
@@ -174,21 +174,29 @@
   <script>
     const startTime = parseInt('{{ startTime }}', 10);
     const results = JSON.parse('{{ results || "[]" }}'); // Initialize results array
-
+    const cardId = parseInt('{{ card.id }}', 10);
+    
     function flipCard(cardElement) {
       cardElement.classList.toggle('is-flipped');
     }
-
-    function markCard(isCorrect) {
-      results.push(isCorrect); // Add the result for the current card
-      document.getElementById('results').value = JSON.stringify(results); // Serialize results
-      document.getElementById('next-form').style.display = 'block'; // Show the "Suivant" or "Terminer" button
+    
+    function markCard(event, isCorrect) {
+      event.stopPropagation();
+      // Disable buttons to prevent multiple answers
+      const cardButtons = event.currentTarget.parentElement;
+      cardButtons.querySelectorAll('button').forEach(btn => btn.disabled = true);
+      // Only store the card id if "check" is clicked
+      if (isCorrect) {
+        results.push(cardId);
+      }
+      document.getElementById('results').value = JSON.stringify(results);
+      document.getElementById('next-form').style.display = 'block';
     }
-
+    
     setInterval(() => {
       const elapsedTime = Math.floor((Date.now() - startTime) / 1000);
       document.getElementById('elapsed-time').textContent = `${Math.floor(elapsedTime / 60)}m ${elapsedTime % 60}s`;
-      document.querySelector('input[name="elapsedTime"]').value = elapsedTime; // Pass elapsed time
+      document.querySelector('input[name="elapsedTime"]').value = elapsedTime;
     }, 1000);
   </script>
 </body>
