@@ -142,7 +142,9 @@
 </head>
 <body>
   <h1>Question {{ questionIndex + 1 }} sur {{ deck.cards.length }}</h1>
-  <p>Temps écoulé : <span id="elapsed-time"></span></p>
+
+    <p>Temps écoulé : <span id="elapsed-time"></span></p>
+
 
   <div class="card-container">
     <div class="card" onclick="flipCard(this)">
@@ -167,13 +169,15 @@
     {{ csrfField() }}
     <input type="hidden" name="startTime" value="{{ startTime }}" />
     <input type="hidden" name="elapsedTime" value="0" />
-    <input type="hidden" name="results" id="results" value="{{ results }}" /> <!-- Pass accumulated results -->
+    <input type="hidden" name="results" id="results" value="{{ results }}" />
+    <input type="hidden" name="mode" value="{{ mode }}" />
     <button type="submit">{{ questionIndex + 1 < deck.cards.length ? 'Suivant' : 'Terminer' }}</button>
   </form>
 
   <script>
     const startTime = parseInt('{{ startTime }}', 10);
-    const results = JSON.parse('{{ results || "[]" }}'); // Initialize results array
+    const mode = '{{ mode }}';
+    const results = JSON.parse('{{ results || "[]" }}');
     const cardId = parseInt('{{ card.id }}', 10);
     
     function flipCard(cardElement) {
@@ -182,10 +186,8 @@
     
     function markCard(event, isCorrect) {
       event.stopPropagation();
-      // Disable buttons to prevent multiple answers
       const cardButtons = event.currentTarget.parentElement;
       cardButtons.querySelectorAll('button').forEach(btn => btn.disabled = true);
-      // Only store the card id if "check" is clicked
       if (isCorrect) {
         results.push(cardId);
       }
@@ -193,11 +195,13 @@
       document.getElementById('next-form').style.display = 'block';
     }
     
-    setInterval(() => {
-      const elapsedTime = Math.floor((Date.now() - startTime) / 1000);
-      document.getElementById('elapsed-time').textContent = `${Math.floor(elapsedTime / 60)}m ${elapsedTime % 60}s`;
-      document.querySelector('input[name="elapsedTime"]').value = elapsedTime;
-    }, 1000);
+    if (mode === 'chronometre') {
+      setInterval(() => {
+        const elapsed = Math.floor((Date.now() - startTime) / 1000);
+        document.getElementById('elapsed-time').textContent = `${Math.floor(elapsed / 60)}m ${elapsed % 60}s`;
+        document.querySelector('input[name="elapsedTime"]').value = elapsed;
+      }, 1000);
+    }
   </script>
 </body>
 </html>

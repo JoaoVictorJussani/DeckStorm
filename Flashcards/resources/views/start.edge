@@ -50,10 +50,25 @@
 </head>
 <body>
   <h1>Commencer l'exercice pour le deck "{{ deck.title }}"</h1>
-  <form action="{{ route('exercise.presentQuestion', { deckId: deck.id, questionIndex: 0 }) }}" method="GET">
+  <form action="{{ route('exercise.presentQuestion', { deckId: deck.id, questionIndex: 0 }) }}" method="GET" onsubmit="handleSubmit(this)">
     <input type="hidden" name="startTime" id="startTime" />
     <input type="hidden" name="results" value="[]" /> <!-- Initialize results array -->
-    <button type="submit" onclick="document.getElementById('startTime').value = Date.now()">C'est parti</button>
+    <label for="mode-select" style="margin-bottom: 1rem; font-size:1.2rem;">Choisissez un mode :</label>
+    <select id="mode-select" name="mode" style="background: #00adb5; color: #000; border: 2px solid #00adb5; padding: 0.8rem 1.5rem; border-radius: 8px; cursor: pointer; font-size: 1.2rem; font-weight: 600; transition: background 0.3s ease, color 0.3s ease; margin-bottom: 1.5rem;">
+      <option value="chronometre">Mode chronométré</option>
+      <option value="basique">Mode basique</option>
+      <option value="jusquauboutiste">Mode jusqu'au-bout-iste</option>
+    </select>
+    <button type="submit">C'est parti</button>
   </form>
+  <script>
+    function handleSubmit(form) {
+      const mode = form.mode.value;
+      if(mode === 'chronometre'){
+        document.getElementById('startTime').value = Date.now();
+      }
+      return true;
+    }
+  </script>
 </body>
 </html>

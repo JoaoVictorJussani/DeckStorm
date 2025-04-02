@@ -27,9 +27,14 @@ export default class ExerciseController {
       return view.render('./pages/errors/not_found'); // Handle case where deck is not found
     }
 
+    const mode = request.input('mode', 'chronometre'); // Retrieve mode
     const elapsedTime = parseInt(request.input('elapsedTime', '0'), 10); // Parse elapsed time
     const results = JSON.parse(request.input('results', '[]')); // Parse results array
 
-    return view.render('finish_with_time', { deck, elapsedTime, results });
+    if (mode === 'basique') {
+      return view.render('finish_basic', { deck, results }); // Render view without time
+    }
+
+    return view.render('finish_with_time', { deck, elapsedTime, results, mode });
   }
 }
