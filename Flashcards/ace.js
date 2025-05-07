@@ -1,7 +1,7 @@
 /*
-|--------------------------------------------------------------------------
+|---------------------------------------------------------------------------
 | JavaScript entrypoint for running ace commands
-|--------------------------------------------------------------------------
+|---------------------------------------------------------------------------
 |
 | DO NOT MODIFY THIS FILE AS IT WILL BE OVERRIDDEN DURING THE BUILD
 | PROCESS.
@@ -11,7 +11,7 @@
 | Since, we cannot run TypeScript source code using "node" binary, we need
 | a JavaScript entrypoint to run ace commands.
 |
-| This file registers the "ts-node/esm" hook with the Node.js module system
+| This file registers the "ts-node" hook with the Node.js module system
 | and then imports the "bin/console.ts" file.
 |
 */
