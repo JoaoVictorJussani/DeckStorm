@@ -392,14 +392,20 @@
       <p><strong>Créateur: </strong>
       <span>{{deck.user.username}}</span></p> <!-- Nom du créateur -->
       <div class="button-container">
-        <!-- Boutons pour modifier ou supprimer le deck -->
+        <!-- Bouton pour supprimer le deck -->
         @if(deck.user_id === user.id)
           <button onclick="window.location.href='{{ route('decks.edit', { id: deck.id }) }}'">Modifier</button>
-          @if(deck.cards.length > 0)
+        @endif
+
+        {{--  Bouton pour exercer les cartes  --}}
+        @if(deck.cards.length > 0)
           <div class="exercice-container" style="display: inline-block;">
             <button onclick="window.location.href='{{ route('exercise.start', { deckId: deck.id }) }}'">Exercer</button>
           </div>
-          @endif
+        @endif
+
+        {{--  Bouton pour supprimer le deck  --}}
+        @if(deck.user_id === user.id)
           <div class="supprimer-container" style="display: inline-block;">
           <button class="abandon-button" onclick="confirmDelete()">Supprimer</button>
           </div>
