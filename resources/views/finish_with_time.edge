@@ -53,6 +53,34 @@
       background: #008c95;
       color: white;
     }
+
+    table {
+      width: 80%;
+      max-width: 600px;
+      margin: 1.5rem auto;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      border: 1px solid #00adb5;
+      padding: 0.5rem;
+      text-align: left;
+    }
+
+    th {
+      background: #00adb5;
+      color: #000;
+    }
+
+    tr:nth-child(even) {
+      background: #111;
+    }
+
+    h2 {
+      margin-top: 2rem;
+      color: #ff4d4d;
+      text-align: center;
+    }
   </style>
 </head>
 <body>
@@ -62,10 +90,40 @@
   @endif
   <p>Score : {{ (results || []).length }} sur {{ deck.cards?.length || 0 }} cartes correctes</p>
 
+  @if (incorrectCards && incorrectCards.length)
+    <h2>Cartes ratées</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Question</th>
+          <th>Réponse</th>
+        </tr>
+      </thead>
+      <tbody>
+        @each(card in incorrectCards)
+          <tr>
+            <td>{{ card.question }}</td>
+            <td>{{ card.answer }}</td>
+          </tr>
+        @endeach
+      </tbody>
+    </table>
+  @endif
 
-
-  <form action="{{ route('home') }}" method="GET">
-    <button type="submit">OK</button>
-  </form>
+  @if (mode === 'jusquaubout' && incorrectCards && incorrectCards.length)
+    <form action="{{ route('exercise.presentQuestion', { deckId: deck.id, questionIndex: 0 }) }}" method="GET">
+      <input type="hidden" name="mode" value="jusquaubout" />
+      @each(card in incorrectCards)
+        <input type="hidden" name="retryCardIds" value="{{ card.id }}" />
+      @endeach
+      <input type="hidden" name="startTime" value="{{ Date.now() }}" />
+      <input type="hidden" name="results" value="[]" />
+      <button type="submit">Continuer</button>
+    </form>
+  @else
+    <form action="{{ route('home') }}" method="GET">
+      <button type="submit">OK</button>
+    </form>
+  @endif
 </body>
 </html>

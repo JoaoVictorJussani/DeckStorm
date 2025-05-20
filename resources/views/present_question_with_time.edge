@@ -141,7 +141,7 @@
   </style>
 </head>
 <body>
-  <h1>Question {{ questionIndex + 1 }} sur {{ deck.cards.length }}</h1>
+  <h1>Question {{ questionIndex + 1 }} sur {{ (typeof cards !== 'undefined' && cards ? cards.length : deck.cards.length) }}</h1>
 
     @if(mode === 'chronometre')
       <p>Temps écoulé : <span id="elapsed-time"></span></p>
@@ -164,15 +164,20 @@
   </div>
 
   <form 
-    action="{{ questionIndex + 1 < deck.cards.length 
+    action="{{ questionIndex + 1 < (typeof cards !== 'undefined' && cards ? cards.length : deck.cards.length) 
       ? route('exercise.presentQuestion', { deckId: deck.id, questionIndex: questionIndex + 1 }) 
       : route('exercise.finish', { deckId: deck.id }) }}" 
-    method="{{ questionIndex + 1 < deck.cards.length ? 'GET' : 'POST' }}" id="next-form" style="display: none;">
+    method="{{ questionIndex + 1 < (typeof cards !== 'undefined' && cards ? cards.length : deck.cards.length) ? 'GET' : 'POST' }}" id="next-form" style="display: none;">
     {{ csrfField() }}
     <input type="hidden" name="startTime" value="{{ startTime }}" />
     <input type="hidden" name="elapsedTime" value="0" />
     <input type="hidden" name="results" id="results" value="{{ results }}" />
     <input type="hidden" name="mode" value="{{ mode }}" />
+    @if (retryCardIds)
+      @each(id in retryCardIds)
+        <input type="hidden" name="retryCardIds" value="{{ id }}" />
+      @endeach
+    @endif
     <button type="submit">{{ questionIndex + 1 < deck.cards.length ? 'Suivant' : 'Terminer' }}</button>
   </form>
 

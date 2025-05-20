@@ -2,24 +2,73 @@ import type { HttpContext } from '@adonisjs/core/http'
 import Deck from '#models/deck'
 
 export default class ExerciseController {
-  async start({ params, view }: HttpContext) {
+  async start({ params, view, request }: HttpContext) {
     const deck = await Deck.query().where('id', params.deckId).preload('cards').first()
-    return view.render('start', { deck })
+    if (!deck) {
+      return view.render('./pages/errors/not_found')
+    }
+    // Pour le mode jusqu'au bout, possibilité de passer une liste de cartes à réviser
+    let retryCardIds = request.input('retryCardIds', null)
+    if (retryCardIds && !Array.isArray(retryCardIds)) {
+      retryCardIds = [retryCardIds]
+    }
+    retryCardIds = retryCardIds ? retryCardIds.map(Number).filter(Boolean) : null
+    let cards = deck.cards
+    if (retryCardIds && retryCardIds.length > 0) {
+      cards = cards.filter(card => retryCardIds.includes(card.id))
+    }
+    return view.render('start', { deck, cards, retryCardIds })
   }
 
   async presentQuestion({ params, request, view }: HttpContext) {
     const deck = await Deck.query().where('id', params.deckId).preload('cards').first();
-    const questionIndex = parseInt(params.questionIndex, 10);
-    const startTime = request.input('startTime');
-    const results = request.input('results', '[]'); // Retrieve accumulated results
-    const mode = request.input('mode', 'chronometre'); // Retrieve mode
-
-    if (!deck || questionIndex >= deck.cards.length) {
+    if (!deck) {
       return view.render('./pages/errors/not_found');
     }
+    let retryCardIds = request.input('retryCardIds', null)
+    if (retryCardIds && !Array.isArray(retryCardIds)) {
+      retryCardIds = [retryCardIds]
+    }
+    retryCardIds = retryCardIds ? retryCardIds.map(Number).filter(Boolean) : null
+    let cards = deck.cards;
+    if (retryCardIds && retryCardIds.length > 0) {
+      cards = cards.filter(card => retryCardIds.includes(card.id))
+    }
+    const questionIndex = parseInt(params.questionIndex, 10);
+    const startTime = request.input('startTime');
+    const results = request.input('results', '[]');
+    const mode = request.input('mode', 'chronometre');
 
-    const card = deck.cards[questionIndex];
-    return view.render('present_question_with_time', { deck, card, questionIndex, startTime, results, mode });
+    // Correction : si plus de cartes à réviser, on termine l'exercice
+    if (cards.length === 0) {
+      return view.render('finish_with_time', {
+        deck,
+        cards: [],
+        elapsedTime: 0,
+        results: [],
+        mode,
+        incorrectCards: [],
+        showRetry: false,
+        retryCardIds: []
+      });
+    }
+
+    if (questionIndex >= cards.length) {
+      // Correction : on termine l'exercice proprement au lieu de 404
+      return view.render('finish_with_time', {
+        deck,
+        cards,
+        elapsedTime: 0,
+        results: [],
+        mode,
+        incorrectCards: [],
+        showRetry: false,
+        retryCardIds: []
+      });
+    }
+
+    const card = cards[questionIndex];
+    return view.render('present_question_with_time', { deck, cards, card, questionIndex, startTime, results, mode, retryCardIds });
   }
 
   async finish({ params, request, view }: HttpContext) {
@@ -28,12 +77,42 @@ export default class ExerciseController {
       return view.render('./pages/errors/not_found');
     }
 
-    const mode = request.input('mode', 'chronometre'); // Retrieve mode
-    const elapsedTime = parseInt(request.input('elapsedTime', '0'), 10); // Parse elapsed time
-    const results = JSON.parse(request.input('results', '[]')); // Parse results array
+    const mode = request.input('mode', 'chronometre');
+    const elapsedTime = parseInt(request.input('elapsedTime', '0'), 10);
+    const results = JSON.parse(request.input('results', '[]'));
+    let retryCardIds = request.input('retryCardIds', null)
+    if (retryCardIds && !Array.isArray(retryCardIds)) {
+      retryCardIds = [retryCardIds]
+    }
+    retryCardIds = retryCardIds ? retryCardIds.map(Number).filter(Boolean) : null
+    let cards = deck.cards
+    if (retryCardIds && retryCardIds.length > 0) {
+      cards = cards.filter(card => retryCardIds.includes(card.id))
+    }
+    const incorrectCards = cards.filter((card) => !results.includes(card.id));
 
-    const incorrectCards = deck.cards.filter((card) => !results.includes(card.id)); // Identify incorrect cards
+    if (mode === 'jusquaubout' && incorrectCards.length > 0) {
+      return view.render('finish_with_time', {
+        deck,
+        cards,
+        elapsedTime,
+        results,
+        mode,
+        incorrectCards,
+        showRetry: true,
+        retryCardIds: incorrectCards.map(card => card.id)
+      });
+    }
 
-    return view.render('finish_with_time', { deck, elapsedTime, results, mode, incorrectCards });
+    return view.render('finish_with_time', {
+      deck,
+      cards,
+      elapsedTime,
+      results,
+      mode,
+      incorrectCards,
+      showRetry: false,
+      retryCardIds: []
+    });
   }
 }
