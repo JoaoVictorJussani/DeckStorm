@@ -151,10 +151,18 @@
   <div class="card-container">
     <div class="card" onclick="flipCard(this)">
       <div class="card-face front">
-        {{ card.question }}
+        @if(direction === 'question')
+          {{ card.question }}
+        @else
+          {{ card.answer }}
+        @endif
       </div>
       <div class="card-face back">
-        {{ card.answer }}
+        @if(direction === 'question')
+          {{ card.answer }}
+        @else
+          {{ card.question }}
+        @endif
         <div class="card-buttons">
           <button class="check-button" onclick="markCard(event, true)">✔</button>
           <button class="cross-button" onclick="markCard(event, false)">✘</button>
@@ -173,6 +181,7 @@
     <input type="hidden" name="elapsedTime" value="0" />
     <input type="hidden" name="results" id="results" value="{{ results }}" />
     <input type="hidden" name="mode" value="{{ mode }}" />
+    <input type="hidden" name="direction" value="{{ direction }}" />
     @if (retryCardIds)
       @each(id in retryCardIds)
         <input type="hidden" name="retryCardIds" value="{{ id }}" />

@@ -59,18 +59,23 @@
 
   @if(deck && deck.id)
     <!-- Formulaire pour démarrer l'exercice -->
-    <form action="{{ route('exercise.presentQuestion', { deckId: deck.id, questionIndex: 0 }) }}" method="GET" onsubmit="handleSubmit(this)">
+    <form action="{{ route('exercise.presentQuestion', { deckId: deck.id, questionIndex: 0 }) }}" method="GET" onsubmit="handleSubmit(this)" style="display: flex; flex-direction: column; align-items: flex-start; gap: 0.5rem; max-width: 400px;">
       <!-- Champ caché pour enregistrer l'heure de début -->
       <input type="hidden" name="startTime" id="startTime" />
       <!-- Champ caché pour initialiser les résultats -->
       <input type="hidden" name="results" value="[]" />
 
-      <!-- Sélecteur pour choisir le mode d'exercice -->
-      <label for="mode-select" style="margin-bottom: 1rem; font-size:1.2rem;">Choisissez un mode :</label>
-      <select id="mode-select" name="mode" style="background: #00adb5; color: #000; border: 2px solid #00adb5; padding: 0.8rem 1.5rem; border-radius: 8px; cursor: pointer; font-size: 1.2rem; font-weight: 600; transition: background 0.3s ease, color 0.3s ease; margin-bottom: 1.5rem;">
-        <option value="chronometre">Mode chronométré</option> <!-- Option pour le mode chronométré -->
-        <option value="basique">Mode basique</option> <!-- Option pour le mode basique -->
-        <option value="jusquaubout">Mode jusqu'au bout</option> <!-- Option pour le mode jusqu'au bout -->
+      <label for="mode-select" style="font-size:1.2rem;">Choisissez un mode :</label>
+      <select id="mode-select" name="mode" style="background: #00adb5; color: #000; border: 2px solid #00adb5; padding: 0.8rem 1.5rem; border-radius: 8px; cursor: pointer; font-size: 1.2rem; font-weight: 600; transition: background 0.3s ease, color 0.3s ease;">
+        <option value="chronometre">Mode chronométré</option>
+        <option value="basique">Mode basique</option>
+        <option value="jusquaubout">Mode jusqu'au bout</option>
+      </select>
+
+      <label for="direction-select" style="font-size:1.2rem;">Sens de l'exercice :</label>
+      <select id="direction-select" name="direction" style="background: #00adb5; color: #000; border: 2px solid #00adb5; padding: 0.8rem 1.5rem; border-radius: 8px; cursor: pointer; font-size: 1.2rem; font-weight: 600; transition: background 0.3s ease, color 0.3s ease;">
+        <option value="question">Question → Réponse</option>
+        <option value="answer">Réponse → Question</option>
       </select>
 
       @if(typeof retryCardIds !== 'undefined' && retryCardIds)
@@ -80,7 +85,7 @@
       @endif
       <input type="hidden" name="attempts" value="{{ attempts || 1 }}" />
       <!-- Bouton pour soumettre le formulaire -->
-      <button type="submit">C'est parti</button>
+      <button type="submit" style="margin-top: 1rem;">C'est parti</button>
     </form>
   @else
     <p style="color:#ff4d4d;">Erreur : deck introuvable ou invalide.</p>

@@ -137,6 +137,7 @@
   @if (mode === 'jusquaubout' && incorrectCards && incorrectCards.length)
     <form action="{{ route('exercise.presentQuestion', { deckId: deck.id, questionIndex: 0 }) }}" method="GET">
       <input type="hidden" name="mode" value="jusquaubout" />
+      <input type="hidden" name="direction" value="{{ direction }}" />
       @each(card in incorrectCards)
         <input type="hidden" name="retryCardIds" value="{{ card.id }}" />
       @endeach
