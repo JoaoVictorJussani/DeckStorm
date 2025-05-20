@@ -125,14 +125,13 @@
     /* Conteneur des boutons */
     .button-container {
       text-align: center;
-      margin-top: 2rem;
       margin-bottom: 3rem;
     }
 
     /* Boutons */
     .add-button {
-      background: #000;
-      color: #00adb5;
+      background: #00adb5; 
+      color: #000;             
       border: 2px solid #00adb5;
       padding: 0.8rem 1.5rem;
       border-radius: 8px;
@@ -140,11 +139,6 @@
       font-size: 1.1rem;
       font-weight: 600;
       transition: background 0.3s ease, color 0.3s ease;
-    }
-
-    .add-button:hover {
-      background: #00adb5;
-      color: black;
     }
 
     /* Bouton rouge pour "Supprimer" et "Abandonner" */
@@ -200,9 +194,9 @@
 
     .search-button {
       padding: 0.8rem 1.5rem;
-      background: #00adb5;
-      color: #000;
-      border: none;
+      background: #000;
+      color: #00adb5;
+      border: 2px solid #00adb5;
       border-radius: 8px;
       cursor: pointer;
       font-size: 1rem;
@@ -212,8 +206,8 @@
     }
 
     .search-button:hover {
-      background: #008c95;
-      transform: translateY(-1px);
+      background: #00adb5;
+      color: black;
     }
 
     /* Messages flash */
@@ -238,6 +232,45 @@
       background: rgba(255, 77, 77, 0.2);
       border: 2px solid #ff4d4d;
       color: #ff4d4d;
+    }
+
+    /* Pagination styles */
+    .pagination-btn {
+      background: #000;
+      color: #00adb5;
+      border: 2px solid #00adb5;
+      padding: 0.5rem 1.2rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin: 0 0.5rem;
+      transition: background 0.3s, color 0.3s;
+      min-width: 44px;
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      user-select: none;
+    }
+    .pagination-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      background: #222;
+      color: #888;
+      border-color: #222;
+    }
+    .pagination-info {
+      color: #00adb5;
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin: 0 1rem;
+      user-select: none;
+    }
+    /* Ajout d'un espacement sous la pagination */
+    #userDecksPagination,
+    #publicDecksPagination {
+      margin-bottom: 4rem;
     }
 
     @keyframes fadeIn {
@@ -315,14 +348,73 @@
               : '';
           }
         });
+
+        // Rafraîchir la pagination pour afficher la page 1 avec le nouvel ordre trié
+        if (tableId === 'userDecksTable') {
+          paginateTable('userDecksTable', 'userDecksTbody', 'userDecksPagination', 10, true);
+        } else if (tableId === 'publicDecksTable') {
+          paginateTable('publicDecksTable', 'publicDecksTbody', 'publicDecksPagination', 10, true);
+        }
       }
 
-      // Trier par défaut la colonne "Titre" par ordre alphabétique pour les decks personnels et publics
+      // Pagination logic for both tables
+      function paginateTable(tableId, tbodyId, paginationId, pageSize = 10, resetPage = false) {
+        const tbody = document.getElementById(tbodyId);
+        const rows = Array.from(tbody.querySelectorAll('tr'));
+        let currentPage = paginateTable.currentPages?.[tbodyId] || 1;
+        const totalPages = Math.ceil(rows.length / pageSize);
+
+        // Si resetPage est demandé (après un tri), on revient à la page 1
+        if (resetPage) currentPage = 1;
+        paginateTable.currentPages = paginateTable.currentPages || {};
+        paginateTable.currentPages[tbodyId] = currentPage;
+
+        function renderPage(page) {
+          // Hide all rows
+          rows.forEach(row => row.style.display = 'none');
+          // Show only rows for the current page
+          const start = (page - 1) * pageSize;
+          const end = start + pageSize;
+          rows.slice(start, end).forEach(row => row.style.display = '');
+          // Update pagination controls
+          const pagination = document.getElementById(paginationId);
+          pagination.innerHTML = '';
+          if (totalPages > 1) {
+            const left = document.createElement('button');
+            left.textContent = '←';
+            left.className = 'pagination-btn';
+            left.disabled = page === 1;
+            left.onclick = () => { if (paginateTable.currentPages[tbodyId] > 1) { paginateTable.currentPages[tbodyId]--; renderPage(paginateTable.currentPages[tbodyId]); } };
+            pagination.appendChild(left);
+
+            const pageInfo = document.createElement('span');
+            pageInfo.textContent = `Page ${page} / ${totalPages}`;
+            pageInfo.className = 'pagination-info';
+            pagination.appendChild(pageInfo);
+
+            const right = document.createElement('button');
+            right.textContent = '→';
+            right.className = 'pagination-btn';
+            right.disabled = page === totalPages;
+            right.onclick = () => { if (paginateTable.currentPages[tbodyId] < totalPages) { paginateTable.currentPages[tbodyId]++; renderPage(paginateTable.currentPages[tbodyId]); } };
+            pagination.appendChild(right);
+          }
+        }
+
+        renderPage(currentPage);
+      }
+
       document.addEventListener('DOMContentLoaded', () => {
         sortTable('userDecksTable', 0);
         sortTable('publicDecksTable', 0);
+        // Les appels à paginateTable sont faits dans sortTable pour garantir le tri sur toutes les pages
       });
     </script>
+
+    <!-- Bouton pour ajouter un deck -->
+    <div class="button-container">
+      <button class="add-button" onclick="window.location.href='{{ route('decks.create') }}'">+ Créer un deck</button>
+    </div>
 
     <!-- Titre des decks -->
     <h1>Mes decks : {{ userDecks.length }}</h1>
@@ -352,7 +444,7 @@
             <th onclick="sortTable('userDecksTable', 3)">Visibilité <span class="sort-arrow"></span></th>
           </tr>
         </thead>
-        <tbody>
+        <tbody id="userDecksTbody">
           @if(userDecks.length)
             @each(deck in userDecks)
               <tr onclick="window.location.href='/deck/{{ deck.id }}'">
@@ -373,12 +465,10 @@
           @endif
         </tbody>
       </table>
+      <div id="userDecksPagination" style="display: flex; justify-content: center; align-items: center; margin-top: 1rem;"></div>
     </div>
 
-    <!-- Bouton pour ajouter un deck -->
-    <div class="button-container">
-      <button class="add-button" onclick="window.location.href='{{ route('decks.create') }}'">+ Ajouter</button>
-    </div>
+
 
     <!-- Tableau des decks publics -->
     <div class="public-decks">
@@ -405,7 +495,7 @@
               <th onclick="sortTable('publicDecksTable', 3)">Créé par <span class="sort-arrow"></span></th>
             </tr>
           </thead>
-          <tbody>
+          <tbody id="publicDecksTbody">
             @if(publicDecks.length)
               @each(deck in publicDecks)
                 <tr onclick="window.location.href='/deck/{{ deck.id }}'">
@@ -422,8 +512,64 @@
             @endif
           </tbody>
         </table>
+        <div id="publicDecksPagination" style="display: flex; justify-content: center; align-items: center; margin-top: 1rem;"></div>
       </div>
     </div>
   </div>
+
+  <script>
+    // Pagination logic for both tables
+    function paginateTable(tableId, tbodyId, paginationId, pageSize = 10, resetPage = false) {
+      const tbody = document.getElementById(tbodyId);
+      const rows = Array.from(tbody.querySelectorAll('tr'));
+      let currentPage = paginateTable.currentPages?.[tbodyId] || 1;
+      const totalPages = Math.ceil(rows.length / pageSize);
+
+      // Si resetPage est demandé (après un tri), on revient à la page 1
+      if (resetPage) currentPage = 1;
+      paginateTable.currentPages = paginateTable.currentPages || {};
+      paginateTable.currentPages[tbodyId] = currentPage;
+
+      function renderPage(page) {
+        // Hide all rows
+        rows.forEach(row => row.style.display = 'none');
+        // Show only rows for the current page
+        const start = (page - 1) * pageSize;
+        const end = start + pageSize;
+        rows.slice(start, end).forEach(row => row.style.display = '');
+        // Update pagination controls
+        const pagination = document.getElementById(paginationId);
+        pagination.innerHTML = '';
+        if (totalPages > 1) {
+          const left = document.createElement('button');
+          left.textContent = '←';
+          left.className = 'pagination-btn';
+          left.disabled = page === 1;
+          left.onclick = () => { if (paginateTable.currentPages[tbodyId] > 1) { paginateTable.currentPages[tbodyId]--; renderPage(paginateTable.currentPages[tbodyId]); } };
+          pagination.appendChild(left);
+
+          const pageInfo = document.createElement('span');
+          pageInfo.textContent = `Page ${page} / ${totalPages}`;
+          pageInfo.className = 'pagination-info';
+          pagination.appendChild(pageInfo);
+
+          const right = document.createElement('button');
+          right.textContent = '→';
+          right.className = 'pagination-btn';
+          right.disabled = page === totalPages;
+          right.onclick = () => { if (paginateTable.currentPages[tbodyId] < totalPages) { paginateTable.currentPages[tbodyId]++; renderPage(paginateTable.currentPages[tbodyId]); } };
+          pagination.appendChild(right);
+        }
+      }
+
+      renderPage(currentPage);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      // ...existing code...
+      paginateTable('userDecksTable', 'userDecksTbody', 'userDecksPagination', 10);
+      paginateTable('publicDecksTable', 'publicDecksTbody', 'publicDecksPagination', 10);
+    });
+  </script>
 </body>
 </html>
