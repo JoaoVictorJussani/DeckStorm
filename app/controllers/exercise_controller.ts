@@ -17,7 +17,8 @@ export default class ExerciseController {
     if (retryCardIds && retryCardIds.length > 0) {
       cards = cards.filter(card => retryCardIds.includes(card.id))
     }
-    return view.render('start', { deck, cards, retryCardIds })
+    let attempts = parseInt(request.input('attempts', '1'), 10) || 1
+    return view.render('start', { deck, cards, retryCardIds, attempts })
   }
 
   async presentQuestion({ params, request, view }: HttpContext) {
@@ -38,6 +39,7 @@ export default class ExerciseController {
     const startTime = request.input('startTime');
     const results = request.input('results', '[]');
     const mode = request.input('mode', 'chronometre');
+    let attempts = parseInt(request.input('attempts', '1'), 10) || 1
 
     // Correction : si plus de cartes à réviser, on termine l'exercice
     if (cards.length === 0) {
@@ -68,7 +70,7 @@ export default class ExerciseController {
     }
 
     const card = cards[questionIndex];
-    return view.render('present_question_with_time', { deck, cards, card, questionIndex, startTime, results, mode, retryCardIds });
+    return view.render('present_question_with_time', { deck, cards, card, questionIndex, startTime, results, mode, retryCardIds, attempts });
   }
 
   async finish({ params, request, view }: HttpContext) {
@@ -90,8 +92,10 @@ export default class ExerciseController {
       cards = cards.filter(card => retryCardIds.includes(card.id))
     }
     const incorrectCards = cards.filter((card) => !results.includes(card.id));
+    let attempts = parseInt(request.input('attempts', '1'), 10) || 1
 
     if (mode === 'jusquaubout' && incorrectCards.length > 0) {
+      // On incrémente le nombre de passages pour le prochain tour
       return view.render('finish_with_time', {
         deck,
         cards,
@@ -100,7 +104,8 @@ export default class ExerciseController {
         mode,
         incorrectCards,
         showRetry: true,
-        retryCardIds: incorrectCards.map(card => card.id)
+        retryCardIds: incorrectCards.map(card => card.id),
+        attempts: attempts + 1
       });
     }
 
@@ -112,7 +117,8 @@ export default class ExerciseController {
       mode,
       incorrectCards,
       showRetry: false,
-      retryCardIds: []
+      retryCardIds: [],
+      attempts
     });
   }
 }

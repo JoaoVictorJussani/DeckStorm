@@ -178,6 +178,7 @@
         <input type="hidden" name="retryCardIds" value="{{ id }}" />
       @endeach
     @endif
+    <input type="hidden" name="attempts" value="{{ attempts || 1 }}" />
     <button type="submit">{{ questionIndex + 1 < deck.cards.length ? 'Suivant' : 'Terminer' }}</button>
   </form>
 

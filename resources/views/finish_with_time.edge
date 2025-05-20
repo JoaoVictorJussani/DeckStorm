@@ -88,7 +88,13 @@
   @if (mode === 'chronometre')
     <p>Temps écoulé : {{ Math.floor((elapsedTime || 0) / 60) }}m {{ (elapsedTime || 0) % 60 }}s</p>
   @endif
-  <p>Score : {{ (results || []).length }} sur {{ deck.cards?.length || 0 }} cartes correctes</p>
+  @if (incorrectCards.length === 0 && mode !== 'jusquaubout' || mode === 'chronometre' || mode === 'basique')
+    <p>Score : {{ (results || []).length }} sur {{ deck.cards?.length || 0 }} cartes correctes</p>
+  @endif
+
+  @if (mode === 'jusquaubout' && incorrectCards.length === 0)
+    <p>Vous avez réussi en {{ attempts || 1 }} passage{{ (attempts || 1) > 1 ? 's' : '' }}</p>
+  @endif
 
   @if (incorrectCards && incorrectCards.length)
     <h2>Cartes ratées</h2>
@@ -118,6 +124,7 @@
       @endeach
       <input type="hidden" name="startTime" value="{{ Date.now() }}" />
       <input type="hidden" name="results" value="[]" />
+      <input type="hidden" name="attempts" value="{{ attempts || 1 }}" />
       <button type="submit">Continuer</button>
     </form>
   @else
