@@ -353,6 +353,78 @@
   background:rgb(209, 60, 60);
   color: black;
 }
+
+/* Supprimer le flex deck-share-wrapper et ajuster .deck-details/.share-container */
+    .share-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 2rem 0 1rem 0;
+    }
+    #qrcode {
+      display: inline-block;
+      margin-bottom: 1rem;
+    }
+    #share-btn {
+      background: #00adb5;
+      color: #000;
+      border: 2px solid #00adb5;
+      padding: 0.8rem 1.5rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      transition: background 0.3s, color 0.3s;
+    }
+    #share-btn:hover {
+      background: #008c95;
+      color: #fff;
+    }
+    #share-menu {
+      display: none;
+      background: #222;
+      border: 1px solid #00adb5;
+      border-radius: 8px;
+      margin-top: 0.5rem;
+      padding: 1rem;
+      position: absolute;
+      z-index: 100;
+      min-width: 220px;
+      box-shadow: 0 2px 10px rgba(0,173,181,0.15);
+    }
+    .share-menu-btn {
+      display: flex;
+      align-items: center;
+      width: 100%;
+      background: transparent;
+      color: #00adb5;
+      border: none;
+      font-size: 1rem;
+      font-weight: 600;
+      padding: 0.5rem 0.8rem;
+      margin: 0.2rem 0;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+      text-align: left;
+      gap: 0.5rem;
+    }
+    .share-menu-btn:hover {
+      background: #00adb5;
+      color: #000;
+    }
+    .share-menu-btn:last-child {
+      color: #ff4d4d;
+    }
+    .share-menu-btn:last-child:hover {
+      background: #ff4d4d;
+      color: #000;
+    }
+    .share-menu-wrapper {
+      position: relative;
+      display: inline-block;
+    }
   </style>
 </head>
 <body>
@@ -383,14 +455,84 @@
           {{ flashMessages.get('success') }}
         </div>
       @endif
-      <p><strong>Description:</strong> {{ deck.description }}</p> <!-- Description du deck -->
+      <p><strong>Description:</strong> {{ deck.description }}</p>
       <p><strong>Visibilité:</strong> 
         <span title="{{ deck.visibility === 'public' ? 'Public' : 'Privé' }}">
           {{ deck.visibility === 'public' ? '🔓 Public' : '🔒 Privé' }}
         </span>
       </p>
       <p><strong>Créateur: </strong>
-      <span>{{deck.user.username}}</span></p> <!-- Nom du créateur -->
+      <span>{{deck.user.username}}</span></p>
+
+      <!-- QR Code et partage à l'intérieur du deck-details -->
+      <div class="share-container">
+        <div id="qrcode"></div>
+        <div class="share-menu-wrapper">
+          <button id="share-btn">Partager à</button>
+          <div id="share-menu">
+            <button class="share-menu-btn" onclick="copyLink()">📋 Copier le lien</button>
+            <button class="share-menu-btn" onclick="shareWhatsapp()">🟢 WhatsApp</button>
+            <button class="share-menu-btn" onclick="shareDiscord()">💜 Discord</button>
+            <button class="share-menu-btn" onclick="shareSnapchat()">🟡 Snapchat</button>
+            <button class="share-menu-btn" onclick="shareInstagram()">🟣 Instagram</button>
+            <button class="share-menu-btn" onclick="closeShareMenu()">Fermer</button>
+          </div>
+        </div>
+      </div>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+      <script>
+        // Générer le QR code avec l'URL du deck
+        const deckUrl = window.location.origin + '/deck/{{ deck.id }}';
+        new QRCode(document.getElementById("qrcode"), {
+          text: deckUrl,
+          width: 128,
+          height: 128,
+          colorDark : "#00adb5",
+          colorLight : "#fff",
+        });
+
+        // Partage
+        const shareBtn = document.getElementById('share-btn');
+        const shareMenu = document.getElementById('share-menu');
+        shareBtn.onclick = function(event) {
+          event.stopPropagation();
+          shareMenu.style.display = shareMenu.style.display === 'block' ? 'none' : 'block';
+        };
+        function closeShareMenu() {
+          shareMenu.style.display = 'none';
+        }
+        function copyLink() {
+          navigator.clipboard.writeText(deckUrl);
+          alert('Lien copié !');
+          closeShareMenu();
+        }
+        function shareWhatsapp() {
+          window.open('https://wa.me/?text=' + encodeURIComponent(deckUrl), '_blank');
+          closeShareMenu();
+        }
+        function shareDiscord() {
+          window.open('https://discord.com/channels/@me', '_blank');
+          setTimeout(() => { copyLink(); }, 500);
+          closeShareMenu();
+        }
+        function shareSnapchat() {
+          window.open('https://www.snapchat.com/scan?attachmentUrl=' + encodeURIComponent(deckUrl), '_blank');
+          closeShareMenu();
+        }
+        function shareInstagram() {
+          window.open('https://www.instagram.com/', '_blank');
+          setTimeout(() => { copyLink(); }, 500);
+          closeShareMenu();
+        }
+        // Fermer le menu si clic en dehors
+        document.addEventListener('click', function(event) {
+          if (!shareMenu.contains(event.target) && event.target !== shareBtn) {
+            shareMenu.style.display = 'none';
+          }
+        });
+      </script>
+      <!-- Fin QR Code et partage -->
+
       <div class="button-container">
         <!-- Bouton pour supprimer le deck -->
         @if(deck.user_id === user.id)
