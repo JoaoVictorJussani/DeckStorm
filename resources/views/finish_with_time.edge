@@ -81,6 +81,24 @@
       color: #ff4d4d;
       text-align: center;
     }
+    
+    .abandon-button {
+      background: #000;
+      color: #ff4d4d;
+      border: 2px solid #ff4d4d;
+      padding: 0.8rem 1.5rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-top: 20px;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    .abandon-button:hover {
+      background: #ff4d4d;
+      color: black;
+    }
   </style>
 </head>
 <body>
@@ -126,6 +144,7 @@
       <input type="hidden" name="results" value="[]" />
       <input type="hidden" name="attempts" value="{{ attempts || 1 }}" />
       <button type="submit">Continuer</button>
+      <button type="button" class="abandon-button" onclick="window.location.href='{{ route('home') }}'">Abandonner</button>
     </form>
   @else
     <form action="{{ route('home') }}" method="GET">
