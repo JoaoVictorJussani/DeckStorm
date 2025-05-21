@@ -257,7 +257,16 @@ router
       .where('user_id', user.id)
       .preload('cards')
       .preload('user');
-    return view.render('account', { user, userDecks });
+    // Ajout des compteurs d'abonnés/abonnements
+    const Follow = (await import('#models/follow')).default
+    const followersCount = await Follow.query().where('following_id', user.id).count('* as total')
+    const followingCount = await Follow.query().where('follower_id', user.id).count('* as total')
+    return view.render('account', {
+      user,
+      userDecks,
+      followersCount: followersCount[0]?.$extras.total || 0,
+      followingCount: followingCount[0]?.$extras.total || 0,
+    });
   })
   .as('account')
   .use(middleware.auth());
