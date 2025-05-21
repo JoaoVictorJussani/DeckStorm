@@ -14,6 +14,7 @@ import Deck from '#models/deck'; // Modèle Deck
 import CardController from '#controllers/card_controller'; // Contrôleur pour les cartes
 import Card from '#models/card'; // Modèle Card
 import ExerciseController from '#controllers/exercise_controller'; // Contrôleur pour les exercices
+import User from '#models/user'; // Ajout pour la route /account/:id
 
 // Route pour la page d'accueil
 router
@@ -242,3 +243,41 @@ router
   })
   .as('search.publicDecks')
   .use(middleware.auth()); // Nécessite une authentification
+
+// Route pour la page "Mon compte" (affiche mes decks)
+router
+  .get('/account/:id', async ({ params, view, auth }) => {
+    // Si l'utilisateur connecté n'est pas celui demandé, refuse l'accès
+    if (!auth.user || auth.user.id !== Number(params.id)) {
+      return view.render('./pages/errors/not_found');
+    }
+    const user = auth.user;
+    const userDecks = await Deck.query()
+      .where('user_id', user.id)
+      .preload('cards')
+      .preload('user');
+    return view.render('account', { user, userDecks });
+  })
+  .as('account')
+  .use(middleware.auth());
+
+// Rota pour perfil público de usuário (mostra apenas decks públicos)
+router
+  .get('/public-account/:id', async ({ params, view, auth }) => {
+    if (!auth.user) {
+      // Redireciona para login se não autenticado
+      return view.render('./pages/errors/not_found');
+    }
+    const user = await User.find(params.id);
+    if (!user) {
+      return view.render('./pages/errors/not_found');
+    }
+    const publicDecks = await Deck.query()
+      .where('user_id', user.id)
+      .andWhere('visibility', 'public')
+      .preload('cards')
+      .preload('user');
+    return view.render('public_account', { user, publicDecks, authUser: auth.user });
+  })
+  .as('publicAccount')
+  .use(middleware.auth());
