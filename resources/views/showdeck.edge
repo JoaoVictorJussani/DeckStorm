@@ -190,6 +190,14 @@
 
   <div class="main-content">
     <h1>Deck: {{ deck.title }}</h1>
+    @if(deck.visibility === 'public' && deck.user && user?.id !== deck.user.id)
+      <div style="margin-bottom: 1.5rem; font-size: 1.2rem;">
+        Créé par
+        <a href="/public-account/{{ deck.user.id }}" style="color: #00adb5; text-decoration: underline;">
+          {{ deck.user.username }}
+        </a>
+      </div>
+    @endif
     <div class="form-container">
       @if (flashMessages.has('error'))
         <div class="message error">
