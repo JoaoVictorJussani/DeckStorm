@@ -50,6 +50,12 @@
         margin-bottom: 1rem;
       }
 
+      /* Centrage du bouton */
+      .form-actions {
+        display: flex;
+        justify-content: center;
+      }
+
       label {
         display: block;
         margin-bottom: 0.5rem;
@@ -76,7 +82,6 @@
         cursor: pointer;
         font-size: 1.1rem;
         font-weight: 600;
-        margin-top: 20px;
         transition: background 0.3s ease, color 0.3s ease;
       }
 
@@ -115,30 +120,57 @@
         <div class="form-group">
           <label for="password">Mot de passe:</label>
           <input type="password" id="password" name="password" required />
+          <p id="password-length-msg" style="color: #ff4d4d; font-size: 0.85em; margin-top: 0.3em; margin-bottom: 0;">
+            le mot de passe doit avoir 8 caractères
+          </p>
         </div>
         <div class="form-group">
           <label for="confirm_password">Confirmation du mot de passe:</label>
           <input type="password" id="confirm_password" name="confirm_password" required />
+          <p id="password-match-msg" style="color: #ff4d4d; font-size: 0.85em; margin-top: 0.3em; margin-bottom: 0;">
+            la vérification de mot de passe est correcte
+          </p>
         </div>
-        <button type="submit" id="submit-button" style="display: none;">Inscription</button>
+        <div class="form-actions">
+          <button type="submit" id="submit-button" style="display: none;">Inscription</button>
+        </div>
       </form>
       <p>Vous avez déjà un compte ? <a href="/login">se connecter</a></p>
     </div>
+    <!-- Les messages ont été déplacés sous les inputs correspondants -->
     <script>
       document.addEventListener("DOMContentLoaded", function() {
         const usernameInput = document.querySelector("#username");
         const passwordInput = document.querySelector("#password");
         const confirmPasswordInput = document.querySelector("#confirm_password");
         const submitButton = document.querySelector("#submit-button");
+        const passwordLengthMsg = document.getElementById("password-length-msg");
+        const passwordMatchMsg = document.getElementById("password-match-msg");
+
         function validateForm() {
           const usernameValid = usernameInput.value.trim().length >= 3;
           const passwordValid = passwordInput.value.length >= 8;
-          const passwordsMatch = passwordInput.value === confirmPasswordInput.value;
+          const passwordsMatch = passwordInput.value === confirmPasswordInput.value && passwordInput.value.length > 0;
+
+          // Mot de passe longueur
+          if (passwordValid) {
+            passwordLengthMsg.style.color = "#00c853"; // vert
+          } else {
+            passwordLengthMsg.style.color = "#ff4d4d"; // rouge
+          }
+
+          // Vérification mot de passe
+          if (passwordsMatch) {
+            passwordMatchMsg.style.color = "#00c853"; // vert
+          } else {
+            passwordMatchMsg.style.color = "#ff4d4d"; // rouge
+          }
+
           if (usernameValid && passwordValid && passwordsMatch) {
-            submitButton.style.display = "block"; // Affiche le bouton
+            submitButton.style.display = "block";
             submitButton.textContent = "Inscription ready";
           } else {
-            submitButton.style.display = "none"; // Cache le bouton
+            submitButton.style.display = "none";
           }
         }
         [ usernameInput, passwordInput, confirmPasswordInput ].forEach(input => {
