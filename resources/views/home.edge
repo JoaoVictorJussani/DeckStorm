@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <title>HomePage</title>
+  <link rel="shortcut icon" href="/resources/images/icone.ico" type="image/x-icon">
   <style>
     /* Styles globaux */
     * {
@@ -64,6 +65,14 @@
       color: #00adb5;
       font-size: 1.5rem;
       font-weight: bold;
+    }
+
+    /* Taille de l'image dans la navbar */
+    .navbar img {
+      height: 36px;
+      width: 36px;
+      margin-right: 0.7rem;
+      vertical-align: middle;
     }
 
     /* Contenu principal */
@@ -282,7 +291,7 @@
 <body>
   <!-- Barre de navigation -->
   <div class="navbar">
-    <a href="{{ route('home') }}">Flashcards</a>
+        <a href="{{ route('home') }}"><img src="/resources/images/icone.ico">DeckStorm</a>
     <div>
       <span>Bienvenue {{ user?.username }}</span>
       <form action="/logout" method="POST" style="display: inline;">

@@ -154,11 +154,19 @@
       background: #ff4d4d;
       color: black;
     }
+
+        /* Taille de l'image dans la navbar */
+    .navbar img {
+      height: 36px;
+      width: 36px;
+      margin-right: 0.7rem;
+      vertical-align: middle;
+    }
   </style>
 </head>
 <body>
   <div class="navbar">
-    <a href="{{ route('home') }}">Flashcards</a>
+    <a href="{{ route('home') }}"><img src="/resources/images/icone.ico">DeckStorm</a>
     <div>
       <span>Bienvenue {{ user?.username }}</span>
       <form action="/logout" method="POST" style="display: inline;">
