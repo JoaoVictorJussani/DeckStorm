@@ -15,6 +15,7 @@ import CardController from '#controllers/card_controller'; // Contrôleur pour l
 import Card from '#models/card'; // Modèle Card
 import ExerciseController from '#controllers/exercise_controller'; // Contrôleur pour les exercices
 import User from '#models/user'; // Ajout pour la route /account/:id
+import FollowController from '#controllers/follow_controller'; // Contrôleur pour le suivi
 
 // Route pour la page d'accueil
 router
@@ -261,6 +262,17 @@ router
   .as('account')
   .use(middleware.auth());
 
+// Routes follow/unfollow
+router
+  .post('/user/:id/follow', [FollowController, 'follow'])
+  .as('user.follow')
+  .use(middleware.auth());
+
+router
+  .post('/user/:id/unfollow', [FollowController, 'unfollow'])
+  .as('user.unfollow')
+  .use(middleware.auth());
+
 // Rota pour perfil público de usuário (mostra apenas decks públicos)
 router
   .get('/public-account/:id', async ({ params, view, auth }) => {
@@ -277,7 +289,25 @@ router
       .andWhere('visibility', 'public')
       .preload('cards')
       .preload('user');
-    return view.render('public_account', { user, publicDecks, authUser: auth.user });
+    // Ajout: followers/following count et si l'utilisateur courant suit ce profil
+    const Follow = (await import('#models/follow')).default
+    const followersCount = await Follow.query().where('following_id', user.id).count('* as total')
+    const followingCount = await Follow.query().where('follower_id', user.id).count('* as total')
+    let isFollowing = false
+    if (auth.user.id !== user.id) {
+      isFollowing = !!(await Follow.query()
+        .where('follower_id', auth.user.id)
+        .andWhere('following_id', user.id)
+        .first())
+    }
+    return view.render('public_account', {
+      user,
+      publicDecks,
+      authUser: auth.user,
+      followersCount: followersCount[0]?.$extras.total || 0,
+      followingCount: followingCount[0]?.$extras.total || 0,
+      isFollowing
+    });
   })
   .as('publicAccount')
   .use(middleware.auth());

@@ -222,6 +222,18 @@
   </script>
   <div class="main-content">
     <h1>Decks de {{ user.username }} : {{ publicDecks.length }}</h1>
+    <div style="margin-bottom: 2rem;">
+      <span><b>Abonnés :</b> {{ followersCount }}</span> &nbsp;|&nbsp;
+      <span><b>Abonnements :</b> {{ followingCount }}</span>
+      @if(authUser.id !== user.id)
+        <form action="{{ isFollowing ? route('user.unfollow', { id: user.id }) : route('user.follow', { id: user.id }) }}" method="POST" style="display:inline;">
+          {{ csrfField() }}
+          <button type="submit" style="margin-left:1rem; background: {{ isFollowing ? '#ff4d4d' : '#00adb5' }}; color: #fff; border: none; border-radius: 8px; padding: 0.5rem 1.2rem; cursor: pointer;">
+            {{ isFollowing ? 'Se désabonner' : 'Suivre' }}
+          </button>
+        </form>
+      @endif
+    </div>
     <div class="decks-container">
       <table>
         <thead>
