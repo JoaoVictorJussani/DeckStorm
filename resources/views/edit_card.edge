@@ -100,9 +100,43 @@
       background: #ff4d4d;
       color: black;
     }
+
+    .navbar {
+      width: 100%;
+      padding: 1rem 2rem;
+      display: flex;
+      align-items: center;
+      background: #000;
+      border-bottom: 2px solid #00adb5;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 10;
+    }
+
+    .navbar a {
+      color: #00adb5;
+      text-decoration: none;
+      font-size: 1.2rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+    }
+
+    .navbar img {
+      margin-right: 0.5rem;
+    }
+
+    .spacer {
+      height: 80px;
+    }
   </style>
 </head>
 <body>
+  <div class="navbar">
+    <a href="{{ route('home') }}"><img src="/public/images/icone.ico">DeckStorm</a>
+  </div>
+  <div class="spacer"></div>
   <h1>Modifier la carte</h1>
   <!-- Formulaire pour modifier une carte -->
   <form action="{{ route('cards.update', { deckId: card.deck_id, cardId: card.id }) }}" method="POST">

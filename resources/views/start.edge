@@ -51,9 +51,47 @@
       background: #008c95;
       color: white;
     }
+
+    /* Style pour la barre de navigation */
+    .navbar {
+      width: 100%;
+      padding: 1rem 2rem;
+      display: flex;
+      align-items: center;
+      background: #000;
+      border-bottom: 2px solid #00adb5;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 10;
+    }
+
+    .navbar a {
+      color: #00adb5;
+      text-decoration: none;
+      font-size: 1.5rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+    }
+
+    .navbar img {
+      width: 40px;
+      height: 40px;
+      margin-right: 0.5rem;
+    }
+
+    /* Ajout d'un espace en haut pour compenser la navbar fixe */
+    .spacer {
+      height: 80px;
+    }
   </style>
 </head>
 <body>
+  <div class="navbar">
+    <a href="{{ route('home') }}"><img src="/public/images/icone.ico">DeckStorm</a>
+  </div>
+  <div class="spacer"></div>
   <!-- Titre dynamique basé sur le deck -->
   <h1>Commencer l'exercice pour le deck "{{ deck.title }}"</h1>
 
