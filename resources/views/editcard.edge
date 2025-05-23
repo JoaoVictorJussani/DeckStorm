@@ -161,12 +161,79 @@
     .spacer {
       height: 80px;
     }
+
+    .dropdown {
+      position: relative;
+      display: inline-block;
+    }
+
+    .dropdown-toggle {
+      background: none;
+      border: none;
+      color: #00adb5;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+
+    .dropdown-menu {
+      display: none;
+      position: absolute;
+      right: 0;
+      background: #000;
+      border: 2px solid #00adb5;
+      border-radius: 8px;
+      margin-top: 0.5rem;
+      z-index: 100;
+    }
+
+    .dropdown-menu a {
+      color: #00adb5;
+      padding: 0.8rem 1.5rem;
+      text-decoration: none;
+      display: block;
+      font-size: 1rem;
+    }
+
+    .dropdown-menu a:hover {
+      background: #00adb5;
+      color: black;
+    }
+
+    .dropdown.open .dropdown-menu {
+      display: block;
+    }
   </style>
 </head>
 <body>
   <div class="navbar">
     <a href="{{ route('home') }}"><img src="/images/icone.ico">DeckStorm</a>
+    <div>
+      <span>Bienvenue {{ user?.username }}</span>
+      <div class="dropdown" id="userDropdown">
+        <button class="dropdown-toggle" onclick="toggleDropdown()" aria-haspopup="true" aria-expanded="false">
+          <span>▼</span>
+        </button>
+        <div class="dropdown-menu" id="dropdownMenu">
+          <a href="/account/{{ user?.id }}">Mon compte</a>
+          <form action="/logout" method="POST" style="margin:0;">
+            {{ csrfField() }}
+            <button type="submit" class="logout-btn">Se déconnecter</button>
+          </form>
+        </div>
+      </div>
+    </div>
   </div>
+  <script>
+    function toggleDropdown() {
+      document.getElementById('userDropdown').classList.toggle('open');
+    }
+    document.addEventListener('click', function(event) {
+      const dropdown = document.getElementById('userDropdown');
+      if (!dropdown.contains(event.target)) {
+        dropdown.classList.remove('open');
+      }
+    });
+  </script>
   <div class="spacer"></div>
   <h1>Modifier la carte</h1>
   <div class="form-container">

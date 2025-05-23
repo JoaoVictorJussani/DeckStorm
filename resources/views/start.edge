@@ -65,6 +65,7 @@
       top: 0;
       left: 0;
       z-index: 10;
+      justify-content: space-between;
     }
 
     .navbar a {
@@ -82,6 +83,48 @@
       margin-right: 0.5rem;
     }
 
+    .dropdown {
+      position: relative;
+      display: inline-block;
+    }
+
+    .dropdown-toggle {
+      background: none;
+      border: none;
+      color: #00adb5;
+      font-size: 1.2rem;
+      cursor: pointer;
+    }
+
+    .dropdown-menu {
+      display: none;
+      position: absolute;
+      right: 0;
+      background: #111;
+      border: 1px solid #00adb5;
+      border-radius: 8px;
+      margin-top: 0.5rem;
+      min-width: 160px;
+      z-index: 20;
+    }
+
+    .dropdown-menu a {
+      color: #e0e0e0;
+      padding: 0.8rem 1.2rem;
+      text-decoration: none;
+      display: block;
+      font-size: 1rem;
+    }
+
+    .dropdown-menu a:hover {
+      background: #00adb5;
+      color: #000;
+    }
+
+    .open .dropdown-menu {
+      display: block;
+    }
+
     /* Ajout d'un espace en haut pour compenser la navbar fixe */
     .spacer {
       height: 80px;
@@ -91,7 +134,33 @@
 <body>
   <div class="navbar">
     <a href="{{ route('home') }}"><img src="/images/icone.ico">DeckStorm</a>
+    <div>
+      <span>Bienvenue {{ user?.username }}</span>
+      <div class="dropdown" id="userDropdown">
+        <button class="dropdown-toggle" onclick="toggleDropdown()" aria-haspopup="true" aria-expanded="false">
+          <span>▼</span>
+        </button>
+        <div class="dropdown-menu" id="dropdownMenu">
+          <a href="/account/{{ user?.id }}">Mon compte</a>
+          <form action="/logout" method="POST" style="margin:0;">
+            {{ csrfField() }}
+            <button type="submit" class="logout-btn">Se déconnecter</button>
+          </form>
+        </div>
+      </div>
+    </div>
   </div>
+  <script>
+    function toggleDropdown() {
+      document.getElementById('userDropdown').classList.toggle('open');
+    }
+    document.addEventListener('click', function(event) {
+      const dropdown = document.getElementById('userDropdown');
+      if (!dropdown.contains(event.target)) {
+        dropdown.classList.remove('open');
+      }
+    });
+  </script>
   <div class="spacer"></div>
   <!-- Titre dynamique basé sur le deck -->
   <h1>Commencer l'exercice pour le deck "{{ deck.title }}"</h1>

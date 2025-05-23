@@ -113,6 +113,7 @@
       top: 0;
       left: 0;
       z-index: 10;
+      justify-content: space-between;
     }
 
     .navbar a {
@@ -133,11 +134,55 @@
     .spacer {
       height: 80px;
     }
+
+    .dropdown {
+      position: relative;
+      display: inline-block;
+    }
+
+    .dropdown-menu {
+      display: none;
+      position: absolute;
+      background-color: #111;
+      min-width: 160px;
+      box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+      z-index: 1;
+    }
+
+    .dropdown-menu a {
+      color: #00adb5;
+      padding: 12px 16px;
+      text-decoration: none;
+      display: block;
+    }
+
+    .dropdown-menu a:hover {
+      background-color: #575757;
+    }
+
+    .dropdown.open .dropdown-menu {
+      display: block;
+    }
   </style>
 </head>
 <body>
   <div class="navbar">
     <a href="{{ route('home') }}"><img src="/images/icone.ico">DeckStorm</a>
+    <div>
+      <span>Bienvenue {{ user?.username }}</span>
+      <div class="dropdown" id="userDropdown">
+        <button class="dropdown-toggle" onclick="toggleDropdown()" aria-haspopup="true" aria-expanded="false">
+          <span>▼</span>
+        </button>
+        <div class="dropdown-menu" id="dropdownMenu">
+          <a href="/account/{{ user?.id }}">Mon compte</a>
+          <form action="/logout" method="POST" style="margin:0;">
+            {{ csrfField() }}
+            <button type="submit" class="logout-btn">Se déconnecter</button>
+          </form>
+        </div>
+      </div>
+    </div>
   </div>
   <div class="spacer"></div>
   <h1>Résultats pour le deck "{{ deck.title }}"</h1>
@@ -190,5 +235,16 @@
       <button type="submit">OK</button>
     </form>
   @endif
+  <script>
+    function toggleDropdown() {
+      document.getElementById('userDropdown').classList.toggle('open');
+    }
+    document.addEventListener('click', function(event) {
+      const dropdown = document.getElementById('userDropdown');
+      if (!dropdown.contains(event.target)) {
+        dropdown.classList.remove('open');
+      }
+    });
+  </script>
 </body>
 </html>
