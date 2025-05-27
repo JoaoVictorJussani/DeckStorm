@@ -138,20 +138,39 @@
 
 <div class="header-navbar">
   <a href="{{ route('home') }}"><img src="/images/icone.ico">DeckStorm</a>
-  <div>
+  <div style="display: flex; align-items: center; gap: 1rem;">
+    <!-- Icône idée -->
+    <button id="idea-btn" title="Aide et tutoriel" style="background: none; border: none; cursor: pointer; font-size: 1.8rem; color: #00adb5; padding: 0;">
+      💡
+    </button>
     <span>Bienvenue {{ user?.username }}</span>
     <div class="header-dropdown" id="header-userDropdown">
-      <button class="header-dropdown-toggle" onclick="headerToggleDropdown()" aria-haspopup="true" aria-expanded="false">
+      <button class="header-dropdown-toggle" onclick="headerToggleDropdown()" aria-haspopup="true" aria-expanded="false" title="Afficher les options du compte">
         <span>▼</span>
       </button>
       <div class="header-dropdown-menu" id="header-dropdownMenu">
-        <a href="/account/{{ user?.id }}">Mon compte</a>
+        <a href="/account/{{ user?.id }}" title="Voir et gérer votre profil et vos decks">Mon compte</a>
         <form action="/logout" method="POST" style="margin:0;">
           {{ csrfField() }}
-          <button type="submit" class="header-logout-btn">Se déconnecter</button>
+          <button type="submit" class="header-logout-btn" title="Se déconnecter du site">Se déconnecter</button>
         </form>
       </div>
     </div>
+  </div>
+</div>
+
+<!-- Box survolante d'aide -->
+<div id="idea-box" style="display:none; position:fixed; top:90px; right:30px; background:#222; color:#00adb5; border:2px solid #00adb5; border-radius:12px; box-shadow:0 8px 32px rgba(0,0,0,0.25); padding:1.5rem 2rem 1.5rem 1.5rem; max-width:350px; z-index:9999;">
+  <button onclick="closeIdeaBox()" style="position:absolute; top:8px; right:10px; background:none; border:none; color:#00adb5; font-size:1.3rem; cursor:pointer;" aria-label="Fermer">✖</button>
+  <div style="font-size:1.2rem; margin-bottom:0.7rem;"><b>Astuce DeckStorm</b></div>
+  <div style="color:#e0e0e0; font-size:1rem;">
+    <ul style="margin:0 0 0 1.2rem; padding:0;">
+      <li>Créez, modifiez et partagez vos decks facilement.</li>
+      <li>Utilisez <b>Exercer</b> pour réviser vos cartes.</li>
+      <li>Ajoutez des cartes avec des questions claires.</li>
+      <li>Partagez vos decks publics avec le QR code ou le lien.</li>
+      <li>Survolez les boutons pour plus d'infos.</li>
+    </ul>
   </div>
 </div>
 
@@ -164,5 +183,21 @@
     if (!dropdown.contains(event.target)) {
       dropdown.classList.remove('open');
     }
+    // Fermer la box idée si clic en dehors
+    const ideaBox = document.getElementById('idea-box');
+    const ideaBtn = document.getElementById('idea-btn');
+    if (ideaBox && ideaBox.style.display === 'block' && !ideaBox.contains(event.target) && event.target !== ideaBtn) {
+      ideaBox.style.display = 'none';
+    }
   });
+
+  // Afficher/masquer la box idée
+  document.getElementById('idea-btn').onclick = function(e) {
+    e.stopPropagation();
+    const box = document.getElementById('idea-box');
+    box.style.display = box.style.display === 'block' ? 'none' : 'block';
+  };
+  function closeIdeaBox() {
+    document.getElementById('idea-box').style.display = 'none';
+  }
 </script>
