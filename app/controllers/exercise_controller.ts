@@ -2,7 +2,7 @@ import type { HttpContext } from '@adonisjs/core/http'
 import Deck from '#models/deck'
 
 export default class ExerciseController {
-  async start({ params, view, request }: HttpContext) {
+  async start({ params, view, request, auth }: HttpContext) {
     const deck = await Deck.query().where('id', params.deckId).preload('cards').first()
     if (!deck) {
       return view.render('./pages/errors/not_found')
@@ -19,7 +19,8 @@ export default class ExerciseController {
     }
     let attempts = parseInt(request.input('attempts', '1'), 10) || 1
     const direction = request.input('direction', 'question')
-    return view.render('start', { deck, cards, retryCardIds, attempts, direction })
+    const user = auth?.user // Ajout de l'utilisateur authentifié
+    return view.render('start', { deck, cards, retryCardIds, attempts, direction, user })
   }
 
   async presentQuestion({ params, request, view }: HttpContext) {

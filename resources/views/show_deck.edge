@@ -6,6 +6,7 @@
     <link rel="shortcut icon" href="/images/icone.ico" type="image/x-icon">
 
   <style>
+    /* Copier ici tout le CSS de home.edge */
     * {
       box-sizing: border-box;
       margin: 0;
@@ -21,93 +22,6 @@
       align-items: center;
       min-height: 100vh;
       font-size: 1rem;
-    }
-
-    .navbar {
-      width: 100%;
-      padding: 1rem 2rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: #000;
-      border-bottom: 2px solid #00adb5;
-      color: white;
-      position: fixed;
-      top: 0;
-      left: 0;
-      z-index: 10;
-    }
-    .navbar a {
-      text-decoration: none;
-      color: #00adb5;
-      font-size: 1.5rem;
-      font-weight: bold;
-    }
-
-    /* Dropdown styles */
-    .dropdown {
-      position: relative;
-      display: inline-block;
-    }
-    .dropdown-toggle {
-      background: #00adb5;
-      color: white;
-      border: 2px solid #00adb5;
-      padding: 0.7rem 1.2rem;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 1rem;
-      transition: background 0.3s ease;
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-    .dropdown-toggle:hover, .dropdown-toggle:focus {
-      background: #008c95;
-      color: #fff;
-    }
-    .dropdown-menu {
-      display: none;
-      position: absolute;
-      right: 0;
-      background: #222;
-      min-width: 180px;
-      box-shadow: 0 2px 10px rgba(0,173,181,0.15);
-      border: 1px solid #00adb5;
-      border-radius: 8px;
-      z-index: 100;
-      margin-top: 0.5rem;
-      padding: 0.5rem 0;
-    }
-    .dropdown.open .dropdown-menu {
-      display: block;
-    }
-    .dropdown-menu a, .dropdown-menu button {
-      display: block;
-      width: 100%;
-      background: none;
-      border: none;
-      color: #00adb5;
-      text-align: left;
-      padding: 0.7rem 1.2rem;
-      font-size: 1rem;
-      font-weight: 600;
-      cursor: pointer;
-      border-radius: 6px;
-      transition: background 0.2s, color 0.2s;
-      text-decoration: none;
-    }
-    .dropdown-menu a:hover, .dropdown-menu button:hover {
-      background: #00adb5;
-      color: #000;
-    }
-    .dropdown-menu .logout-btn {
-      color: #ff4d4d;
-    }
-    .dropdown-menu .logout-btn:hover {
-      background: #ff4d4d;
-      color: #000;
     }
 
     .main-content {
@@ -370,43 +284,43 @@
       color: #fff;
     }
 
-.exercice-container button{
-  background: #000;
-  color: #4caf50;
-  border: 2px solid #4caf50;
-  padding: 0.8rem 1.5rem;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 1.1rem;
-  font-weight: 600;
-  margin: 0 10px;
-  transition: background 0.3s ease, color 0.3s ease;
-}
+    .exercice-container button{
+      background: #000;
+      color: #4caf50;
+      border: 2px solid #4caf50;
+      padding: 0.8rem 1.5rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin: 0 10px;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
 
-.exercice-container button:hover {
-  background: #4caf50;
-  color: black;
-}
+    .exercice-container button:hover {
+      background: #4caf50;
+      color: black;
+    }
 
-.supprimer-container button{
-  background: #000;
-  color: rgb(209, 60, 60);
-  border: 2px solid rgb(209, 60, 60);
-  padding: 0.8rem 1.5rem;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 1.1rem;
-  font-weight: 600;
-  margin: 0 10px;
-  transition: background 0.3s ease, color 0.3s ease;
-}
+    .supprimer-container button{
+      background: #000;
+      color: rgb(209, 60, 60);
+      border: 2px solid rgb(209, 60, 60);
+      padding: 0.8rem 1.5rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin: 0 10px;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
 
-.supprimer-container button:hover {
-  background:rgb(209, 60, 60);
-  color: black;
-}
+    .supprimer-container button:hover {
+      background:rgb(209, 60, 60);
+      color: black;
+    }
 
-/* Supprimer le flex deck-share-wrapper et ajuster .deck-details/.share-container */
+    /* Supprimer le flex deck-share-wrapper et ajuster .deck-details/.share-container */
     .share-container {
       display: flex;
       flex-direction: column;
@@ -477,47 +391,10 @@
       position: relative;
       display: inline-block;
     }
-
-        /* Taille de l'image dans la navbar */
-    .navbar img {
-      height: 36px;
-      width: 36px;
-      margin-right: 0.7rem;
-      vertical-align: middle;
-    }
   </style>
 </head>
 <body>
-    <!-- Barre de navigation -->
-    <div class="navbar">
-        <a href="{{ route('home') }}"><img src="/images/icone.ico">DeckStorm</a>
-        <div>
-          <span>Bienvenue {{ user?.username }}</span>
-          <div class="dropdown" id="userDropdown">
-            <button class="dropdown-toggle" onclick="toggleDropdown()" aria-haspopup="true" aria-expanded="false">
-              <span>▼</span>
-            </button>
-            <div class="dropdown-menu" id="dropdownMenu">
-              <a href="/account/{{ user?.id }}">Mon compte</a>
-              <form action="/logout" method="POST" style="margin:0;">
-                {{ csrfField() }}
-                <button type="submit" class="logout-btn">Se déconnecter</button>
-              </form>
-            </div>
-          </div>
-        </div>
-      </div>
-  <script>
-    function toggleDropdown() {
-      document.getElementById('userDropdown').classList.toggle('open');
-    }
-    document.addEventListener('click', function(event) {
-      const dropdown = document.getElementById('userDropdown');
-      if (!dropdown.contains(event.target)) {
-        dropdown.classList.remove('open');
-      }
-    });
-  </script>
+  @include('components/header')
 
   <!-- Contenu principal -->
   <div class="main-content">

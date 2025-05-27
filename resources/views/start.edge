@@ -5,7 +5,7 @@
   <title>Commencer l'exercice</title>
     <link rel="shortcut icon" href="/images/icone.ico" type="image/x-icon">
   <style>
-    /* Styles globaux pour une mise en page cohérente */
+    /* Copier ici tout le CSS de home.edge */
     * {
       box-sizing: border-box;
       margin: 0;
@@ -53,74 +53,6 @@
       color: white;
     }
 
-    /* Style pour la barre de navigation */
-    .navbar {
-      width: 100%;
-      padding: 1rem 2rem;
-      display: flex;
-      align-items: center;
-      background: #000;
-      border-bottom: 2px solid #00adb5;
-      position: fixed;
-      top: 0;
-      left: 0;
-      z-index: 10;
-      justify-content: space-between;
-    }
-
-    .navbar a {
-      color: #00adb5;
-      text-decoration: none;
-      font-size: 1.5rem;
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-    }
-
-    .navbar img {
-      width: 40px;
-      height: 40px;
-      margin-right: 0.5rem;
-    }
-
-    .dropdown {
-      position: relative;
-      display: inline-block;
-    }
-
-    .dropdown-toggle {
-      background: none;
-      border: none;
-      color: #00adb5;
-      font-size: 1.2rem;
-      cursor: pointer;
-    }
-
-    .dropdown-menu {
-      display: none;
-      position: absolute;
-      right: 0;
-      background: #111;
-      border: 1px solid #00adb5;
-      border-radius: 8px;
-      margin-top: 0.5rem;
-      min-width: 160px;
-      z-index: 20;
-    }
-
-    .dropdown-menu a {
-      color: #e0e0e0;
-      padding: 0.8rem 1.2rem;
-      text-decoration: none;
-      display: block;
-      font-size: 1rem;
-    }
-
-    .dropdown-menu a:hover {
-      background: #00adb5;
-      color: #000;
-    }
-
     .open .dropdown-menu {
       display: block;
     }
@@ -132,35 +64,7 @@
   </style>
 </head>
 <body>
-  <div class="navbar">
-    <a href="{{ route('home') }}"><img src="/images/icone.ico">DeckStorm</a>
-    <div>
-      <span>Bienvenue {{ user?.username }}</span>
-      <div class="dropdown" id="userDropdown">
-        <button class="dropdown-toggle" onclick="toggleDropdown()" aria-haspopup="true" aria-expanded="false">
-          <span>▼</span>
-        </button>
-        <div class="dropdown-menu" id="dropdownMenu">
-          <a href="/account/{{ user?.id }}">Mon compte</a>
-          <form action="/logout" method="POST" style="margin:0;">
-            {{ csrfField() }}
-            <button type="submit" class="logout-btn">Se déconnecter</button>
-          </form>
-        </div>
-      </div>
-    </div>
-  </div>
-  <script>
-    function toggleDropdown() {
-      document.getElementById('userDropdown').classList.toggle('open');
-    }
-    document.addEventListener('click', function(event) {
-      const dropdown = document.getElementById('userDropdown');
-      if (!dropdown.contains(event.target)) {
-        dropdown.classList.remove('open');
-      }
-    });
-  </script>
+  @include('components/header')
   <div class="spacer"></div>
   <!-- Titre dynamique basé sur le deck -->
   <h1>Commencer l'exercice pour le deck "{{ deck.title }}"</h1>

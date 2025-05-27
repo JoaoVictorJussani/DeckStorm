@@ -20,40 +20,13 @@
       min-height: 100vh;
       font-size: 1rem;
     }
-    .navbar {
-      width: 100%;
-      padding: 1rem 2rem;
-      display: flex;
-      align-items: center;
-      background: #000;
-      border-bottom: 2px solid #00adb5;
-      position: fixed;
-      top: 0;
-      left: 0;
-      z-index: 10;
-    }
-    .navbar a {
-      color: #00adb5;
-      text-decoration: none;
-      font-size: 1.5rem;
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-    }
-    .navbar img {
-      width: 40px;
-      height: 40px;
-      margin-right: 0.5rem;
-    }
     .spacer {
       height: 80px;
     }
   </style>
 </head>
 <body>
-  <div class="navbar">
-    <a href="{{ route('home') }}"><img src="/images/icone.ico">DeckStorm</a>
-  </div>
+  @include('components/simple_header')
   <div class="spacer"></div>
   <div style="margin-top: 3rem; text-align: center;">
     <h1 style="color:#ff4d4d; font-size:2.5rem; margin-bottom:1rem;">404 - Page non trouvée</h1>

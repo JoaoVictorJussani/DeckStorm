@@ -4,13 +4,16 @@ import Deck from '#models/deck'; // Modèle des decks
 
 export default class CardController {
   // Affiche la page pour créer une nouvelle carte
-  async create({ params, view }: HttpContext) {
+  async create({ params, view, auth }: HttpContext) {
+    await auth.use('web').authenticate();
     const deck = await Deck.find(params.deckId); // Récupère le deck par ID
-    return view.render('newcard', { deck }); // Rendu de la vue avec le deck
+    const user = auth.user; // Ajout : récupérer l'utilisateur connecté
+    return view.render('newcard', { deck, user }); // Passer user à la vue
   }
 
   // Enregistre une nouvelle carte
-  async store({ params, request, response, session }: HttpContext) {
+  async store({ params, request, response, session, auth }: HttpContext) {
+    await auth.use('web').authenticate();
     const { question, answer } = request.only(['question', 'answer']); // Récupère les champs nécessaires
 
     // Vérifie si la question est vide
@@ -54,19 +57,24 @@ export default class CardController {
   }
 
   // Affiche une carte spécifique
-  async show({ params, view }: HttpContext) {
+  async show({ params, view, auth }: HttpContext) {
+    await auth.use('web').authenticate();
     const card = await Card.find(params.cardId); // Récupère la carte par ID
     return view.render('showcard', { card }); // Rendu de la vue avec la carte
   }
 
   // Affiche la page pour modifier une carte
-  async edit({ params, view }: HttpContext) {
+  async edit({ params, view, auth }: HttpContext) {
+    await auth.use('web').authenticate();
     const card = await Card.find(params.cardId); // Récupère la carte par ID
-    return view.render('editcard', { card }); // Rendu de la vue avec la carte
+    const deck = await Deck.find(params.deckId); // Récupère le deck par ID
+    const user = auth.user;
+    return view.render('edit_card', { card, deck, user }); // Rendu de la vue avec la carte
   }
 
   // Met à jour une carte
   async update({ params, request, response, session, auth }: HttpContext) {
+    await auth.use('web').authenticate();
     const deck = await Deck.find(params.deckId); // Récupère le deck par ID
     if (deck && deck.user_id === auth.user.id) { // Vérifie que l'utilisateur est le propriétaire
       const card = await Card.find(params.cardId); // Récupère la carte par ID
@@ -84,6 +92,7 @@ export default class CardController {
 
   // Supprime une carte
   async destroy({ params, response, session, auth }: HttpContext) {
+    await auth.use('web').authenticate();
     const deck = await Deck.find(params.deckId); // Récupère le deck par ID
     if (deck && deck.user_id === auth.user.id) { // Vérifie que l'utilisateur est le propriétaire
       const card = await Card.find(params.cardId); // Récupère la carte par ID

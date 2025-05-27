@@ -138,16 +138,7 @@ router
 
 // Route pour afficher la page d'édition d'une carte
 router
-  .get('/deck/:deckId/card/:cardId/edit', async ({ params, view, auth, response }) => {
-    const deck = await Deck.find(params.deckId); // Récupère le deck par ID
-    if (deck && deck.user_id === auth.user.id) { // Vérifie que l'utilisateur est le propriétaire
-      const card = await Card.find(params.cardId); // Récupère la carte par ID
-      if (card) {
-        return view.render('edit_card', { card, deck });
-      }
-    }
-    return response.redirect().toRoute('home'); // Redirige si l'utilisateur n'est pas le propriétaire
-  })
+  .get('/deck/:deckId/card/:cardId/edit', [CardController, 'edit'])
   .as('cards.edit')
   .use(middleware.auth()); // Nécessite une authentification
 

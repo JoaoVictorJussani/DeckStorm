@@ -3,10 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <title>Profil public de {{ user.username }}</title>
-    <link rel="shortcut icon" href="/images/icone.ico" type="image/x-icon">
-
+  <link rel="shortcut icon" href="/images/icone.ico" type="image/x-icon">
   <style>
-    /* Styles globaux */
+    /* Styles du header.edge */
     * {
       box-sizing: border-box;
       margin: 0;
@@ -25,7 +24,7 @@
     }
 
     /* Barre de navigation */
-    .navbar {
+    .header-navbar {
       width: 100%;
       padding: 1rem 2rem;
       display: flex;
@@ -40,12 +39,12 @@
       z-index: 10;
     }
 
-    .navbar h2 {
+    .header-navbar h2 {
       font-size: 1.8rem;
       font-weight: 700;
     }
 
-    .navbar button {
+    .header-navbar button {
       background: #00adb5;
       color: white;
       border: 2px solid #00adb5;
@@ -56,19 +55,18 @@
       transition: background 0.3s ease;
     }
 
-    .navbar button:hover {
+    .header-navbar button:hover {
       background: #008c95;
     }
 
-    .navbar a {
+    .header-navbar a {
       text-decoration: none;
       color: #00adb5;
       font-size: 1.5rem;
       font-weight: bold;
     }
 
-    /* Taille de l'image dans la navbar */
-    .navbar img {
+    .header-navbar img {
       height: 36px;
       width: 36px;
       margin-right: 0.7rem;
@@ -76,11 +74,11 @@
     }
 
     /* Dropdown styles */
-    .dropdown {
+    .header-dropdown {
       position: relative;
       display: inline-block;
     }
-    .dropdown-toggle {
+    .header-dropdown-toggle {
       background: #00adb5;
       color: white;
       border: 2px solid #00adb5;
@@ -94,11 +92,11 @@
       align-items: center;
       gap: 0.5rem;
     }
-    .dropdown-toggle:hover, .dropdown-toggle:focus {
+    .header-dropdown-toggle:hover, .header-dropdown-toggle:focus {
       background: #008c95;
       color: #fff;
     }
-    .dropdown-menu {
+    .header-dropdown-menu {
       display: none;
       position: absolute;
       right: 0;
@@ -111,10 +109,10 @@
       margin-top: 0.5rem;
       padding: 0.5rem 0;
     }
-    .dropdown.open .dropdown-menu {
+    .header-dropdown.open .header-dropdown-menu {
       display: block;
     }
-    .dropdown-menu a, .dropdown-menu button {
+    .header-dropdown-menu a, .header-dropdown-menu button {
       display: block;
       width: 100%;
       background: none;
@@ -129,45 +127,20 @@
       transition: background 0.2s, color 0.2s;
       text-decoration: none;
     }
-    .dropdown-menu a:hover, .dropdown-menu button:hover {
+    .header-dropdown-menu a:hover, .header-dropdown-menu button:hover {
       background: #00adb5;
       color: #000;
     }
-    .dropdown-menu .logout-btn {
+    .header-logout-btn {
       color: #ff4d4d;
     }
-    .dropdown-menu .logout-btn:hover {
-      background: #ff4d4d;
+    .header-logout-btn:hover {
+      background: #ff4d4d !important;
       color: #000;
     }
 
-    /* Titres harmonisés pour toutes les pages (repris de deck.edge) */
-    h1, .main-title {
-      font-size: 3rem;
-      margin-bottom: 1.5rem;
-      color: #00adb5;
-      font-weight: 700;
-      text-align: center;
-      margin-top: 2rem;
-    }
-    h2 {
-      font-size: 2rem;
-      margin-bottom: 1rem;
-      color: #00adb5;
-      font-weight: 600;
-      text-align: center;
-      margin-top: 1.5rem;
-    }
-    h3 {
-      font-size: 1.4rem;
-      margin-bottom: 0.7rem;
-      color: #00adb5;
-      font-weight: 500;
-      text-align: center;
-      margin-top: 1rem;
-    }
 
-    /* Contenu principal */
+    /* Styles spécifiques au public_account */
     .main-content {
       margin-top: 120px;
       text-align: center;
@@ -178,16 +151,18 @@
       margin-right: auto;
     }
 
+    .decks-container {
+      width: 100%;
+      margin: auto;
+    }
+
     h1 {
       color: #00adb5;
       font-size: 2.5rem;
       margin-bottom: 1rem;
       font-weight: 700;
     }
-    .decks-container {
-      width: 100%;
-      margin: auto;
-    }
+
     table {
       width: 100%;
       text-align: left;
@@ -197,10 +172,12 @@
       overflow: hidden;
       margin-top: 2rem;
     }
+
     th, td {
       padding: 15px;
       border-bottom: 1px solid #00adb5;
     }
+
     th {
       font-size: 1.2rem;
       font-weight: bold;
@@ -208,9 +185,11 @@
       color: #00adb5;
       border-bottom: 2px solid #00adb5;
     }
+
     td {
       font-size: 1.1rem;
     }
+
     tr:hover {
       cursor: pointer;
       background: #111;
@@ -218,35 +197,35 @@
   </style>
 </head>
 <body>
-  <div class="navbar">
+  <div class="header-navbar">
     <a href="{{ route('home') }}"><img src="/images/icone.ico">DeckStorm</a>
     <div>
       <span>Bienvenue {{ authUser?.username }}</span>
-      <div class="dropdown" id="userDropdown">
-        <button class="dropdown-toggle" onclick="toggleDropdown()" aria-haspopup="true" aria-expanded="false">
+      <div class="header-dropdown" id="header-userDropdown">
+        <button class="header-dropdown-toggle" onclick="headerToggleDropdown()" aria-haspopup="true" aria-expanded="false">
           <span>▼</span>
         </button>
-        <div class="dropdown-menu" id="dropdownMenu">
+        <div class="header-dropdown-menu" id="header-dropdownMenu">
           <a href="/account/{{ authUser?.id }}">Mon compte</a>
           <form action="/logout" method="POST" style="margin:0;">
             {{ csrfField() }}
-            <button type="submit" class="logout-btn">Se déconnecter</button>
+            <button type="submit" class="header-logout-btn">Se déconnecter</button>
           </form>
         </div>
       </div>
     </div>
   </div>
   <script>
-    function toggleDropdown() {
-      document.getElementById('userDropdown').classList.toggle('open');
+  function headerToggleDropdown() {
+    document.getElementById('header-userDropdown').classList.toggle('open');
+  }
+  document.addEventListener('click', function(event) {
+    const dropdown = document.getElementById('header-userDropdown');
+    if (!dropdown.contains(event.target)) {
+      dropdown.classList.remove('open');
     }
-    document.addEventListener('click', function(event) {
-      const dropdown = document.getElementById('userDropdown');
-      if (!dropdown.contains(event.target)) {
-        dropdown.classList.remove('open');
-      }
-    });
-  </script>
+  });
+</script>
   <div class="main-content">
     <h1>Decks de {{ user.username }} : {{ publicDecks.length }}</h1>
     <div style="margin-bottom: 2rem;">

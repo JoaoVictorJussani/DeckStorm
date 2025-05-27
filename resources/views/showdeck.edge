@@ -6,6 +6,7 @@
     <link rel="shortcut icon" href="/images/icone.ico" type="image/x-icon">
 
   <style>
+    /* Copier ici tout le CSS de home.edge */
     * {
       box-sizing: border-box;
       margin: 0;
@@ -21,43 +22,6 @@
       align-items: center;
       min-height: 100vh;
       font-size: 1rem;
-    }
-
-    .navbar {
-      width: 100%;
-      padding: 1rem 2rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: #000;
-      border-bottom: 2px solid #00adb5;
-      color: white;
-      position: fixed;
-      top: 0;
-      left: 0;
-      z-index: 10;
-    }
-
-    .navbar button {
-      background: #00adb5;
-      color: white;
-      border: 2px solid #00adb5;
-      padding: 0.7rem 1.2rem;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 1rem;
-      transition: background 0.3s ease;
-    }
-
-    .navbar button:hover {
-      background: #008c95;
-    }
-
-    .navbar a {
-      text-decoration: none;
-      color: #00adb5;
-      font-size: 1.5rem;
-      font-weight: bold;
     }
 
     .main-content {
@@ -168,27 +132,10 @@
       color: #fff;
     
     }
-
-        /* Taille de l'image dans la navbar */
-    .navbar img {
-      height: 36px;
-      width: 36px;
-      margin-right: 0.7rem;
-      vertical-align: middle;
-    }
   </style>
 </head>
 <body>
-  <div class="navbar">
-    <a href="{{ route('home') }}"><img src="./public/images/icone.ico">DeckStorm</a>
-    <div>
-      <span>Bienvenue {{ user?.username }}</span>
-      <form action="/logout" method="POST" style="display: inline;">
-        {{ csrfField() }}
-        <button type="submit">Se déconnecter</button>
-      </form>
-    </div>
-  </div>
+  @include('components/header')
 
   <div class="main-content">
     <h1>Deck: {{ deck.title }}</h1>

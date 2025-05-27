@@ -1,0 +1,168 @@
+<style>
+  /* Styles globaux */
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+
+  /* Style du corps */
+  body {
+    background: #000;
+    color: #e0e0e0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    font-size: 1rem;
+  }
+
+  /* Barre de navigation */
+  .header-navbar {
+    width: 100%;
+    height: 80px;
+    padding: 0 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #000;
+    border-bottom: 2px solid #00adb5;
+    color: white;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 10;
+  }
+
+  .header-navbar h2 {
+    font-size: 1.8rem;
+    font-weight: 700;
+  }
+
+  .header-navbar button {
+    background: #00adb5;
+    color: white;
+    border: 2px solid #00adb5;
+    padding: 0.7rem 1.2rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background 0.3s ease;
+  }
+
+  .header-navbar button:hover {
+    background: #008c95;
+  }
+
+  .header-navbar a {
+    text-decoration: none;
+    color: #00adb5;
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+
+  .header-navbar img {
+    height: 36px;
+    width: 36px;
+    margin-right: 0.7rem;
+    vertical-align: middle;
+  }
+
+  /* Dropdown styles */
+  .header-dropdown {
+    position: relative;
+    display: inline-block;
+  }
+  .header-dropdown-toggle {
+    background: #00adb5;
+    color: white;
+    border: 2px solid #00adb5;
+    padding: 0.7rem 1.2rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background 0.3s ease;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .header-dropdown-toggle:hover, .header-dropdown-toggle:focus {
+    background: #008c95;
+    color: #fff;
+  }
+  .header-dropdown-menu {
+    display: none;
+    position: absolute;
+    right: 0;
+    background: #222;
+    min-width: 180px;
+    box-shadow: 0 2px 10px rgba(0,173,181,0.15);
+    border: 1px solid #00adb5;
+    border-radius: 8px;
+    z-index: 100;
+    margin-top: 0.5rem;
+    padding: 0.5rem 0;
+  }
+  .header-dropdown.open .header-dropdown-menu {
+    display: block;
+  }
+  .header-dropdown-menu a, .header-dropdown-menu button {
+    display: block;
+    width: 100%;
+    background: none;
+    border: none;
+    color: #00adb5;
+    text-align: left;
+    padding: 0.7rem 1.2rem;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: background 0.2s, color 0.2s;
+    text-decoration: none;
+  }
+  .header-dropdown-menu a:hover, .header-dropdown-menu button:hover {
+    background: #00adb5;
+    color: #000;
+  }
+  .header-logout-btn {
+    color: #ff4d4d;
+  }
+  .header-logout-btn:hover {
+    background: #ff4d4d !important;
+    color: #000;
+  }
+</style>
+
+<div class="header-navbar">
+  <a href="{{ route('home') }}"><img src="/images/icone.ico">DeckStorm</a>
+  <div>
+    <span>Bienvenue {{ user?.username }}</span>
+    <div class="header-dropdown" id="header-userDropdown">
+      <button class="header-dropdown-toggle" onclick="headerToggleDropdown()" aria-haspopup="true" aria-expanded="false">
+        <span>▼</span>
+      </button>
+      <div class="header-dropdown-menu" id="header-dropdownMenu">
+        <a href="/account/{{ user?.id }}">Mon compte</a>
+        <form action="/logout" method="POST" style="margin:0;">
+          {{ csrfField() }}
+          <button type="submit" class="header-logout-btn">Se déconnecter</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function headerToggleDropdown() {
+    document.getElementById('header-userDropdown').classList.toggle('open');
+  }
+  document.addEventListener('click', function(event) {
+    const dropdown = document.getElementById('header-userDropdown');
+    if (!dropdown.contains(event.target)) {
+      dropdown.classList.remove('open');
+    }
+  });
+</script>

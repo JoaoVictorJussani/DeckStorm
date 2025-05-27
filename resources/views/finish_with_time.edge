@@ -166,24 +166,8 @@
   </style>
 </head>
 <body>
-  <div class="navbar">
-    <a href="{{ route('home') }}"><img src="/images/icone.ico">DeckStorm</a>
-    <div>
-      <span>Bienvenue {{ user?.username }}</span>
-      <div class="dropdown" id="userDropdown">
-        <button class="dropdown-toggle" onclick="toggleDropdown()" aria-haspopup="true" aria-expanded="false">
-          <span>▼</span>
-        </button>
-        <div class="dropdown-menu" id="dropdownMenu">
-          <a href="/account/{{ user?.id }}">Mon compte</a>
-          <form action="/logout" method="POST" style="margin:0;">
-            {{ csrfField() }}
-            <button type="submit" class="logout-btn">Se déconnecter</button>
-          </form>
-        </div>
-      </div>
-    </div>
-  </div>
+  @include('components/header')
+  
   <div class="spacer"></div>
   <h1>Résultats pour le deck "{{ deck.title }}"</h1>
   @if (mode === 'chronometre')
