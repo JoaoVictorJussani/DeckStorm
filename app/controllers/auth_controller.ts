@@ -48,11 +48,11 @@ export default class AuthController {
   }  
 
   // Changement de mot de passe
-  async changePassword({ request, auth, session, response, params }: HttpContext) {
-    const user = auth.user
-    if (!user || user.id !== Number(params.id)) {
-      session.flash('profile_error', "Accès refusé.")
-      return response.redirect().toRoute('account', { id: params.id })
+  async changePassword({ request, auth, session, response }: HttpContext) {
+    const user = auth.user;
+    if (!user) {
+      session.flash('profile_error', "Vous devez être connecté.")
+      return response.redirect().back()
     }
 
     const { old_password, new_password, confirm_new_password } = request.only([
@@ -64,24 +64,24 @@ export default class AuthController {
     // Vérifie l'ancien mot de passe
     if (!(await hash.verify(user.password, old_password))) {
       session.flash('profile_error', "L'ancien mot de passe est incorrect.")
-      return response.redirect().toRoute('account', { id: user.id })
+      return response.redirect().back()
     }
 
     // Vérifie la longueur du nouveau mot de passe
     if (!new_password || new_password.length < 8) {
-      session.flash('profile_error', "Le mot de passe doit avoir 8 caractères")
-      return response.redirect().toRoute('account', { id: user.id })
+      session.flash('profile_error', "Le nouveau mot de passe doit avoir au moins 8 caractères.")
+      return response.redirect().back()
     }
 
     // Vérifie la confirmation
     if (new_password !== confirm_new_password) {
-      session.flash('profile_error', "La vérification de mot de passe est correcte")
-      return response.redirect().toRoute('account', { id: user.id })
+      session.flash('profile_error', "Les nouveaux mots de passe ne correspondent pas.")
+      return response.redirect().back()
     }
 
-    user.password = new_password
-    await user.save()
+    user.password = new_password;
+    await user.save();
     session.flash('profile_success', "Mot de passe changé avec succès.")
-    return response.redirect().toRoute('account', { id: user.id })
+    return response.redirect().back()
   }
 }
