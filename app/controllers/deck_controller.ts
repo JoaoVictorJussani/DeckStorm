@@ -14,13 +14,6 @@ export default class DeckController {
       return response.redirect().back();
     }
 
-    // Vérifie si la description contient au moins 10 caractères
-    if (data.description.length < 10) {
-      session.flash('error', 'La description doit contenir au moins 10 caractères.');
-      session.flash('old', data); // Conserve les anciennes données saisies
-      return response.redirect().back();
-    }
-
     const deck = new Deck();
     deck.title = data.title; // Définit le titre
     deck.description = data.description; // Définit la description

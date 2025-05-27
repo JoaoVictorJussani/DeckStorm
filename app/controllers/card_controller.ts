@@ -23,12 +23,12 @@ export default class CardController {
       return response.redirect().back();
     }
 
-    // Vérifie si la question contient au moins 10 caractères
-    if (question.trim().length < 10) {
+    // On supprime cette validation
+    /* if (question.trim().length < 10) {
       session.flash('error', 'La question doit contenir au moins 10 caractères.');
-      session.flash('old', { question, answer }); // Conserve les anciennes données saisies
+      session.flash('old', { question, answer });
       return response.redirect().back();
-    }
+    } */
 
     // Vérifie si la réponse est vide
     if (!answer || answer.trim().length === 0) {
