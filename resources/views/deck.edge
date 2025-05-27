@@ -26,7 +26,7 @@
     .main-title {
       font-size: 3rem;
       margin-bottom: 1.5rem;
-      color: #00adb5;
+      color: #6c8947;
       font-weight: 700;
       text-align: center;
     }
@@ -34,13 +34,13 @@
     h1 {
       font-size: 3rem;
       margin-bottom: 1.5rem;
-      color: #00adb5;
+      color: #6c8947;
       font-weight: 700;
     }
     h2 {
       font-size: 2rem;
       margin-bottom: 1rem;
-      color: #00adb5;
+      color: #6c8947;
       font-weight: 600;
       text-align: center;
       margin-top: 1.5rem;
@@ -48,7 +48,7 @@
     h3 {
       font-size: 1.4rem;
       margin-bottom: 0.7rem;
-      color: #00adb5;
+      color: #6c8947;
       font-weight: 500;
       text-align: center;
       margin-top: 1rem;
@@ -68,21 +68,21 @@
       background: #000;
       padding: 2rem;
       border-radius: 12px;
-      border: 2px solid #00adb5;
-      box-shadow: 0 5px 15px rgba(0, 173, 181, 0.3);
+      border: 2px solid #6c8947;
+      box-shadow: 0 5px 15px #6c8947;
     }
     label {
       font-size: 1.2rem;
       display: block;
       margin-top: 15px;
-      color: #00adb5;
+      color: #6c8947;
       text-align: left;
     }
     input, textarea {
       width: 100%;
       padding: 10px;
       border-radius: 5px;
-      border: 2px solid #00adb5;
+      border: 2px solid #6c8947;
       font-size: 1rem;
       background: #000;
       color: #e0e0e0;
@@ -92,18 +92,18 @@
       width: 100%;
       padding: 10px;
       border-radius: 5px;
-      border: 2px solid #00adb5;
+      border: 2px solid #6c8947;
       font-size: 1rem;
       background: #000;
       color: #e0e0e0;
       margin-top: 5px;
       appearance: none;
     }
-    select:focus { outline: none; border-color: #00adb5; }
+    select:focus { outline: none; border-color: #6c8947; }
     .submit-button {
       background: #000;
-      color: #00adb5;
-      border: 2px solid #00adb5;
+      color: #6c8947;
+      border: 2px solid #6c8947;
       padding: 0.8rem 1.5rem;
       border-radius: 8px;
       cursor: pointer;
@@ -112,7 +112,7 @@
       margin-top: 20px;
       transition: background 0.3s ease, color 0.3s ease;
     }
-    .submit-button:hover { background: #00adb5; color: black; }
+    .submit-button:hover { background: #6c8947; color: black; }
     .abandon-button {
       background: #000;
       color: #ff4d4d;
@@ -160,7 +160,7 @@
       bottom: 5px;
       right: 10px;
       font-size: 0.8rem;
-      color: #00adb5;
+      color: #6c8947;
     }
   </style>
 </head>
@@ -188,7 +188,7 @@
         <label for="description">Description :</label>
         <div class="description-container">
           <textarea id="description" name="description" maxlength="125" onkeyup="updateCounter()" required>{{ flashMessages.get('old.description', '') }}</textarea>
-          <div class="counter" style="position: absolute; bottom: 5px; right: 10px; font-size: 0.8rem; color: #00adb5;">
+          <div class="counter" style="position: absolute; bottom: 5px; right: 10px; font-size: 0.8rem; color: #6c8947;">
             <span id="charCount">0</span>/125
           </div>
         </div>
@@ -219,7 +219,7 @@
       } else if (currentLength >= 80) {
         charCount.style.color = '#ffa500'; // Orange
       } else {
-        charCount.style.color = '#00adb5'; // Couleur par défaut
+        charCount.style.color = '#6c8947'; // Couleur par défaut
       }
     }
 

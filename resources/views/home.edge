@@ -13,9 +13,10 @@
     }
 
     body {
-      background: #000;
-      color: #e0e0e0;
+      background: #0a0c10;
+      color: #e6e9ef;
       min-height: 100vh;
+      font-weight: 400;
     }
 
     .navbar {
@@ -24,17 +25,19 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background: #000;
-      border-bottom: 2px solid #00adb5;
+      background: rgba(10, 12, 16, 0.95);
+      border-bottom: 2px solid #6c8947;
       position: fixed;
       top: 0;
       left: 0;
       z-index: 10;
+      backdrop-filter: blur(8px);
+      box-shadow: 0 2px 15px rgba(108, 137, 71, 0.15);
     }
 
     .navbar a {
       text-decoration: none;
-      color: #00adb5;
+      color: #6c8947;
       font-size: 1.5rem;
       font-weight: bold;
     }
@@ -71,16 +74,18 @@
       width: 100%;
       padding: 12px 20px;
       font-size: 1.1rem;
-      border: 2px solid #00adb5;
+      border: 1px solid rgba(108, 137, 71, 0.3);
       border-radius: 8px;
-      background: #111;
+      background: rgba(17, 19, 23, 0.8);
       color: #e0e0e0;
       transition: all 0.3s ease;
+      backdrop-filter: blur(4px);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     }
 
     .search-input:focus {
       outline: none;
-      box-shadow: 0 0 5px #00adb5;
+      box-shadow: 0 0 5px #6c8947;
     }
 
     .search-input::placeholder {
@@ -95,8 +100,8 @@
     }
 
     .search-switch {
-      background: #111;
-      border: 2px solid #00adb5;
+      background: rgba(17, 19, 23, 0.8);
+      border: 1px solid rgba(56, 66, 34, 0.3);
       border-radius: 25px;
       padding: 4px;
       width: 320px;
@@ -106,6 +111,8 @@
       display: flex;
       align-items: center;
       transition: all 0.3s ease;
+      backdrop-filter: blur(4px);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     }
 
     .switch-option {
@@ -125,7 +132,7 @@
       top: 4px;
       width: calc(50% - 4px);
       height: calc(100% - 8px);
-      background: #00adb5;
+      background: #6c8947;
       border-radius: 20px;
       transition: transform 0.3s ease;
     }
@@ -151,8 +158,10 @@
     }
 
     .deck-card {
-      background: #111;
-      border: 2px solid #00adb5;
+      background: rgba(17, 19, 23, 0.8);
+      backdrop-filter: blur(4px);
+      border: 1px solid rgba(56, 66, 34, 0.3);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
       border-radius: 10px;
       padding: 1.5rem;
       transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -160,13 +169,14 @@
     }
 
     .deck-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 5px 15px rgba(0, 173, 181, 0.2);
+      transform: translateY(-5px) scale(1.02);
+      box-shadow: 0 8px 25px rgba(56, 66, 34, 0.25);
     }
 
     .deck-title {
-      color: #00adb5;
-      font-size: 1.4rem;
+      color: #6c8947;
+      font-size: 1.5rem;
+      letter-spacing: 0.5px;
       margin-bottom: 1rem;
       font-weight: bold;
     }
@@ -186,7 +196,7 @@
     }
 
     .deck-author {
-      color: #00adb5;
+      color: #6c8947;
       text-decoration: none;
     }
 
@@ -204,7 +214,7 @@
     }
 
     .dropdown-toggle {
-      background: #00adb5;
+      background: #6c8947;
       color: white;
       border: none;
       padding: 0.7rem 1.2rem;
@@ -221,7 +231,7 @@
       background: #222;
       min-width: 180px;
       box-shadow: 0 2px 10px rgba(0,173,181,0.15);
-      border: 1px solid #00adb5;
+      border: 1px solid #6c8947;
       border-radius: 8px;
       z-index: 100;
       margin-top: 0.5rem;
@@ -236,7 +246,7 @@
       position: fixed;
       bottom: 2rem;
       right: 2rem;
-      background: #00adb5;
+      background: linear-gradient(135deg, #6c8947, #7b995c);
       color: white;
       border: none;
       border-radius: 50%;
@@ -247,16 +257,15 @@
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      box-shadow: 0 4px 12px rgba(0, 173, 181, 0.3);
+      box-shadow: 0 4px 15px rgba(108, 137, 71, 0.4);
       transition: all 0.3s ease;
       z-index: 100;
       text-decoration: none;
     }
 
     .add-deck-btn:hover {
-      transform: scale(1.1);
-      background: #008c95;
-      box-shadow: 0 6px 16px rgba(0, 173, 181, 0.4);
+      background: linear-gradient(135deg, #7b995c, #6c8947);
+      box-shadow: 0 6px 20px rgba(108, 137, 71, 0.5);
     }
 
     .add-deck-btn span {

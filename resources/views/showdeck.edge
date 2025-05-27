@@ -30,7 +30,7 @@
       justify-content: space-between;
       align-items: center;
       background: #000;
-      border-bottom: 2px solid #00adb5;
+      border-bottom: 2px solid #6c8947;
       color: white;
       position: fixed;
       top: 0;
@@ -39,9 +39,9 @@
     }
 
     .navbar button {
-      background: #00adb5;
+      background: #6c8947;
       color: white;
-      border: 2px solid #00adb5;
+      border: 2px solid #6c8947;
       padding: 0.7rem 1.2rem;
       border-radius: 8px;
       cursor: pointer;
@@ -55,7 +55,7 @@
 
     .navbar a {
       text-decoration: none;
-      color: #00adb5;
+      color: #6c8947;
       font-size: 1.5rem;
       font-weight: bold;
     }
@@ -70,7 +70,7 @@
     h1 {
       font-size: 3rem;
       margin-bottom: 1.5rem;
-      color: #00adb5;
+      color: #6c8947;
       font-weight: 700;
     }
 
@@ -81,8 +81,8 @@
       background: #000;
       padding: 2rem;
       border-radius: 12px;
-      border: 2px solid #00adb5;
-      box-shadow: 0 5px 15px rgba(0, 173, 181, 0.3);
+      border: 2px solid #6c8947;
+      // box-shadow: 0 5px 15px rgba(0, 173, 181, 0.3);
     }
 
     .message.error {
@@ -107,7 +107,7 @@
       font-size: 1.2rem;
       display: block;
       margin-top: 15px;
-      color: #00adb5;
+      color: #6c8947;
       text-align: left;
     }
 
@@ -115,7 +115,7 @@
       width: 100%;
       padding: 10px;
       border-radius: 5px;
-      border: 2px solid #00adb5;
+      border: 2px solid #6c8947;
       font-size: 1rem;
       background: #000;
       color: #e0e0e0;
@@ -124,8 +124,8 @@
 
     .submit-button {
       background: #000;
-      color: #00adb5;
-      border: 2px solid #00adb5;
+      color: #6c8947;
+      border: 2px solid #6c8947;
       padding: 0.8rem 1.5rem;
       border-radius: 8px;
       cursor: pointer;
@@ -136,7 +136,7 @@
     }
 
     .submit-button:hover {
-      background: #00adb5;
+      background: #6c8947;
       color: black;
     }
 
@@ -195,7 +195,7 @@
     @if(deck.visibility === 'public' && deck.user && user?.id !== deck.user.id)
       <div style="margin-bottom: 1.5rem; font-size: 1.2rem;">
         Créé par
-        <a href="/public-account/{{ deck.user.id }}" style="color: #00adb5; text-decoration: underline;">
+        <a href="/public-account/{{ deck.user.id }}" style="color: #6c8947; text-decoration: underline;">
           {{ deck.user.username }}
         </a>
       </div>
