@@ -150,6 +150,18 @@
       background-color: #4caf50;
       color: #fff;
     }
+    .description-container {
+      position: relative;
+      width: 100%;
+    }
+
+    .counter {
+      position: absolute;
+      bottom: 5px;
+      right: 10px;
+      font-size: 0.8rem;
+      color: #00adb5;
+    }
   </style>
 </head>
 <body>
@@ -174,7 +186,12 @@
         <input type="text" id="title" name="title" value="{{ flashMessages.get('old.title', '') }}" required />
 
         <label for="description">Description :</label>
-        <textarea id="description" name="description" required>{{ flashMessages.get('old.description', '') }}</textarea>
+        <div class="description-container">
+          <textarea id="description" name="description" maxlength="125" onkeyup="updateCounter()" required>{{ flashMessages.get('old.description', '') }}</textarea>
+          <div class="counter" style="position: absolute; bottom: 5px; right: 10px; font-size: 0.8rem; color: #00adb5;">
+            <span id="charCount">0</span>/125
+          </div>
+        </div>
 
         <label for="visibility">Visibilité :</label>
         <select id="visibility" name="visibility" required>
@@ -187,5 +204,29 @@
       </form>
     </div>
   </div>
+
+  <script>
+    const textarea = document.getElementById('description');
+    const charCount = document.getElementById('charCount');
+
+    function updateCounter() {
+      const currentLength = textarea.value.length;
+      charCount.textContent = currentLength;
+      
+      // Change la couleur quand on approche de la limite
+      if (currentLength >= 100) {
+        charCount.style.color = '#ff4d4d'; // Rouge
+      } else if (currentLength >= 80) {
+        charCount.style.color = '#ffa500'; // Orange
+      } else {
+        charCount.style.color = '#00adb5'; // Couleur par défaut
+      }
+    }
+
+    // Initialisation au chargement
+    document.addEventListener('DOMContentLoaded', updateCounter);
+    // Mise à jour à chaque changement
+    textarea.addEventListener('input', updateCounter);
+  </script>
 </body>
 </html>

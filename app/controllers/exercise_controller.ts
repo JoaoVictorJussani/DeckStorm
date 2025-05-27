@@ -76,7 +76,7 @@ export default class ExerciseController {
     return view.render('present_question_with_time', { deck, cards, card, questionIndex, startTime, results, mode, retryCardIds, attempts, direction });
   }
 
-  async finish({ params, request, view }: HttpContext) {
+  async finish({ params, request, view, auth }: HttpContext) {
     const deck = await Deck.query().where('id', params.deckId).preload('cards').first();
     if (!deck) {
       return view.render('./pages/errors/not_found');
@@ -124,7 +124,8 @@ export default class ExerciseController {
       showRetry: false,
       retryCardIds: [],
       attempts,
-      direction
+      direction,
+      user: auth.user  // Ajout de l'utilisateur authentifié
     });
   }
 }

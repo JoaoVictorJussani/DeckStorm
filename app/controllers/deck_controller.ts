@@ -14,6 +14,13 @@ export default class DeckController {
       return response.redirect().back();
     }
 
+    // Vérifie la longueur de la description
+    if (data.description.length > 125) {
+      session.flash('error', 'La description ne peut pas dépasser 125 caractères.');
+      session.flash('old', data);
+      return response.redirect().back();
+    }
+
     const deck = new Deck();
     deck.title = data.title; // Définit le titre
     deck.description = data.description; // Définit la description
@@ -33,16 +40,23 @@ export default class DeckController {
 
   // Mise à jour d'un deck
   async update({ params, request, response, session, auth }: HttpContext) {
-    const deck = await Deck.find(params.id); // Récupère le deck par ID
-    if (deck && deck.user_id === auth.user.id) { // Vérifie que l'utilisateur est le propriétaire
-      const data = request.only(['title', 'description', 'visibility']); // Récupère uniquement les champs nécessaires
-      deck.merge(data); // Met à jour les champs du deck
-      await deck.save(); // Enregistre les modifications
-      session.flash('success', 'Deck mis à jour avec succès !'); // Message de succès
+    const deck = await Deck.find(params.id);
+    if (deck && deck.user_id === auth.user.id) {
+      const data = request.only(['title', 'description', 'visibility']);
+
+      // Vérifie la longueur de la description
+      if (data.description.length > 125) {
+        session.flash('error', 'La description ne peut pas dépasser 125 caractères.');
+        return response.redirect().back();
+      }
+
+      deck.merge(data);
+      await deck.save();
+      session.flash('success', 'Deck mis à jour avec succès !');
     } else {
-      session.flash('error', 'Vous ne pouvez pas modifier ce deck.'); // Message d'erreur
+      session.flash('error', 'Vous ne pouvez pas modifier ce deck.');
     }
-    return response.redirect().toRoute('home'); // Redirige vers la page d'accueil
+    return response.redirect().toRoute('home');
   }
 
   // Suppression d'un deck
