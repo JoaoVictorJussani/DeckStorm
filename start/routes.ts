@@ -236,29 +236,9 @@ router
   .as('search.publicDecks')
   .use(middleware.auth()); // Nécessite une authentification
 
-// Route pour la page "Mon compte" (affiche mes decks)
+// Route pour la page "Mon compte" (affiche mes decks et followers/following)
 router
-  .get('/account/:id', async ({ params, view, auth }) => {
-    // Si l'utilisateur connecté n'est pas celui demandé, refuse l'accès
-    if (!auth.user || auth.user.id !== Number(params.id)) {
-      return view.render('./pages/errors/not_found');
-    }
-    const user = auth.user;
-    const userDecks = await Deck.query()
-      .where('user_id', user.id)
-      .preload('cards')
-      .preload('user');
-    // Ajout des compteurs d'abonnés/abonnements
-    const Follow = (await import('#models/follow')).default
-    const followersCount = await Follow.query().where('following_id', user.id).count('* as total')
-    const followingCount = await Follow.query().where('follower_id', user.id).count('* as total')
-    return view.render('account', {
-      user,
-      userDecks,
-      followersCount: followersCount[0]?.$extras.total || 0,
-      followingCount: followingCount[0]?.$extras.total || 0,
-    });
-  })
+  .get('/account/:id', [PageController, 'account'])
   .as('account')
   .use(middleware.auth());
 
@@ -276,41 +256,8 @@ router
   .as('user.unfollow')
   .use(middleware.auth());
 
-// Rota pour perfil público de usuário (mostra apenas decks públicos)
+// Route pour profil public utilisateur (avec followers/following)
 router
-  .get('/public-account/:id', async ({ params, view, auth }) => {
-    if (!auth.user) {
-      // Redireciona para login se não autenticado
-      return view.render('./pages/errors/not_found');
-    }
-    const user = await User.find(params.id);
-    if (!user) {
-      return view.render('./pages/errors/not_found');
-    }
-    const publicDecks = await Deck.query()
-      .where('user_id', user.id)
-      .andWhere('visibility', 'public')
-      .preload('cards')
-      .preload('user');
-    // Ajout: followers/following count et si l'utilisateur courant suit ce profil
-    const Follow = (await import('#models/follow')).default
-    const followersCount = await Follow.query().where('following_id', user.id).count('* as total')
-    const followingCount = await Follow.query().where('follower_id', user.id).count('* as total')
-    let isFollowing = false
-    if (auth.user.id !== user.id) {
-      isFollowing = !!(await Follow.query()
-        .where('follower_id', auth.user.id)
-        .andWhere('following_id', user.id)
-        .first())
-    }
-    return view.render('public_account', {
-      user,
-      publicDecks,
-      authUser: auth.user,
-      followersCount: followersCount[0]?.$extras.total || 0,
-      followingCount: followingCount[0]?.$extras.total || 0,
-      isFollowing
-    });
-  })
+  .get('/public-account/:id', [PageController, 'publicAccount'])
   .as('publicAccount')
   .use(middleware.auth());
