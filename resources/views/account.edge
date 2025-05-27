@@ -237,6 +237,32 @@
       min-width: 320px;
     }
 
+    /* Styles pour la barre de recherche */
+    .search-container {
+      width: 100%;
+      margin-bottom: 2rem;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 12px 20px;
+      font-size: 1.1rem;
+      border: 2px solid #00adb5;
+      border-radius: 8px;
+      background: #111;
+      color: #e0e0e0;
+      transition: all 0.3s ease;
+    }
+
+    .search-input:focus {
+      outline: none;
+      box-shadow: 0 0 5px #00adb5;
+    }
+
+    .search-input::placeholder {
+      color: #666;
+    }
+
     .decks-container {
       width: 95%;
       max-width: 1200px;
@@ -473,6 +499,15 @@
     <div class="decks-section">
       <h1>Mes decks : {{ userDecks.length }}</h1>
       <div class="decks-container">
+        <div class="search-container">
+          <input 
+            type="text" 
+            id="deckSearch" 
+            class="search-input" 
+            placeholder="Rechercher dans mes decks..."
+            onkeyup="searchDecks()"
+          >
+        </div>
         <table>
           <thead>
             <tr>
@@ -482,7 +517,7 @@
               <th>Visibilité</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody id="decksTableBody">
             @if(userDecks.length)
               @each(deck in userDecks)
                 <tr onclick="window.location.href='/deck/{{ deck.id }}'">
@@ -578,6 +613,29 @@
         flb.style.display = 'none';
       }
     });
+
+    function searchDecks() {
+      const input = document.getElementById('deckSearch');
+      const filter = input.value.toLowerCase();
+      const tbody = document.getElementById('decksTableBody');
+      const rows = tbody.getElementsByTagName('tr');
+
+      for (let row of rows) {
+        const titleCell = row.getElementsByTagName('td')[0];
+        const descriptionCell = row.getElementsByTagName('td')[1];
+        
+        if (titleCell && descriptionCell) {
+          const title = titleCell.textContent || titleCell.innerText;
+          const description = descriptionCell.textContent || descriptionCell.innerText;
+          
+          if (title.toLowerCase().indexOf(filter) > -1 || description.toLowerCase().indexOf(filter) > -1) {
+            row.style.display = '';
+          } else {
+            row.style.display = 'none';
+          }
+        }
+      }
+    }
   </script>
 </body>
 </html>

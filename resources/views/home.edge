@@ -1,507 +1,365 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <title>HomePage</title>
+  <meta charset="UTF-8">
+  <title>Accueil</title>
   <link rel="shortcut icon" href="/images/icone.ico" type="image/x-icon">
   <style>
-    /* Styles spécifiques à home */
-    .main-content {
-      margin-top: 120px;
-      text-align: center;
-      padding: 3rem 2rem;
-      width: 100%;
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
 
-    /* Titre principal */
-    h1 {
-      font-size: 3rem;
-      margin-bottom: 1.5rem;
-      color: #00adb5;
-      font-weight: 700;
-    }
-
-    /* Conteneur des decks */
-    .decks-container {
-      width: 95%;
-      max-width: 1200px;
-      margin: auto;
-    }
-
-    /* Table des decks */
-    table {
-      width: 100%;
-      text-align: left;
+    body {
       background: #000;
-      border: 2px solid #00adb5;
-      border-radius: 10px;
-      overflow: hidden;
+      color: #e0e0e0;
+      min-height: 100vh;
     }
 
-    /* Styles des colonnes */
-    th, td {
-      padding: 15px;
-      border-bottom: 1px solid #00adb5;
-    }
-
-    th {
-      font-size: 1.4rem;
-      font-weight: bold;
+    .navbar {
+      width: 100%;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       background: #000;
-      color: #00adb5;
       border-bottom: 2px solid #00adb5;
-      cursor: pointer;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 10;
     }
 
-    td {
-      font-size: 1.2rem;
+    .navbar a {
+      text-decoration: none;
+      color: #00adb5;
+      font-size: 1.5rem;
+      font-weight: bold;
     }
 
-    tr:hover {
-      cursor: pointer;
+    .navbar img {
+      height: 36px;
+      width: 36px;
+      margin-right: 0.7rem;
+      vertical-align: middle;
     }
 
-    /* Conteneur des boutons */
-    .button-container {
-      text-align: center;
-      margin-bottom: 3rem;
+    .main-content {
+      margin-top: 100px;
+      padding: 2rem;
     }
 
-    /* Boutons */
-    .add-button {
-      background: #00adb5; 
-      color: #000;             
-      border: 2px solid #00adb5;
-      padding: 0.8rem 1.5rem;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 1.1rem;
-      font-weight: 600;
-      transition: background 0.3s ease, color 0.3s ease;
+    /* Styles pour la barre de recherche et le switch */
+    .search-container {
+      max-width: 800px;
+      margin: 0 auto 2rem auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
     }
 
-    /* Bouton rouge pour "Supprimer" et "Abandonner" */
-    .abandon-button {
-      background: #000;
-      color: #ff4d4d;
-      border: 2px solid #ff4d4d;
-      padding: 0.8rem 1.5rem;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 1.1rem;
-      font-weight: 600;
-      transition: background 0.3s ease, color 0.3s ease;
-    }
-
-    .abandon-button:hover {
-      background: #ff4d4d;
-      color: black;
-    }
-
-    /* Formulaire de recherche */
-    .search-form {
+    .search-wrapper {
       display: flex;
       align-items: center;
       gap: 1rem;
-      margin-bottom: 2rem;
-      width: 100%;
-      max-width: 800px;
-      margin-left: auto;
-      margin-right: auto;
     }
 
     .search-input {
-      flex: 1;
-      padding: 0.8rem 1.2rem;
+      width: 100%;
+      padding: 12px 20px;
+      font-size: 1.1rem;
       border: 2px solid #00adb5;
       border-radius: 8px;
-      background: rgba(0, 173, 181, 0.1);
+      background: #111;
       color: #e0e0e0;
-      font-size: 1rem;
       transition: all 0.3s ease;
     }
 
     .search-input:focus {
       outline: none;
-      background: rgba(0, 173, 181, 0.2);
-      box-shadow: 0 0 0 3px rgba(0, 173, 181, 0.3);
+      box-shadow: 0 0 5px #00adb5;
     }
 
     .search-input::placeholder {
       color: #666;
     }
 
-    .search-button {
-      padding: 0.8rem 1.5rem;
-      background: #000;
-      color: #00adb5;
+    /* Styles du switch/slider */
+    .search-switch-container {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 1rem;
+    }
+
+    .search-switch {
+      background: #111;
       border: 2px solid #00adb5;
+      border-radius: 25px;
+      padding: 4px;
+      width: 320px;
+      height: 40px;
+      position: relative;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      transition: all 0.3s ease;
+    }
+
+    .switch-option {
+      width: 50%;
+      text-align: center;
+      font-size: 0.95rem;
+      color: #e0e0e0;
+      z-index: 1;
+      transition: color 0.3s ease;
+      padding: 5px 0;
+      font-weight: 600;
+    }
+
+    .switch-slider {
+      position: absolute;
+      left: 4px;
+      top: 4px;
+      width: calc(50% - 4px);
+      height: calc(100% - 8px);
+      background: #00adb5;
+      border-radius: 20px;
+      transition: transform 0.3s ease;
+    }
+
+    .search-switch[data-mode="author"] .switch-slider {
+      transform: translateX(calc(100% + 4px));
+    }
+
+    .search-switch[data-mode="author"] .switch-option:last-child {
+      color: #000;
+    }
+
+    .search-switch[data-mode="content"] .switch-option:first-child {
+      color: #000;
+    }
+
+    .decks-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .deck-card {
+      background: #111;
+      border: 2px solid #00adb5;
+      border-radius: 10px;
+      padding: 1.5rem;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      cursor: pointer;
+    }
+
+    .deck-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 5px 15px rgba(0, 173, 181, 0.2);
+    }
+
+    .deck-title {
+      color: #00adb5;
+      font-size: 1.4rem;
+      margin-bottom: 1rem;
+      font-weight: bold;
+    }
+
+    .deck-description {
+      color: #e0e0e0;
+      margin-bottom: 1rem;
+      line-height: 1.4;
+    }
+
+    .deck-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: #888;
+      font-size: 0.9rem;
+    }
+
+    .deck-author {
+      color: #00adb5;
+      text-decoration: none;
+    }
+
+    .no-decks {
+      text-align: center;
+      color: #666;
+      font-size: 1.2rem;
+      margin-top: 2rem;
+    }
+
+    /* Dropdown styles */
+    .dropdown {
+      position: relative;
+      display: inline-block;
+    }
+
+    .dropdown-toggle {
+      background: #00adb5;
+      color: white;
+      border: none;
+      padding: 0.7rem 1.2rem;
       border-radius: 8px;
       cursor: pointer;
       font-size: 1rem;
-      font-weight: 600;
-      transition: all 0.3s ease;
-      white-space: nowrap;
+      transition: background 0.3s ease;
     }
 
-    .search-button:hover {
+    .dropdown-menu {
+      display: none;
+      position: absolute;
+      right: 0;
+      background: #222;
+      min-width: 180px;
+      box-shadow: 0 2px 10px rgba(0,173,181,0.15);
+      border: 1px solid #00adb5;
+      border-radius: 8px;
+      z-index: 100;
+      margin-top: 0.5rem;
+    }
+
+    .dropdown.open .dropdown-menu {
+      display: block;
+    }
+
+    /* Styles pour le bouton d'ajout */
+    .add-deck-btn {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
       background: #00adb5;
-      color: black;
-    }
-
-    /* Messages flash */
-    .flash-message {
-      width: 100%;
-      max-width: 800px;
-      margin: 0 auto 2rem auto;
-      padding: 1rem;
-      border-radius: 8px;
-      text-align: center;
-      font-weight: 600;
-      animation: fadeIn 0.3s ease;
-    }
-
-    .flash-success {
-      background: rgba(0, 173, 181, 0.2);
-      border: 2px solid #00adb5;
-      color: #00adb5;
-    }
-
-    .flash-error {
-      background: rgba(255, 77, 77, 0.2);
-      border: 2px solid #ff4d4d;
-      color: #ff4d4d;
-    }
-
-    /* Pagination styles */
-    .pagination-btn {
-      background: #000;
-      color: #00adb5;
-      border: 2px solid #00adb5;
-      padding: 0.5rem 1.2rem;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 1.2rem;
-      font-weight: 600;
-      margin: 0 0.5rem;
-      transition: background 0.3s, color 0.3s;
-      min-width: 44px;
-      min-height: 44px;
-      display: inline-flex;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      font-size: 2rem;
+      display: flex;
       align-items: center;
       justify-content: center;
-      user-select: none;
-    }
-    .pagination-btn:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-      background: #222;
-      color: #888;
-      border-color: #222;
-    }
-    .pagination-info {
-      color: #00adb5;
-      font-size: 1.1rem;
-      font-weight: 600;
-      margin: 0 1rem;
-      user-select: none;
-    }
-    /* Ajout d'un espacement sous la pagination */
-    #userDecksPagination,
-    #publicDecksPagination {
-      margin-bottom: 4rem;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0, 173, 181, 0.3);
+      transition: all 0.3s ease;
+      z-index: 100;
+      text-decoration: none;
     }
 
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(-10px); }
-      to { opacity: 1; transform: translateY(0); }
+    .add-deck-btn:hover {
+      transform: scale(1.1);
+      background: #008c95;
+      box-shadow: 0 6px 16px rgba(0, 173, 181, 0.4);
+    }
+
+    .add-deck-btn span {
+      margin-top: -2px;
     }
   </style>
 </head>
 <body>
   @include('components/header')
 
-  <!-- Contenu principal -->
   <div class="main-content">
-    <!-- Messages flash -->
-    @if(flashMessages.has('success'))
-      <div class="flash-message flash-success">
-        {{ flashMessages.get('success') }}
+    <div class="search-container">
+      <div class="search-switch" id="searchSwitch" data-mode="content">
+        <div class="switch-option">Titre & Description</div>
+        <div class="switch-option">Auteur</div>
+        <div class="switch-slider"></div>
       </div>
-    @endif
-
-    @if(flashMessages.has('error'))
-      <div class="flash-message flash-error">
-        {{ flashMessages.get('error') }}
-      </div>
-    @endif
-
-    <script>
-      /* Script pour le tri des colonnes */
-      let sortDirection = {}; // Suivi de la direction de tri pour chaque colonne
-
-      function sortTable(tableId, columnIndex, isNumeric = false) {
-        const table = document.getElementById(tableId);
-        const tbody = table.querySelector('tbody');
-        const rows = Array.from(tbody.rows);
-
-        // Basculer la direction de tri
-        sortDirection[tableId] = sortDirection[tableId] || {};
-        sortDirection[tableId][columnIndex] = !sortDirection[tableId][columnIndex];
-
-        rows.sort((a, b) => {
-          const aText = a.cells[columnIndex].innerText.trim();
-          const bText = b.cells[columnIndex].innerText.trim();
-
-          if (isNumeric) {
-            return sortDirection[tableId][columnIndex]
-              ? parseInt(aText) - parseInt(bText)
-              : parseInt(bText) - parseInt(aText);
-          } else {
-            return sortDirection[tableId][columnIndex]
-              ? aText.localeCompare(bText)
-              : bText.localeCompare(aText);
-          }
-        });
-
-        // Mettre à jour les lignes du tableau
-        rows.forEach(row => tbody.appendChild(row));
-
-        // Mettre à jour les indicateurs de flèche
-        const headers = table.querySelectorAll('th');
-        headers.forEach((header, index) => {
-          const arrow = header.querySelector('.sort-arrow');
-          if (arrow) {
-            arrow.innerHTML = index === columnIndex
-              ? (sortDirection[tableId][columnIndex] ? '↓' : '↑')
-              : '';
-          }
-        });
-
-        // Rafraîchir la pagination pour afficher la page 1 avec le nouvel ordre trié
-        if (tableId === 'userDecksTable') {
-          paginateTable('userDecksTable', 'userDecksTbody', 'userDecksPagination', 10, true);
-        } else if (tableId === 'publicDecksTable') {
-          paginateTable('publicDecksTable', 'publicDecksTbody', 'publicDecksPagination', 10, true);
-        }
-      }
-
-      // Pagination logic for both tables
-      function paginateTable(tableId, tbodyId, paginationId, pageSize = 10, resetPage = false) {
-        const tbody = document.getElementById(tbodyId);
-        const rows = Array.from(tbody.querySelectorAll('tr'));
-        let currentPage = paginateTable.currentPages?.[tbodyId] || 1;
-        const totalPages = Math.ceil(rows.length / pageSize);
-
-        // Si resetPage est demandé (après un tri), on revient à la page 1
-        if (resetPage) currentPage = 1;
-        paginateTable.currentPages = paginateTable.currentPages || {};
-        paginateTable.currentPages[tbodyId] = currentPage;
-
-        function renderPage(page) {
-          // Hide all rows
-          rows.forEach(row => row.style.display = 'none');
-          // Show only rows for the current page
-          const start = (page - 1) * pageSize;
-          const end = start + pageSize;
-          rows.slice(start, end).forEach(row => row.style.display = '');
-          // Update pagination controls
-          const pagination = document.getElementById(paginationId);
-          pagination.innerHTML = '';
-          if (totalPages > 1) {
-            const left = document.createElement('button');
-            left.textContent = '←';
-            left.className = 'pagination-btn';
-            left.disabled = page === 1;
-            left.onclick = () => { if (paginateTable.currentPages[tbodyId] > 1) { paginateTable.currentPages[tbodyId]--; renderPage(paginateTable.currentPages[tbodyId]); } };
-            pagination.appendChild(left);
-
-            const pageInfo = document.createElement('span');
-            pageInfo.textContent = `Page ${page} / ${totalPages}`;
-            pageInfo.className = 'pagination-info';
-            pagination.appendChild(pageInfo);
-
-            const right = document.createElement('button');
-            right.textContent = '→';
-            right.className = 'pagination-btn';
-            right.disabled = page === totalPages;
-            right.onclick = () => { if (paginateTable.currentPages[tbodyId] < totalPages) { paginateTable.currentPages[tbodyId]++; renderPage(paginateTable.currentPages[tbodyId]); } };
-            pagination.appendChild(right);
-          }
-        }
-
-        renderPage(currentPage);
-      }
-
-      document.addEventListener('DOMContentLoaded', () => {
-        sortTable('userDecksTable', 0);
-        sortTable('publicDecksTable', 0);
-        // Les appels à paginateTable sont faits dans sortTable pour garantir le tri sur toutes les pages
-      });
-    </script>
-
-    <!-- Bouton pour ajouter un deck -->
-    <div class="button-container">
-      <button class="add-button" onclick="window.location.href='{{ route('decks.create') }}'">+ Créer un deck</button>
-    </div>
-
-    <!-- Titre des decks -->
-    <h1>Mes decks : {{ userDecks.length }}</h1>
-
-    <!-- Formulaire de recherche -->
-    <form action="{{ route('search.userDecks') }}" method="GET" class="search-form">
       <input 
         type="text" 
-        name="userQuery" 
-        placeholder="Rechercher un deck personnel..." 
-        value="{{ userQuery || '' }}"
-        class="search-input"
-      />
-      <button type="submit" class="search-button">
-        Rechercher
-      </button>
-    </form>
-
-    <!-- Tableau des decks personnels -->
-    <div class="decks-container">
-      <table id="userDecksTable">
-        <thead>
-          <tr>
-            <th onclick="sortTable('userDecksTable', 0)">Titre <span class="sort-arrow">↓</span></th>
-            <th onclick="sortTable('userDecksTable', 1)">Description <span class="sort-arrow"></span></th>
-            <th onclick="sortTable('userDecksTable', 2, true)">Cartes <span class="sort-arrow"></span></th>
-            <th onclick="sortTable('userDecksTable', 3)">Visibilité <span class="sort-arrow"></span></th>
-          </tr>
-        </thead>
-        <tbody id="userDecksTbody">
-          @if(userDecks.length)
-            @each(deck in userDecks)
-              <tr onclick="window.location.href='/deck/{{ deck.id }}'">
-                <td><a style="text-decoration: none; color: white" href="/deck/{{ deck.id }}">{{ deck.title }}</a></td>
-                <td>{{ deck.description }}</td>
-                <td>{{ deck.cards.length }}</td>
-                <td>
-                  <span title="{{ deck.visibility === 'public' ? 'Public' : 'Privé' }}">
-                    {{ deck.visibility === 'public' ? '🔓' : '🔒' }}
-                  </span>
-                </td>
-              </tr>
-            @endeach
-          @else
-            <tr>
-              <td colspan="4">Aucun deck disponible.</td>
-            </tr>
-          @endif
-        </tbody>
-      </table>
-      <div id="userDecksPagination" style="display: flex; justify-content: center; align-items: center; margin-top: 1rem;"></div>
+        id="deckSearch" 
+        class="search-input" 
+        placeholder="Rechercher des decks publics..."
+        onkeyup="searchDecks()"
+      >
     </div>
 
-
-
-    <!-- Tableau des decks publics -->
-    <div class="public-decks">
-      <h1>Decks publics : {{ publicDecks.length }}</h1>
-      <form action="{{ route('search.publicDecks') }}" method="GET" class="search-form">
-        <input 
-          type="text" 
-          name="publicQuery" 
-          placeholder="Rechercher un deck public..." 
-          value="{{ publicQuery || '' }}"
-          class="search-input"
-        />
-        <button type="submit" class="search-button">
-          Rechercher
-        </button>
-      </form>
-      <div class="decks-container">
-        <table id="publicDecksTable">
-          <thead>
-            <tr>
-              <th onclick="sortTable('publicDecksTable', 0)">Titre <span class="sort-arrow">↓</span></th>
-              <th onclick="sortTable('publicDecksTable', 1)">Description <span class="sort-arrow"></span></th>
-              <th onclick="sortTable('publicDecksTable', 2, true)">Cartes <span class="sort-arrow"></span></th>
-              <th onclick="sortTable('publicDecksTable', 3)">Créé par <span class="sort-arrow"></span></th>
-            </tr>
-          </thead>
-          <tbody id="publicDecksTbody">
-            @if(publicDecks.length)
-              @each(deck in publicDecks)
-                <tr onclick="window.location.href='/deck/{{ deck.id }}'">
-                  <td><a style="text-decoration: none; color: white" href="/deck/{{ deck.id }}">{{ deck.title }}</a></td>
-                  <td>{{ deck.description }}</td>
-                  <td>{{ deck.cards.length }}</td>
-                  <td>
-                    <a href="/public-account/{{ deck.user.id }}" style="color: #00adb5; text-decoration: underline;" onclick="event.stopPropagation();">
-                      {{ deck.user.username }}
-                    </a>
-                  </td>
-                </tr>
-              @endeach
-            @else
-              <tr>
-                <td colspan="4">Aucun deck public disponible.</td>
-              </tr>
-            @endif
-          </tbody>
-        </table>
-        <div id="publicDecksPagination" style="display: flex; justify-content: center; align-items: center; margin-top: 1rem;"></div>
-      </div>
+    <div class="decks-grid" id="decksContainer">
+      @if(publicDecks.length)
+        @each(deck in publicDecks)
+          <div class="deck-card" onclick="window.location.href='/deck/{{ deck.id }}'">
+            <div class="deck-title">{{ deck.title }}</div>
+            <div class="deck-description">{{ deck.description }}</div>
+            <div class="deck-info">
+              <span>{{ deck.cards.length }} cartes</span>
+              <a href="/public-account/{{ deck.user.id }}" class="deck-author">{{ deck.user.username }}</a>
+            </div>
+          </div>
+        @endeach
+      @else
+        <div class="no-decks">Aucun deck public disponible</div>
+      @end
     </div>
+
+    @if(auth.isAuthenticated)
+      <a href="/deck/create" class="add-deck-btn" title="Ajouter un nouveau deck">
+        <span>+</span>
+      </a>
+    @endif
   </div>
 
   <script>
-    // Pagination logic for both tables
-    function paginateTable(tableId, tbodyId, paginationId, pageSize = 10, resetPage = false) {
-      const tbody = document.getElementById(tbodyId);
-      const rows = Array.from(tbody.querySelectorAll('tr'));
-      let currentPage = paginateTable.currentPages?.[tbodyId] || 1;
-      const totalPages = Math.ceil(rows.length / pageSize);
+    const searchSwitch = document.getElementById('searchSwitch');
+    const searchInput = document.getElementById('deckSearch');
 
-      // Si resetPage est demandé (après un tri), on revient à la page 1
-      if (resetPage) currentPage = 1;
-      paginateTable.currentPages = paginateTable.currentPages || {};
-      paginateTable.currentPages[tbodyId] = currentPage;
+    searchSwitch.addEventListener('click', () => {
+      const currentMode = searchSwitch.getAttribute('data-mode');
+      const newMode = currentMode === 'content' ? 'author' : 'content';
+      searchSwitch.setAttribute('data-mode', newMode);
+      
+      // Update placeholder based on mode
+      searchInput.placeholder = newMode === 'content' 
+        ? "Rechercher par titre ou description..." 
+        : "Rechercher par nom d'auteur...";
+        
+      // Trigger search with new mode
+      searchDecks();
+    });
 
-      function renderPage(page) {
-        // Hide all rows
-        rows.forEach(row => row.style.display = 'none');
-        // Show only rows for the current page
-        const start = (page - 1) * pageSize;
-        const end = start + pageSize;
-        rows.slice(start, end).forEach(row => row.style.display = '');
-        // Update pagination controls
-        const pagination = document.getElementById(paginationId);
-        pagination.innerHTML = '';
-        if (totalPages > 1) {
-          const left = document.createElement('button');
-          left.textContent = '←';
-          left.className = 'pagination-btn';
-          left.disabled = page === 1;
-          left.onclick = () => { if (paginateTable.currentPages[tbodyId] > 1) { paginateTable.currentPages[tbodyId]--; renderPage(paginateTable.currentPages[tbodyId]); } };
-          pagination.appendChild(left);
+    function searchDecks() {
+      const input = document.getElementById('deckSearch');
+      const filter = input.value.toLowerCase();
+      const searchMode = document.getElementById('searchSwitch').getAttribute('data-mode');
+      const decks = document.getElementsByClassName('deck-card');
 
-          const pageInfo = document.createElement('span');
-          pageInfo.textContent = `Page ${page} / ${totalPages}`;
-          pageInfo.className = 'pagination-info';
-          pagination.appendChild(pageInfo);
-
-          const right = document.createElement('button');
-          right.textContent = '→';
-          right.className = 'pagination-btn';
-          right.disabled = page === totalPages;
-          right.onclick = () => { if (paginateTable.currentPages[tbodyId] < totalPages) { paginateTable.currentPages[tbodyId]++; renderPage(paginateTable.currentPages[tbodyId]); } };
-          pagination.appendChild(right);
+      for (let deck of decks) {
+        let match = false;
+        
+        if (searchMode === 'content') {
+          const title = deck.querySelector('.deck-title').textContent;
+          const description = deck.querySelector('.deck-description').textContent;
+          match = title.toLowerCase().includes(filter) || 
+                 description.toLowerCase().includes(filter);
+        } else {
+          const author = deck.querySelector('.deck-author').textContent;
+          match = author.toLowerCase().includes(filter);
         }
+
+        deck.style.display = match ? '' : 'none';
       }
 
-      renderPage(currentPage);
+      // Update no results message
+      const visibleDecks = Array.from(decks).filter(d => d.style.display !== 'none').length;
+      const noDecksMessage = document.querySelector('.no-decks');
+      if (noDecksMessage) {
+        noDecksMessage.style.display = visibleDecks === 0 ? 'block' : 'none';
+      }
     }
 
-    document.addEventListener('DOMContentLoaded', () => {
-      // ...existing code...
-      paginateTable('userDecksTable', 'userDecksTbody', 'userDecksPagination', 10);
-      paginateTable('publicDecksTable', 'publicDecksTbody', 'publicDecksPagination', 10);
+    document.addEventListener('click', function(event) {
+      const dropdown = document.getElementById('userDropdown');
+      if (dropdown && !dropdown.contains(event.target)) {
+        dropdown.classList.remove('open');
+      }
     });
   </script>
 </body>
