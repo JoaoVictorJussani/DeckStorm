@@ -14,7 +14,7 @@
     }
 
     body {
-      background: #000;
+      background: #0a0c10;
       color: #e0e0e0;
       display: flex;
       flex-direction: column;
@@ -22,124 +22,7 @@
       min-height: 100vh;
       font-size: 1rem;
     }
-
-    /* Barre de navigation */
-    .header-navbar {
-      width: 100%;
-      padding: 1rem 2rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: #000;
-      border-bottom: 2px solid #6c8947;
-      color: white;
-      position: fixed;
-      top: 0;
-      left: 0;
-      z-index: 10;
-    }
-
-    .header-navbar h2 {
-      font-size: 1.8rem;
-      font-weight: 700;
-    }
-
-    .header-navbar button {
-      background: #6c8947;
-      color: white;
-      border: 2px solid #6c8947;
-      padding: 0.7rem 1.2rem;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 1rem;
-      transition: background 0.3s ease;
-    }
-
-    .header-navbar button:hover {
-      background: #008c95;
-    }
-
-    .header-navbar a {
-      text-decoration: none;
-      color: #6c8947;
-      font-size: 1.5rem;
-      font-weight: bold;
-    }
-
-    .header-navbar img {
-      height: 36px;
-      width: 36px;
-      margin-right: 0.7rem;
-      vertical-align: middle;
-    }
-
-    /* Dropdown styles */
-    .header-dropdown {
-      position: relative;
-      display: inline-block;
-    }
-    .header-dropdown-toggle {
-      background: #6c8947;
-      color: white;
-      border: 2px solid #6c8947;
-      padding: 0.7rem 1.2rem;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 1rem;
-      transition: background 0.3s ease;
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-    .header-dropdown-toggle:hover, .header-dropdown-toggle:focus {
-      background: #008c95;
-      color: #fff;
-    }
-    .header-dropdown-menu {
-      display: none;
-      position: absolute;
-      right: 0;
-      background: #222;
-      min-width: 180px;
-      // box-shadow: 0 2px 10px rgba(0,173,181,0.15);
-      border: 1px solid #6c8947;
-      border-radius: 8px;
-      z-index: 100;
-      margin-top: 0.5rem;
-      padding: 0.5rem 0;
-    }
-    .header-dropdown.open .header-dropdown-menu {
-      display: block;
-    }
-    .header-dropdown-menu a, .header-dropdown-menu button {
-      display: block;
-      width: 100%;
-      background: none;
-      border: none;
-      color: #6c8947;
-      text-align: left;
-      padding: 0.7rem 1.2rem;
-      font-size: 1rem;
-      font-weight: 600;
-      cursor: pointer;
-      border-radius: 6px;
-      transition: background 0.2s, color 0.2s;
-      text-decoration: none;
-    }
-    .header-dropdown-menu a:hover, .header-dropdown-menu button:hover {
-      background: #6c8947;
-      color: #000;
-    }
-    .header-logout-btn {
-      color: #ff4d4d;
-    }
-    .header-logout-btn:hover {
-      background: #ff4d4d !important;
-      color: #000;
-    }
-
-
+    
     /* Styles spécifiques au public_account */
     .main-content {
       margin-top: 120px;
@@ -149,6 +32,128 @@
       max-width: 900px;
       margin-left: auto;
       margin-right: auto;
+    }
+
+    .user-stats {
+      background: linear-gradient(145deg, rgba(108, 137, 71, 0.05), rgba(108, 137, 71, 0.15));
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(108, 137, 71, 0.3);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+      border-radius: 16px;
+      padding: 1.5rem 2rem;
+      margin: 0 auto 2.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 3rem;
+      max-width: 600px;
+      position: relative;
+    }
+
+    .stat-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      padding: 0.5rem 1.5rem;
+    }
+
+    .stat-item:not(:last-child):after {
+      content: '';
+      position: absolute;
+      right: -1.5rem;
+      top: 50%;
+      transform: translateY(-50%);
+      height: 70%;
+      width: 1px;
+      background: linear-gradient(to bottom, transparent, rgba(108, 137, 71, 0.3), transparent);
+    }
+
+    .stat-label {
+      font-size: 0.85rem;
+      color: rgba(108, 137, 71, 0.8);
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 0.3rem;
+    }
+
+    .stat-value {
+      font-size: 1.5rem;
+      color: #e0e0e0;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .stat-value:hover {
+      color: #6c8947;
+      transform: translateY(-2px);
+    }
+
+    .stat-value::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: #6c8947;
+      transform: scaleX(0);
+      transition: transform 0.3s ease;
+    }
+
+    .stat-value:hover::after {
+      transform: scaleX(1);
+    }
+
+    .follow-btn, .unfollow-btn {
+      position: relative;
+      padding: 0.8rem 2rem;
+      font-size: 0.95rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      border-radius: 12px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      overflow: hidden;
+      z-index: 1;
+    }
+
+    .follow-btn {
+      background: linear-gradient(135deg, #6c8947 0%, #7b995c 100%);
+      color: #fff;
+      box-shadow: 0 4px 15px rgba(108, 137, 71, 0.2);
+    }
+
+    .unfollow-btn {
+      background: linear-gradient(135deg, #ff7676 0%, #ff9999 100%);
+      color: #fff;
+      box-shadow: 0 4px 15px rgba(255, 118, 118, 0.2);
+    }
+
+    .follow-btn:hover, .unfollow-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(108, 137, 71, 0.3);
+    }
+
+    .follow-btn::before, .unfollow-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+      transform: translateX(-100%);
+      transition: transform 0.6s ease;
+      z-index: -1;
+    }
+
+    .follow-btn:hover::before, .unfollow-btn:hover::before {
+      transform: translateX(100%);
     }
 
     .decks-container {
@@ -166,7 +171,7 @@
     table {
       width: 100%;
       text-align: left;
-      background: #000;
+      background: #0a0c10;
       border: 2px solid #6c8947;
       border-radius: 10px;
       overflow: hidden;
@@ -181,7 +186,7 @@
     th {
       font-size: 1.2rem;
       font-weight: bold;
-      background: #000;
+      background: #0a0c10;
       color: #6c8947;
       border-bottom: 2px solid #6c8947;
     }
@@ -194,50 +199,37 @@
       cursor: pointer;
       background: #111;
     }
+
+    .link-action {
+      color: var(--primary-color);
+      cursor: pointer;
+    }
+
+    .link-action:hover {
+      color: var(--primary-color);
+      opacity: 0.8;
+    }
   </style>
 </head>
 <body>
-  <div class="header-navbar">
-    <a href="{{ route('home') }}"><img src="/images/icone.ico">DeckStorm</a>
-    <div>
-      <span>Bienvenue {{ authUser?.username }}</span>
-      <div class="header-dropdown" id="header-userDropdown">
-        <button class="header-dropdown-toggle" onclick="headerToggleDropdown()" aria-haspopup="true" aria-expanded="false">
-          <span>▼</span>
-        </button>
-        <div class="header-dropdown-menu" id="header-dropdownMenu">
-          <a href="/account/{{ authUser?.id }}">Mon compte</a>
-          <form action="/logout" method="POST" style="margin:0;">
-            {{ csrfField() }}
-            <button type="submit" class="header-logout-btn">Se déconnecter</button>
-          </form>
-        </div>
-      </div>
-    </div>
-  </div>
-  <script>
-  function headerToggleDropdown() {
-    document.getElementById('header-userDropdown').classList.toggle('open');
-  }
-  document.addEventListener('click', function(event) {
-    const dropdown = document.getElementById('header-userDropdown');
-    if (!dropdown.contains(event.target)) {
-      dropdown.classList.remove('open');
-    }
-  });
-</script>
+  @include('components/header')
   <div class="main-content">
-    <h1>Decks de {{ user.username }} : {{ publicDecks.length }}</h1>
-    <div style="margin-bottom: 2rem;">
-      <span><b>Abonnés :</b> <span id="followers-link" style="cursor:pointer; text-decoration:underline;">{{ followersCount }}</span></span> &nbsp;|&nbsp;
-      <span><b>Abonnements :</b> <span id="following-link" style="cursor:pointer; text-decoration:underline;">{{ followingCount }}</span></span>
+    <div class="user-stats">
+      <div class="stat-item">
+        <span class="stat-label">Abonnés</span>
+        <span class="stat-value" id="followers-link">{{ followersCount }}</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">Abonnements</span>
+        <span class="stat-value" id="following-link">{{ followingCount }}</span>
+      </div>
       @if(authUser.id !== user.id)
-        <form action="{{ isFollowing ? route('user.unfollow', { id: user.id }) : route('user.follow', { id: user.id }) }}" method="POST" style="display:inline;">
-          {{ csrfField() }}
-          <button type="submit" style="margin-left:1rem; background: {{ isFollowing ? '#ff4d4d' : '#6c8947' }}; color: #fff; border: none; border-radius: 8px; padding: 0.5rem 1.2rem; cursor: pointer;">
-            {{ isFollowing ? 'Se désabonner' : 'Suivre' }}
-          </button>
-        </form>
+      <form action="{{ isFollowing ? route('user.unfollow', { id: user.id }) : route('user.follow', { id: user.id }) }}" method="POST" style="margin:0;">
+        {{ csrfField() }}
+        <button type="submit" class="{{ isFollowing ? 'unfollow-btn' : 'follow-btn' }}">
+          {{ isFollowing ? 'Se désabonner' : 'Suivre' }}
+        </button>
+      </form>
       @endif
     </div>
     <!-- Box survolante pour abonnés -->
@@ -246,15 +238,15 @@
       <div style="font-size:1.2rem; margin-bottom:0.7rem;"><b>Abonnés</b></div>
       <div style="color:#e0e0e0; font-size:1rem; max-height:250px; overflow-y:auto;">
         @if(followersList && followersList.length)
-          <ul style="margin:0 0 0 1.2rem; padding:0;">
-            @each(f in followersList)
-              <li>
-                <a href="/public-account/{{ f.id }}" style="color:#6c8947; text-decoration:underline;">{{ f.username }}</a>
-              </li>
-            @endeach
-          </ul>
+        <ul style="margin:0 0 0 1.2rem; padding:0;">
+          @each(f in followersList)
+          <li>
+            <a href="/public-account/{{ f.id }}" style="color:#6c8947; text-decoration:underline;">{{ f.username }}</a>
+          </li>
+          @endeach
+        </ul>
         @else
-          <span>Aucun abonné.</span>
+        <span>Aucun abonné.</span>
         @endif
       </div>
     </div>
@@ -264,15 +256,15 @@
       <div style="font-size:1.2rem; margin-bottom:0.7rem;"><b>Abonnements</b></div>
       <div style="color:#e0e0e0; font-size:1rem; max-height:250px; overflow-y:auto;">
         @if(followingList && followingList.length)
-          <ul style="margin:0 0 0 1.2rem; padding:0;">
-            @each(f in followingList)
-              <li>
-                <a href="/public-account/{{ f.id }}" style="color:#6c8947; text-decoration:underline;">{{ f.username }}</a>
-              </li>
-            @endeach
-          </ul>
+        <ul style="margin:0 0 0 1.2rem; padding:0;">
+          @each(f in followingList)
+          <li>
+            <a href="/public-account/{{ f.id }}" style="color:#6c8947; text-decoration:underline;">{{ f.username }}</a>
+          </li>
+          @endeach
+        </ul>
         @else
-          <span>Aucun abonnement.</span>
+        <span>Aucun abonnement.</span>
         @endif
       </div>
     </div>
@@ -304,7 +296,8 @@
           flb.style.display = 'none';
         }
       });
-    </script>
+      </script>
+      <h1>Decks de {{ user.username }} : {{ publicDecks.length }}</h1>
     <div class="decks-container">
       <table>
         <thead>
