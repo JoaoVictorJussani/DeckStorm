@@ -12,11 +12,18 @@
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
 
+    html {
+      scroll-behavior: smooth;
+    }
+
     body {
       background: #0a0c10;
       color: #e6e9ef;
       min-height: 100vh;
       font-weight: 400;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
     }
 
     .navbar {
@@ -33,6 +40,7 @@
       z-index: 10;
       backdrop-filter: blur(8px);
       box-shadow: 0 2px 15px rgba(108, 137, 71, 0.15);
+      transition: box-shadow 0.3s;
     }
 
     .navbar a {
@@ -40,6 +48,11 @@
       color: #6c8947;
       font-size: 1.5rem;
       font-weight: bold;
+      transition: color 0.2s;
+    }
+    .navbar a:focus, .navbar a:hover {
+      color: #a6d672;
+      outline: none;
     }
 
     .navbar img {
@@ -52,56 +65,58 @@
     .main-content {
       margin-top: 100px;
       padding: 2rem;
+      width: 100%;
+      max-width: 1400px;
+      margin-left: auto;
+      margin-right: auto;
     }
 
     /* Styles pour la barre de recherche et le switch */
     .search-container {
-      max-width: 800px;
+      max-width: 900px;
       margin: 0 auto 2rem auto;
       display: flex;
       flex-direction: column;
       align-items: center;
       gap: 1rem;
+      width: 100%;
     }
 
     .search-wrapper {
       display: flex;
       align-items: center;
       gap: 1rem;
+      width: 100%;
     }
 
     .search-input {
       width: 100%;
       padding: 12px 20px;
       font-size: 1.1rem;
-      border: 1px solid rgba(108, 137, 71, 0.3);
+      border: 1.5px solid rgba(108, 137, 71, 0.4);
       border-radius: 8px;
-      background: rgba(17, 19, 23, 0.8);
+      background: rgba(17, 19, 23, 0.85);
       color: #e0e0e0;
-      transition: all 0.3s ease;
+      transition: border 0.2s, box-shadow 0.2s;
       backdrop-filter: blur(4px);
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
     }
-
     .search-input:focus {
       outline: none;
-      box-shadow: 0 0 5px #6c8947;
+      border-color: #a6d672;
+      box-shadow: 0 0 8px #6c8947;
+      background: rgba(17, 19, 23, 0.95);
     }
-
     .search-input::placeholder {
-      color: #666;
+      color: #888;
+      opacity: 1;
+      font-style: italic;
     }
 
     /* Styles du switch/slider */
-    .search-switch-container {
-      display: flex;
-      justify-content: center;
-      margin-bottom: 1rem;
-    }
-
     .search-switch {
-      background: rgba(17, 19, 23, 0.8);
-      border: 1px solid rgba(56, 66, 34, 0.3);
+      background: rgba(17, 19, 23, 0.85);
+      border: 1.5px solid rgba(56, 66, 34, 0.3);
       border-radius: 25px;
       padding: 4px;
       width: 320px;
@@ -110,20 +125,27 @@
       cursor: pointer;
       display: flex;
       align-items: center;
-      transition: all 0.3s ease;
+      transition: border 0.2s, box-shadow 0.2s;
       backdrop-filter: blur(4px);
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+      user-select: none;
+    }
+    .search-switch:focus {
+      outline: 2px solid #6c8947;
     }
 
     .switch-option {
       width: 50%;
       text-align: center;
-      font-size: 0.95rem;
+      font-size: 1rem;
       color: #e0e0e0;
       z-index: 1;
-      transition: color 0.3s ease;
+      transition: color 0.3s;
       padding: 5px 0;
       font-weight: 600;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      border-radius: 20px;
     }
 
     .switch-slider {
@@ -132,21 +154,77 @@
       top: 4px;
       width: calc(50% - 4px);
       height: calc(100% - 8px);
-      background: #6c8947;
+      background: linear-gradient(90deg, #6c8947 60%, #a6d672 100%);
       border-radius: 20px;
-      transition: transform 0.3s ease;
+      transition: transform 0.3s;
+      box-shadow: 0 2px 8px rgba(108, 137, 71, 0.15);
     }
 
     .search-switch[data-mode="author"] .switch-slider {
       transform: translateX(calc(100% + 4px));
     }
-
     .search-switch[data-mode="author"] .switch-option:last-child {
-      color: #000;
+      color: #222;
+      background: #a6d67222;
+    }
+    .search-switch[data-mode="content"] .switch-option:first-child {
+      color: #222;
+      background: #a6d67222;
     }
 
-    .search-switch[data-mode="content"] .switch-option:first-child {
-      color: #000;
+    /* Styles pour le switch de vue */
+    .view-switch {
+      background: rgba(17, 19, 23, 0.85);
+      border: 1.5px solid rgba(56, 66, 34, 0.3);
+      border-radius: 25px;
+      padding: 4px;
+      width: 140px;
+      height: 40px;
+      position: relative;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      transition: border 0.2s, box-shadow 0.2s;
+      backdrop-filter: blur(4px);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+      user-select: none;
+      margin-left: 0.5rem;
+    }
+    .view-switch-option {
+      width: 50%;
+      text-align: center;
+      font-size: 1rem;
+      color: #e0e0e0;
+      z-index: 1;
+      transition: color 0.3s;
+      padding: 5px 0;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      border-radius: 20px;
+    }
+    .view-switch-slider {
+      position: absolute;
+      left: 4px;
+      top: 4px;
+      width: calc(50% - 4px);
+      height: calc(100% - 8px);
+      background: linear-gradient(90deg, #6c8947 60%, #a6d672 100%);
+      border-radius: 20px;
+      transition: transform 0.3s;
+      box-shadow: 0 2px 8px rgba(108, 137, 71, 0.15);
+    }
+
+    .view-switch[data-view="list"] .view-switch-slider {
+      transform: translateX(calc(100% + 4px));
+    }
+    .view-switch[data-view="list"] .view-switch-option:last-child {
+      color: #222;
+      background: #a6d67222;
+    }
+    .view-switch[data-view="grid"] .view-switch-option:first-child {
+      color: #222;
+      background: #a6d67222;
     }
 
     .decks-grid {
@@ -155,22 +233,27 @@
       gap: 2rem;
       max-width: 1200px;
       margin: 0 auto;
+      width: 100%;
+      transition: gap 0.2s;
     }
 
     .deck-card {
-      background: rgba(17, 19, 23, 0.8);
+      background: rgba(17, 19, 23, 0.92);
       backdrop-filter: blur(4px);
-      border: 1px solid rgba(56, 66, 34, 0.3);
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-      border-radius: 10px;
+      border: 1.5px solid rgba(56, 66, 34, 0.25);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.13);
+      border-radius: 12px;
       padding: 1.5rem;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      transition: transform 0.2s, box-shadow 0.2s, border 0.2s;
       cursor: pointer;
+      min-width: 0;
+      word-break: break-word;
     }
-
-    .deck-card:hover {
-      transform: translateY(-5px) scale(1.02);
-      box-shadow: 0 8px 25px rgba(56, 66, 34, 0.25);
+    .deck-card:hover, .deck-card:focus {
+      transform: translateY(-7px) scale(1.025);
+      box-shadow: 0 8px 30px rgba(108, 137, 71, 0.22);
+      border-color: #a6d672;
+      outline: none;
     }
 
     .deck-title {
@@ -179,32 +262,45 @@
       letter-spacing: 0.5px;
       margin-bottom: 1rem;
       font-weight: bold;
+      text-shadow: 0 1px 0 #222;
+      overflow-wrap: anywhere;
     }
 
     .deck-description {
       color: #e0e0e0;
       margin-bottom: 1rem;
       line-height: 1.4;
+      font-size: 1.05rem;
+      min-height: 2.2em;
+      opacity: 0.95;
     }
 
     .deck-info {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      color: #888;
-      font-size: 0.9rem;
+      color: #b0b0b0;
+      font-size: 0.95rem;
+      margin-top: 0.5rem;
     }
 
     .deck-author {
       color: #6c8947;
-      text-decoration: none;
+      text-decoration: underline;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+    .deck-author:hover, .deck-author:focus {
+      color: #a6d672;
+      outline: none;
     }
 
     .no-decks {
       text-align: center;
-      color: #666;
+      color: #888;
       font-size: 1.2rem;
       margin-top: 2rem;
+      letter-spacing: 0.5px;
     }
 
     /* Dropdown styles */
@@ -212,7 +308,6 @@
       position: relative;
       display: inline-block;
     }
-
     .dropdown-toggle {
       background: #6c8947;
       color: white;
@@ -221,9 +316,13 @@
       border-radius: 8px;
       cursor: pointer;
       font-size: 1rem;
-      transition: background 0.3s ease;
+      transition: background 0.2s;
+      font-weight: 600;
     }
-
+    .dropdown-toggle:focus, .dropdown-toggle:hover {
+      background: #7b995c;
+      outline: none;
+    }
     .dropdown-menu {
       display: none;
       position: absolute;
@@ -236,7 +335,6 @@
       z-index: 100;
       margin-top: 0.5rem;
     }
-
     .dropdown.open .dropdown-menu {
       display: block;
     }
@@ -258,18 +356,136 @@
       justify-content: center;
       cursor: pointer;
       box-shadow: 0 4px 15px rgba(108, 137, 71, 0.4);
-      transition: all 0.3s ease;
+      transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
       z-index: 100;
       text-decoration: none;
     }
-
-    .add-deck-btn:hover {
+    .add-deck-btn:focus, .add-deck-btn:hover {
       background: linear-gradient(135deg, #7b995c, #6c8947);
-      box-shadow: 0 6px 20px rgba(108, 137, 71, 0.5);
+      box-shadow: 0 6px 24px rgba(108, 137, 71, 0.5);
+      transform: scale(1.08);
+      outline: none;
     }
-
     .add-deck-btn span {
       margin-top: -2px;
+    }
+
+    /* Table/list mode */
+    #decksListContainer table {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      border-collapse: collapse;
+      background: rgba(17,19,23,0.92);
+      border-radius: 10px;
+      overflow: hidden;
+      font-size: 1.05rem;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    }
+    #decksListContainer th, #decksListContainer td {
+      padding: 14px 10px;
+      border-bottom: 1px solid #6c8947;
+      text-align: left;
+    }
+    #decksListContainer th {
+      background: #181c13;
+      color: #6c8947;
+      font-size: 1.1rem;
+      font-weight: bold;
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.2s;
+    }
+    #decksListContainer th:focus, #decksListContainer th:hover {
+      background: #232d1a;
+      outline: none;
+    }
+    #decksListContainer th .sort-arrow {
+      margin-left: 4px;
+      font-size: 0.95em;
+    }
+    #decksListContainer tr:hover {
+      background: #181c13;
+    }
+    #decksListContainer a.deck-author {
+      color: #6c8947;
+      text-decoration: underline;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+    #decksListContainer a.deck-author:hover, #decksListContainer a.deck-author:focus {
+      color: #a6d672;
+      outline: none;
+    }
+
+    /* Bouton de vue */
+    #toggleViewBtn {
+      display: none;
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .main-content {
+        padding: 1rem;
+      }
+      .search-container {
+        max-width: 100%;
+      }
+      .decks-grid {
+        gap: 1rem;
+      }
+      #decksListContainer table {
+        font-size: 0.98rem;
+      }
+    }
+    @media (max-width: 600px) {
+      .main-content {
+        margin-top: 80px;
+        padding: 0.5rem;
+      }
+      .search-container {
+        gap: 0.5rem;
+      }
+      .search-switch {
+        width: 180px;
+        font-size: 0.9rem;
+        min-width: 0;
+      }
+      .search-input {
+        font-size: 1rem;
+        padding: 10px 12px;
+      }
+      .decks-grid {
+        grid-template-columns: 1fr;
+        gap: 0.7rem;
+      }
+      .deck-card {
+        padding: 1rem;
+        font-size: 0.98rem;
+      }
+      #decksListContainer th, #decksListContainer td {
+        padding: 8px 5px;
+      }
+      #toggleViewBtn {
+        padding: 0.5rem 0.8rem;
+        font-size: 1rem;
+      }
+      .add-deck-btn {
+        width: 48px;
+        height: 48px;
+        font-size: 1.5rem;
+        bottom: 1rem;
+        right: 1rem;
+      }
+    }
+    @media (max-width: 400px) {
+      .search-switch {
+        width: 120px;
+        font-size: 0.8rem;
+      }
+      .deck-title {
+        font-size: 1.1rem;
+      }
     }
   </style>
 </head>
@@ -278,24 +494,34 @@
 
   <div class="main-content">
     <div class="search-container">
-      <div class="search-switch" id="searchSwitch" data-mode="content">
-        <div class="switch-option">Titre & Description</div>
-        <div class="switch-option">Auteur</div>
-        <div class="switch-slider"></div>
+      <div style="display: flex; align-items: center; width: 100%; gap: 1rem;">
+        <div class="search-switch" id="searchSwitch" data-mode="content">
+          <div class="switch-option">Titre & Description</div>
+          <div class="switch-option">Auteur</div>
+          <div class="switch-slider"></div>
+        </div>
+        <input 
+          type="text" 
+          id="deckSearch" 
+          class="search-input" 
+          placeholder="Rechercher des decks publics..."
+          onkeyup="searchDecks()"
+          style="flex:1;"
+        >
+        <!-- Nouveau switch pour grid/list -->
+        <div class="view-switch" id="viewSwitch" data-view="grid" tabindex="0" aria-label="Changer l'affichage">
+          <div class="view-switch-option">Grid</div>
+          <div class="view-switch-option">List</div>
+          <div class="view-switch-slider"></div>
+        </div>
       </div>
-      <input 
-        type="text" 
-        id="deckSearch" 
-        class="search-input" 
-        placeholder="Rechercher des decks publics..."
-        onkeyup="searchDecks()"
-      >
     </div>
 
     <div style="text-align:center; margin-bottom:1rem; color:#6c8947; font-weight:600; font-size:1.2rem;">
       Decks trouvés : <span id="deckCount">{{ publicDecks.length }}</span>
     </div>
 
+    <!-- Affichage en mode grid -->
     <div class="decks-grid" id="decksContainer">
       @if(publicDecks.length)
         @each(deck in publicDecks)
@@ -313,6 +539,42 @@
       @end
     </div>
 
+    <!-- Affichage en mode liste (table), caché par défaut -->
+    <div id="decksListContainer" style="display:none;">
+      <table style="width:100%; max-width:1200px; margin:0 auto; border-collapse:collapse; background:rgba(17,19,23,0.8); border-radius:10px; overflow:hidden;">
+        <thead>
+          <tr>
+            <th onclick="sortListBy('title')" id="th-title">
+              Titre <span class="sort-arrow" id="sortArrow-title">▲</span>
+            </th>
+            <th onclick="sortListBy('description')" id="th-description">
+              Description <span class="sort-arrow" id="sortArrow-description"></span>
+            </th>
+            <th onclick="sortListBy('cards')" id="th-cards">
+              Cartes <span class="sort-arrow" id="sortArrow-cards"></span>
+            </th>
+            <th onclick="sortListBy('author')" id="th-author">
+              Auteur <span class="sort-arrow" id="sortArrow-author"></span>
+            </th>
+          </tr>
+        </thead>
+        <tbody id="decksListBody">
+          @if(publicDecks.length)
+            @each(deck in publicDecks)
+              <tr class="deck-list-row" style="cursor:pointer;" onclick="window.location.href='/deck/{{ deck.id }}'">
+                <td class="deck-title-cell">{{ deck.title }}</td>
+                <td>{{ deck.description }}</td>
+                <td>{{ deck.cards.length }}</td>
+                <td><a href="/public-account/{{ deck.user.id }}" class="deck-author">{{ deck.user.username }}</a></td>
+              </tr>
+            @endeach
+          @else
+            <tr><td colspan="4" style="text-align:center;">Aucun deck public disponible</td></tr>
+          @end
+        </tbody>
+      </table>
+    </div>
+
     @if(auth.isAuthenticated)
       <a href="/deck/create" class="add-deck-btn" title="Ajouter un nouveau deck">
         <span>+</span>
@@ -328,15 +590,81 @@
       const currentMode = searchSwitch.getAttribute('data-mode');
       const newMode = currentMode === 'content' ? 'author' : 'content';
       searchSwitch.setAttribute('data-mode', newMode);
-      
+
       // Update placeholder based on mode
-      searchInput.placeholder = newMode === 'content' 
-        ? "Rechercher par titre ou description..." 
+      searchInput.placeholder = newMode === 'content'
+        ? "Rechercher par titre ou description..."
         : "Rechercher par nom d'auteur...";
-        
+
       // Trigger search with new mode
       searchDecks();
     });
+
+    // --- Affichage grid/list avec switch ---
+    let isGridView = true;
+    let sortField = 'title';
+    let sortAsc = true;
+
+    const decksContainer = document.getElementById('decksContainer');
+    const decksListContainer = document.getElementById('decksListContainer');
+    const viewSwitch = document.getElementById('viewSwitch');
+
+    function setSortArrows() {
+      const fields = ['title', 'description', 'cards', 'author'];
+      fields.forEach(f => {
+        document.getElementById('sortArrow-' + f).textContent = '';
+      });
+      document.getElementById('sortArrow-' + sortField).textContent = sortAsc ? '▲' : '▼';
+    }
+
+    function sortListBy(field) {
+      if (sortField === field) {
+        sortAsc = !sortAsc;
+      } else {
+        sortField = field;
+        sortAsc = true;
+      }
+      setSortArrows();
+      updateListFromGrid();
+    }
+
+    function updateListFromGrid() {
+      const gridCards = Array.from(document.querySelectorAll('.deck-card'));
+      const listBody = document.getElementById('decksListBody');
+      const visibleDecks = gridCards.filter(card => card.style.display !== 'none').map(card => ({
+        title: card.querySelector('.deck-title').textContent,
+        description: card.querySelector('.deck-description').textContent,
+        cards: parseInt(card.querySelector('.deck-info span').textContent) || 0,
+        author: card.querySelector('.deck-author').textContent,
+        authorLink: card.querySelector('.deck-author').getAttribute('href'),
+        deckUrl: card.getAttribute('onclick').match(/'([^']+)'/)[1]
+      }));
+      if (visibleDecks.length > 1) {
+        visibleDecks.sort((a, b) => {
+          let va = a[sortField], vb = b[sortField];
+          if (sortField === 'cards') {
+            va = Number(va); vb = Number(vb);
+            return sortAsc ? va - vb : vb - va;
+          }
+          va = (va || '').toString().toLowerCase();
+          vb = (vb || '').toString().toLowerCase();
+          if (va < vb) return sortAsc ? -1 : 1;
+          if (va > vb) return sortAsc ? 1 : -1;
+          return 0;
+        });
+      }
+      listBody.innerHTML = visibleDecks.length
+        ? visibleDecks.map(deck => `
+          <tr class="deck-list-row" style="cursor:pointer;" onclick="window.location.href='${deck.deckUrl}'">
+            <td class="deck-title-cell">${deck.title}</td>
+            <td>${deck.description}</td>
+            <td>${deck.cards}</td>
+            <td><a href="${deck.authorLink}" class="deck-author">${deck.author}</a></td>
+          </tr>
+        `).join('')
+        : `<tr><td colspan="4" style="text-align:center;">Aucun deck public disponible</td></tr>`;
+      document.getElementById('deckCount').textContent = visibleDecks.length;
+    }
 
     function searchDecks() {
       const input = document.getElementById('deckSearch');
@@ -347,30 +675,51 @@
 
       for (let deck of decks) {
         let match = false;
-        
         if (searchMode === 'content') {
           const title = deck.querySelector('.deck-title').textContent;
           const description = deck.querySelector('.deck-description').textContent;
-          match = title.toLowerCase().includes(filter) || 
+          match = title.toLowerCase().includes(filter) ||
                  description.toLowerCase().includes(filter);
         } else {
           const author = deck.querySelector('.deck-author').textContent;
           match = author.toLowerCase().includes(filter);
         }
-
         deck.style.display = match ? '' : 'none';
         if (match) visibleCount++;
       }
 
-      // Update no results message
       const noDecksMessage = document.querySelector('.no-decks');
       if (noDecksMessage) {
         noDecksMessage.style.display = visibleCount === 0 ? 'block' : 'none';
       }
 
-      // Met à jour dynamiquement le nombre de decks affichés
       document.getElementById('deckCount').textContent = visibleCount;
+
+      if (!isGridView) updateListFromGrid();
     }
+
+    // Fix: switch grid/list (event handler must update isGridView and toggle containers)
+    viewSwitch.addEventListener('click', function () {
+      isGridView = viewSwitch.getAttribute('data-view') === 'grid';
+      if (isGridView) {
+        viewSwitch.setAttribute('data-view', 'list');
+        decksContainer.style.display = 'none';
+        decksListContainer.style.display = '';
+        updateListFromGrid();
+      } else {
+        viewSwitch.setAttribute('data-view', 'grid');
+        decksContainer.style.display = '';
+        decksListContainer.style.display = 'none';
+      }
+      // Toggle isGridView for next click
+      isGridView = !isGridView;
+    });
+    viewSwitch.addEventListener('keydown', function(e) {
+      if (e.key === ' ' || e.key === 'Enter') {
+        e.preventDefault();
+        viewSwitch.click();
+      }
+    });
 
     document.addEventListener('click', function(event) {
       const dropdown = document.getElementById('userDropdown');
@@ -378,6 +727,8 @@
         dropdown.classList.remove('open');
       }
     });
+
+    setSortArrows();
   </script>
 </body>
 </html>
