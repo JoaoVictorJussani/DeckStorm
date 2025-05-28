@@ -292,6 +292,10 @@
       >
     </div>
 
+    <div style="text-align:center; margin-bottom:1rem; color:#6c8947; font-weight:600; font-size:1.2rem;">
+      Decks trouvés : <span id="deckCount">{{ publicDecks.length }}</span>
+    </div>
+
     <div class="decks-grid" id="decksContainer">
       @if(publicDecks.length)
         @each(deck in publicDecks)
@@ -339,6 +343,7 @@
       const filter = input.value.toLowerCase();
       const searchMode = document.getElementById('searchSwitch').getAttribute('data-mode');
       const decks = document.getElementsByClassName('deck-card');
+      let visibleCount = 0;
 
       for (let deck of decks) {
         let match = false;
@@ -354,14 +359,17 @@
         }
 
         deck.style.display = match ? '' : 'none';
+        if (match) visibleCount++;
       }
 
       // Update no results message
-      const visibleDecks = Array.from(decks).filter(d => d.style.display !== 'none').length;
       const noDecksMessage = document.querySelector('.no-decks');
       if (noDecksMessage) {
-        noDecksMessage.style.display = visibleDecks === 0 ? 'block' : 'none';
+        noDecksMessage.style.display = visibleCount === 0 ? 'block' : 'none';
       }
+
+      // Met à jour dynamiquement le nombre de decks affichés
+      document.getElementById('deckCount').textContent = visibleCount;
     }
 
     document.addEventListener('click', function(event) {
