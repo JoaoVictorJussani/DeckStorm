@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>Accueil</title>
   <link rel="shortcut icon" href="/images/icone.ico" type="image/x-icon">
   <style>
@@ -522,95 +522,236 @@
         font-size: 1.1rem;
       }
     }
-
-    .top-section {
-      margin-bottom: 3rem;
-      background: rgba(17, 19, 23, 0.92);
-      border-radius: 12px;
-      padding: 2rem;
-      border: 1px solid rgba(108, 137, 71, 0.2);
-    }
-
-    .section-title {
-      color: #6c8947;
-      font-size: 1.8rem;
-      margin-bottom: 1.5rem;
-      text-align: center;
-    }
-
-    .top-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-      gap: 1.5rem;
-    }
-
-    .top-item {
-      background: rgba(108, 137, 71, 0.1);
-      padding: 1rem;
-      border-radius: 8px;
-      border: 1px solid rgba(108, 137, 71, 0.2);
-      transition: transform 0.2s;
-    }
-
-    .top-item:hover {
-      transform: translateY(-2px);
-    }
-
-    .creator-stat {
-      color: #6c8947;
-      font-weight: bold;
-    }
   </style>
 </head>
 <body>
   @include('components/header')
 
   <div class="main-content">
-    <!-- Top Liked Decks -->
-    <div class="top-section">
-      <h2 class="section-title">Decks les plus appréciés</h2>
-      <div class="top-grid">
-        @each(deck in topLikedDecks)
-          <div class="top-item" onclick="window.location.href='/deck/{{ deck.id }}'">
+    <div style="text-align:center; margin-bottom:2rem;">
+      <h1 style="color:#6c8947; margin-bottom:0.5rem">Résultats de "{{ query }}"</h1>
+      <div style="margin-top:1rem; color:#6c8947; font-weight:600; font-size:1.2rem;">
+        Decks trouvés : <span id="deckCount">{{ publicDecks.length }}</span>
+      </div>
+    </div>
+
+    <!-- Suppression du container de recherche -->
+
+    <div class="decks-grid" id="decksContainer">
+      @if(publicDecks.length)
+        @each(deck in publicDecks)
+          <div class="deck-card" onclick="window.location.href='/deck/{{ deck.id }}'">
+            <!-- Move like form to top -->
+            <div class="like-container">
+              <form action="{{ route(deck.hasLiked ? 'decks.unlike' : 'decks.like', { id: deck.id }) }}" method="GET" style="display:inline;" onclick="event.stopPropagation();">
+                <input type="hidden" name="returnTo" value="grid">
+                <button type="submit" class="like-btn {{ deck.hasLiked ? 'liked' : '' }}">
+                  <span title="{{ deck.hasLiked ? 'Je n\'aime plus' : 'J\'aime' }}">
+                    {{ deck.hasLiked ? '❤️' : '🤍' }}
+                  </span>
+                </button>
+              </form>
+              <span class="like-count">{{ deck.likes ? deck.likes.length : 0 }}</span>
+            </div>
             <div class="deck-title">{{ deck.title }}</div>
+            <div class="deck-description">{{ deck.description }}</div>
             <div class="deck-info">
-              <span>❤️ {{ deck.$extras.likes_count }}</span>
+              <span>{{ deck.cards.length }} cartes</span>
               <a href="/public-account/{{ deck.user.id }}" class="deck-author" onclick="event.stopPropagation();">{{ deck.user.username }}</a>
             </div>
           </div>
-        @end
-      </div>
+        @endeach
+      @else
+        <div class="no-decks">Aucun deck public disponible</div>
+      @end
     </div>
 
-    <!-- Top Creators by Followers -->
-    <div class="top-section">
-      <h2 class="section-title">Créateurs les plus suivis</h2>
-      <div class="top-grid">
-        @each(creator in topCreatorsByFollowers)
-          <div class="top-item" onclick="window.location.href='/public-account/{{ creator.id }}'">
-            <div class="deck-title">{{ creator.username }}</div>
-            <div class="creator-stat">👥 {{ creator.$extras.followers_count }} abonnés</div>
-          </div>
-        @end
-      </div>
+    <!-- Affichage en mode liste (table), caché par défaut -->
+    <div id="decksListContainer" style="display:none;">
+      <table style="width:100%; max-width:1200px; margin:0 auto; border-collapse:collapse; background:rgba(17,19,23,0.8); border-radius:10px; overflow:hidden;">
+        <thead>
+          <tr>
+            <th onclick="sortListBy('title')" id="th-title">
+              Titre <span class="sort-arrow" id="sortArrow-title">▲</span>
+            </th>
+            <th onclick="sortListBy('description')" id="th-description">
+              Description <span class="sort-arrow" id="sortArrow-description"></span>
+            </th>
+            <th onclick="sortListBy('cards')" id="th-cards">
+              Cartes <span class="sort-arrow" id="sortArrow-cards"></span>
+            </th>
+            <th onclick="sortListBy('author')" id="th-author">
+              Auteur <span class="sort-arrow" id="sortArrow-author"></span>
+            </th>
+            <th onclick="sortListBy('likes')" id="th-likes">
+              Likes <span class="sort-arrow" id="sortArrow-likes"></span>
+            </th>
+          </tr>
+        </thead>
+        <tbody id="decksListBody">
+          @if(publicDecks.length)
+            @each(deck in publicDecks)
+              <tr class="deck-list-row" style="cursor:pointer;" onclick="window.location.href='/deck/{{ deck.id }}'">
+                <td class="deck-title-cell">{{ deck.title }}</td>
+                <td>{{ deck.description }}</td>
+                <td>{{ deck.cards.length }}</td>
+                <td><a href="/public-account/{{ deck.user.id }}" class="deck-author">{{ deck.user.username }}</a></td>
+                <td>
+                  <form action="{{ route(deck.hasLiked ? 'decks.unlike' : 'decks.like', { id: deck.id }) }}" method="GET" style="display:inline;" onclick="event.stopPropagation();">
+                    <input type="hidden" name="returnTo" value="list">
+                    <button type="submit" class="like-btn {{ deck.hasLiked ? 'liked' : '' }}">
+                      <span title="{{ deck.hasLiked ? 'Je n\'aime plus' : 'J\'aime' }}">
+                        {{ deck.hasLiked ? '❤️' : '🤍' }}
+                      </span>
+                    </button>
+                    <span class="like-count">{{ deck.likes ? deck.likes.length : 0 }}</span>
+                  </form>
+                </td>
+              </tr>
+            @endeach
+          @else
+            <tr><td colspan="4" style="text-align:center;">Aucun deck public disponible</td></tr>
+          @end
+        </tbody>
+      </table>
     </div>
 
-    <!-- Top Creators by Decks -->
-    <div class="top-section">
-      <h2 class="section-title">Créateurs les plus actifs</h2>
-      <div class="top-grid">
-        @each(creator in topCreatorsByDecks)
-          <div class="top-item" onclick="window.location.href='/public-account/{{ creator.id }}'">
-            <div class="deck-title">{{ creator.username }}</div>
-            <div class="creator-stat">📚 {{ creator.$extras.decks_count }} decks</div>
-          </div>
-        @end
-      </div>
-    </div>
+    @if(auth.isAuthenticated)
+      <a href="/deck/create" class="add-deck-btn" title="Ajouter un nouveau deck">
+        <span>+</span>
+      </a>
+    @endif
   </div>
 
-  <a href="{{ route('decks.create') }}" class="add-deck-btn" title="Créer un nouveau deck">
-    <span>+</span>
-  </a>
+  <script>
+    // Simplification du script, garder uniquement la gestion de l'affichage grid/list
+    let isGridView = true;
+    let sortField = 'title';
+    let sortAsc = true;
+
+    const decksContainer = document.getElementById('decksContainer');
+    const decksListContainer = document.getElementById('decksListContainer');
+    const viewSwitch = document.getElementById('viewSwitch');
+
+    function setSortArrows() {
+      const fields = ['title', 'description', 'cards', 'author', 'likes'];
+      fields.forEach(f => {
+        document.getElementById('sortArrow-' + f).textContent = '';
+      });
+      document.getElementById('sortArrow-' + sortField).textContent = sortAsc ? '▲' : '▼';
+    }
+
+    function sortListBy(field) {
+      if (sortField === field) {
+        sortAsc = !sortAsc;
+      } else {
+        sortField = field;
+        sortAsc = true;
+      }
+      setSortArrows();
+      updateListFromGrid();
+    }
+
+    function updateListFromGrid() {
+      const gridCards = Array.from(document.querySelectorAll('.deck-card'));
+      const listBody = document.getElementById('decksListBody');
+      const visibleDecks = gridCards.filter(card => card.style.display !== 'none').map(card => {
+        const likeButton = card.querySelector('.like-btn');
+        const likeCount = card.querySelector('.like-count');
+        return {
+          title: card.querySelector('.deck-title').textContent,
+          description: card.querySelector('.deck-description').textContent,
+          cards: parseInt(card.querySelector('.deck-info span').textContent) || 0,
+          author: card.querySelector('.deck-author').textContent,
+          authorLink: card.querySelector('.deck-author').getAttribute('href'),
+          deckUrl: card.getAttribute('onclick').match(/'([^']+)'/)[1],
+          hasLiked: likeButton.classList.contains('liked'),
+          likesCount: likeCount ? parseInt(likeCount.textContent) || 0 : 0,
+          id: card.getAttribute('onclick').match(/\/deck\/(\d+)/)[1]
+        };
+      });
+      
+      if (visibleDecks.length > 1) {
+        visibleDecks.sort((a, b) => {
+          let va = a[sortField], vb = b[sortField];
+          if (sortField === 'cards' && 'likes') {
+            va = Number(va); vb = Number(vb);
+            return sortAsc ? va - vb : vb - va;
+          }
+          va = (va || '').toString().toLowerCase();
+          vb = (vb || '').toString().toLowerCase();
+          if (va < vb) return sortAsc ? -1 : 1;
+          if (va > vb) return sortAsc ? 1 : -1;
+          return 0;
+        });
+      }
+      listBody.innerHTML = visibleDecks.length
+        ? visibleDecks.map(deck => `
+          <tr class="deck-list-row" style="cursor:pointer;" onclick="window.location.href='${deck.deckUrl}'">
+            <td class="deck-title-cell">${deck.title}</td>
+            <td>${deck.description}</td>
+            <td>${deck.cards}</td>
+            <td><a href="${deck.authorLink}" class="deck-author">${deck.author}</a></td>
+            <td>
+              <form action="/deck/${deck.id}/${deck.hasLiked ? 'unlike' : 'like'}" method="POST" style="display:inline;" onclick="event.stopPropagation();">
+                {{ csrfField() }}
+                <input type="hidden" name="returnTo" value="list">
+                <button type="submit" class="like-btn${deck.hasLiked ? ' liked' : ''}" title="${deck.hasLiked ? 'Je n\'aime plus' : 'J\'aime'}">
+                  <span>${deck.hasLiked ? '❤️' : '🤍'}</span>
+                </button>
+                <span class="like-count">${deck.likesCount}</span>
+              </form>
+            </td>
+          </tr>
+        `).join('')
+        : '<tr><td colspan="5" style="text-align:center;">Aucun deck public disponible</td></tr>';
+      document.getElementById('deckCount').textContent = visibleDecks.length;
+    }
+
+    // Fix: switch grid/list (event handler must update isGridView and toggle containers)
+    viewSwitch.addEventListener('click', function () {
+      isGridView = viewSwitch.getAttribute('data-view') === 'grid';
+      if (isGridView) {
+        viewSwitch.setAttribute('data-view', 'list');
+        decksContainer.style.display = 'none';
+        decksListContainer.style.display = '';
+        updateListFromGrid();
+      } else {
+        viewSwitch.setAttribute('data-view', 'grid');
+        decksContainer.style.display = '';
+        decksListContainer.style.display = 'none';
+      }
+      // Toggle isGridView for next click
+      isGridView = !isGridView;
+    });
+    viewSwitch.addEventListener('keydown', function(e) {
+      if (e.key === ' ' || e.key === 'Enter') {
+        e.preventDefault();
+        viewSwitch.click();
+      }
+    });
+
+    document.addEventListener('click', function(event) {
+      const dropdown = document.getElementById('userDropdown');
+      if (dropdown && !dropdown.contains(event.target)) {
+        dropdown.classList.remove('open');
+      }
+    });
+
+    setSortArrows();
+
+    document.addEventListener('DOMContentLoaded', function() {
+      // Check if we should show list view
+      const urlParams = new URLSearchParams(window.location.search);
+      const view = urlParams.get('returnTo') || 'grid';
+      if (view === 'list') {
+        viewSwitch.setAttribute('data-view', 'list');
+        decksContainer.style.display = 'none';
+        decksListContainer.style.display = '';
+        isGridView = false;
+        updateListFromGrid();
+      }
+    });
+  </script>
 </body>
 </html>

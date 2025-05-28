@@ -4,7 +4,8 @@ import { compose } from '@adonisjs/core/helpers'
 import { BaseModel, column, hasMany } from '@adonisjs/lucid/orm'
 import { withAuthFinder } from '@adonisjs/auth/mixins/lucid'
 import Follow from '#models/follow'
-import Like from '#models/like' // Ajout pour les likes
+import Like from '#models/like'
+import Deck from '#models/deck' // Ajout de l'importation de Deck
 
 const AuthFinder = withAuthFinder(() => hash.use('scrypt'), {
   uids: ['username'],
@@ -38,4 +39,7 @@ export default class User extends compose(BaseModel, AuthFinder) {
 
   @hasMany(() => Like, { foreignKey: 'user_id' })
   public likes: Like[] // Relation avec les likes de l'utilisateur
+
+  @hasMany(() => Deck, { foreignKey: 'user_id' }) // Ajout de la relation avec les decks
+  public decks: Deck[]
 }

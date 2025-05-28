@@ -76,6 +76,23 @@ router
   .as('auth.handleLogout')
   .use(middleware.auth());
 
+// Like/unlike routes
+router
+  .get('/deck/:id/like', [DeckController, 'like'])
+  .as('decks.like')
+  .use(middleware.auth());
+
+router
+  .get('/deck/:id/unlike', [DeckController, 'unlike'])
+  .as('decks.unlike')
+  .use(middleware.auth());
+
+// Route pour rechercher les decks publics (déplacer avant les routes avec paramètres dynamiques)
+router
+  .get('/deck/search', [PageController, 'searchPublicDecks'])
+  .as('search.decks')
+  .use(middleware.auth());
+
 // Route pour afficher la page de création d'un deck
 router
   .get('/deck/create', async ({ view, auth }) => {
@@ -83,17 +100,6 @@ router
   })
   .as('decks.create')
   .use(middleware.auth()); // Nécessite une authentification
-
-// Like/unlike routes
-router
-  .post('/deck/:id/like', [DeckController, 'like'])
-  .as('decks.like')
-  .use(middleware.auth());
-
-router
-  .post('/deck/:id/unlike', [DeckController, 'unlike'])
-  .as('decks.unlike')
-  .use(middleware.auth());
 
 // Route pour afficher un deck spécifique
 router

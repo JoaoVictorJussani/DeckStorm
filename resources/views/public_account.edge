@@ -209,6 +209,35 @@
       color: var(--primary-color);
       opacity: 0.8;
     }
+
+    .add-deck-btn {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: linear-gradient(135deg, #6c8947, #7b995c);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      font-size: 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(108, 137, 71, 0.4);
+      transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
+      z-index: 100;
+      text-decoration: none;
+    }
+    .add-deck-btn:hover {
+      background: linear-gradient(135deg, #7b995c, #6c8947);
+      box-shadow: 0 6px 24px rgba(108, 137, 71, 0.5);
+      transform: scale(1.08);
+    }
+    .add-deck-btn span {
+      margin-top: -2px;
+    }
   </style>
 </head>
 <body>
@@ -325,5 +354,8 @@
       </table>
     </div>
   </div>
+  <a href="{{ route('decks.create') }}" class="add-deck-btn" title="Créer un nouveau deck">
+    <span>+</span>
+  </a>
 </body>
 </html>

@@ -8,67 +8,67 @@ export default class PageController {
   async home({ view, auth }: HttpContext) {
     const user = auth.use('web').user;
 
-    const userDecks = await Deck.query()
-      .where('user_id', user.id)
-      .preload('cards')
-      .preload('user')
-      .preload('likes')
-      .exec();
-
-    const publicDecks = await Deck.query()
+    // Get top 5 most liked decks
+    const topLikedDecks = await Deck.query()
       .where('visibility', 'public')
-      .andWhereNot('user_id', user.id)
       .preload('cards')
       .preload('user')
       .preload('likes')
-      .exec();
+      .withCount('likes')
+      .orderBy('likes_count', 'desc')
+      .limit(5);
 
-    // Transform each deck to include hasLiked status
-    const decksWithLikeStatus = publicDecks.map(deck => ({
-      ...deck.toJSON(),
-      hasLiked: deck.likes?.some(like => like.user_id === user.id) || false,
-      likesCount: deck.likes?.length || 0
-    }));
+    // Get top 5 creators by followers count
+    const topCreatorsByFollowers = await User.query()
+      .withCount('followers')
+      .orderBy('followers_count', 'desc')
+      .limit(5);
+
+    // Get top 5 creators by deck count
+    const topCreatorsByDecks = await User.query()
+      .withCount('decks')
+      .whereHas('decks', (query) => {
+        query.where('visibility', 'public');
+      })
+      .orderBy('decks_count', 'desc')
+      .limit(5);
 
     return view.render('home', { 
-      user, 
-      userDecks, 
-      publicDecks: decksWithLikeStatus 
+      user,
+      topLikedDecks,
+      topCreatorsByFollowers,
+      topCreatorsByDecks
     });
   }
 
   // Méthode pour rechercher des decks publics
   async searchPublicDecks({ request, view, auth }: HttpContext) {
     const user = auth.use('web').user;
-    const query = request.input('query', '').trim();
+    const query = request.input('q', '').trim();
 
-    const userDecks = await Deck.query()
-      .where('user_id', user.id)
-      .preload('cards')
-      .preload('user')
-      .preload('likes', (likesQuery) => {
-        likesQuery.preload('user')
-      });
-
+    // Recherche des decks publics correspondant à la requête
     const publicDecks = await Deck.query()
       .where('visibility', 'public')
-      .andWhereNot('user_id', user.id)
-      .andWhere('title', 'like', `%${query}%`)
+      .andWhere((builder) => {
+        builder
+          .where('title', 'like', `%${query}%`)
+          .orWhere('description', 'like', `%${query}%`)
+          .orWhereHas('user', (userQuery) => {
+            userQuery.where('username', 'like', `%${query}%`);
+          });
+      })
       .preload('cards')
       .preload('user')
       .preload('likes')
       .exec();
 
-    // Transform each deck to include hasLiked status
     const decksWithLikeStatus = publicDecks.map(deck => ({
-      ...deck.toJSON(),
-      hasLiked: deck.likes?.some(like => like.user_id === user.id) || false,
-      likesCount: deck.likes?.length || 0
+      ...deck.serialize(),
+      hasLiked: deck.likes?.some(like => like.user_id === user?.id) || false,
     }));
 
-    return view.render('home', { 
-      user, 
-      userDecks, 
+    return view.render('result_search', { 
+      user,
       publicDecks: decksWithLikeStatus,
       query 
     });
