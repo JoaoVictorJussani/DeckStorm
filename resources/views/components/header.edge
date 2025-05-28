@@ -218,7 +218,9 @@
 </style>
 
 <div class="header-navbar">
-  <a href="{{ route('home') }}"><img src="/images/icone.ico">DeckStorm</a>
+  <a href="{{ route('home') }}" title="Retourner à l'accueil">
+    <img src="/images/icone.ico" alt="Logo DeckStorm" title="Logo DeckStorm">DeckStorm
+  </a>
   
   <div style="display: flex; align-items: center; gap: 1rem; flex: 1; justify-content: center; max-width: 800px;">
     <div class="header-search">
@@ -226,26 +228,32 @@
         type="text" 
         id="headerSearch"
         placeholder="Rechercher des decks..." 
+        title="Rechercher des decks par titre, description ou auteur"
         onkeyup="headerSearchDecks(event)"
       />
     </div>
   </div>
 
   <div style="display: flex; align-items: center; gap: 1rem;">
-    <!-- Icône idée -->
-    <button id="idea-btn" style="color: #6c8947; background: none; border: none; cursor: pointer; font-size: 1.8rem; padding: 0;">
+    <button id="idea-btn" 
+            style="color: #6c8947; background: none; border: none; cursor: pointer; font-size: 1.8rem; padding: 0;"
+            title="Afficher les astuces d'utilisation">
       💡
     </button>
-    <span>Bienvenue {{ user?.username }}</span>
+    <span title="Utilisateur connecté">Bienvenue {{ user?.username }}</span>
     <div class="header-dropdown" id="header-userDropdown">
-      <button class="header-dropdown-toggle" onclick="headerToggleDropdown()" aria-haspopup="true" aria-expanded="false" title="Afficher les options du compte">
+      <button class="header-dropdown-toggle" 
+              onclick="headerToggleDropdown()" 
+              aria-haspopup="true" 
+              aria-expanded="false" 
+              title="Ouvrir le menu utilisateur">
         <span>▼</span>
       </button>
       <div class="header-dropdown-menu" id="header-dropdownMenu">
-        <a href="/account/{{ user?.id }}" title="Voir et gérer votre profil et vos decks">Mon compte</a>
+        <a href="/account/{{ user?.id }}" title="Gérer votre profil et vos decks">Mon compte</a>
         <form action="/logout" method="POST" style="margin:0;">
           {{ csrfField() }}
-          <button type="submit" class="header-logout-btn" title="Se déconnecter du site">Se déconnecter</button>
+          <button type="submit" class="header-logout-btn" title="Se déconnecter de l'application">Se déconnecter</button>
         </form>
       </div>
     </div>

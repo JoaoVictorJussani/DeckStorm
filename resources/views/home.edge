@@ -568,7 +568,7 @@
   <div class="main-content">
     <!-- Top Liked Decks -->
     <div class="top-section">
-      <h2 class="section-title">Decks les plus appréciés</h2>
+      <h2 class="section-title">Decks les plus likés</h2>
       <div class="top-grid">
         @each(deck in topLikedDecks)
           <div class="top-item" onclick="window.location.href='/deck/{{ deck.id }}'">
@@ -587,9 +587,9 @@
       <h2 class="section-title">Créateurs les plus suivis</h2>
       <div class="top-grid">
         @each(creator in topCreatorsByFollowers)
-          <div class="top-item" onclick="window.location.href='/public-account/{{ creator.id }}'">
+          <div class="top-item" onclick="window.location.href='/public-account/{{ creator.id }}'" title="Voir le profil de {{ creator.username }}">
             <div class="deck-title">{{ creator.username }}</div>
-            <div class="creator-stat">👥 {{ creator.$extras.followers_count }} abonnés</div>
+            <div class="creator-stat" title="Nombre total d'abonnés">👥 {{ creator.$extras.followers_count }} abonnés</div>
           </div>
         @end
       </div>
@@ -597,19 +597,19 @@
 
     <!-- Top Creators by Decks -->
     <div class="top-section">
-      <h2 class="section-title">Créateurs les plus actifs</h2>
+      <h2 class="section-title">Créateurs avec le plus de decks</h2>
       <div class="top-grid">
         @each(creator in topCreatorsByDecks)
-          <div class="top-item" onclick="window.location.href='/public-account/{{ creator.id }}'">
+          <div class="top-item" onclick="window.location.href='/public-account/{{ creator.id }}'" title="Voir le profil de {{ creator.username }}">
             <div class="deck-title">{{ creator.username }}</div>
-            <div class="creator-stat">📚 {{ creator.$extras.decks_count }} decks</div>
+            <div class="creator-stat" title="Nombre total de decks publics">📚 {{ creator.$extras.decks_count }} decks</div>
           </div>
         @end
       </div>
     </div>
   </div>
 
-  <a href="{{ route('decks.create') }}" class="add-deck-btn" title="Créer un nouveau deck">
+  <a href="{{ route('decks.create') }}" class="add-deck-btn" title="Créer un nouveau deck de cartes">
     <span>+</span>
   </a>
 </body>
