@@ -16,6 +16,7 @@ import Card from '#models/card'; // Modèle Card
 import ExerciseController from '#controllers/exercise_controller'; // Contrôleur pour les exercices
 import User from '#models/user'; // Ajout pour la route /account/:id
 import FollowController from '#controllers/follow_controller'; // Contrôleur pour le suivi
+import Like from '#models/like'; // Ajout pour les likes
 
 // Route pour la page d'accueil
 router
@@ -83,6 +84,17 @@ router
   .as('decks.create')
   .use(middleware.auth()); // Nécessite une authentification
 
+// Like/unlike routes
+router
+  .post('/deck/:id/like', [DeckController, 'like'])
+  .as('decks.like')
+  .use(middleware.auth());
+
+router
+  .post('/deck/:id/unlike', [DeckController, 'unlike'])
+  .as('decks.unlike')
+  .use(middleware.auth());
+
 // Route pour afficher un deck spécifique
 router
   .get('/deck/:id', async ({ params, view, auth }) => {
@@ -93,10 +105,16 @@ router
       })
       .preload('cards') // Précharge les cartes
       .preload('user') // Précharge la relation utilisateur
+      .preload('likes') // Précharger les likes
       .first();
 
+    let hasLiked = false;
+    if (deck && auth.user) {
+      hasLiked = !!deck.likes.find(like => like.user_id === auth.user.id);
+    }
+
     if (deck) {
-      return view.render('show_deck', { deck, user: auth.use('web').user });
+      return view.render('show_deck', { deck, user: auth.use('web').user, hasLiked });
     } else {
       return view.render('./pages/errors/not_found'); // Affiche une page 404 si le deck n'est pas trouvé
     }

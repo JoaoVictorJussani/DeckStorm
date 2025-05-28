@@ -418,6 +418,22 @@
       <p><strong>Créateur: </strong>
       <span>{{deck.user.username}}</span></p>
 
+      <!-- Like system -->
+      <div style="margin: 1rem 0;">
+        <form action="{{ hasLiked ? route('decks.unlike', { id: deck.id }) : route('decks.like', { id: deck.id }) }}" method="POST" style="display:inline;">
+          {{ csrfField() }}
+          <button type="submit" style="background: none; border: none; cursor: pointer; font-size: 1.3rem; color: {{ hasLiked ? '#ff4d4d' : '#6c8947' }};">
+            <span title="{{ hasLiked ? 'Je n\'aime plus' : 'J\'aime' }}">
+              {{ hasLiked ? '❤️' : '🤍' }}
+            </span>
+            <span style="font-size:1rem; color:#6c8947; margin-left:0.5rem;">
+              {{ deck.likes.length }}
+            </span>
+          </button>
+        </form>
+      </div>
+      <!-- End Like system -->
+
       <!-- QR Code et partage à l'intérieur du deck-details -->
       <div class="share-container">
         <div id="qrcode"></div>

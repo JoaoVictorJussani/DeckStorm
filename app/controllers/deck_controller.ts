@@ -1,5 +1,6 @@
 import type { HttpContext } from '@adonisjs/core/http';
 import Deck from '#models/deck';
+import Like from '#models/like';
 
 export default class DeckController {
   // Création d'un deck
@@ -69,5 +70,38 @@ export default class DeckController {
       session.flash('error', 'Vous ne pouvez pas supprimer ce deck.'); // Message d'erreur
     }
     return response.redirect().toRoute('home'); // Redirige vers la page d'accueil
+  }
+
+  // Like a deck
+  async like({ params, auth, response, request }: HttpContext) {
+    const userId = auth.user.id
+    const deckId = Number(params.id)
+    const returnView = request.input('returnView')
+    
+    const exists = await Like.query().where('user_id', userId).andWhere('deck_id', deckId).first()
+    if (!exists) {
+      await Like.create({ user_id: userId, deck_id: deckId })
+    }
+    
+    // Return to the same view
+    if (returnView === 'list') {
+      return response.redirect().back({ qs: { view: 'list' } })
+    }
+    return response.redirect().back()
+  }
+
+  // Unlike a deck
+  async unlike({ params, auth, response, request }: HttpContext) {
+    const userId = auth.user.id
+    const deckId = Number(params.id)
+    const returnView = request.input('returnView')
+    
+    await Like.query().where('user_id', userId).andWhere('deck_id', deckId).delete()
+    
+    // Return to the same view
+    if (returnView === 'list') {
+      return response.redirect().back({ qs: { view: 'list' } })
+    }
+    return response.redirect().back()
   }
 }

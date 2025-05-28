@@ -6,46 +6,72 @@ import User from '#models/user'
 export default class PageController {
   // Méthode pour afficher la page d'accueil
   async home({ view, auth }: HttpContext) {
-    const user = auth.use('web').user; // Récupération de l'utilisateur connecté
+    const user = auth.use('web').user;
 
-    // Récupérer les decks de l'utilisateur connecté
     const userDecks = await Deck.query()
       .where('user_id', user.id)
-      .preload('cards') // Précharger les cartes pour obtenir leur nombre
-      .preload('user'); // Précharger la relation utilisateur
+      .preload('cards')
+      .preload('user')
+      .preload('likes')
+      .exec();
 
-    // Récupérer les decks publics des autres utilisateurs
     const publicDecks = await Deck.query()
       .where('visibility', 'public')
       .andWhereNot('user_id', user.id)
-      .preload('cards') // Précharger les cartes
-      .preload('user'); // Précharger la relation utilisateur
+      .preload('cards')
+      .preload('user')
+      .preload('likes')
+      .exec();
 
-    // Rendre la vue avec les données
-    return view.render('home', { user, userDecks, publicDecks });
+    // Transform each deck to include hasLiked status
+    const decksWithLikeStatus = publicDecks.map(deck => ({
+      ...deck.toJSON(),
+      hasLiked: deck.likes?.some(like => like.user_id === user.id) || false,
+      likesCount: deck.likes?.length || 0
+    }));
+
+    return view.render('home', { 
+      user, 
+      userDecks, 
+      publicDecks: decksWithLikeStatus 
+    });
   }
 
   // Méthode pour rechercher des decks publics
   async searchPublicDecks({ request, view, auth }: HttpContext) {
-    const user = auth.use('web').user; // Récupération de l'utilisateur connecté
-    const query = request.input('query', '').trim(); // Récupération de la requête de recherche
+    const user = auth.use('web').user;
+    const query = request.input('query', '').trim();
 
-    // Récupérer les decks personnels de l'utilisateur
     const userDecks = await Deck.query()
       .where('user_id', user.id)
-      .preload('cards') // Précharger les cartes
-      .preload('user'); // Précharger la relation utilisateur
+      .preload('cards')
+      .preload('user')
+      .preload('likes', (likesQuery) => {
+        likesQuery.preload('user')
+      });
 
-    // Récupérer les decks publics correspondant à la recherche
     const publicDecks = await Deck.query()
       .where('visibility', 'public')
       .andWhereNot('user_id', user.id)
-      .andWhere('title', 'like', `%${query}%`) // Filtrer par titre
-      .preload('cards') // Précharger les cartes
-      .preload('user'); // Précharger la relation utilisateur
+      .andWhere('title', 'like', `%${query}%`)
+      .preload('cards')
+      .preload('user')
+      .preload('likes')
+      .exec();
 
-    // Rendre la vue avec les résultats de la recherche
-    return view.render('home', { user, userDecks, publicDecks, query });
+    // Transform each deck to include hasLiked status
+    const decksWithLikeStatus = publicDecks.map(deck => ({
+      ...deck.toJSON(),
+      hasLiked: deck.likes?.some(like => like.user_id === user.id) || false,
+      likesCount: deck.likes?.length || 0
+    }));
+
+    return view.render('home', { 
+      user, 
+      userDecks, 
+      publicDecks: decksWithLikeStatus,
+      query 
+    });
   }
 
   // Ajout : Méthode pour la page "Mon compte" avec followersList/followingList

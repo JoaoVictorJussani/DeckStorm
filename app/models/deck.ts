@@ -1,35 +1,41 @@
 import { DateTime } from 'luxon';
-import { BaseModel, column, hasMany, belongsTo } from '@adonisjs/lucid/orm'; // Importation des relations
-import Card from '#models/card'; // Modèle des cartes
-import User from '#models/user'; // Modèle des utilisateurs
+import { BaseModel, column, hasMany, belongsTo } from '@adonisjs/lucid/orm';
+import Card from '#models/card';
+import Like from '#models/like';
 
 export default class Deck extends BaseModel {
-  public static table = 't_deck'; // Nom de la table dans la base de données
+  public static table = 't_deck';
 
   @column({ isPrimary: true })
-  declare id: number; // Identifiant unique du deck
+  declare id: number;
 
   @column()
-  declare title: string; // Titre du deck
+  declare title: string;
 
   @column()
-  declare description: string; // Description du deck
+  declare description: string;
 
   @column()
-  declare user_id: number; // Identifiant de l'utilisateur propriétaire du deck
+  declare user_id: number;
 
   @column()
-  declare visibility: 'private' | 'public'; // Visibilité du deck (privé ou public)
+  declare visibility: 'private' | 'public';
 
   @column.dateTime({ autoCreate: true })
-  declare createdAt: DateTime; // Date de création
+  declare createdAt: DateTime;
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
-  declare updatedAt: DateTime; // Date de mise à jour
+  declare updatedAt: DateTime;
 
   @hasMany(() => Card, { foreignKey: 'deck_id' })
-  public cards: Card[]; // Relation avec les cartes du deck
+  public cards: Card[];
 
   @belongsTo(() => User, { foreignKey: 'user_id' })
-  public user: User; // Relation avec l'utilisateur propriétaire
+  public user: InstanceType<typeof User>;
+
+  @hasMany(() => Like, { foreignKey: 'deck_id' })
+  public likes: Like[];
 }
+
+// Import User after the class definition to avoid circular reference issues
+import User from '#models/user';

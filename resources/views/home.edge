@@ -248,12 +248,47 @@
       cursor: pointer;
       min-width: 0;
       word-break: break-word;
+      position: relative; /* Added for absolute positioning of like button */
     }
-    .deck-card:hover, .deck-card:focus {
-      transform: translateY(-7px) scale(1.025);
-      box-shadow: 0 8px 30px rgba(108, 137, 71, 0.22);
-      border-color: #a6d672;
-      outline: none;
+
+    /* Move like button styles here and update */
+    .like-container {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+      background: rgba(17, 19, 23, 0.8);
+      padding: 0.3rem 0.5rem;
+      border-radius: 20px;
+      backdrop-filter: blur(4px);
+    }
+
+    .like-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 1.2rem;
+      color: #6c8947;
+      transition: transform 0.2s;
+      padding: 0;
+      line-height: 1;
+    }
+
+    .like-btn:hover {
+      transform: scale(1.1);
+    }
+
+    .like-btn.liked {
+      color: #ff4d4d;
+    }
+
+    .like-count {
+      font-size: 1rem;
+      color: #6c8947;
+      min-width: 1.5rem;
+      text-align: center;
     }
 
     .deck-title {
@@ -493,44 +528,35 @@
   @include('components/header')
 
   <div class="main-content">
-    <div class="search-container">
-      <div style="display: flex; align-items: center; width: 100%; gap: 1rem;">
-        <div class="search-switch" id="searchSwitch" data-mode="content">
-          <div class="switch-option">Titre & Description</div>
-          <div class="switch-option">Auteur</div>
-          <div class="switch-slider"></div>
-        </div>
-        <input 
-          type="text" 
-          id="deckSearch" 
-          class="search-input" 
-          placeholder="Rechercher des decks publics..."
-          onkeyup="searchDecks()"
-          style="flex:1;"
-        >
-        <!-- Nouveau switch pour grid/list -->
-        <div class="view-switch" id="viewSwitch" data-view="grid" tabindex="0" aria-label="Changer l'affichage">
-          <div class="view-switch-option">Grid</div>
-          <div class="view-switch-option">List</div>
-          <div class="view-switch-slider"></div>
-        </div>
-      </div>
-    </div>
-
     <div style="text-align:center; margin-bottom:1rem; color:#6c8947; font-weight:600; font-size:1.2rem;">
       Decks trouvés : <span id="deckCount">{{ publicDecks.length }}</span>
     </div>
+
+    <!-- Remove search-container div and its contents -->
 
     <!-- Affichage en mode grid -->
     <div class="decks-grid" id="decksContainer">
       @if(publicDecks.length)
         @each(deck in publicDecks)
           <div class="deck-card" onclick="window.location.href='/deck/{{ deck.id }}'">
+            <!-- Move like form to top -->
+            <div class="like-container">
+              <form action="{{ deck.hasLiked ? route('decks.unlike', { id: deck.id }) : route('decks.like', { id: deck.id }) }}" method="POST" style="display:inline;" onclick="event.stopPropagation();">
+                {{ csrfField() }}
+                <input type="hidden" name="returnTo" value="grid">
+                <button type="submit" class="like-btn {{ deck.hasLiked ? 'liked' : '' }}">
+                  <span title="{{ deck.hasLiked ? 'Je n\'aime plus' : 'J\'aime' }}">
+                    {{ deck.hasLiked ? '❤️' : '🤍' }}
+                  </span>
+                </button>
+              </form>
+              <span class="like-count">{{ deck.likes ? deck.likes.length : 0 }}</span>
+            </div>
             <div class="deck-title">{{ deck.title }}</div>
             <div class="deck-description">{{ deck.description }}</div>
             <div class="deck-info">
               <span>{{ deck.cards.length }} cartes</span>
-              <a href="/public-account/{{ deck.user.id }}" class="deck-author">{{ deck.user.username }}</a>
+              <a href="/public-account/{{ deck.user.id }}" class="deck-author" onclick="event.stopPropagation();">{{ deck.user.username }}</a>
             </div>
           </div>
         @endeach
@@ -556,6 +582,9 @@
             <th onclick="sortListBy('author')" id="th-author">
               Auteur <span class="sort-arrow" id="sortArrow-author"></span>
             </th>
+            <th onclick="sortListBy('likes')" id="th-likes">
+              Likes <span class="sort-arrow" id="sortArrow-likes"></span>
+            </th>
           </tr>
         </thead>
         <tbody id="decksListBody">
@@ -566,6 +595,18 @@
                 <td>{{ deck.description }}</td>
                 <td>{{ deck.cards.length }}</td>
                 <td><a href="/public-account/{{ deck.user.id }}" class="deck-author">{{ deck.user.username }}</a></td>
+                <td>
+                  <form action="{{ deck.hasLiked ? route('decks.unlike', { id: deck.id }) : route('decks.like', { id: deck.id }) }}" method="POST" style="display:inline;" onclick="event.stopPropagation();">
+                    {{ csrfField() }}
+                    <input type="hidden" name="returnTo" value="list">
+                    <button type="submit" class="like-btn {{ deck.hasLiked ? 'liked' : '' }}">
+                      <span title="{{ deck.hasLiked ? 'Je n\'aime plus' : 'J\'aime' }}">
+                        {{ deck.hasLiked ? '❤️' : '🤍' }}
+                      </span>
+                    </button>
+                    <span class="like-count">{{ deck.likes ? deck.likes.length : 0 }}</span>
+                  </form>
+                </td>
               </tr>
             @endeach
           @else
@@ -610,7 +651,7 @@
     const viewSwitch = document.getElementById('viewSwitch');
 
     function setSortArrows() {
-      const fields = ['title', 'description', 'cards', 'author'];
+      const fields = ['title', 'description', 'cards', 'author', 'likes'];
       fields.forEach(f => {
         document.getElementById('sortArrow-' + f).textContent = '';
       });
@@ -631,18 +672,26 @@
     function updateListFromGrid() {
       const gridCards = Array.from(document.querySelectorAll('.deck-card'));
       const listBody = document.getElementById('decksListBody');
-      const visibleDecks = gridCards.filter(card => card.style.display !== 'none').map(card => ({
-        title: card.querySelector('.deck-title').textContent,
-        description: card.querySelector('.deck-description').textContent,
-        cards: parseInt(card.querySelector('.deck-info span').textContent) || 0,
-        author: card.querySelector('.deck-author').textContent,
-        authorLink: card.querySelector('.deck-author').getAttribute('href'),
-        deckUrl: card.getAttribute('onclick').match(/'([^']+)'/)[1]
-      }));
+      const visibleDecks = gridCards.filter(card => card.style.display !== 'none').map(card => {
+        const likeButton = card.querySelector('.like-btn');
+        const likeCount = card.querySelector('.like-count');
+        return {
+          title: card.querySelector('.deck-title').textContent,
+          description: card.querySelector('.deck-description').textContent,
+          cards: parseInt(card.querySelector('.deck-info span').textContent) || 0,
+          author: card.querySelector('.deck-author').textContent,
+          authorLink: card.querySelector('.deck-author').getAttribute('href'),
+          deckUrl: card.getAttribute('onclick').match(/'([^']+)'/)[1],
+          hasLiked: likeButton.classList.contains('liked'),
+          likesCount: likeCount ? parseInt(likeCount.textContent) || 0 : 0,
+          id: card.getAttribute('onclick').match(/\/deck\/(\d+)/)[1]
+        };
+      });
+      
       if (visibleDecks.length > 1) {
         visibleDecks.sort((a, b) => {
           let va = a[sortField], vb = b[sortField];
-          if (sortField === 'cards') {
+          if (sortField === 'cards' && 'likes') {
             va = Number(va); vb = Number(vb);
             return sortAsc ? va - vb : vb - va;
           }
@@ -660,9 +709,19 @@
             <td>${deck.description}</td>
             <td>${deck.cards}</td>
             <td><a href="${deck.authorLink}" class="deck-author">${deck.author}</a></td>
+            <td>
+              <form action="/deck/${deck.id}/${deck.hasLiked ? 'unlike' : 'like'}" method="POST" style="display:inline;" onclick="event.stopPropagation();">
+                {{ csrfField() }}
+                <input type="hidden" name="returnTo" value="list">
+                <button type="submit" class="like-btn${deck.hasLiked ? ' liked' : ''}" title="${deck.hasLiked ? 'Je n\'aime plus' : 'J\'aime'}">
+                  <span>${deck.hasLiked ? '❤️' : '🤍'}</span>
+                </button>
+                <span class="like-count">${deck.likesCount}</span>
+              </form>
+            </td>
           </tr>
         `).join('')
-        : `<tr><td colspan="4" style="text-align:center;">Aucun deck public disponible</td></tr>`;
+        : '<tr><td colspan="5" style="text-align:center;">Aucun deck public disponible</td></tr>';
       document.getElementById('deckCount').textContent = visibleDecks.length;
     }
 
@@ -729,6 +788,19 @@
     });
 
     setSortArrows();
+
+    document.addEventListener('DOMContentLoaded', function() {
+      // Check if we should show list view
+      const urlParams = new URLSearchParams(window.location.search);
+      const view = urlParams.get('returnTo') || 'grid';
+      if (view === 'list') {
+        viewSwitch.setAttribute('data-view', 'list');
+        decksContainer.style.display = 'none';
+        decksListContainer.style.display = '';
+        isGridView = false;
+        updateListFromGrid();
+      }
+    });
   </script>
 </body>
 </html>
