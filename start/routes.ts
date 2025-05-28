@@ -76,14 +76,24 @@ router
   .as('auth.handleLogout')
   .use(middleware.auth());
 
-// Like/unlike routes
+// Like/unlike routes - support both GET and POST for flexibility
 router
   .get('/deck/:id/like', [DeckController, 'like'])
+  .as('decks.like.get')
+  .use(middleware.auth());
+
+router
+  .post('/deck/:id/like', [DeckController, 'like'])
   .as('decks.like')
   .use(middleware.auth());
 
 router
   .get('/deck/:id/unlike', [DeckController, 'unlike'])
+  .as('decks.unlike.get')
+  .use(middleware.auth());
+
+router
+  .post('/deck/:id/unlike', [DeckController, 'unlike'])
   .as('decks.unlike')
   .use(middleware.auth());
 
