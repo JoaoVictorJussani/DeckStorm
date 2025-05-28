@@ -26,9 +26,11 @@ export default class PageController {
 
     // Get top 5 creators by deck count
     const topCreatorsByDecks = await User.query()
-      .withCount('decks')
+      .withCount('decks', (query) => {
+      query.where('visibility', 'public');
+      })
       .whereHas('decks', (query) => {
-        query.where('visibility', 'public');
+      query.where('visibility', 'public');
       })
       .orderBy('decks_count', 'desc')
       .limit(5);
