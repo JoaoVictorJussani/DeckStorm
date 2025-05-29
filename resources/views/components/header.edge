@@ -240,7 +240,10 @@
             title="Afficher les astuces d'utilisation">
       💡
     </button>
-    <span title="Utilisateur connecté">Bienvenue {{ user?.username }}</span>
+    <!-- Remplacez l'affichage du nom par celui de l'utilisateur connecté -->
+    @if(auth?.user)
+      Bienvenue {{ auth.user.username }}
+    @endif
     <div class="header-dropdown" id="header-userDropdown">
       <button class="header-dropdown-toggle" 
               onclick="headerToggleDropdown()" 
@@ -250,7 +253,9 @@
         <span>▼</span>
       </button>
       <div class="header-dropdown-menu" id="header-dropdownMenu">
-        <a href="/account/{{ user?.id }}" title="Gérer votre profil et vos decks">Mon compte</a>
+        @if(auth?.user)
+        <a href="/account/{{ auth.user.id }}" title="Gérer votre profil et vos decks">Mon compte</a>
+        @endif
         <form action="/logout" method="POST" style="margin:0;">
           {{ csrfField() }}
           <button type="submit" class="header-logout-btn" title="Se déconnecter de l'application">Se déconnecter</button>
