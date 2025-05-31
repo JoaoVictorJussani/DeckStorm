@@ -224,45 +224,116 @@
       margin-top: -2px;
     }
     /* Box survolante pour abonnés/abonnements */
-    #followers-box, #following-box {
-      display:none;
-      position:fixed;
-      top:110px;
-      left:50%;
-      transform:translateX(-50%);
-      background:#fff;
-      color:#1976d2;
-      border:2px solid #1976d2;
-      border-radius:12px;
-      box-shadow:0 8px 32px rgba(25,118,210,0.10);
-      padding:1.5rem 2rem 1.5rem 1.5rem;
-      max-width:350px;
-      z-index:9999;
+    .follow-box {
+      display: none;
+      position: fixed;
+      top: 110px;
+      left: 50%;
+      transform: translateX(-50%) scale(0.95);
+      background: #fff;
+      color: #1976d2;
+      border: 2px solid #1976d2;
+      border-radius: 20px;
+      box-shadow: 0 10px 40px rgba(25, 118, 210, 0.10), 0 0 0 1px #1976d2;
+      backdrop-filter: blur(10px);
+      padding: 1.8rem;
+      width: 90%;
+      max-width: 400px;
+      z-index: 9999;
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
-    body.theme-dark #followers-box, body.theme-dark #following-box {
+    body.theme-dark .follow-box {
       background: #23272f;
       color: #1976d2;
       border-color: #1976d2;
     }
-    #followers-box button, #following-box button {
-      background:none;
-      border:none;
-      color:#1976d2;
-      font-size:1.3rem;
-      cursor:pointer;
-      position:absolute;
-      top:8px;
-      right:10px;
+    .follow-box.active {
+      transform: translateX(-50%) scale(1);
+      opacity: 1;
     }
-    #followers-box ul, #following-box ul {
-      margin:0 0 0 1.2rem; padding:0;
+    .follow-box-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid #1976d2;
     }
-    #followers-box a, #following-box a {
-      color:#1976d2;
-      text-decoration:underline;
+    .follow-box-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #1976d2;
+      letter-spacing: -0.5px;
     }
-    #followers-box a:hover, #following-box a:hover {
-      color:#1565c0;
+    .follow-box-close {
+      background: #e3f2fd;
+      border: 1px solid #1976d2;
+      color: #1976d2;
+      font-size: 1.2rem;
+      cursor: pointer;
+      padding: 0.4rem;
+      border-radius: 12px;
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+    }
+    .follow-box-close:hover {
+      background: #1976d2;
+      color: #fff;
+      transform: rotate(90deg);
+    }
+    body.theme-dark .follow-box-close {
+      background: #23272f;
+      color: #fff;
+      border-color: #1976d2;
+    }
+    body.theme-dark .follow-box-close:hover {
+      background: #1976d2;
+      color: #fff;
+    }
+    .follow-box-content {
+      max-height: 400px;
+      overflow-y: auto;
+      padding-right: 0.5rem;
+    }
+    .follow-box-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .follow-box-item {
+      padding: 0.8rem 1rem;
+      border-radius: 10px;
+      transition: all 0.2s ease;
+      border: 2px solid #1976d2; /* plus visible */
+      background: #e3f2fd;
+      text-align: center; /* centrer le texte */
+      margin-bottom: 0.7rem; /* espacement entre les items */
+      box-shadow: 0 2px 8px rgba(25, 118, 210, 0.07);
+    }
+    body.theme-dark .follow-box-item {
+      background: #23272f;
+      border-color: #1976d2;
+    }
+    .follow-box-link {
+      color: #1976d2;
+      text-decoration: none;
+      font-size: 1.1rem;
+      transition: all 0.2s ease;
+      display: block;
+      text-align: center; /* centrer le texte */
+      font-weight: 500;
+      letter-spacing: 0.5px;
+    }
+    .follow-box-link:hover {
+      color: #1565c0;
     }
   </style>
 </head>
@@ -288,60 +359,77 @@
       @endif
     </div>
     <!-- Box survolante pour abonnés -->
-    <div id="followers-box">
-      <button onclick="closeFollowersBox()" aria-label="Fermer">✖</button>
-      <div style="font-size:1.2rem; margin-bottom:0.7rem;"><b>Abonnés ({{ followersCount }})</b></div>
-      <div style="color:#1976d2; font-size:1rem; max-height:250px; overflow-y:auto;">
+    <div id="followers-box" class="follow-box">
+      <div class="follow-box-header">
+        <span class="follow-box-title">Abonnés ({{ followersCount }})</span>
+        <button onclick="closeFollowersBox()" class="follow-box-close" aria-label="Fermer">×</button>
+      </div>
+      <div class="follow-box-content">
         @if(followersList && followersList.length)
-        <ul>
-          @each(f in followersList)
-          <li>
-            <a href="/public-account/{{ f.id }}">{{ f.username }}</a>
-          </li>
-          @endeach
-        </ul>
+          <ul class="follow-box-list">
+            @each(f in followersList)
+              <li class="follow-box-item">
+                <a href="/public-account/{{ f.id }}" class="follow-box-link">{{ f.username }}</a>
+              </li>
+            @endeach
+          </ul>
         @else
-        <span>Aucun abonné.</span>
+          <span>Aucun abonné.</span>
         @endif
       </div>
     </div>
     <!-- Box survolante pour abonnements -->
-    <div id="following-box">
-      <button onclick="closeFollowingBox()" aria-label="Fermer">✖</button>
-      <div style="font-size:1.2rem; margin-bottom:0.7rem;"><b>Abonnements ({{ followingCount }})</b></div>
-      <div style="color:#1976d2; font-size:1rem; max-height:250px; overflow-y:auto;">
+    <div id="following-box" class="follow-box">
+      <div class="follow-box-header">
+        <span class="follow-box-title">Abonnements ({{ followingCount }})</span>
+        <button onclick="closeFollowingBox()" class="follow-box-close" aria-label="Fermer">×</button>
+      </div>
+      <div class="follow-box-content">
         @if(followingList && followingList.length)
-        <ul>
-          @each(f in followingList)
-          <li>
-            <a href="/public-account/{{ f.id }}">{{ f.username }}</a>
-          </li>
-          @endeach
-        </ul>
+          <ul class="follow-box-list">
+            @each(f in followingList)
+              <li class="follow-box-item">
+                <a href="/public-account/{{ f.id }}" class="follow-box-link">{{ f.username }}</a>
+              </li>
+            @endeach
+          </ul>
         @else
-        <span>Aucun abonnement.</span>
+          <span>Aucun abonnement.</span>
         @endif
       </div>
     </div>
     <script>
+      function showFollowBox(boxId) {
+        const box = document.getElementById(boxId);
+        box.style.display = 'block';
+        setTimeout(() => {
+          box.classList.add('active');
+        }, 10);
+      }
+      function hideFollowBox(boxId) {
+        const box = document.getElementById(boxId);
+        box.classList.remove('active');
+        setTimeout(() => {
+          box.style.display = 'none';
+        }, 300);
+      }
       document.getElementById('followers-link').onclick = function(e) {
         e.stopPropagation();
-        document.getElementById('followers-box').style.display = 'block';
-        document.getElementById('following-box').style.display = 'none';
+        hideFollowBox('following-box');
+        showFollowBox('followers-box');
       };
       document.getElementById('following-link').onclick = function(e) {
         e.stopPropagation();
-        document.getElementById('following-box').style.display = 'block';
-        document.getElementById('followers-box').style.display = 'none';
+        hideFollowBox('followers-box');
+        showFollowBox('following-box');
       };
       function closeFollowersBox() {
-        document.getElementById('followers-box').style.display = 'none';
+        hideFollowBox('followers-box');
       }
       function closeFollowingBox() {
-        document.getElementById('following-box').style.display = 'none';
+        hideFollowBox('following-box');
       }
       document.addEventListener('click', function(event) {
-        // Fermer les box si clic en dehors
         const fb = document.getElementById('followers-box');
         const flb = document.getElementById('following-box');
         if (fb && fb.style.display === 'block' && !fb.contains(event.target) && event.target.id !== 'followers-link') {
