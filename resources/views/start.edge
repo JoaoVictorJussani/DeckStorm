@@ -102,6 +102,64 @@
       color: #1565c0; 
       opacity: 0.8;
     }
+
+    /* Helpbox styles */
+    .helpbox {
+      display: inline-block;
+      margin-left: 0.7rem;
+      vertical-align: middle;
+      position: relative;
+    }
+    .helpbox-btn {
+      background: #1976d2;
+      color: #fff;
+      border: none;
+      border-radius: 50%;
+      width: 28px;
+      height: 28px;
+      font-size: 1.1rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.2s;
+      margin-left: 0.2rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 8px rgba(25, 118, 210, 0.10);
+    }
+    .helpbox-btn:hover, .helpbox-btn:focus {
+      background: #1565c0;
+      outline: none;
+    }
+    .helpbox-content {
+      display: none;
+      position: absolute;
+      left: 120%;
+      top: 50%;
+      transform: translateY(-50%);
+      min-width: 260px;
+      background: #fff;
+      color: #222;
+      border: 2px solid #1976d2;
+      border-radius: 10px;
+      box-shadow: 0 4px 20px rgba(25, 118, 210, 0.10);
+      padding: 1rem 1.2rem;
+      z-index: 200;
+      font-size: 1rem;
+      text-align: left;
+      line-height: 1.5;
+    }
+    body.theme-dark .helpbox-content {
+      background: #23272f;
+      color: #e0e0e0;
+      border-color: #1976d2;
+    }
+    .helpbox-content strong {
+      color: #1976d2;
+    }
+    .helpbox.open .helpbox-content {
+      display: block;
+    }
   </style>
 </head>
 <body>
@@ -119,6 +177,14 @@
         <input type="hidden" name="results" value="[]" />
 
         <label for="mode-select" style="font-size:1.2rem;">Choisissez un mode :</label>
+        <span class="helpbox">
+          <button type="button" class="helpbox-btn" onclick="toggleHelpbox('mode-helpbox')" aria-label="Aide sur les modes">?</button>
+          <span class="helpbox-content" id="mode-helpbox">
+            <strong>Mode chronométré :</strong> Répondez à toutes les questions le plus vite possible sans faire d'erreus.<br><br>
+            <strong>Mode basique :</strong> Répondez à chaque carte une seule fois, sans contrainte de temps.<br><br>
+            <strong>Mode jusqu'au bout :</strong> Vous devez répondre correctement à toutes les cartes. Les cartes ratées reviennent jusqu'à ce que vous réussissiez tout.
+          </span>
+        </span>
         <select id="mode-select" name="mode" style="background: #1976d2; color: #fff; border: 2px solid #1976d2; padding: 0.8rem 1.5rem; border-radius: 8px; cursor: pointer; font-size: 1.2rem; font-weight: 600; transition: background 0.3s ease, color 0.3s ease;">
           <option value="chronometre">Mode chronométré</option>
           <option value="basique">Mode basique</option>
@@ -161,7 +227,20 @@
         const menu = document.getElementById('dropdownMenu');
         menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
       }
+      // Helpbox logic
+      function toggleHelpbox(id) {
+        document.querySelectorAll('.helpbox-content').forEach(function(box) {
+          if (box.id !== id) box.parentElement.classList.remove('open');
+        });
+        var el = document.getElementById(id);
+        if (el) {
+          el.parentElement.classList.toggle('open');
+        }
+      }
       document.addEventListener('click', function(event) {
+        document.querySelectorAll('.helpbox').forEach(function(box) {
+          if (!box.contains(event.target)) box.classList.remove('open');
+        });
         const menu = document.getElementById('dropdownMenu');
         if (menu && menu.style.display === 'block' && !menu.contains(event.target) && event.target.className !== 'dropdown-toggle') {
           menu.style.display = 'none';
