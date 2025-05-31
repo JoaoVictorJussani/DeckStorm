@@ -5,25 +5,30 @@
   <title>Profil public de {{ user.username }}</title>
   <link rel="shortcut icon" href="/images/icone.ico" type="image/x-icon">
   <style>
-    /* Styles du header.edge */
+    /* Styles globaux home.edge */
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
-
     body {
-      background: #0a0c10;
-      color: #e0e0e0;
+      background: #fff;
+      color: #222;
       display: flex;
       flex-direction: column;
       align-items: center;
       min-height: 100vh;
       font-size: 1rem;
     }
-    
-    /* Styles spécifiques au public_account */
+    body.theme-light {
+      background: #fff;
+      color: #222;
+    }
+    body.theme-dark {
+      background: #0a0c10;
+      color: #e0e0e0;
+    }
     .main-content {
       margin-top: 120px;
       text-align: center;
@@ -33,12 +38,10 @@
       margin-left: auto;
       margin-right: auto;
     }
-
     .user-stats {
-      background: linear-gradient(145deg, rgba(108, 137, 71, 0.05), rgba(108, 137, 71, 0.15));
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(108, 137, 71, 0.3);
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+      background: #fff;
+      border: 2px solid #1976d2;
+      box-shadow: 0 8px 30px rgba(25, 118, 210, 0.08);
       border-radius: 16px;
       padding: 1.5rem 2rem;
       margin: 0 auto 2.5rem;
@@ -49,7 +52,11 @@
       max-width: 600px;
       position: relative;
     }
-
+    body.theme-dark .user-stats {
+      background: #181c23;
+      border-color: #1976d2;
+      box-shadow: 0 8px 30px rgba(25, 118, 210, 0.08);
+    }
     .stat-item {
       display: flex;
       flex-direction: column;
@@ -57,7 +64,6 @@
       position: relative;
       padding: 0.5rem 1.5rem;
     }
-
     .stat-item:not(:last-child):after {
       content: '';
       position: absolute;
@@ -66,32 +72,28 @@
       transform: translateY(-50%);
       height: 70%;
       width: 1px;
-      background: linear-gradient(to bottom, transparent, rgba(108, 137, 71, 0.3), transparent);
+      background: linear-gradient(to bottom, transparent, #1976d2 60%, transparent);
     }
-
     .stat-label {
       font-size: 0.85rem;
-      color: rgba(108, 137, 71, 0.8);
+      color: #1976d2;
       font-weight: 500;
       text-transform: uppercase;
       letter-spacing: 0.5px;
       margin-bottom: 0.3rem;
     }
-
     .stat-value {
       font-size: 1.5rem;
-      color: #e0e0e0;
+      color: #1976d2;
       font-weight: 600;
       cursor: pointer;
       transition: all 0.3s ease;
       position: relative;
     }
-
     .stat-value:hover {
-      color: #6c8947;
+      color: #1565c0;
       transform: translateY(-2px);
     }
-
     .stat-value::after {
       content: '';
       position: absolute;
@@ -99,15 +101,13 @@
       left: 0;
       width: 100%;
       height: 2px;
-      background: #6c8947;
+      background: #1976d2;
       transform: scaleX(0);
       transition: transform 0.3s ease;
     }
-
     .stat-value:hover::after {
       transform: scaleX(1);
     }
-
     .follow-btn, .unfollow-btn {
       position: relative;
       padding: 0.8rem 2rem;
@@ -121,100 +121,85 @@
       overflow: hidden;
       z-index: 1;
     }
-
     .follow-btn {
-      background: linear-gradient(135deg, #6c8947 0%, #7b995c 100%);
+      background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%);
       color: #fff;
-      box-shadow: 0 4px 15px rgba(108, 137, 71, 0.2);
+      box-shadow: 0 4px 15px rgba(25, 118, 210, 0.12);
+      border: 2px solid #1976d2;
     }
-
     .unfollow-btn {
       background: linear-gradient(135deg, #ff7676 0%, #ff9999 100%);
       color: #fff;
       box-shadow: 0 4px 15px rgba(255, 118, 118, 0.2);
+      border: 2px solid #ff7676;
     }
-
     .follow-btn:hover, .unfollow-btn:hover {
       transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(108, 137, 71, 0.3);
+      box-shadow: 0 6px 20px rgba(25, 118, 210, 0.18);
+      opacity: 0.95;
     }
-
-    .follow-btn::before, .unfollow-btn::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-      transform: translateX(-100%);
-      transition: transform 0.6s ease;
-      z-index: -1;
-    }
-
-    .follow-btn:hover::before, .unfollow-btn:hover::before {
-      transform: translateX(100%);
-    }
-
     .decks-container {
       width: 100%;
       margin: auto;
     }
-
     h1 {
-      color: #6c8947;
+      color: #1976d2;
       font-size: 2.5rem;
       margin-bottom: 1rem;
       font-weight: 700;
     }
-
     table {
       width: 100%;
       text-align: left;
-      background: #0a0c10;
-      border: 2px solid #6c8947;
+      background: #fff;
+      border: 2px solid #1976d2;
       border-radius: 10px;
       overflow: hidden;
       margin-top: 2rem;
+      box-shadow: 0 2px 10px rgba(25, 118, 210, 0.08);
     }
-
+    body.theme-dark table {
+      background: #181c23;
+      border-color: #1976d2;
+    }
     th, td {
       padding: 15px;
-      border-bottom: 1px solid #6c8947;
+      border-bottom: 1px solid #1976d2;
     }
-
     th {
       font-size: 1.2rem;
       font-weight: bold;
-      background: #0a0c10;
-      color: #6c8947;
-      border-bottom: 2px solid #6c8947;
+      background: #e3f2fd;
+      color: #1976d2;
+      border-bottom: 2px solid #1976d2;
     }
-
+    body.theme-dark th {
+      background: #23272f;
+      color: #1976d2;
+    }
     td {
       font-size: 1.1rem;
     }
-
     tr:hover {
       cursor: pointer;
-      background: #111;
+      background: #e3f2fd;
     }
-
+    body.theme-dark tr:hover {
+      background: #23272f;
+    }
     .link-action {
-      color: var(--primary-color);
+      color: #1976d2;
       cursor: pointer;
     }
-
     .link-action:hover {
-      color: var(--primary-color);
+      color: #1565c0;
       opacity: 0.8;
     }
-
     .add-deck-btn {
       position: fixed;
       bottom: 2rem;
       right: 2rem;
-      background: linear-gradient(135deg, #6c8947, #7b995c);
+      background: linear-gradient(135deg, #1976d2, #1565c0);
       color: white;
       border: none;
       border-radius: 50%;
@@ -225,18 +210,59 @@
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      box-shadow: 0 4px 15px rgba(108, 137, 71, 0.4);
+      box-shadow: 0 4px 15px rgba(25, 118, 210, 0.18);
       transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
       z-index: 100;
       text-decoration: none;
     }
     .add-deck-btn:hover {
-      background: linear-gradient(135deg, #7b995c, #6c8947);
-      box-shadow: 0 6px 24px rgba(108, 137, 71, 0.5);
+      background: linear-gradient(135deg, #1565c0, #1976d2);
+      box-shadow: 0 6px 24px rgba(25, 118, 210, 0.25);
       transform: scale(1.08);
     }
     .add-deck-btn span {
       margin-top: -2px;
+    }
+    /* Box survolante pour abonnés/abonnements */
+    #followers-box, #following-box {
+      display:none;
+      position:fixed;
+      top:110px;
+      left:50%;
+      transform:translateX(-50%);
+      background:#fff;
+      color:#1976d2;
+      border:2px solid #1976d2;
+      border-radius:12px;
+      box-shadow:0 8px 32px rgba(25,118,210,0.10);
+      padding:1.5rem 2rem 1.5rem 1.5rem;
+      max-width:350px;
+      z-index:9999;
+    }
+    body.theme-dark #followers-box, body.theme-dark #following-box {
+      background: #23272f;
+      color: #1976d2;
+      border-color: #1976d2;
+    }
+    #followers-box button, #following-box button {
+      background:none;
+      border:none;
+      color:#1976d2;
+      font-size:1.3rem;
+      cursor:pointer;
+      position:absolute;
+      top:8px;
+      right:10px;
+    }
+    #followers-box ul, #following-box ul {
+      margin:0 0 0 1.2rem; padding:0;
+    }
+    #followers-box a, #following-box a {
+      color:#1976d2;
+      text-decoration:underline;
+    }
+    #followers-box a:hover, #following-box a:hover {
+      color:#1565c0;
     }
   </style>
 </head>
@@ -262,15 +288,15 @@
       @endif
     </div>
     <!-- Box survolante pour abonnés -->
-    <div id="followers-box" style="display:none; position:fixed; top:110px; left:50%; transform:translateX(-50%); background:#222; color:#6c8947; border:2px solid #6c8947; border-radius:12px; // box-shadow:0 8px 32px rgba(0,0,0,0.25); padding:1.5rem 2rem 1.5rem 1.5rem; max-width:350px; z-index:9999;">
-      <button onclick="closeFollowersBox()" style="position:absolute; top:8px; right:10px; background:none; border:none; color:#6c8947; font-size:1.3rem; cursor:pointer;" aria-label="Fermer">✖</button>
+    <div id="followers-box">
+      <button onclick="closeFollowersBox()" aria-label="Fermer">✖</button>
       <div style="font-size:1.2rem; margin-bottom:0.7rem;"><b>Abonnés ({{ followersCount }})</b></div>
-      <div style="color:#e0e0e0; font-size:1rem; max-height:250px; overflow-y:auto;">
+      <div style="color:#1976d2; font-size:1rem; max-height:250px; overflow-y:auto;">
         @if(followersList && followersList.length)
-        <ul style="margin:0 0 0 1.2rem; padding:0;">
+        <ul>
           @each(f in followersList)
           <li>
-            <a href="/public-account/{{ f.id }}" style="color:#6c8947; text-decoration:underline;">{{ f.username }}</a>
+            <a href="/public-account/{{ f.id }}">{{ f.username }}</a>
           </li>
           @endeach
         </ul>
@@ -280,15 +306,15 @@
       </div>
     </div>
     <!-- Box survolante pour abonnements -->
-    <div id="following-box" style="display:none; position:fixed; top:110px; left:50%; transform:translateX(-50%); background:#222; color:#6c8947; border:2px solid #6c8947; border-radius:12px; // box-shadow:0 8px 32px rgba(0,0,0,0.25); padding:1.5rem 2rem 1.5rem 1.5rem; max-width:350px; z-index:9999;">
-      <button onclick="closeFollowingBox()" style="position:absolute; top:8px; right:10px; background:none; border:none; color:#6c8947; font-size:1.3rem; cursor:pointer;" aria-label="Fermer">✖</button>
+    <div id="following-box">
+      <button onclick="closeFollowingBox()" aria-label="Fermer">✖</button>
       <div style="font-size:1.2rem; margin-bottom:0.7rem;"><b>Abonnements ({{ followingCount }})</b></div>
-      <div style="color:#e0e0e0; font-size:1rem; max-height:250px; overflow-y:auto;">
+      <div style="color:#1976d2; font-size:1rem; max-height:250px; overflow-y:auto;">
         @if(followingList && followingList.length)
-        <ul style="margin:0 0 0 1.2rem; padding:0;">
+        <ul>
           @each(f in followingList)
           <li>
-            <a href="/public-account/{{ f.id }}" style="color:#6c8947; text-decoration:underline;">{{ f.username }}</a>
+            <a href="/public-account/{{ f.id }}">{{ f.username }}</a>
           </li>
           @endeach
         </ul>
@@ -325,8 +351,8 @@
           flb.style.display = 'none';
         }
       });
-      </script>
-      <h1>Decks de {{ user.username }} : {{ publicDecks.length }}</h1>
+    </script>
+    <h1>Decks de {{ user.username }} : {{ publicDecks.length }}</h1>
     <div class="decks-container">
       <table>
         <thead>
@@ -340,7 +366,7 @@
           @if(publicDecks.length)
             @each(deck in publicDecks)
               <tr onclick="window.location.href='/deck/{{ deck.id }}'">
-                <td><a style="text-decoration: none; color: white" href="/deck/{{ deck.id }}">{{ deck.title }}</a></td>
+                <td><a style="text-decoration: none; color: #1976d2" href="/deck/{{ deck.id }}">{{ deck.title }}</a></td>
                 <td>{{ deck.description }}</td>
                 <td>{{ deck.cards.length }}</td>
               </tr>

@@ -15,8 +15,8 @@
 
     /* Style du corps de la page */
     body {
-      background: #0a0c10;
-      color: #e0e0e0;
+      background: #fff;
+      color: #222;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -24,22 +24,30 @@
       min-height: 100vh;
       font-size: 1rem;
     }
+    body.theme-light {
+      background: #fff;
+      color: #222;
+    }
+    body.theme-dark {
+      background: #0a0c10;
+      color: #e0e0e0;
+    }
 
     /* Style pour le titre principal */
     h1 {
       font-size: 2.5rem;
       margin-bottom: 2rem;
-      color: #6c8947;
+      color: #1976d2;
       font-weight: 700;
       text-align: center;
-      box-shadow: 0 0 15px #7a995f;
+      box-shadow: 0 0 15px #1976d2;
     }
 
     /* Style pour les boutons */
     button {
-      background: #6c8947;
-      color: #000;
-      border: 2px solid #6c8947;
+      background: #1976d2;
+      color: #fff;
+      border: 2px solid #1976d2;
       padding: 0.8rem 1.5rem;
       border-radius: 8px;
       cursor: pointer;
@@ -47,11 +55,33 @@
       font-weight: 600;
       transition: background 0.3s ease, color 0.3s ease;
     }
-
-    /* Effet au survol des boutons */
     button:hover {
-      background: #008c95;
-      color: white;
+      background: #1565c0;
+      color: #fff;
+    }
+    .abandon-button {
+      background: #fff;
+      color: #ff4d4d;
+      border: 2px solid #ff4d4d;
+      padding: 0.8rem 1.5rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1.2rem;
+      font-weight: 600;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+    .abandon-button:hover {
+      background: #ff4d4d;
+      color: #fff;
+    }
+    body.theme-dark .abandon-button {
+      background: #23272f;
+      color: #ff4d4d;
+      border-color: #ff4d4d;
+    }
+    body.theme-dark .abandon-button:hover {
+      background: #ff4d4d;
+      color: #fff;
     }
 
     .open .dropdown-menu {
@@ -64,65 +94,79 @@
     }
 
     .card-link {
-      color: var(--primary-color);
+      color: #1976d2;
       text-decoration: none;
     }
 
     .card-link:hover {
-      color: var(--primary-color); 
+      color: #1565c0; 
       opacity: 0.8;
     }
   </style>
 </head>
 <body>
-  @include('components/header')
-  <div class="spacer"></div>
-  <!-- Titre dynamique basé sur le deck -->
-  <h1>Commencer l'exercice pour le deck "{{ deck.title }}"</h1>
+    @include('components/header')
+    <div class="spacer"></div>
+    <!-- Titre dynamique basé sur le deck -->
+    <h1>Commencer l'exercice pour le deck "{{ deck.title }}"</h1>
 
-  @if(deck && deck.id)
-    <!-- Formulaire pour démarrer l'exercice -->
-    <form action="{{ route('exercise.presentQuestion', { deckId: deck.id, questionIndex: 0 }) }}" method="GET" onsubmit="handleSubmit(this)" style="display: flex; flex-direction: column; align-items: flex-start; gap: 0.5rem; max-width: 400px;">
-      <!-- Champ caché pour enregistrer l'heure de début -->
-      <input type="hidden" name="startTime" id="startTime" />
-      <!-- Champ caché pour initialiser les résultats -->
-      <input type="hidden" name="results" value="[]" />
+    @if(deck && deck.id)
+      <!-- Formulaire pour démarrer l'exercice -->
+      <form action="{{ route('exercise.presentQuestion', { deckId: deck.id, questionIndex: 0 }) }}" method="GET" onsubmit="handleSubmit(this)" style="display: flex; flex-direction: column; align-items: flex-start; gap: 0.5rem; max-width: 400px;">
+        <!-- Champ caché pour enregistrer l'heure de début -->
+        <input type="hidden" name="startTime" id="startTime" />
+        <!-- Champ caché pour initialiser les résultats -->
+        <input type="hidden" name="results" value="[]" />
 
-      <label for="mode-select" style="font-size:1.2rem;">Choisissez un mode :</label>
-      <select id="mode-select" name="mode" style="background: #6c8947; color: #000; border: 2px solid #6c8947; padding: 0.8rem 1.5rem; border-radius: 8px; cursor: pointer; font-size: 1.2rem; font-weight: 600; transition: background 0.3s ease, color 0.3s ease;">
-        <option value="chronometre">Mode chronométré</option>
-        <option value="basique">Mode basique</option>
-        <option value="jusquaubout">Mode jusqu'au bout</option>
-      </select>
+        <label for="mode-select" style="font-size:1.2rem;">Choisissez un mode :</label>
+        <select id="mode-select" name="mode" style="background: #1976d2; color: #fff; border: 2px solid #1976d2; padding: 0.8rem 1.5rem; border-radius: 8px; cursor: pointer; font-size: 1.2rem; font-weight: 600; transition: background 0.3s ease, color 0.3s ease;">
+          <option value="chronometre">Mode chronométré</option>
+          <option value="basique">Mode basique</option>
+          <option value="jusquaubout">Mode jusqu'au bout</option>
+        </select>
 
-      <label for="direction-select" style="font-size:1.2rem;">Sens de l'exercice :</label>
-      <select id="direction-select" name="direction" style="background: #6c8947; color: #000; border: 2px solid #6c8947; padding: 0.8rem 1.5rem; border-radius: 8px; cursor: pointer; font-size: 1.2rem; font-weight: 600; transition: background 0.3s ease, color 0.3s ease;">
-        <option value="question">Question → Réponse</option>
-        <option value="answer">Réponse → Question</option>
-      </select>
+        <label for="direction-select" style="font-size:1.2rem;">Sens de l'exercice :</label>
+        <select id="direction-select" name="direction" style="background: #1976d2; color: #fff; border: 2px solid #1976d2; padding: 0.8rem 1.5rem; border-radius: 8px; cursor: pointer; font-size: 1.2rem; font-weight: 600; transition: background 0.3s ease, color 0.3s ease;">
+          <option value="question">Question → Réponse</option>
+          <option value="answer">Réponse → Question</option>
+        </select>
 
-      @if(typeof retryCardIds !== 'undefined' && retryCardIds)
-        @each(id in retryCardIds)
-          <input type="hidden" name="retryCardIds" value="{{ id }}" />
-        @endeach
-      @endif
-      <input type="hidden" name="attempts" value="{{ attempts || 1 }}" />
-      <!-- Bouton pour soumettre le formulaire -->
-      <button type="submit" style="margin-top: 1rem;">C'est parti</button>
-    </form>
-  @else
-    <p style="color:#ff4d4d;">Erreur : deck introuvable ou invalide.</p>
-  @endif
+        @if(typeof retryCardIds !== 'undefined' && retryCardIds)
+          @each(id in retryCardIds)
+            <input type="hidden" name="retryCardIds" value="{{ id }}" />
+          @endeach
+        @endif
+        <input type="hidden" name="attempts" value="{{ attempts || 1 }}" />
+        <!-- Boutons pour soumettre ou abandonner -->
+        <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+          <button type="submit">C'est parti</button>
+          <button type="button" class="abandon-button" onclick="window.location.href='{{ route('decks.show', { id: deck.id }) }}'">Abandonner</button>
+        </div>
+      </form>
+    @else
+      <p style="color:#ff4d4d;">Erreur : deck introuvable ou invalide.</p>
+    @endif
 
-  <script>
-    // Fonction pour gérer la soumission du formulaire
-    function handleSubmit(form) {
-      const mode = form.mode.value; // Récupère le mode sélectionné
-      if(mode === 'chronometre'){
-        document.getElementById('startTime').value = Date.now(); // Enregistre l'heure actuelle si mode chronométré
+    <script>
+      // Fonction pour gérer la soumission du formulaire
+      function handleSubmit(form) {
+        const mode = form.mode.value;
+        if(mode === 'chronometre'){
+          document.getElementById('startTime').value = Date.now();
+        }
+        return true;
       }
-      return true; // Permet la soumission du formulaire
-    }
-  </script>
-</body>
+      // Dropdown JS
+      function toggleDropdownMenu() {
+        const menu = document.getElementById('dropdownMenu');
+        menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+      }
+      document.addEventListener('click', function(event) {
+        const menu = document.getElementById('dropdownMenu');
+        if (menu && menu.style.display === 'block' && !menu.contains(event.target) && event.target.className !== 'dropdown-toggle') {
+          menu.style.display = 'none';
+        }
+      });
+    </script>
+  </body>
 </html>

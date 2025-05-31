@@ -3,8 +3,22 @@
 <head>
   <meta charset="UTF-8" />
   <title>Question</title>
-    <link rel="shortcut icon" href="/images/icone.ico" type="image/x-icon">
-
+  <link rel="shortcut icon" href="/images/icone.ico" type="image/x-icon">
+  <script>
+    // Applique le même thème que la page précédente (start.edge)
+    (function() {
+      let theme = localStorage.getItem('theme');
+      if (!theme) theme = 'theme-light';
+      document.addEventListener('DOMContentLoaded', function() {
+        document.body.classList.remove('theme-light', 'theme-dark');
+        document.body.classList.add(theme);
+      });
+      if (document.body) {
+        document.body.classList.remove('theme-light', 'theme-dark');
+        document.body.classList.add(theme);
+      }
+    })();
+  </script>
   <style>
     * {
       box-sizing: border-box;
@@ -14,8 +28,8 @@
     }
 
     body {
-      background: #0a0c10;
-      color: #e0e0e0;
+      background: #fff;
+      color: #222;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -23,28 +37,32 @@
       min-height: 100vh;
       font-size: 1rem;
     }
-
+    body.theme-light {
+      background: #fff;
+      color: #222;
+    }
+    body.theme-dark {
+      background: #0a0c10;
+      color: #e0e0e0;
+    }
     h1 {
       font-size: 2.5rem;
       margin-bottom: 1.5rem;
-      color: #6c8947;
+      color: #1976d2;
       font-weight: 700;
       text-align: center;
     }
-
     p {
       font-size: 1.5rem;
       margin-bottom: 2rem;
       text-align: center;
     }
-
     .card-container {
       perspective: 1000px;
       margin: 10px 0;
       display: inline-block;
       position: relative;
     }
-
     .card {
       width: 300px;
       height: 150px;
@@ -53,11 +71,9 @@
       transition: transform 0.6s;
       cursor: pointer;
     }
-
     .card.is-flipped {
       transform: rotateY(180deg);
     }
-
     .card-face {
       position: absolute;
       width: 100%;
@@ -66,24 +82,26 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      border: 2px solid #6c8947;
+      border: 2px solid #1976d2;
       border-radius: 10px;
-      background: #0a0c10;
-      color: #e0e0e0;
+      background: #fff;
+      color: #222;
       font-size: 1.2rem;
       text-align: center;
     }
-
-    .card-face.front {
-      background: #6c8947;
-      color: #000;
+    body.theme-dark .card-face {
+      background: #23272f;
+      color: #e0e0e0;
+      border-color: #1976d2;
     }
-
+    .card-face.front {
+      background: #1976d2;
+      color: #fff;
+    }
     .card-face.back {
       transform: rotateY(180deg);
       position: relative;
     }
-
     .card-buttons {
       position: absolute;
       bottom: 10px;
@@ -91,7 +109,6 @@
       display: flex;
       gap: 10px;
     }
-
     .card-buttons button {
       width: 40px;
       height: 40px;
@@ -104,29 +121,24 @@
       align-items: center;
       justify-content: center;
     }
-
     .check-button {
       background: #4caf50;
       color: white;
     }
-
     .check-button:hover {
       background: #3e8e41;
     }
-
     .cross-button {
       background: #ff4d4d;
       color: white;
     }
-
     .cross-button:hover {
       background: #d43c3c;
     }
-
     button {
-      background: #6c8947;
-      color: #000;
-      border: 2px solid #6c8947;
+      background: #1976d2;
+      color: #fff;
+      border: 2px solid #1976d2;
       padding: 0.8rem 1.5rem;
       border-radius: 8px;
       cursor: pointer;
@@ -135,10 +147,9 @@
       transition: background 0.3s ease, color 0.3s ease;
       margin-top: 20px;
     }
-
     button:hover {
-      background: #008c95;
-      color: white;
+      background: #1565c0;
+      color: #fff;
     }
   </style>
 </head>
@@ -149,7 +160,6 @@
     @if(mode === 'chronometre')
       <p>Temps écoulé : <span id="elapsed-time"></span></p>
     @endif
-
 
   <div class="card-container">
     <div class="card" onclick="flipCard(this)">
@@ -199,11 +209,11 @@
     const mode = '{{ mode }}';
     const results = JSON.parse('{{ results || "[]" }}');
     const cardId = parseInt('{{ card.id }}', 10);
-    
+
     function flipCard(cardElement) {
       cardElement.classList.toggle('is-flipped');
     }
-    
+
     function markCard(event, isCorrect) {
       event.stopPropagation();
       const cardButtons = event.currentTarget.parentElement;
@@ -214,7 +224,7 @@
       document.getElementById('results').value = JSON.stringify(results);
       document.getElementById('next-form').style.display = 'block';
     }
-    
+
     if (mode === 'chronometre') {
       setInterval(() => {
         const elapsed = Math.floor((Date.now() - startTime) / 1000);
@@ -222,16 +232,6 @@
         document.querySelector('input[name="elapsedTime"]').value = elapsed;
       }, 1000);
     }
-
-    function toggleDropdown() {
-      document.getElementById('userDropdown').classList.toggle('open');
-    }
-    document.addEventListener('click', function(event) {
-      const dropdown = document.getElementById('userDropdown');
-      if (!dropdown.contains(event.target)) {
-        dropdown.classList.remove('open');
-      }
-    });
   </script>
 </body>
 </html>

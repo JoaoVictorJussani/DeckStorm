@@ -4,6 +4,25 @@
   <meta charset="UTF-8" />
   <title>Accueil</title>
   <link rel="shortcut icon" href="/images/icone.ico" type="image/x-icon">
+  <script>
+    // Aplica o tema o mais cedo possível para evitar flash
+    (function() {
+      let theme = localStorage.getItem('theme');
+      // Sempre começa no claro se não houver preferência salva
+      if (!theme) {
+        theme = 'theme-light';
+      }
+      document.addEventListener('DOMContentLoaded', function() {
+        document.body.classList.remove('theme-light', 'theme-dark');
+        document.body.classList.add(theme);
+      });
+      // Para garantir que o body já tenha a classe antes do render
+      if (document.body) {
+        document.body.classList.remove('theme-light', 'theme-dark');
+        document.body.classList.add(theme);
+      }
+    })();
+  </script>
   <style>
     * {
       box-sizing: border-box;
@@ -17,13 +36,21 @@
     }
 
     body {
-      background: #0a0c10;
-      color: #e6e9ef;
+      background: #fff;
+      color: #222;
       min-height: 100vh;
       font-weight: 400;
       line-height: 1.6;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
+    }
+    body.theme-light {
+      background: #fff;
+      color: #222;
+    }
+    body.theme-dark {
+      background: #0a0c10;
+      color: #e6e9ef;
     }
 
     .navbar {
@@ -32,26 +59,26 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background: rgba(10, 12, 16, 0.95);
-      border-bottom: 2px solid #6c8947;
+      background: rgba(255,255,255,0.95);
+      border-bottom: 2px solid #1976d2;
       position: fixed;
       top: 0;
       left: 0;
       z-index: 10;
       backdrop-filter: blur(8px);
-      box-shadow: 0 2px 15px rgba(108, 137, 71, 0.15);
+      box-shadow: 0 2px 15px rgba(25, 118, 210, 0.10);
       transition: box-shadow 0.3s;
     }
 
     .navbar a {
       text-decoration: none;
-      color: #6c8947;
+      color: #1976d2;
       font-size: 1.5rem;
       font-weight: bold;
       transition: color 0.2s;
     }
     .navbar a:focus, .navbar a:hover {
-      color: #a6d672;
+      color: #1565c0;
       outline: none;
     }
 
@@ -93,19 +120,19 @@
       width: 100%;
       padding: 12px 20px;
       font-size: 1.1rem;
-      border: 1.5px solid rgba(108, 137, 71, 0.4);
+      border: 1.5px solid rgba(25, 118, 210, 0.25);
       border-radius: 8px;
-      background: rgba(17, 19, 23, 0.85);
-      color: #e0e0e0;
+      background: rgba(245,245,245,0.85);
+      color: #222;
       transition: border 0.2s, box-shadow 0.2s;
       backdrop-filter: blur(4px);
       box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
     }
     .search-input:focus {
       outline: none;
-      border-color: #a6d672;
-      box-shadow: 0 0 8px #6c8947;
-      background: rgba(17, 19, 23, 0.95);
+      border-color: #1976d2;
+      box-shadow: 0 0 8px #1976d2;
+      background: rgba(245,245,245,0.95);
     }
     .search-input::placeholder {
       color: #888;
@@ -115,8 +142,8 @@
 
     /* Styles du switch/slider */
     .search-switch {
-      background: rgba(17, 19, 23, 0.85);
-      border: 1.5px solid rgba(56, 66, 34, 0.3);
+      background: rgba(245,245,245,0.85);
+      border: 1.5px solid rgba(25, 118, 210, 0.18);
       border-radius: 25px;
       padding: 4px;
       width: 320px;
@@ -131,14 +158,14 @@
       user-select: none;
     }
     .search-switch:focus {
-      outline: 2px solid #6c8947;
+      outline: 2px solid #1976d2;
     }
 
     .switch-option {
       width: 50%;
       text-align: center;
       font-size: 1rem;
-      color: #e0e0e0;
+      color: #222;
       z-index: 1;
       transition: color 0.3s;
       padding: 5px 0;
@@ -154,28 +181,28 @@
       top: 4px;
       width: calc(50% - 4px);
       height: calc(100% - 8px);
-      background: linear-gradient(90deg, #6c8947 60%, #a6d672 100%);
+      background: linear-gradient(90deg, #1976d2 60%, #1565c0 100%);
       border-radius: 20px;
       transition: transform 0.3s;
-      box-shadow: 0 2px 8px rgba(108, 137, 71, 0.15);
+      box-shadow: 0 2px 8px rgba(25, 118, 210, 0.10);
     }
 
     .search-switch[data-mode="author"] .switch-slider {
       transform: translateX(calc(100% + 4px));
     }
     .search-switch[data-mode="author"] .switch-option:last-child {
-      color: #222;
-      background: #a6d67222;
+      color: #fff;
+      background: #1976d222;
     }
     .search-switch[data-mode="content"] .switch-option:first-child {
-      color: #222;
-      background: #a6d67222;
+      color: #fff;
+      background: #1976d222;
     }
 
     /* Styles pour le switch de vue */
     .view-switch {
-      background: rgba(17, 19, 23, 0.85);
-      border: 1.5px solid rgba(56, 66, 34, 0.3);
+      background: rgba(245,245,245,0.85);
+      border: 1.5px solid rgba(25, 118, 210, 0.18);
       border-radius: 25px;
       padding: 4px;
       width: 140px;
@@ -194,7 +221,7 @@
       width: 50%;
       text-align: center;
       font-size: 1rem;
-      color: #e0e0e0;
+      color: #222;
       z-index: 1;
       transition: color 0.3s;
       padding: 5px 0;
@@ -209,22 +236,22 @@
       top: 4px;
       width: calc(50% - 4px);
       height: calc(100% - 8px);
-      background: linear-gradient(90deg, #6c8947 60%, #a6d672 100%);
+      background: linear-gradient(90deg, #1976d2 60%, #1565c0 100%);
       border-radius: 20px;
       transition: transform 0.3s;
-      box-shadow: 0 2px 8px rgba(108, 137, 71, 0.15);
+      box-shadow: 0 2px 8px rgba(25, 118, 210, 0.10);
     }
 
     .view-switch[data-view="list"] .view-switch-slider {
       transform: translateX(calc(100% + 4px));
     }
     .view-switch[data-view="list"] .view-switch-option:last-child {
-      color: #222;
-      background: #a6d67222;
+      color: #fff;
+      background: #1976d222;
     }
     .view-switch[data-view="grid"] .view-switch-option:first-child {
-      color: #222;
-      background: #a6d67222;
+      color: #fff;
+      background: #1976d222;
     }
 
     .decks-grid {
@@ -238,10 +265,10 @@
     }
 
     .deck-card {
-      background: rgba(17, 19, 23, 0.92);
+      background: rgba(245,245,245,0.92);
       backdrop-filter: blur(4px);
-      border: 1.5px solid rgba(56, 66, 34, 0.25);
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.13);
+      border: 1.5px solid rgba(25, 118, 210, 0.10);
+      box-shadow: 0 4px 20px rgba(25, 118, 210, 0.08);
       border-radius: 12px;
       padding: 1.5rem;
       transition: transform 0.2s, box-shadow 0.2s, border 0.2s;
@@ -259,7 +286,7 @@
       display: flex;
       align-items: center;
       gap: 0.3rem;
-      background: rgba(17, 19, 23, 0.8);
+      background: rgba(245,245,245,0.8);
       padding: 0.3rem 0.5rem;
       border-radius: 20px;
       backdrop-filter: blur(4px);
@@ -270,7 +297,7 @@
       border: none;
       cursor: pointer;
       font-size: 1.2rem;
-      color: #6c8947;
+      color: #1976d2;
       transition: transform 0.2s;
       padding: 0;
       line-height: 1;
@@ -286,23 +313,22 @@
 
     .like-count {
       font-size: 1rem;
-      color: #6c8947;
+      color: #1976d2;
       min-width: 1.5rem;
       text-align: center;
     }
 
     .deck-title {
-      color: #6c8947;
+      color: #1976d2;
       font-size: 1.5rem;
       letter-spacing: 0.5px;
       margin-bottom: 1rem;
       font-weight: bold;
-      text-shadow: 0 1px 0 #222;
       overflow-wrap: anywhere;
     }
 
     .deck-description {
-      color: #e0e0e0;
+      color: #222;
       margin-bottom: 1rem;
       line-height: 1.4;
       font-size: 1.05rem;
@@ -314,19 +340,19 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      color: #b0b0b0;
+      color: #888;
       font-size: 0.95rem;
       margin-top: 0.5rem;
     }
 
     .deck-author {
-      color: #6c8947;
+      color: #1976d2;
       text-decoration: underline;
       font-weight: 500;
       transition: color 0.2s;
     }
     .deck-author:hover, .deck-author:focus {
-      color: #a6d672;
+      color: #1565c0;
       outline: none;
     }
 
@@ -344,7 +370,7 @@
       display: inline-block;
     }
     .dropdown-toggle {
-      background: #6c8947;
+      background: #1976d2;
       color: white;
       border: none;
       padding: 0.7rem 1.2rem;
@@ -355,17 +381,17 @@
       font-weight: 600;
     }
     .dropdown-toggle:focus, .dropdown-toggle:hover {
-      background: #7b995c;
+      background: #1565c0;
       outline: none;
     }
     .dropdown-menu {
       display: none;
       position: absolute;
       right: 0;
-      background: #222;
+      background: #fff;
       min-width: 180px;
-      box-shadow: 0 2px 10px rgba(0,173,181,0.15);
-      border: 1px solid #6c8947;
+      box-shadow: 0 2px 10px rgba(25,118,210,0.10);
+      border: 1px solid #1976d2;
       border-radius: 8px;
       z-index: 100;
       margin-top: 0.5rem;
@@ -379,7 +405,7 @@
       position: fixed;
       bottom: 2rem;
       right: 2rem;
-      background: linear-gradient(135deg, #6c8947, #7b995c);
+      background: linear-gradient(135deg, #1976d2, #1565c0);
       color: white;
       border: none;
       border-radius: 50%;
@@ -390,14 +416,14 @@
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      box-shadow: 0 4px 15px rgba(108, 137, 71, 0.4);
+      box-shadow: 0 4px 15px rgba(25, 118, 210, 0.18);
       transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
       z-index: 100;
       text-decoration: none;
     }
     .add-deck-btn:focus, .add-deck-btn:hover {
-      background: linear-gradient(135deg, #7b995c, #6c8947);
-      box-shadow: 0 6px 24px rgba(108, 137, 71, 0.5);
+      background: linear-gradient(135deg, #1565c0, #1976d2);
+      box-shadow: 0 6px 24px rgba(25, 118, 210, 0.25);
       transform: scale(1.08);
       outline: none;
     }
@@ -411,20 +437,20 @@
       max-width: 1200px;
       margin: 0 auto;
       border-collapse: collapse;
-      background: rgba(17,19,23,0.92);
+      background: rgba(245,245,245,0.92);
       border-radius: 10px;
       overflow: hidden;
       font-size: 1.05rem;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+      box-shadow: 0 2px 10px rgba(25,118,210,0.10);
     }
     #decksListContainer th, #decksListContainer td {
       padding: 14px 10px;
-      border-bottom: 1px solid #6c8947;
+      border-bottom: 1px solid #1976d2;
       text-align: left;
     }
     #decksListContainer th {
-      background: #181c13;
-      color: #6c8947;
+      background: #e3f2fd;
+      color: #1976d2;
       font-size: 1.1rem;
       font-weight: bold;
       cursor: pointer;
@@ -432,7 +458,7 @@
       transition: background 0.2s;
     }
     #decksListContainer th:focus, #decksListContainer th:hover {
-      background: #232d1a;
+      background: #bbdefb;
       outline: none;
     }
     #decksListContainer th .sort-arrow {
@@ -440,16 +466,16 @@
       font-size: 0.95em;
     }
     #decksListContainer tr:hover {
-      background: #181c13;
+      background: #e3f2fd;
     }
     #decksListContainer a.deck-author {
-      color: #6c8947;
+      color: #1976d2;
       text-decoration: underline;
       font-weight: 500;
       transition: color 0.2s;
     }
     #decksListContainer a.deck-author:hover, #decksListContainer a.deck-author:focus {
-      color: #a6d672;
+      color: #1565c0;
       outline: none;
     }
 
@@ -525,14 +551,19 @@
 
     .top-section {
       margin-bottom: 3rem;
-      background: rgba(17, 19, 23, 0.92);
+      background: rgba(245,245,245,0.92);
       border-radius: 12px;
       padding: 2rem;
-      border: 1px solid rgba(108, 137, 71, 0.2);
+      border: 1px solid rgba(25, 118, 210, 0.10);
+    }
+
+    .theme-dark .top-section {
+      background: #23272f;
+      border-color: #23272f;
     }
 
     .section-title {
-      color: #6c8947;
+      color: #1976d2;
       font-size: 1.8rem;
       margin-bottom: 1.5rem;
       text-align: center;
@@ -545,10 +576,10 @@
     }
 
     .top-item {
-      background: rgba(108, 137, 71, 0.1);
+      background: rgba(25, 118, 210, 0.07);
       padding: 1rem;
       border-radius: 8px;
-      border: 1px solid rgba(108, 137, 71, 0.2);
+      border: 1px solid rgba(25, 118, 210, 0.10);
       transition: transform 0.2s;
     }
 
@@ -557,7 +588,7 @@
     }
 
     .creator-stat {
-      color: #6c8947;
+      color: #1976d2;
       font-weight: bold;
     }
   </style>

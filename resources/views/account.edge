@@ -5,24 +5,15 @@
   <title>Mon compte</title>
   <link rel="shortcut icon" href="/images/icone.ico" type="image/x-icon">
   <style>
-    :root {
-      --primary-color: #6c8947;
-      --bg-dark: #0a0c10;
-      --bg-light: #111;
-      --text-light: #e0e0e0;
-      --transition: all 0.3s ease-in-out;
-    }
-
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: 'Inter', 'Segoe UI', sans-serif;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
-
     body {
-      background: var(--bg-dark);
-      color: var(--text-light);
+      background: #fff;
+      color: #222;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -30,7 +21,14 @@
       font-size: 1rem;
       line-height: 1.6;
     }
-
+    body.theme-light {
+      background: #fff;
+      color: #222;
+    }
+    body.theme-dark {
+      background: #0a0c10;
+      color: #e0e0e0;
+    }
     .main-content {
       margin-top: 100px;
       padding: 2rem;
@@ -40,25 +38,22 @@
       grid-template-columns: minmax(300px, 1fr) minmax(600px, 2fr);
       gap: 2rem;
     }
-
     .profile-section {
-      background: linear-gradient(145deg, var(--bg-light) 0%, rgba(17, 17, 17, 0.95) 100%);
-      border: 1px solid rgba(108, 137, 71, 0.2);
+      background: #fff;
+      border: 2px solid #1976d2;
       border-radius: 16px;
       padding: 2.5rem;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+      box-shadow: 0 4px 20px rgba(25, 118, 210, 0.08);
       backdrop-filter: blur(10px);
-      transition: var(--transition);
+      transition: all 0.3s ease-in-out;
     }
-
-    .profile-section:hover {
-      border-color: var(--primary-color);
-      transform: translateY(-2px);
-      box-shadow: 0 8px 30px rgba(108, 137, 71, 0.1);
+    body.theme-dark .profile-section {
+      background: #181c23;
+      border-color: #1976d2;
+      box-shadow: 0 4px 20px rgba(25, 118, 210, 0.08);
     }
-
     .profile-section h2 {
-      color: var(--primary-color);
+      color: #1976d2;
       font-size: 2rem;
       margin-bottom: 2.5rem;
       font-weight: 600;
@@ -66,7 +61,6 @@
       position: relative;
       padding-bottom: 0.8rem;
     }
-
     .profile-section h2::after {
       content: '';
       position: absolute;
@@ -74,53 +68,52 @@
       left: 0;
       width: 60px;
       height: 3px;
-      background: var(--primary-color);
+      background: #1976d2;
       border-radius: 2px;
     }
-
     .profile-info-row {
       margin-bottom: 1.5rem;
       padding: 1rem 1.2rem;
-      background: rgba(108, 137, 71, 0.05);
+      background: rgba(25, 118, 210, 0.05);
       border-radius: 12px;
-      transition: var(--transition);
+      transition: all 0.3s ease-in-out;
       border: 1px solid transparent;
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
-
     .profile-info-row:hover {
-      background: rgba(108, 137, 71, 0.08);
-      border-color: rgba(108, 137, 71, 0.2);
+      background: rgba(25, 118, 210, 0.08);
+      border-color: #1976d2;
       transform: translateX(5px);
     }
-
     .profile-label {
-      color: var(--primary-color);
+      color: #1976d2;
       font-weight: 500;
       font-size: 0.9rem;
       text-transform: uppercase;
       letter-spacing: 1px;
       opacity: 0.9;
     }
-
     .profile-value {
-      color: var(--text-light);
+      color: #222;
       font-size: 1.1rem;
       font-family: 'JetBrains Mono', monospace;
       padding: 0.3rem 0.8rem;
-      background: rgba(108, 137, 71, 0.1);
+      background: rgba(25, 118, 210, 0.1);
       border-radius: 6px;
       min-width: 100px;
       text-align: center;
     }
-
+    body.theme-dark .profile-value {
+      color: #e0e0e0;
+      background: #23272f;
+    }
     .change-password-btn {
       width: 100%;
       background: transparent;
-      color: var(--primary-color);
-      border: 2px solid var(--primary-color);
+      color: #1976d2;
+      border: 2px solid #1976d2;
       padding: 1rem 1.5rem;
       border-radius: 12px;
       font-weight: 600;
@@ -131,18 +124,15 @@
       letter-spacing: 0.5px;
       text-transform: uppercase;
     }
-
     .change-password-btn:hover {
-      background: var(--primary-color);
-      color: var(--bg-dark);
+      background: #1976d2;
+      color: #fff;
       transform: translateY(-2px);
-      box-shadow: 0 4px 15px rgba(108, 137, 71, 0.2);
+      box-shadow: 0 4px 15px rgba(25, 118, 210, 0.12);
     }
-
     .change-password-btn:active {
       transform: translateY(0);
     }
-
     .change-password-form {
       margin-top: 1rem;
       width: 100%;
@@ -150,28 +140,30 @@
       flex-direction: column;
       gap: 0.7rem;
     }
-
     .change-password-form input {
       width: 100%;
       padding: 0.8rem;
       margin-bottom: 0.8rem;
       border-radius: 8px;
-      border: 1px solid rgba(108, 137, 71, 0.3);
-      background: var(--bg-dark);
-      color: var(--text-light);
-      transition: var(--transition);
+      border: 1.5px solid #1976d2;
+      background: #fff;
+      color: #222;
+      transition: all 0.3s ease-in-out;
     }
-
+    body.theme-dark .change-password-form input {
+      background: #23272f;
+      color: #e0e0e0;
+      border-color: #1976d2;
+    }
     .change-password-form input:focus {
-      border-color: var(--primary-color);
+      border-color: #1565c0;
       outline: none;
-      box-shadow: 0 0 0 2px rgba(108, 137, 71, 0.2);
+      box-shadow: 0 0 0 2px #1976d2;
     }
-
     .change-password-form button {
-      background: #6c8947;
-      color: #000;
-      border: 2px solid #6c8947;
+      background: #1976d2;
+      color: #fff;
+      border: 2px solid #1976d2;
       padding: 0.6rem 1.2rem;
       border-radius: 8px;
       cursor: pointer;
@@ -181,11 +173,10 @@
       transition: background 0.3s, color 0.3s;
     }
     .change-password-form button:hover {
-      background: var(--primary-color);
-      color: var(--bg-dark);
-      border-color: var(--primary-color);
+      background: #1565c0;
+      color: #fff;
+      border-color: #1565c0;
     }
-
     .profile-message {
       margin-top: 1rem;
       padding: 0.7rem 1rem;
@@ -203,88 +194,128 @@
       color: #fff;
     }
     .decks-section {
-      background: var(--bg-light);
+      background: #fff;
       border-radius: 16px;
       padding: 2rem;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+      box-shadow: 0 4px 20px rgba(25, 118, 210, 0.08);
     }
-
-    /* Styles pour la barre de recherche */
+    body.theme-dark .decks-section {
+      background: #181c23;
+    }
     .search-container {
       width: 100%;
       margin-bottom: 2rem;
     }
-
     .search-input {
       width: 100%;
       padding: 1rem 1.5rem;
       font-size: 1rem;
-      border: 1px solid rgba(108, 137, 71, 0.2);
+      border: 1.5px solid #1976d2;
       border-radius: 12px;
-      background: var(--bg-dark);
-      color: var(--text-light);
+      background: #fff;
+      color: #222;
       margin-bottom: 2rem;
-      transition: var(--transition);
+      transition: all 0.3s ease-in-out;
     }
-
+    body.theme-dark .search-input {
+      background: #23272f;
+      color: #e0e0e0;
+      border-color: #1976d2;
+    }
     .search-input:focus {
-      border-color: var(--primary-color);
+      border-color: #1565c0;
       outline: none;
-      box-shadow: 0 0 0 2px rgba(108, 137, 71, 0.2);
+      box-shadow: 0 0 0 2px #1976d2;
     }
-
     .search-input::placeholder {
-      color: #666;
+      color: #888;
     }
-
     .decks-container {
       width: 95%;
       max-width: 1200px;
       margin: auto;
     }
-
     table {
       width: 100%;
       border-collapse: separate;
       border-spacing: 0;
       border-radius: 12px;
       overflow: hidden;
-      background: var(--bg-dark);
-      border: 1px solid rgba(108, 137, 71, 0.2);
+      background: #fff;
+      border: 2px solid #1976d2;
+      box-shadow: 0 2px 10px rgba(25, 118, 210, 0.08);
     }
-
+    body.theme-dark table {
+      background: #181c23;
+      border-color: #1976d2;
+    }
     th {
-      background: rgba(108, 137, 71, 0.1);
-      color: var(--primary-color);
+      background: #e3f2fd;
+      color: #1976d2;
       font-size: 1.1rem;
       font-weight: 600;
       padding: 1rem;
       text-align: left;
     }
-
+    body.theme-dark th {
+      background: #23272f;
+      color: #1976d2;
+    }
     td {
       padding: 1rem;
-      border-top: 1px solid rgba(108, 137, 71, 0.1);
-      transition: var(--transition);
+      border-top: 1px solid #1976d2;
+      transition: all 0.3s ease-in-out;
+      color: #222;
     }
-
+    body.theme-dark td {
+      color: #e0e0e0;
+    }
     tr:hover td {
-      background: rgba(108, 137, 71, 0.05);
+      background: #e3f2fd;
     }
-
-    /* Styles pour les boxes survolantes */
+    body.theme-dark tr:hover td {
+      background: #23272f;
+    }
+    .add-deck-btn {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: linear-gradient(135deg, #1976d2, #1565c0);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      font-size: 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(25, 118, 210, 0.18);
+      transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
+      z-index: 100;
+      text-decoration: none;
+    }
+    .add-deck-btn:hover {
+      background: linear-gradient(135deg, #1565c0, #1976d2);
+      box-shadow: 0 6px 24px rgba(25, 118, 210, 0.25);
+      transform: scale(1.08);
+    }
+    .add-deck-btn span {
+      margin-top: -2px;
+    }
+    /* Box survolante pour abonnés/abonnements */
     .follow-box {
       display: none;
       position: fixed;
       top: 110px;
       left: 50%;
       transform: translateX(-50%) scale(0.95);
-      background: linear-gradient(135deg, rgba(17, 17, 17, 0.95) 0%, rgba(10, 12, 16, 0.98) 100%);
-      color: var(--primary-color);
-      border: 1px solid rgba(108, 137, 71, 0.3);
+      background: #fff;
+      color: #1976d2;
+      border: 2px solid #1976d2;
       border-radius: 20px;
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3),
-                  0 0 0 1px rgba(108, 137, 71, 0.1);
+      box-shadow: 0 10px 40px rgba(25, 118, 210, 0.10), 0 0 0 1px #1976d2;
       backdrop-filter: blur(10px);
       padding: 1.8rem;
       width: 90%;
@@ -293,32 +324,33 @@
       opacity: 0;
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
-
+    body.theme-dark .follow-box {
+      background: #23272f;
+      color: #1976d2;
+      border-color: #1976d2;
+    }
     .follow-box.active {
       transform: translateX(-50%) scale(1);
       opacity: 1;
     }
-
     .follow-box-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
       margin-bottom: 1.5rem;
       padding-bottom: 1rem;
-      border-bottom: 1px solid rgba(108, 137, 71, 0.2);
+      border-bottom: 1px solid #1976d2;
     }
-
     .follow-box-title {
       font-size: 1.5rem;
       font-weight: 600;
-      color: var(--primary-color);
+      color: #1976d2;
       letter-spacing: -0.5px;
     }
-
     .follow-box-close {
-      background: rgba(108, 137, 71, 0.1);
-      border: 1px solid rgba(108, 137, 71, 0.2);
-      color: var(--primary-color);
+      background: #e3f2fd;
+      border: 1px solid #1976d2;
+      color: #1976d2;
       font-size: 1.2rem;
       cursor: pointer;
       padding: 0.4rem;
@@ -330,33 +362,16 @@
       justify-content: center;
       transition: all 0.2s ease;
     }
-
     .follow-box-close:hover {
-      background: var(--primary-color);
-      color: var(--bg-dark);
+      background: #1976d2;
+      color: #fff;
       transform: rotate(90deg);
     }
-
     .follow-box-content {
       max-height: 400px;
       overflow-y: auto;
       padding-right: 0.5rem;
     }
-
-    .follow-box-content::-webkit-scrollbar {
-      width: 6px;
-    }
-
-    .follow-box-content::-webkit-scrollbar-track {
-      background: rgba(108, 137, 71, 0.05);
-      border-radius: 10px;
-    }
-
-    .follow-box-content::-webkit-scrollbar-thumb {
-      background: rgba(108, 137, 71, 0.3);
-      border-radius: 10px;
-    }
-
     .follow-box-list {
       list-style: none;
       margin: 0;
@@ -365,67 +380,39 @@
       flex-direction: column;
       gap: 0.5rem;
     }
-
     .follow-box-item {
       padding: 0.8rem 1rem;
       border-radius: 10px;
       transition: all 0.2s ease;
       border: 1px solid transparent;
-      background: rgba(108, 137, 71, 0.05);
+      background: #e3f2fd;
     }
-
+    body.theme-dark .follow-box-item {
+      background: #23272f;
+    }
     .follow-box-item:hover {
-      background: rgba(108, 137, 71, 0.1);
-      border-color: rgba(108, 137, 71, 0.2);
+      background: #bbdefb;
+      border-color: #1976d2;
       transform: translateX(5px);
     }
-
+    body.theme-dark .follow-box-item:hover {
+      background: #1565c0;
+      color: #fff;
+    }
     .follow-box-link {
-      color: var(--text-light);
+      color: #1976d2;
       text-decoration: none;
       font-size: 1.1rem;
       transition: all 0.2s ease;
       display: block;
     }
-
     .follow-box-link:hover {
-      color: var(--primary-color);
+      color: #1565c0;
     }
-
-    .add-deck-btn {
-      position: fixed;
-      bottom: 2rem;
-      right: 2rem;
-      background: linear-gradient(135deg, #6c8947, #7b995c);
-      color: white;
-      border: none;
-      border-radius: 50%;
-      width: 60px;
-      height: 60px;
-      font-size: 2rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      box-shadow: 0 4px 15px rgba(108, 137, 71, 0.4);
-      transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
-      z-index: 100;
-      text-decoration: none;
-    }
-    .add-deck-btn:hover {
-      background: linear-gradient(135deg, #7b995c, #6c8947);
-      box-shadow: 0 6px 24px rgba(108, 137, 71, 0.5);
-      transform: scale(1.08);
-    }
-    .add-deck-btn span {
-      margin-top: -2px;
-    }
-
     @media (max-width: 1024px) {
       .main-content {
         grid-template-columns: 1fr;
       }
-      
       .profile-section {
         max-width: 600px;
         margin: 0 auto;
@@ -505,7 +492,7 @@
             @if(userDecks.length)
               @each(deck in userDecks)
                 <tr onclick="window.location.href='/deck/{{ deck.id }}'">
-                  <td><a style="text-decoration: none; color: white" href="/deck/{{ deck.id }}">{{ deck.title }}</a></td>
+                  <td><a style="text-decoration: none; color: #1976d2" href="/deck/{{ deck.id }}">{{ deck.title }}</a></td>
                   <td>{{ deck.description }}</td>
                   <td>{{ deck.cards.length }}</td>
                   <td>
@@ -525,7 +512,6 @@
       </div>
     </div>
   </div>
-
   <!-- Box survolante pour abonnés -->
   <div id="followers-box" class="follow-box">
     <div class="follow-box-header">
@@ -546,7 +532,6 @@
       @endif
     </div>
   </div>
-
   <!-- Box survolante pour abonnements -->
   <div id="following-box" class="follow-box">
     <div class="follow-box-header">
@@ -578,21 +563,17 @@
     function showFollowBox(boxId) {
       const box = document.getElementById(boxId);
       box.style.display = 'block';
-      // Petit délai pour permettre l'animation
       setTimeout(() => {
         box.classList.add('active');
       }, 10);
     }
-
     function hideFollowBox(boxId) {
       const box = document.getElementById(boxId);
       box.classList.remove('active');
-      // Attendre la fin de l'animation avant de cacher
       setTimeout(() => {
         box.style.display = 'none';
       }, 300);
     }
-
     document.getElementById('followers-link').onclick = function(e) {
       e.stopPropagation();
       hideFollowBox('following-box');
@@ -610,7 +591,6 @@
       hideFollowBox('following-box');
     }
     document.addEventListener('click', function(event) {
-      // Fermer les box si clic en dehors
       const fb = document.getElementById('followers-box');
       const flb = document.getElementById('following-box');
       if (fb && fb.style.display === 'block' && !fb.contains(event.target) && event.target.id !== 'followers-link') {
@@ -620,22 +600,18 @@
         flb.style.display = 'none';
       }
     });
-
     function searchDecks() {
       const input = document.getElementById('deckSearch');
       const filter = input.value.toLowerCase();
       const tbody = document.getElementById('decksTableBody');
       const rows = tbody.getElementsByTagName('tr');
       let visibleCount = 0;
-
       for (let row of rows) {
         const titleCell = row.getElementsByTagName('td')[0];
         const descriptionCell = row.getElementsByTagName('td')[1];
-        
         if (titleCell && descriptionCell) {
           const title = titleCell.textContent || titleCell.innerText;
           const description = descriptionCell.textContent || descriptionCell.innerText;
-          
           if (title.toLowerCase().indexOf(filter) > -1 || description.toLowerCase().indexOf(filter) > -1) {
             row.style.display = '';
             visibleCount++;
@@ -644,7 +620,6 @@
           }
         }
       }
-      // Met à jour dynamiquement le nombre de decks affichés
       document.getElementById('deckCount').textContent = visibleCount;
     }
   </script>

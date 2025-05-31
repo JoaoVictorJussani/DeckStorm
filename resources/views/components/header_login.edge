@@ -300,21 +300,6 @@
 </style>
 
 <div class="header-navbar">
-  <a href="{{ route('home') }}" title="Retourner à l'accueil">
-    <img src="/images/icone.ico" alt="Logo DeckStorm" title="Logo DeckStorm">DeckStorm
-  </a>
-  
-  <div style="display: flex; align-items: center; gap: 1rem; flex: 1; justify-content: center; max-width: 800px;">
-    <div class="header-search">
-      <input 
-        type="text" 
-        id="headerSearch"
-        placeholder="Rechercher des decks..." 
-        title="Rechercher des decks par titre, description ou auteur"
-        onkeyup="headerSearchDecks(event)"
-      />
-    </div>
-  </div>
 
   <div style="display: flex; align-items: center; gap: 1rem;">
     <!-- Theme switch -->
@@ -325,49 +310,12 @@
       <span style="font-size:1.2rem;user-select:none;">🌙</span>
     </div>
     <button id="idea-btn" 
-            style="color: #1976d2; background: none; border: none; cursor: pointer; font-size: 1.8rem; padding: 0;"
-            title="Afficher les astuces d'utilisation">
-      💡
+            style="color: #1976d2; background: none; border: none; cursor: pointer; font-size: 1.8rem; padding: 0;">
+      
     </button>
-    <!-- Remplacez l'affichage du nom par celui de l'utilisateur connecté -->
-    @if(auth?.user)
-      Bienvenue {{ auth.user.username }}
-    @endif
-    <div class="header-dropdown" id="header-userDropdown">
-      <button class="header-dropdown-toggle" 
-              onclick="headerToggleDropdown()" 
-              aria-haspopup="true" 
-              aria-expanded="false" 
-              title="Ouvrir le menu utilisateur">
-        <span>▼</span>
-      </button>
-      <div class="header-dropdown-menu" id="header-dropdownMenu">
-        @if(auth?.user)
-        <a href="/account/{{ auth.user.id }}" title="Gérer votre profil et vos decks">Mon compte</a>
-        @endif
-        <form action="/logout" method="POST" style="margin:0;">
-          {{ csrfField() }}
-          <button type="submit" class="header-logout-btn" title="Se déconnecter de l'application">Se déconnecter</button>
-        </form>
-      </div>
-    </div>
   </div>
 </div>
 
-<!-- Box survolante d'aide -->
-<div id="idea-box" style="display:none; position:fixed; top:90px; right:30px; background:#fff; color:#1976d2; border:2px solid #1976d2; border-radius:12px; box-shadow: 0 8px 32px rgba(25,118,210,0.10); padding:1.5rem 2rem 1.5rem 1.5rem; max-width:350px; z-index:9999;">
-  <button onclick="closeIdeaBox()" style="position:absolute; top:8px; right:10px; background:none; border:none; color:#1976d2; font-size:1.3rem; cursor:pointer;" aria-label="Fermer">✖</button>
-  <div style="font-size:1.2rem; margin-bottom:0.7rem;"><b>Astuce DeckStorm</b></div>
-  <div style="color:#222; font-size:1rem;">
-    <ul style="margin:0 0 0 1.2rem; padding:0;">
-      <li>Créez, modifiez et partagez vos decks facilement.</li>
-      <li>Utilisez <b>Exercer</b> pour réviser vos cartes.</li>
-      <li>Ajoutez des cartes avec des questions claires.</li>
-      <li>Partagez vos decks publics avec le QR code ou le lien.</li>
-      <li>Survolez les boutons pour plus d'infos.</li>
-    </ul>
-  </div>
-</div>
 
 <script>
   function headerToggleDropdown() {
