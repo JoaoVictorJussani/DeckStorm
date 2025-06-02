@@ -643,5 +643,41 @@
   <a href="{{ route('decks.create') }}" class="add-deck-btn" title="Créer un nouveau deck de cartes">
     <span>+</span>
   </a>
+
+  @each(deck in topLikedDecks)
+    <button 
+      onclick="event.preventDefault(); event.stopPropagation(); toggleLike({{ deck.id }}, this)"
+      class="like-btn {{ deck.hasLiked ? 'liked' : '' }}"
+      title="{{ deck.hasLiked ? 'Je n\'aime plus' : 'J\'aime' }}"
+    >
+      ❤ <span class="like-count">{{ deck.likes.length }}</span>
+    </button>
+  @end
+
+  <script>
+    async function toggleLike(deckId, button) {
+      try {
+        const isLiked = button.classList.contains('liked');
+        const endpoint = `/api/decks/${deckId}/${isLiked ? 'unlike' : 'like'}`;
+        
+        const response = await fetch(endpoint, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-Token': document.querySelector('[name="_csrf"]').value
+          }
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          button.classList.toggle('liked');
+          const countElement = button.querySelector('.like-count');
+          countElement.textContent = data.likesCount;
+        }
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    }
+  </script>
 </body>
 </html>

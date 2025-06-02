@@ -295,3 +295,14 @@ router
   .get('/public-account/:id', [PageController, 'publicAccount'])
   .as('publicAccount')
   .use(middleware.auth());
+
+router.group(() => {
+  // API routes for likes
+  router
+    .post('/api/decks/:id/like', '#controllers/deck_controller.apiLike')
+    .as('api.decks.like')
+  
+  router
+    .post('/api/decks/:id/unlike', '#controllers/deck_controller.apiUnlike')
+    .as('api.decks.unlike')
+}).use(middleware.auth())

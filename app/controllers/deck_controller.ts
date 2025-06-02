@@ -104,4 +104,47 @@ export default class DeckController {
     }
     return response.redirect().back()
   }
+
+  // API endpoints for likes
+  async apiLike({ params, auth, response }: HttpContext) {
+    const userId = auth.user.id
+    const deckId = Number(params.id)
+    
+    const exists = await Like.query()
+      .where('user_id', userId)
+      .andWhere('deck_id', deckId)
+      .first()
+
+    if (!exists) {
+      await Like.create({ user_id: userId, deck_id: deckId })
+    }
+
+    const likesCount = await Like.query()
+      .where('deck_id', deckId)
+      .count('* as total')
+
+    return response.json({
+      success: true,
+      likesCount: likesCount[0].$extras.total
+    })
+  }
+
+  async apiUnlike({ params, auth, response }: HttpContext) {
+    const userId = auth.user.id
+    const deckId = Number(params.id)
+    
+    await Like.query()
+      .where('user_id', userId)
+      .andWhere('deck_id', deckId)
+      .delete()
+
+    const likesCount = await Like.query()
+      .where('deck_id', deckId)
+      .count('* as total')
+
+    return response.json({
+      success: true,
+      likesCount: likesCount[0].$extras.total
+    })
+  }
 }
