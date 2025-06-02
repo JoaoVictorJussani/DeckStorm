@@ -300,6 +300,14 @@
       padding: 0.3rem 0.5rem;
       border-radius: 20px;
       backdrop-filter: blur(4px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s;
+    }
+    .deck-card:hover .like-container,
+    .deck-card:focus-within .like-container {
+      opacity: 1;
+      pointer-events: auto;
     }
     body.theme-dark .like-container {
       background: rgba(17,19,23,0.8);
@@ -428,12 +436,12 @@
       display: block;
     }
 
-    /* Styles pour le bouton d'ajout */
+    
     .add-deck-btn {
       position: fixed;
       bottom: 2rem;
       right: 2rem;
-      background: linear-gradient(135deg, #6c8947, #7b995c);
+      background: linear-gradient(135deg, #1976d2, #1565c0);
       color: white;
       border: none;
       border-radius: 50%;
@@ -444,16 +452,15 @@
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      box-shadow: 0 4px 15px rgba(108, 137, 71, 0.4);
+      box-shadow: 0 4px 15px rgba(25, 118, 210, 0.18);
       transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
       z-index: 100;
       text-decoration: none;
     }
-    .add-deck-btn:focus, .add-deck-btn:hover {
-      background: linear-gradient(135deg, #7b995c, #6c8947);
-      box-shadow: 0 6px 24px rgba(108, 137, 71, 0.5);
+    .add-deck-btn:hover {
+      background: linear-gradient(135deg, #1565c0, #1976d2);
+      box-shadow: 0 6px 24px rgba(25, 118, 210, 0.25);
       transform: scale(1.08);
-      outline: none;
     }
     .add-deck-btn span {
       margin-top: -2px;
@@ -553,13 +560,6 @@
       #toggleViewBtn {
         padding: 0.5rem 0.8rem;
         font-size: 1rem;
-      }
-      .add-deck-btn {
-        width: 48px;
-        height: 48px;
-        font-size: 1.5rem;
-        bottom: 1rem;
-        right: 1rem;
       }
     }
     @media (max-width: 400px) {
@@ -663,11 +663,9 @@
       </table>
     </div>
 
-    @if(auth.isAuthenticated)
-      <a href="/deck/create" class="add-deck-btn" title="Ajouter un nouveau deck">
-        <span>+</span>
-      </a>
-    @endif
+    <a href="{{ route('decks.create') }}" class="add-deck-btn" title="Créer un nouveau deck">
+    <span>+</span>
+  </a>
   </div>
 
   <script>

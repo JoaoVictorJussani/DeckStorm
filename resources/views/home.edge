@@ -293,6 +293,9 @@
       pointer-events: auto; /* Garante que sempre pode clicar */
       z-index: 2;           /* Garante que fique acima do conteúdo da box */
     }
+    body.theme-dark .like-container {
+      background: rgba(17,19,23,0.8);
+    }
 
     /* Update like button styles */
     .like-btn {
@@ -661,6 +664,12 @@
 
   <!-- Campo CSRF escondido para uso no JS -->
   <input type="hidden" id="csrfToken" value="{{ csrfField() | safe }}" style="display:none;" />
+
+
+  <a href="{{ route('decks.create') }}" class="add-deck-btn" title="Créer un nouveau deck">
+    <span>+</span>
+  </a>
+
 
   <script>
     async function toggleLike(deckId, button) {
