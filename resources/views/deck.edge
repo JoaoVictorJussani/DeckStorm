@@ -261,8 +261,8 @@
         <label for="description">Description :</label>
         <div class="description-container">
           <textarea id="description" name="description" maxlength="125" onkeyup="updateCounter()" required>{{ flashMessages.get('old.description', '') }}</textarea>
-          <div class="counter" style="position: absolute; bottom: 5px; right: 10px; font-size: 0.8rem; color: #6c8947;">
-            <span id="charCount">0</span>/125
+          <div class="counter" style="position: absolute; bottom: 5px; right: 10px; font-size: 0.8rem; color: #1976d2;">
+            <span id="charCount">0</span><span>/125</span>
           </div>
         </div>
 
@@ -292,7 +292,7 @@
       } else if (currentLength >= 80) {
         charCount.style.color = '#ffa500'; // Orange
       } else {
-        charCount.style.color = '#6c8947'; // Couleur par défaut
+        charCount.style.color = '#1976d2'; // Couleur par défaut
       }
     }
 

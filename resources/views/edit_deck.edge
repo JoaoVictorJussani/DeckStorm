@@ -200,7 +200,7 @@
       bottom: 8px;
       right: 10px;
       font-size: 0.8rem;
-      color: #6c8947;
+      color: #1976d2;
       background: #0a0c10;
       padding: 0 5px;
     }
@@ -288,7 +288,7 @@
         <div class="description-container">
           <textarea id="description" name="description" maxlength="125" required>{{ deck.description }}</textarea>
           <div class="counter">
-            <span id="charCount">0</span>/125
+            <span id="charCount">0</span><span>/125</span>
           </div>
         </div>
 
@@ -318,7 +318,7 @@
       } else if (currentLength >= 80) {
         charCount.style.color = '#ffa500'; // Orange
       } else {
-        charCount.style.color = '#6c8947'; // Couleur par défaut
+        charCount.style.color = '#1976d2'; // Couleur par défaut
       }
     }
 
