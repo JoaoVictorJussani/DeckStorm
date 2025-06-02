@@ -2,6 +2,7 @@ import type { HttpContext } from '@adonisjs/core/http'; // Type pour le contexte
 import Deck from '#models/deck'; // Importation du modèle Deck
 import Follow from '#models/follow'
 import User from '#models/user'
+import Like from '#models/like'
 
 export default class PageController {
   // Méthode pour afficher la page d'accueil
@@ -87,6 +88,11 @@ export default class PageController {
       .where('user_id', user.id)
       .preload('cards')
       .preload('user');
+    // Decks likés
+    const likedDecks = await Deck.query()
+      .whereIn('id', (await Like.query().where('user_id', user.id)).map(like => like.deck_id))
+      .preload('cards')
+      .preload('user');
     // Ajout des compteurs d'abonnés/abonnements et des listes
     const followers = await Follow.query().where('following_id', user.id).preload('follower');
     const following = await Follow.query().where('follower_id', user.id).preload('following');
@@ -96,6 +102,7 @@ export default class PageController {
     return view.render('account', {
       user,
       userDecks,
+      likedDecks,
       followersCount: followers.length,
       followingCount: following.length,
       followersList,
