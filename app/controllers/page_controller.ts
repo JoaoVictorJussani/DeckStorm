@@ -8,7 +8,7 @@ export default class PageController {
   async home({ view, auth }: HttpContext) {
     const user = auth.use('web').user;
 
-    // Get top 5 most liked decks
+    // Get top 4 most liked decks
     const topLikedDecks = await Deck.query()
       .where('visibility', 'public')
       .preload('cards')
@@ -16,15 +16,15 @@ export default class PageController {
       .preload('likes')
       .withCount('likes')
       .orderBy('likes_count', 'desc')
-      .limit(5);
+      .limit(4);
 
-    // Get top 5 creators by followers count
+    // Get top 4 creators by followers count
     const topCreatorsByFollowers = await User.query()
       .withCount('followers')
       .orderBy('followers_count', 'desc')
-      .limit(5);
+      .limit(4);
 
-    // Get top 5 creators by deck count
+    // Get top 4 creators by deck count
     const topCreatorsByDecks = await User.query()
       .withCount('decks', (query) => {
       query.where('visibility', 'public');
@@ -33,7 +33,7 @@ export default class PageController {
       query.where('visibility', 'public');
       })
       .orderBy('decks_count', 'desc')
-      .limit(5);
+      .limit(4);
 
     return view.render('home', { 
       user,

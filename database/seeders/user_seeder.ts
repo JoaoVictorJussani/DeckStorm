@@ -3,23 +3,10 @@ import User from '#models/user'
 
 export default class extends BaseSeeder {
   async run() {
-    await User.createMany([
-      {
-        username: 'lisa',
-        password: '1234',
-      },
-      {
-        username: 'bernard',
-        password: '1234',
-      },
-      {
-        username: 'bastien',
-        password: '5678',
-      },
-      {
-        username: 'julie',
-        password: '5678',
-      },
-    ])
+    const users = Array.from({ length: 1000 }, (_, i) => ({
+      username: `user${i + 1}`,
+      password: '12345678', // In production, you'd want to hash these
+    }))
+    await User.createMany(users)
   }
 }
