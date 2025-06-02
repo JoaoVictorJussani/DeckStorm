@@ -275,13 +275,13 @@
       cursor: pointer;
       min-width: 0;
       word-break: break-word;
-      position: relative; /* Added for absolute positioning of like button */
+      position: relative; /* já existe */
     }
 
-    /* Move like button styles here and update */
+    /* Atualize o like-container para o canto inferior direito */
     .like-container {
       position: absolute;
-      top: 1rem;
+      bottom: 1rem;
       right: 1rem;
       display: flex;
       align-items: center;
@@ -290,25 +290,38 @@
       padding: 0.3rem 0.5rem;
       border-radius: 20px;
       backdrop-filter: blur(4px);
+      pointer-events: auto; /* Garante que sempre pode clicar */
+      z-index: 2;           /* Garante que fique acima do conteúdo da box */
     }
 
+    /* Update like button styles */
     .like-btn {
       background: none;
       border: none;
       cursor: pointer;
-      font-size: 1.2rem;
-      color: #1976d2;
+      font-size: 1.3rem;
+      padding: 0.3rem 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
       transition: transform 0.2s;
-      padding: 0;
-      line-height: 1;
+    }
+
+    .like-btn span {
+      transition: color 0.3s;
+      color: #ccc;
+    }
+
+    .like-btn.liked span {
+      color: #ff4d4d;
     }
 
     .like-btn:hover {
       transform: scale(1.1);
     }
 
-    .like-btn.liked {
-      color: #ff4d4d;
+    .like-btn .heart-emoji {
+      color: inherit;
     }
 
     .like-count {
@@ -581,6 +594,9 @@
       border-radius: 8px;
       border: 1px solid rgba(25, 118, 210, 0.10);
       transition: transform 0.2s;
+      position: relative; /* Adicionado para posicionamento absoluto funcionar */
+      overflow: visible;  /* Garante que o botão não seja cortado */
+      z-index: 1;         /* Garante que fique acima de outros elementos */
     }
 
     .top-item:hover {
@@ -605,8 +621,11 @@
           <div class="top-item" onclick="window.location.href='/deck/{{ deck.id }}'">
             <div class="deck-title">{{ deck.title }}</div>
             <div class="deck-info">
-              <span>❤️ {{ deck.$extras.likes_count }}</span>
               <a href="/public-account/{{ deck.user.id }}" class="deck-author" onclick="event.stopPropagation();">{{ deck.user.username }}</a>
+            </div>
+            <div class="like-container">
+              <span class="heart-emoji" title="Nombre de likes">❤️</span>
+              <span class="like-count">{{ deck.$extras.likes_count }}</span>
             </div>
           </div>
         @end
@@ -640,42 +659,48 @@
     </div>
   </div>
 
-  <a href="{{ route('decks.create') }}" class="add-deck-btn" title="Créer un nouveau deck de cartes">
-    <span>+</span>
-  </a>
-
-  @each(deck in topLikedDecks)
-    <button 
-      onclick="event.preventDefault(); event.stopPropagation(); toggleLike({{ deck.id }}, this)"
-      class="like-btn {{ deck.hasLiked ? 'liked' : '' }}"
-      title="{{ deck.hasLiked ? 'Je n\'aime plus' : 'J\'aime' }}"
-    >
-      ❤ <span class="like-count">{{ deck.likes.length }}</span>
-    </button>
-  @end
+  <!-- Campo CSRF escondido para uso no JS -->
+  <input type="hidden" id="csrfToken" value="{{ csrfField() | safe }}" style="display:none;" />
 
   <script>
     async function toggleLike(deckId, button) {
       try {
         const isLiked = button.classList.contains('liked');
         const endpoint = `/api/decks/${deckId}/${isLiked ? 'unlike' : 'like'}`;
-        
+        // Extrai o token CSRF do campo hidden
+        let csrfTokenInput = document.querySelector('input[name="_csrf"]');
+        if (!csrfTokenInput) {
+          // fallback para o campo escondido criado acima
+          const temp = document.getElementById('csrfToken');
+          if (temp) {
+            // O csrfField() retorna um input, precisamos extrair o valor do atributo value
+            // Exemplo: <input type="hidden" name="_csrf" value="TOKEN">
+            const match = temp.outerHTML.match(/value="([^"]+)"/);
+            if (match) csrfTokenInput = { value: match[1] };
+          }
+        }
+        const csrfToken = csrfTokenInput ? csrfTokenInput.value : '';
+
         const response = await fetch(endpoint, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'X-CSRF-Token': document.querySelector('[name="_csrf"]').value
+            'X-CSRF-Token': csrfToken
           }
         });
 
         if (response.ok) {
           const data = await response.json();
           button.classList.toggle('liked');
+          // Atualiza o emoji do coração
+          const heartEmoji = button.querySelector('.heart-emoji');
+          heartEmoji.textContent = button.classList.contains('liked') ? '❤️' : '🤍';
+          // Atualiza o contador
           const countElement = button.querySelector('.like-count');
           countElement.textContent = data.likesCount;
         }
       } catch (error) {
-        console.error('Error:', error);
+        console.error('Erreur lors du like:', error);
       }
     }
   </script>

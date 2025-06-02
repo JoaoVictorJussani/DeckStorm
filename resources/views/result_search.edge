@@ -590,14 +590,14 @@
       @if(publicDecks.length)
         @each(deck in publicDecks)
           <div class="deck-card" onclick="window.location.href='/deck/{{ deck.id }}'">
-            <!-- Move like form to top -->
             <div class="like-container">
               <button 
                 onclick="event.preventDefault(); event.stopPropagation(); toggleLike({{ deck.id }}, this)"
                 class="like-btn {{ deck.hasLiked ? 'liked' : '' }}"
                 title="{{ deck.hasLiked ? 'Je n\'aime plus' : 'J\'aime' }}"
               >
-                ❤ <span class="like-count">{{ deck.likes.length }}</span>
+                <span class="heart-emoji">{{ deck.hasLiked ? '❤️' : '🤍' }}</span>
+                <span class="like-count">{{ deck.likes.length }}</span>
               </button>
             </div>
             <div class="deck-title">{{ deck.title }}</div>
@@ -816,6 +816,10 @@
         if (response.ok) {
           const data = await response.json();
           button.classList.toggle('liked');
+          // Atualiza o emoji do coração
+          const heartEmoji = button.querySelector('.heart-emoji');
+          heartEmoji.textContent = button.classList.contains('liked') ? '❤️' : '🤍';
+          // Atualiza o contador
           const countElement = button.querySelector('.like-count');
           countElement.textContent = data.likesCount;
         }
