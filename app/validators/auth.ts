@@ -14,4 +14,10 @@ const registerUserValidator = vine.compile(
   })
 )
 
-export { loginUserValidator, registerUserValidator }
+const changeUsernameValidator = vine.compile(
+  vine.object({
+    new_username: vine.string().trim().minLength(3).maxLength(30),
+  })
+)
+
+export { loginUserValidator, registerUserValidator, changeUsernameValidator }

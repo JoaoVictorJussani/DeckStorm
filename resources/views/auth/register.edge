@@ -21,6 +21,14 @@
         min-height: 100vh;
         font-size: 1rem;
       }
+      body.theme-light {
+        background: #fff;
+        color: #222;
+      }
+      body.theme-dark {
+        background: #0a0c10;
+        color: #e6e9ef;
+      }
       .container {
         width: 95%;
         max-width: 400px;
@@ -31,6 +39,16 @@
         box-shadow: 0 5px 15px rgba(25, 118, 210, 0.08);
         text-align: center;
         margin-top: 110px;
+      }
+      .container {
+        background: var(--container-bg, #fff);
+        border: 2px solid #1976d2;
+        box-shadow: 0 5px 15px rgba(25, 118, 210, 0.08);
+        backdrop-filter: blur(8px);
+      }
+      body.theme-dark .container {
+        --container-bg: rgba(35, 39, 47, 0.92);
+        border-color: #1976d2;
       }
       h2 {
         font-size: 2rem;
@@ -66,28 +84,46 @@
         margin-bottom: 10px;
         transition: border 0.2s;
       }
-      input:focus {
-        border-color: #1565c0;
-        outline: none;
+      input {
+        background: var(--input-bg, #fff);
+        color: var(--input-color, #222);
+        border: 2px solid #1976d2;
+      }
+      body.theme-dark input {
+        background: rgba(17, 19, 23, 0.9);
+        color: #e6e9ef;
+        border-color: #1976d2;
       }
       button {
-        background: #fff;
-        color: #1976d2;
+        background: var(--button-bg, #fff);
+        color: var(--button-color, #1976d2);
         border: 2px solid #1976d2;
         padding: 0.8rem 1.5rem;
         border-radius: 8px;
         cursor: pointer;
         font-size: 1.1rem;
         font-weight: 600;
-        transition: background 0.3s ease, color 0.3s ease;
+        transition: all 0.3s ease;
       }
       button:hover {
         background: #1976d2;
         color: #fff;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(25, 118, 210, 0.2);
+      }
+      body.theme-dark button {
+        --button-bg: rgba(17, 19, 23, 0.9);
+        --button-color: #1976d2;
       }
       p {
         margin-top: 1rem;
         color: black;
+      }
+      p {
+        color: var(--text-color, #222);
+      }
+      body.theme-dark p {
+        color: #e6e9ef;
       }
       a {
         color: #1976d2;
@@ -104,6 +140,22 @@
         }
       }
     </style>
+    <script>
+      (function() {
+        let theme = localStorage.getItem('theme');
+        if (!theme) {
+          theme = 'theme-light';
+        }
+        document.addEventListener('DOMContentLoaded', function() {
+          document.body.classList.remove('theme-light', 'theme-dark');
+          document.body.classList.add(theme);
+        });
+        if (document.body) {
+          document.body.classList.remove('theme-light', 'theme-dark');
+          document.body.classList.add(theme);
+        }
+      })();
+    </script>
   </head>
   <body>
     @include('components/header_login')

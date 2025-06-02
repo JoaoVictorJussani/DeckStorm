@@ -4,6 +4,22 @@
   <meta charset="UTF-8" />
   <title>404 - Page non trouvée</title>
   <link rel="shortcut icon" href="/images/icone.ico" type="image/x-icon">
+  <script>
+    (function() {
+      let theme = localStorage.getItem('theme');
+      if (!theme) {
+        theme = 'theme-light';
+      }
+      document.addEventListener('DOMContentLoaded', function() {
+        document.body.classList.remove('theme-light', 'theme-dark');
+        document.body.classList.add(theme);
+      });
+      if (document.body) {
+        document.body.classList.remove('theme-light', 'theme-dark');
+        document.body.classList.add(theme);
+      }
+    })();
+  </script>
   <style>
     * {
       box-sizing: border-box;
@@ -12,16 +28,41 @@
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
     body {
-      background: #0a0c10;
-      color: #e0e0e0;
+      background: #fff;
+      color: #222;
       display: flex;
       flex-direction: column;
       align-items: center;
       min-height: 100vh;
       font-size: 1rem;
     }
+    body.theme-light {
+      background: #fff;
+      color: #222;
+    }
+    body.theme-dark {
+      background: #0a0c10;
+      color: #e0e0e0;
+    }
     .spacer {
       height: 80px;
+    }
+    .back-btn {
+      margin-top: 2rem;
+      display: inline-block;
+      background: #1976d2;
+      color: #fff;
+      border-radius: 8px;
+      padding: 0.8rem 1.5rem;
+      text-decoration: none;
+      font-weight: 600;
+      border: 2px solid #1976d2;
+      transition: all 0.3s ease;
+    }
+    .back-btn:hover {
+      background: #1565c0;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(25, 118, 210, 0.2);
     }
   </style>
 </head>
@@ -31,7 +72,7 @@
   <div style="margin-top: 3rem; text-align: center;">
     <h1 style="color:#ff4d4d; font-size:2.5rem; margin-bottom:1rem;">404 - Page non trouvée</h1>
     <p style="font-size:1.2rem;">La page que vous cherchez n'existe pas ou a été déplacée.</p>
-    <a href="{{ route('home') }}" style="margin-top:2rem; display:inline-block; background:#6c8947; color:#000; border-radius:8px; padding:0.8rem 1.5rem; text-decoration:none; font-weight:600; border:2px solid #6c8947;">Retour à l'accueil</a>
+    <a href="{{ route('home') }}" class="back-btn">Retour à l'accueil</a>
   </div>
 </body>
 </html>

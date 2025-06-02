@@ -42,14 +42,15 @@
       gap: 2rem;
     }
     .profile-section {
-      background: #fff;
-      border: 2px solid #1976d2;
-      border-radius: 16px;
-      padding: 2.5rem;
-      box-shadow: 0 4px 20px rgba(25, 118, 210, 0.08);
+      background: var(--card-bg, #fff);
+      border: none;
+      border-radius: 24px;
+      padding: 3rem;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
       backdrop-filter: blur(10px);
-      transition: all 0.3s ease-in-out;
+      transition: all 0.3s ease;
       grid-area: profile;
+      position: relative;
     }
     body.theme-dark .profile-section {
       background: #181c23;
@@ -76,42 +77,35 @@
       border-radius: 2px;
     }
     .profile-info-row {
+      position: relative;
+      background: var(--row-bg, rgba(25, 118, 210, 0.04));
+      border-radius: 16px;
+      padding: 1.5rem 2rem;
       margin-bottom: 1.5rem;
-      padding: 1rem 1.2rem;
-      background: rgba(25, 118, 210, 0.05);
-      border-radius: 12px;
-      transition: all 0.3s ease-in-out;
-      border: 1px solid transparent;
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      gap: 1rem;
+      transition: all 0.3s ease;
     }
     .profile-info-row:hover {
-      background: rgba(25, 118, 210, 0.08);
-      border-color: #1976d2;
-      transform: translateX(5px);
+      transform: translateY(-2px);
+      background: var(--row-hover-bg, rgba(25, 118, 210, 0.08));
+      box-shadow: 0 4px 20px rgba(25, 118, 210, 0.12);
     }
     .profile-label {
-      color: #1976d2;
+      font-size: 1rem;
       font-weight: 500;
-      font-size: 0.9rem;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      opacity: 0.9;
+      color: var(--label-color, #1976d2);
+      text-transform: none;
+      letter-spacing: 0;
     }
     .profile-value {
-      color: #222;
       font-size: 1.1rem;
-      font-family: 'JetBrains Mono', monospace;
-      padding: 0.3rem 0.8rem;
-      background: rgba(25, 118, 210, 0.1);
-      border-radius: 6px;
-      min-width: 100px;
-      text-align: center;
-    }
-    body.theme-dark .profile-value {
-      color: #e0e0e0;
-      background: #23272f;
+      color: var(--value-color, #222);
+      background: var(--value-bg, rgba(25, 118, 210, 0.08));
+      padding: 0.5rem 1.2rem;
+      border-radius: 12px;
+      font-weight: 500;
     }
     .change-password-btn {
       width: 100%;
@@ -181,30 +175,56 @@
       color: #fff;
       border-color: #1565c0;
     }
+    /* Amélioration des messages d'état */
     .profile-message {
-      margin-top: 1rem;
-      padding: 0.7rem 1rem;
-      border-radius: 6px;
+      position: absolute;
+      top: -60px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 1rem 2rem;
+      border-radius: 12px;
       font-size: 1rem;
-      text-align: left;
-      width: 100%;
+      text-align: center;
+      min-width: 300px;
+      max-width: 90%;
+      z-index: 1;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      animation: slideIn 0.3s ease;
+    }
+    @keyframes slideIn {
+      from {
+        transform: translateY(-10px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
     }
     .profile-message.success {
-      background: #4caf50;
-      color: #fff;
+      background: rgba(76, 175, 80, 0.1);
+      color: #4caf50;
+      border: 1px solid #4caf50;
     }
     .profile-message.error {
-      background: #ff4d4d;
-      color: #fff;
+      background: rgba(255, 77, 77, 0.1);
+      color: #ff4d4d;
+      border: 1px solid #ff4d4d;
+    }
+    body.theme-dark .profile-message.success {
+      background: rgba(76, 175, 80, 0.15);
+      color: #81c784;
+    }
+    body.theme-dark .profile-message.error {
+      background: rgba(255, 77, 77, 0.15);
+      color: #ff6b6b;
     }
     .decks-section {
-      background: #fff;
-      border-radius: 16px;
-      padding: 2.5rem;
-      box-shadow: 0 4px 20px rgba(25, 118, 210, 0.08);
-      border: 2px solid #1976d2;
-      transition: all 0.3s ease;
-      margin-bottom: 2rem;
+      background: var(--card-bg, #fff);
+      border: none;
+      border-radius: 24px;
+      padding: 3rem;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
     }
     .decks-section h1 {
       color: #1976d2;
@@ -225,86 +245,51 @@
       background: #1976d2;
       border-radius: 2px;
     }
-    table {
-      width: 100%;
-      border-collapse: separate;
-      border-spacing: 0;
-      border-radius: 12px;
-      overflow: hidden;
-      background: #fff;
-      border: 2px solid #1976d2;
-      box-shadow: 0 2px 15px rgba(25, 118, 210, 0.1);
-      transition: all 0.3s ease;
-    }
-    th {
-      background: #e3f2fd;
-      color: #1976d2;
-      font-size: 1.15rem;
-      font-weight: 600;
-      padding: 1.2rem 1rem;
-      text-align: left;
-      transition: all 0.3s ease;
-      border-bottom: 2px solid #1976d2;
-    }
-    td {
-      padding: 1.2rem 1rem;
-      border-top: 1px solid rgba(25, 118, 210, 0.1);
-      transition: all 0.3s ease;
-      color: #222;
-      font-size: 1.1rem;
-    }
-    tr:hover td {
-      background: rgba(25, 118, 210, 0.05);
-      transform: translateX(5px);
-    }
     .search-input {
-      width: 100%;
+      background: var(--input-bg, rgba(25, 118, 210, 0.04));
+      border: 2px solid transparent;
+      border-radius: 16px;
       padding: 1rem 1.5rem;
       font-size: 1.1rem;
-      border: 2px solid #1976d2;
-      border-radius: 12px;
-      background: #fff;
-      color: #222;
-      margin-bottom: 2rem;
       transition: all 0.3s ease;
-      box-shadow: 0 2px 10px rgba(25, 118, 210, 0.08);
     }
     .search-input:focus {
+      background: var(--input-focus-bg, rgba(25, 118, 210, 0.08));
       border-color: #1976d2;
-      outline: none;
-      box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.2);
       transform: translateY(-2px);
     }
+    table {
+      margin-top: 2rem;
+      border-spacing: 0 0.8rem;
+    }
+    tr {
+      transition: all 0.3s ease;
+    }
+    td {
+      background: var(--row-bg, rgba(25, 118, 210, 0.04));
+      padding: 1.2rem 1.5rem;
+      border: none;
+    }
+    tr:hover td {
+      background: var(--row-hover-bg, rgba(25, 118, 210, 0.08));
+      transform: translateY(-2px);
+    }
+    td:first-child { border-radius: 12px 0 0 12px; }
+    td:last-child { border-radius: 0 12px 12px 0; }
+
+    /* Dark mode variables */
     body.theme-dark {
-      .decks-section {
-        background: #181c23;
-        border-color: #1976d2;
-      }
-
-      table {
-        background: #181c23;
-        border-color: #1976d2;
-      }
-
-      th {
-        background: #23272f;
-        color: #1976d2;
-      }
-
-      td {
-        color: #e0e0e0;
-        border-color: rgba(25, 118, 210, 0.2);
-      }
-
-      tr:hover td {
-        background: #23272f;
-      }
-
-      .search-input {
-        background: #23272f;
-        color: #e0e0e0;
-        border-color: #1976d2;
-      }
+      --card-bg: #181c23;
+      --row-bg: rgba(25, 118, 210, 0.06);
+      --row-hover-bg: rgba(25, 118, 210, 0.1);
+      --label-color: #1976d2;
+      --value-color: #e0e0e0;
+      --value-bg: rgba(25, 118, 210, 0.1);
+      --btn-bg: rgba(25, 118, 210, 0.15);
+      --btn-color: #1976d2;
+      --btn-hover-bg: #1976d2;
+      --input-bg: rgba(25, 118, 210, 0.06);
+      --input-focus-bg: rgba(25, 118, 210, 0.1);
     }
 
     /* Box survolante pour abonnés/abonnements */
@@ -433,17 +418,273 @@
       grid-column: 1 / -1; /* Prend toute la largeur */
       width: 100%;
     }
+    /* Form improvements */
+    .change-form input {
+      width: 100%;
+      padding: 0.8rem 1.2rem;
+      border: 2px solid #1976d2;
+      border-radius: 8px;
+      font-size: 1rem;
+      background: #fff;
+      color: #222;
+      transition: all 0.3s ease;
+      margin-bottom: 1rem;
+    }
+
+    .change-form input:focus {
+      outline: none;
+      border-color: #1565c0;
+      box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.2);
+      transform: translateY(-1px);
+    }
+
+    body.theme-dark .change-form input {
+      background: #23272f;
+      color: #e0e0e0;
+      border-color: #1976d2;
+    }
+
+    /* Enhanced button styles */
+    .submit-btn, .cancel-btn {
+      padding: 0.8rem 2rem;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      min-width: 120px;
+      border: none;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .submit-btn {
+      background: #1976d2;
+      color: white;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .submit-btn::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.2),
+        transparent
+      );
+      transition: 0.5s;
+    }
+
+    .submit-btn:hover {
+      background: #1565c0;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(25, 118, 210, 0.3);
+    }
+
+    .submit-btn:hover::after {
+      left: 100%;
+    }
+
+    .submit-btn:active {
+      transform: translateY(0);
+    }
+
+    .cancel-btn {
+      background: #f5f5f5;
+      color: #666;
+      border: 1px solid #ddd;
+    }
+
+    .cancel-btn:hover {
+      background: #e0e0e0;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .cancel-btn:active {
+      transform: translateY(0);
+    }
+
+    .form-actions {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    body.theme-dark .submit-btn {
+      background: #1976d2;
+    }
+
+    body.theme-dark .cancel-btn {
+      background: #333;
+      color: #fff;
+      border-color: #444;
+    }
+
+    body.theme-dark .cancel-btn:hover {
+      background: #444;
+    }
+
+    /* Edit button improvements */
+    .edit-btn {
+      width: 40px;
+      height: 40px;
+      background: var(--btn-bg, rgba(25, 118, 210, 0.1));
+      border-radius: 50%;
+      border: none;
+      color: var(--btn-color, #1976d2);
+      font-size: 1.2rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .edit-btn:hover {
+      background: var(--btn-hover-bg, #1976d2);
+      color: white;
+      transform: rotate(180deg);
+    }
+
+    body.theme-dark .edit-btn {
+      background: rgba(25, 118, 210, 0.2);
+      color: #1976d2;
+    }
+
+    body.theme-dark .edit-btn:hover {
+      background: #1976d2;
+      color: #fff;
+    }
+
+    /* Style pour la zone du nom d'utilisateur */
+    .username-container {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex: 1;
+      position: relative;
+    }
+
+    .change-form {
+      display: none;
+      margin: 0;
+      flex: 1;
+    }
+
+    .change-form input {
+      width: 100%;
+      margin: 0;
+      padding: 0.5rem 1.2rem;
+      font-size: 1.1rem;
+      color: var(--value-color, #222);
+      background: var(--value-bg, rgba(25, 118, 210, 0.08));
+      border: 2px solid #1976d2;
+      border-radius: 12px;
+      transition: all 0.3s ease;
+    }
+
+    .change-form input:focus {
+      outline: none;
+      border-color: #1565c0;
+      background: var(--value-bg-focus, rgba(25, 118, 210, 0.12));
+      box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.2);
+    }
+
+    body.theme-dark .change-form input {
+      background: var(--value-bg-dark, rgba(25, 118, 210, 0.12));
+      color: #e0e0e0;
+      border-color: #1976d2;
+    }
+
+    body.theme-dark .change-form input:focus {
+      background: var(--value-bg-dark-focus, rgba(25, 118, 210, 0.16));
+      border-color: #1565c0;
+    }
+
+    .edit-btn {
+      opacity: 0;
+      transition: all 0.3s ease;
+    }
+
+    .profile-info-row:hover .edit-btn {
+      opacity: 1;
+    }
+
+    /* Style pour les boutons de confirmation/annulation */
+    .confirm-actions {
+      display: none;
+      gap: 0.5rem;
+      margin-left: 0.5rem;
+    }
+
+    .confirm-btn, .cancel-edit-btn {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .confirm-btn {
+      background: #4caf50;
+      color: white;
+    }
+
+    .confirm-btn:hover {
+      background: #43a047;
+      transform: scale(1.1);
+    }
+
+    .cancel-edit-btn {
+      background: #ff4d4d;
+      color: white;
+    }
+
+    .cancel-edit-btn:hover {
+      background: #e53935;
+      transform: scale(1.1);
+    }
   </style>
 </head>
 <body>
   @include('components/header')
   <div class="main-content">
-    <!-- 1/3 : Section profil utilisateur -->
-    <div class="profile-section">
+    <!-- Section profil utilisateur avec messages au-dessus -->
+    <div class="profile-section" style="position: relative;">
+      @if(flashMessages.has('profile_success'))
+        <div class="profile-message success">{{ flashMessages.get('profile_success') }}</div>
+      @endif
+      @if(flashMessages.has('profile_error'))
+        <div class="profile-message error">{{ flashMessages.get('profile_error') }}</div>
+      @endif
       <h2>Mon profil</h2>
       <div class="profile-info-row">
         <span class="profile-label">Nom d'utilisateur :</span>
-        <span class="profile-value">{{ user.username }}</span>
+        <div class="username-container">
+          <span class="profile-value" id="username-display">{{ user.username }}</span>
+          <form id="changeUsernameForm" class="change-form" action="/account/{{ user.id }}/change-username" method="POST">
+            {{ csrfField() }}
+            <input 
+              type="text" 
+              name="new_username" 
+              required 
+              minlength="3"
+              maxlength="30"
+              value="{{ user.username }}"
+            />
+          </form>
+          <button class="edit-btn" id="editButton" onclick="toggleUsernameForm()" title="Modifier le nom d'utilisateur">✏️</button>
+        </div>
       </div>
       <div class="profile-info-row">
         <span class="profile-label">Abonnés :</span>
@@ -471,12 +712,6 @@
         <input type="password" name="confirm_new_password" placeholder="Confirmer le nouveau mot de passe" required minlength="8" />
         <button type="submit">Valider</button>
       </form>
-      @if(flashMessages.has('profile_success'))
-        <div class="profile-message success">{{ flashMessages.get('profile_success') }}</div>
-      @endif
-      @if(flashMessages.has('profile_error'))
-        <div class="profile-message error">{{ flashMessages.get('profile_error') }}</div>
-      @endif
     </div>
     <!-- 2/3 : Section decks utilisateur -->
     <div class="decks-section">
@@ -618,6 +853,51 @@
       const form = document.getElementById('changePasswordForm');
       form.style.display = form.style.display === 'none' ? 'flex' : 'none';
     }
+    function toggleUsernameForm() {
+      const form = document.getElementById('changeUsernameForm');
+      const display = document.getElementById('username-display');
+      const input = form.querySelector('input');
+      const editBtn = document.getElementById('editButton');
+      
+      if (form.style.display === 'none' || !form.style.display) {
+        display.style.display = 'none';
+        form.style.display = 'block';
+        editBtn.style.display = 'none';
+        input.focus();
+        
+        // Soumet le formulaire quand on appuie sur Enter
+        input.onkeydown = function(e) {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            form.submit();
+          }
+          if (e.key === 'Escape') {
+            resetForm();
+          }
+        };
+        
+        // Soumet le formulaire quand on clique en dehors
+        document.addEventListener('click', function handleClickOutside(event) {
+          if (!form.contains(event.target) && event.target.className !== 'edit-btn') {
+            form.submit();
+            document.removeEventListener('click', handleClickOutside);
+          }
+        });
+      }
+    }
+
+    function resetForm() {
+      const form = document.getElementById('changeUsernameForm');
+      const display = document.getElementById('username-display');
+      const editBtn = document.getElementById('editButton');
+      const input = form.querySelector('input');
+      
+      form.style.display = 'none';
+      display.style.display = 'block';
+      editBtn.style.display = 'block';
+      input.value = display.textContent;
+    }
+    
     function showFollowBox(boxId) {
       const box = document.getElementById(boxId);
       box.style.display = 'block';

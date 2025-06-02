@@ -343,11 +343,11 @@
       </button>
       <div class="header-dropdown-menu" id="header-dropdownMenu">
         @if(auth?.user)
-        <a href="/account/{{ auth.user.id }}" title="Gérer votre profil et vos decks">Mon compte</a>
+        <a href="/account/{{ auth.user.id }}" title="Gérer votre profil et vos decks">Profil</a>
         @endif
         <form action="/logout" method="POST" style="margin:0;">
           {{ csrfField() }}
-          <button type="submit" class="header-logout-btn" title="Se déconnecter de l'application">Se déconnecter</button>
+          <button type="submit" class="header-logout-btn" title="Se déconnecter de l'application">Déconnexion</button>
         </form>
       </div>
     </div>

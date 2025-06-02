@@ -84,4 +84,27 @@ export default class AuthController {
     session.flash('profile_success', "Mot de passe changé avec succès.")
     return response.redirect().back()
   }
+
+  async changeUsername({ request, auth, session, response }: HttpContext) {
+    const user = auth.user;
+    if (!user) {
+      session.flash('profile_error', "Vous devez être connecté.")
+      return response.redirect().back()
+    }
+
+    const { new_username } = request.only(['new_username'])
+
+    // Check if username is already taken
+    const existingUser = await User.findBy('username', new_username)
+    if (existingUser) {
+      session.flash('profile_error', "Ce nom d'utilisateur est déjà pris.")
+      return response.redirect().back()
+    }
+
+    // Update username
+    user.username = new_username
+    await user.save()
+    session.flash('profile_success', "Nom d'utilisateur changé avec succès.")
+    return response.redirect().back()
+  }
 }

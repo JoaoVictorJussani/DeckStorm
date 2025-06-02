@@ -279,6 +279,9 @@ router
 // Route pour changer le mot de passe
 router.post('/account/:id/change-password', '#controllers/auth_controller.changePassword').use(middleware.auth())
 
+// Route pour changer le nom d'utilisateur  
+router.post('/account/:id/change-username', '#controllers/auth_controller.changeUsername').use(middleware.auth())
+
 // Routes follow/unfollow
 router
   .post('/user/:id/follow', [FollowController, 'follow'])
