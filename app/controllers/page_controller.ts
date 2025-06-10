@@ -12,25 +12,25 @@ export default class PageController {
     // Get top 4 most liked decks
     const topLikedDecks = await Deck.query()
       .where('visibility', 'public')
-      .preload('cards')
-      .preload('user')
-      .preload('likes')
-      .withCount('likes')
+      .preload('cards' as any)
+      .preload('user' as any)
+      .preload('likes' as any)
+      .withCount('likes' as any)
       .orderBy('likes_count', 'desc')
       .limit(4);
 
     // Get top 4 creators by followers count
     const topCreatorsByFollowers = await User.query()
-      .withCount('followers')
+      .withCount('followers' as any)
       .orderBy('followers_count', 'desc')
       .limit(4);
 
     // Get top 4 creators by deck count
     const topCreatorsByDecks = await User.query()
-      .withCount('decks', (query) => {
+      .withCount('decks' as any, (query) => {
       query.where('visibility', 'public');
       })
-      .whereHas('decks', (query) => {
+      .whereHas('decks' as any, (query) => {
       query.where('visibility', 'public');
       })
       .orderBy('decks_count', 'desc')
@@ -56,13 +56,13 @@ export default class PageController {
         builder
           .where('title', 'like', `%${query}%`)
           .orWhere('description', 'like', `%${query}%`)
-          .orWhereHas('user', (userQuery) => {
+          .orWhereHas('user' as any, (userQuery) => {
             userQuery.where('username', 'like', `%${query}%`);
           });
       })
-      .preload('cards')
-      .preload('user')
-      .preload('likes')
+      .preload('cards' as any)
+      .preload('user' as any)
+      .preload('likes' as any)
       .exec();
 
     const decksWithLikeStatus = publicDecks.map(deck => ({
@@ -78,7 +78,7 @@ export default class PageController {
   }
 
   // Ajout : Méthode pour la page "Mon compte" avec followersList/followingList
-  async account({ params, view, auth }) {
+  async account({ params, view, auth }: HttpContext) {
     // Si l'utilisateur connecté n'est pas celui demandé, refuse l'accès
     if (!auth.user || auth.user.id !== Number(params.id)) {
       return view.render('./pages/errors/not_found');
@@ -86,16 +86,16 @@ export default class PageController {
     const user = auth.user;
     const userDecks = await Deck.query()
       .where('user_id', user.id)
-      .preload('cards')
-      .preload('user');
+      .preload('cards' as any)
+      .preload('user' as any);
     // Decks likés
     const likedDecks = await Deck.query()
       .whereIn('id', (await Like.query().where('user_id', user.id)).map(like => like.deck_id))
-      .preload('cards')
-      .preload('user');
+      .preload('cards' as any)
+      .preload('user' as any);
     // Ajout des compteurs d'abonnés/abonnements et des listes
-    const followers = await Follow.query().where('following_id', user.id).preload('follower');
-    const following = await Follow.query().where('follower_id', user.id).preload('following');
+    const followers = await Follow.query().where('following_id', user.id).preload('follower' as any);
+    const following = await Follow.query().where('follower_id', user.id).preload('following' as any);
     // Extraction des utilisateurs
     const followersList = followers.map(f => f.follower);
     const followingList = following.map(f => f.following);
@@ -111,7 +111,7 @@ export default class PageController {
   }
 
   // Ajout : Méthode pour le profil public avec followersList/followingList
-  async publicAccount({ params, view, auth }) {
+  async publicAccount({ params, view, auth }: HttpContext) {
     if (!auth.user) {
       return view.render('./pages/errors/not_found');
     }
@@ -122,11 +122,11 @@ export default class PageController {
     const publicDecks = await Deck.query()
       .where('user_id', user.id)
       .andWhere('visibility', 'public')
-      .preload('cards')
-      .preload('user');
+      .preload('cards' as any)
+      .preload('user' as any);
     // Followers/following count et listes
-    const followers = await Follow.query().where('following_id', user.id).preload('follower');
-    const following = await Follow.query().where('follower_id', user.id).preload('following');
+    const followers = await Follow.query().where('following_id', user.id).preload('follower' as any);
+    const following = await Follow.query().where('follower_id', user.id).preload('following' as any);
     const followersList = followers.map(f => f.follower);
     const followingList = following.map(f => f.following);
     let isFollowing = false;
@@ -152,8 +152,8 @@ export default class PageController {
   async showDeck({ params, view, auth }: HttpContext) {
     const deck = await Deck.query()
       .where('id', params.id)
-      .preload('user')
-      .preload('likes')
+      .preload('user' as any)
+      .preload('likes' as any)
       .first()
     if (!deck) {
       return view.render('./pages/errors/not_found')
@@ -166,7 +166,6 @@ export default class PageController {
       user,
       hasLiked,
       likesCount,
-      flashMessages: view.shared.flashMessages || {},
     })
   }
 }

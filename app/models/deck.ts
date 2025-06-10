@@ -1,5 +1,6 @@
 import { DateTime } from 'luxon';
 import { BaseModel, column, hasMany, belongsTo } from '@adonisjs/lucid/orm';
+import type { HasMany, BelongsTo } from '@adonisjs/lucid/types/relations';
 import Card from '#models/card';
 import Like from '#models/like';
 
@@ -28,13 +29,13 @@ export default class Deck extends BaseModel {
   declare updatedAt: DateTime;
 
   @hasMany(() => Card, { foreignKey: 'deck_id' })
-  public cards: Card[];
+  public cards!: HasMany<typeof Card>;
 
   @belongsTo(() => User, { foreignKey: 'user_id' })
-  public user: InstanceType<typeof User>;
+  public user!: BelongsTo<typeof User>;
 
   @hasMany(() => Like, { foreignKey: 'deck_id' })
-  public likes: Like[];
+  public likes!: HasMany<typeof Like>;
 }
 
 // Import User after the class definition to avoid circular reference issues

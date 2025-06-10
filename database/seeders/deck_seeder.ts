@@ -13,7 +13,7 @@ export default class extends BaseSeeder {
         title: `${subject} - ${level} #${i + 1}`,
         description: `${level} level ${subject.toLowerCase()} flashcards`,
         user_id: Math.floor(Math.random() * 1000) + 1,
-        visibility: Math.random() > 0.3 ? 'public' : 'private',
+        visibility: Math.random() > 0.3 ? "public" as const : "private" as const,
       }
     })
     

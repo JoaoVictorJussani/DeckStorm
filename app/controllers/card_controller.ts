@@ -76,7 +76,7 @@ export default class CardController {
   async update({ params, request, response, session, auth }: HttpContext) {
     await auth.use('web').authenticate();
     const deck = await Deck.find(params.deckId); // Récupère le deck par ID
-    if (deck && deck.user_id === auth.user.id) { // Vérifie que l'utilisateur est le propriétaire
+    if (deck && auth.user && deck.user_id === auth.user.id) {  // Vérifie que l'utilisateur est le propriétaire
       const card = await Card.find(params.cardId); // Récupère la carte par ID
       if (card) {
         const data = request.only(['question', 'answer']); // Récupère les champs nécessaires
@@ -89,12 +89,13 @@ export default class CardController {
     session.flash('error', 'Vous ne pouvez pas modifier cette carte.'); // Message d'erreur
     return response.redirect().toRoute('home'); // Redirige vers la page d'accueil
   }
+  
 
   // Supprime une carte
   async destroy({ params, response, session, auth }: HttpContext) {
     await auth.use('web').authenticate();
     const deck = await Deck.find(params.deckId); // Récupère le deck par ID
-    if (deck && deck.user_id === auth.user.id) { // Vérifie que l'utilisateur est le propriétaire
+    if (deck && auth.user && deck.user_id === auth.user.id) { { // Vérifie que l'utilisateur est le propriétaire
       const card = await Card.find(params.cardId); // Récupère la carte par ID
       if (card) {
         await card.delete(); // Supprime la carte
@@ -105,4 +106,5 @@ export default class CardController {
     session.flash('error', 'Vous ne pouvez pas supprimer cette carte.'); // Message d'erreur
     return response.redirect().toRoute('home'); // Redirige vers la page d'accueil
   }
+}
 }

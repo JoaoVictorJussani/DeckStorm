@@ -42,7 +42,7 @@ export default class DeckController {
   // Mise à jour d'un deck
   async update({ params, request, response, session, auth }: HttpContext) {
     const deck = await Deck.find(params.id);
-    if (deck && deck.user_id === auth.user.id) {
+    if (deck && auth.user && deck.user_id === auth.user.id) {
       const data = request.only(['title', 'description', 'visibility']);
 
       // Vérifie la longueur de la description
@@ -63,7 +63,7 @@ export default class DeckController {
   // Suppression d'un deck
   async destroy({ params, response, session, auth }: HttpContext) {
     const deck = await Deck.find(params.id); // Récupère le deck par ID
-    if (deck && deck.user_id === auth.user.id) { // Vérifie que l'utilisateur est le propriétaire
+    if (deck && auth.user && deck.user_id === auth.user.id) { // Vérifie que l'utilisateur est le propriétaire
       await deck.delete(); // Supprime le deck
       session.flash('success', 'Deck supprimé avec succès !'); // Message de succès
     } else {
@@ -74,6 +74,9 @@ export default class DeckController {
 
   // Like a deck
   async like({ params, auth, response, request }: HttpContext) {
+    if (!auth.user) {
+      return response.unauthorized('User not authenticated');
+    }
     const userId = auth.user.id
     const deckId = Number(params.id)
     const returnView = request.input('returnView')
@@ -85,13 +88,18 @@ export default class DeckController {
     
     // Return to the same view
     if (returnView === 'list') {
-      return response.redirect().back({ qs: { view: 'list' } })
+      const referer = request.headers().referer || '/';
+      const url = referer.includes('?') ? `${referer}&view=list` : `${referer}?view=list`;
+      return response.redirect(url);
     }
     return response.redirect().back()
   }
 
   // Unlike a deck
   async unlike({ params, auth, response, request }: HttpContext) {
+    if (!auth.user) {
+      return response.unauthorized('User not authenticated');
+    }
     const userId = auth.user.id
     const deckId = Number(params.id)
     const returnView = request.input('returnView')
@@ -100,13 +108,18 @@ export default class DeckController {
     
     // Return to the same view
     if (returnView === 'list') {
-      return response.redirect().back({ qs: { view: 'list' } })
+      const referer = request.headers().referer || '/';
+      const url = referer.includes('?') ? `${referer}&view=list` : `${referer}?view=list`;
+      return response.redirect(url);
     }
     return response.redirect().back()
   }
 
   // API endpoints for likes
   async apiLike({ params, auth, response }: HttpContext) {
+    if (!auth.user) {
+      return response.unauthorized('User not authenticated');
+    }
     const userId = auth.user.id
     const deckId = Number(params.id)
     
@@ -130,6 +143,9 @@ export default class DeckController {
   }
 
   async apiUnlike({ params, auth, response }: HttpContext) {
+    if (!auth.user) {
+      return response.unauthorized('User not authenticated');
+    }
     const userId = auth.user.id
     const deckId = Number(params.id)
     
