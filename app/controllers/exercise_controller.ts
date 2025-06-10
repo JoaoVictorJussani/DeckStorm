@@ -3,7 +3,7 @@ import Deck from '#models/deck'
 
 export default class ExerciseController {
   async start({ params, view, request, auth }: HttpContext) {
-    const deck = await Deck.query().where('id', params.deckId).preload('cards' as any).first()
+    const deck = await Deck.query().where('id', params.deckId).preload('cards').first()
     if (!deck) {
       return view.render('./pages/errors/not_found')
     }
@@ -13,20 +13,18 @@ export default class ExerciseController {
       retryCardIds = [retryCardIds]
     }
     retryCardIds = retryCardIds ? retryCardIds.map(Number).filter(Boolean) : null
-    const cards = deck.cards ? deck.cards.map((card: any) => card.toJSON()) : []
-    let filteredCards = cards
+    let cards = deck.cards
     if (retryCardIds && retryCardIds.length > 0) {
-      filteredCards = cards.filter((card: any) => retryCardIds.includes(card.id))
+      cards = cards.filter(card => retryCardIds.includes(card.id))
     }
     let attempts = parseInt(request.input('attempts', '1'), 10) || 1
     const direction = request.input('direction', 'question')
-    const user = auth.user
-    return view.render('start', { deck, cards: filteredCards, retryCardIds, attempts, direction, user })
+    const user = auth?.user // Ajout de l'utilisateur authentifié
     return view.render('start', { deck, cards, retryCardIds, attempts, direction, user })
   }
 
   async presentQuestion({ params, request, view }: HttpContext) {
-    const deck = await Deck.query().where('id', params.deckId).preload('cards' as any).first();
+    const deck = await Deck.query().where('id', params.deckId).preload('cards').first();
     if (!deck) {
       return view.render('./pages/errors/not_found');
     }
@@ -35,9 +33,9 @@ export default class ExerciseController {
       retryCardIds = [retryCardIds]
     }
     retryCardIds = retryCardIds ? retryCardIds.map(Number).filter(Boolean) : null
-    let cards = deck.cards ? deck.cards.map((card: any) => card.toJSON()) : [];
+    let cards = deck.cards;
     if (retryCardIds && retryCardIds.length > 0) {
-      cards = cards.filter((card: any) => retryCardIds.includes(card.id))
+      cards = cards.filter(card => retryCardIds.includes(card.id))
     }
     const questionIndex = parseInt(params.questionIndex, 10);
     const startTime = request.input('startTime');
@@ -79,7 +77,7 @@ export default class ExerciseController {
   }
 
   async finish({ params, request, view, auth }: HttpContext) {
-    const deck = await Deck.query().where('id', params.deckId).preload('cards' as any).first();
+    const deck = await Deck.query().where('id', params.deckId).preload('cards').first();
     if (!deck) {
       return view.render('./pages/errors/not_found');
     }
@@ -92,19 +90,19 @@ export default class ExerciseController {
       retryCardIds = [retryCardIds]
     }
     retryCardIds = retryCardIds ? retryCardIds.map(Number).filter(Boolean) : null
-    let cards = deck.cards ? deck.cards.map((card: any) => card) : []
-    let filteredCards = cards
+    let cards = deck.cards
     if (retryCardIds && retryCardIds.length > 0) {
-      filteredCards = cards.filter((card: any) => retryCardIds.includes(card.id))
+      cards = cards.filter(card => retryCardIds.includes(card.id))
     }
-    const incorrectCards = filteredCards.filter((card: any) => !results.includes(card.id));
+    const incorrectCards = cards.filter((card) => !results.includes(card.id));
     let attempts = parseInt(request.input('attempts', '1'), 10) || 1
     const direction = request.input('direction', 'question')
+
     if (mode === 'jusquaubout' && incorrectCards.length > 0) {
       // On incrémente le nombre de passages pour le prochain tour
       return view.render('finish_with_time', {
         deck,
-        cards: filteredCards,
+        cards,
         elapsedTime,
         results,
         mode,
@@ -118,7 +116,7 @@ export default class ExerciseController {
 
     return view.render('finish_with_time', {
       deck,
-      cards: filteredCards,
+      cards,
       elapsedTime,
       results,
       mode,
@@ -129,6 +127,5 @@ export default class ExerciseController {
       direction,
       user: auth.user  // Ajout de l'utilisateur authentifié
     });
-    };
   }
-
+}

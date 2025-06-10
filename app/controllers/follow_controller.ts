@@ -1,11 +1,9 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import Follow from '#models/follow'
+import User from '#models/user'
 
 export default class FollowController {
   async follow({ params, auth, response }: HttpContext) {
-    if (!auth.user) {
-      return response.unauthorized('Utilisateur non authentifié')
-    }
     const followerId = auth.user.id
     const followingId = Number(params.id)
     if (followerId === followingId) {
@@ -22,9 +20,6 @@ export default class FollowController {
   }
 
   async unfollow({ params, auth, response }: HttpContext) {
-    if (!auth.user) {
-      return response.unauthorized('Utilisateur non authentifié')
-    }
     const followerId = auth.user.id
     const followingId = Number(params.id)
     await Follow.query()
