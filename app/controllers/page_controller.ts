@@ -147,4 +147,26 @@ export default class PageController {
       followingList,
     });
   }
+
+  // Ajout : méthode pour afficher un deck (show_deck.edge)
+  async showDeck({ params, view, auth }: HttpContext) {
+    const deck = await Deck.query()
+      .where('id', params.id)
+      .preload('user')
+      .preload('likes')
+      .first()
+    if (!deck) {
+      return view.render('./pages/errors/not_found')
+    }
+    const user = auth.user
+    const hasLiked = !!deck.likes?.find(like => like.user_id === user?.id)
+    const likesCount = deck.likes?.length || 0
+    return view.render('show_deck', {
+      deck,
+      user,
+      hasLiked,
+      likesCount,
+      flashMessages: view.shared.flashMessages || {},
+    })
+  }
 }

@@ -597,6 +597,29 @@
             shareMenu.style.display = 'none';
           }
         });
+
+        // Like dynamique
+        async function toggleLike(deckId, button) {
+          const isLiked = button.classList.contains('liked');
+          const endpoint = `/api/decks/${deckId}/${isLiked ? 'unlike' : 'like'}`;
+          // Récupère le token CSRF
+          let csrfTokenInput = document.querySelector('input[name="_csrf"]');
+          let csrfToken = csrfTokenInput ? csrfTokenInput.value : '';
+          if (!csrfToken && window.csrfToken) csrfToken = window.csrfToken;
+          const response = await fetch(endpoint, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-CSRF-Token': csrfToken
+            }
+          });
+          if (response.ok) {
+            const data = await response.json();
+            button.classList.toggle('liked');
+            button.querySelector('.heart-emoji').textContent = button.classList.contains('liked') ? '❤️' : '🤍';
+            document.getElementById('like-count').textContent = data.likesCount;
+          }
+        }
       </script>
       <!-- Fin QR Code et partage -->
       <p><strong>Description:</strong> {{ deck.description }}</p>
@@ -608,23 +631,13 @@
       <p><strong>Créateur: </strong>
       <span>{{deck.user.username}}</span></p>
 
-      <!-- Like system -->
-      <div style="margin: 1rem 0;">
-        <form action="{{ hasLiked ? route('decks.unlike', { id: deck.id }) : route('decks.like', { id: deck.id }) }}" method="POST" style="display:inline;">
-          {{ csrfField() }}
-          <button type="submit" style="background: none; border: none; cursor: pointer; font-size: 1.3rem; color: {{ hasLiked ? '#ff4d4d' : '#1976d2' }};">
-            <span title="{{ hasLiked ? 'Je n\'aime plus' : 'J\'aime' }}">
-              {{ hasLiked ? '❤️' : '🤍' }}
-            </span>
-            <span style="font-size:1rem; color:#1976d2; margin-left:0.5rem;">
-              {{ deck.likes.length }}
-            </span>
-          </button>
-        </form>
+      <!-- Like dynamique -->
+      <div style="margin: 1.5rem 0;">
+        <button id="like-btn" class="like-btn {{ hasLiked ? 'liked' : '' }}" onclick="toggleLike({{ deck.id }}, this)" style="font-size:1.5rem; border:none; background:none; cursor:pointer;">
+          <span class="heart-emoji">{{ hasLiked ? '❤️' : '🤍' }}</span>
+          <span id="like-count">{{ typeof likesCount !== 'undefined' ? likesCount : (deck.likes ? deck.likes.length : 0) }}</span>
+        </button>
       </div>
-      <!-- End Like system -->
-
-      
 
       <div class="button-container">
         <!-- Bouton pour supprimer le deck -->

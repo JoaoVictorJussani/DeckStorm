@@ -626,9 +626,16 @@
             <div class="deck-info">
               <a href="/public-account/{{ deck.user.id }}" class="deck-author" onclick="event.stopPropagation();">{{ deck.user.username }}</a>
             </div>
-            <div class="like-container">
-              <span class="heart-emoji" title="Nombre de likes">❤️</span>
-              <span class="like-count">{{ deck.$extras.likes_count }}</span>
+            <div class="like-container" onclick="event.stopPropagation();">
+              <button 
+                class="like-btn {{ deck.likes?.some(like => like.user_id === user?.id) ? 'liked' : '' }}" 
+                style="font-size:1.3rem; border:none; background:none; cursor:pointer;"
+                onclick="toggleLike({{ deck.id }}, this, 'top')"
+                title="{{ deck.likes?.some(like => like.user_id === user?.id) ? 'Retirer le like' : 'Liker ce deck' }}"
+                >
+                <span class="heart-emoji">{{ deck.likes?.some(like => like.user_id === user?.id) ? '❤️' : '🤍' }}</span>
+                <span class="like-count">{{ deck.$extras.likes_count }}</span>
+              </button>
             </div>
           </div>
         @end
@@ -672,7 +679,7 @@
 
 
   <script>
-    async function toggleLike(deckId, button) {
+    async function toggleLike(deckId, button, context) {
       try {
         const isLiked = button.classList.contains('liked');
         const endpoint = `/api/decks/${deckId}/${isLiked ? 'unlike' : 'like'}`;
