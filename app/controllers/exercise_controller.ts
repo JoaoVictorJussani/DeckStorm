@@ -1,5 +1,6 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import Deck from '#models/deck'
+import type Card from '#models/card'
 
 export default class ExerciseController {
   async start({ params, view, request, auth }: HttpContext) {
@@ -13,9 +14,9 @@ export default class ExerciseController {
       retryCardIds = [retryCardIds]
     }
     retryCardIds = retryCardIds ? retryCardIds.map(Number).filter(Boolean) : null
-    let cards = deck.cards
+    let cards: Card[] = deck.cards as unknown as Card[]
     if (retryCardIds && retryCardIds.length > 0) {
-      cards = cards.filter(card => retryCardIds.includes(card.id))
+      cards = cards.filter((card: Card) => retryCardIds!.includes(card.id))
     }
     let attempts = parseInt(request.input('attempts', '1'), 10) || 1
     const direction = request.input('direction', 'question')
@@ -33,9 +34,9 @@ export default class ExerciseController {
       retryCardIds = [retryCardIds]
     }
     retryCardIds = retryCardIds ? retryCardIds.map(Number).filter(Boolean) : null
-    let cards = deck.cards;
+    let cards = deck.cards as unknown as Card[];
     if (retryCardIds && retryCardIds.length > 0) {
-      cards = cards.filter(card => retryCardIds.includes(card.id))
+      cards = (cards as Card[]).filter((card: Card) => retryCardIds!.includes(card.id));
     }
     const questionIndex = parseInt(params.questionIndex, 10);
     const startTime = request.input('startTime');
@@ -90,11 +91,11 @@ export default class ExerciseController {
       retryCardIds = [retryCardIds]
     }
     retryCardIds = retryCardIds ? retryCardIds.map(Number).filter(Boolean) : null
-    let cards = deck.cards
+    let cards = deck.cards as unknown as Card[]
     if (retryCardIds && retryCardIds.length > 0) {
-      cards = cards.filter(card => retryCardIds.includes(card.id))
+      cards = cards.filter((card: Card) => retryCardIds!.includes(card.id))
     }
-    const incorrectCards = cards.filter((card) => !results.includes(card.id));
+    const incorrectCards = cards.filter((card: Card) => !results.includes(card.id));
     let attempts = parseInt(request.input('attempts', '1'), 10) || 1
     const direction = request.input('direction', 'question')
 
@@ -108,8 +109,8 @@ export default class ExerciseController {
         mode,
         incorrectCards,
         showRetry: true,
-        retryCardIds: incorrectCards.map(card => card.id),
-        attempts: attempts + 1,
+        retryCardIds: incorrectCards.map((card: Card) => card.id),
+        attempts: (attempts as number) + 1,
         direction
       });
     }

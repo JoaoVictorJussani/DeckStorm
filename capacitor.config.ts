@@ -5,7 +5,7 @@ const config: CapacitorConfig = {
   appName: 'Deckstorm',
   webDir: 'dist',
   server: {
-    url: "http://10.0.2.2:3333",
+    url: "http://192.168.56.1:3333",
     cleartext: true
   }
 

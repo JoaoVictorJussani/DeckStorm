@@ -12,6 +12,8 @@ export default class Card extends BaseModel {
   @column()
   declare answer: string; // Réponse de la carte
 
-  @column()
-  declare deck_id: number; // Identifiant du deck auquel appartient la carte
+  @column({ columnName: 'deck_id' })
+  declare deckId: number; // Identifiant du deck auquel appartient la carte
+
+  
 }

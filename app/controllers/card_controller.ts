@@ -50,7 +50,7 @@ export default class CardController {
     }
 
     // Crée une nouvelle carte
-    await Card.create({ question: question.trim(), answer: answer.trim(), deck_id: params.deckId });
+    await Card.create({ question: question.trim(), answer: answer.trim(), deckId: params.deckId });
 
     session.flash('success', 'Carte créée avec succès !'); // Message de succès
     return response.redirect().toRoute('decks.show', { id: params.deckId }); // Redirige vers la page du deck
@@ -76,7 +76,7 @@ export default class CardController {
   async update({ params, request, response, session, auth }: HttpContext) {
     await auth.use('web').authenticate();
     const deck = await Deck.find(params.deckId); // Récupère le deck par ID
-    if (deck && deck.user_id === auth.user.id) { // Vérifie que l'utilisateur est le propriétaire
+    if (deck && auth.user && deck.user_id  === auth.user.id) { // Vérifie que l'utilisateur est le propriétaire
       const card = await Card.find(params.cardId); // Récupère la carte par ID
       if (card) {
         const data = request.only(['question', 'answer']); // Récupère les champs nécessaires
@@ -94,7 +94,7 @@ export default class CardController {
   async destroy({ params, response, session, auth }: HttpContext) {
     await auth.use('web').authenticate();
     const deck = await Deck.find(params.deckId); // Récupère le deck par ID
-    if (deck && deck.user_id === auth.user.id) { // Vérifie que l'utilisateur est le propriétaire
+    if (deck && auth.user && deck.user_id  === auth.user.id) { // Vérifie que l'utilisateur est le propriétaire
       const card = await Card.find(params.cardId); // Récupère la carte par ID
       if (card) {
         await card.delete(); // Supprime la carte

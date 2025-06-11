@@ -1,4 +1,6 @@
 import { BaseModel, column, belongsTo } from '@adonisjs/lucid/orm'
+import type { BelongsTo } from '@adonisjs/lucid/types/relations'
+import User from '#models/user'
 
 export default class Follow extends BaseModel {
   public static table = 't_follow'
@@ -13,11 +15,8 @@ export default class Follow extends BaseModel {
   declare following_id: number
 
   @belongsTo(() => User, { foreignKey: 'follower_id' })
-  public follower: InstanceType<typeof User>
+  public follower!: BelongsTo<typeof User>
 
   @belongsTo(() => User, { foreignKey: 'following_id' })
-  public following: InstanceType<typeof User>
+  public following!: BelongsTo<typeof User>
 }
-
-// Import User after the class definition to avoid circular reference issues
-import User from '#models/user'

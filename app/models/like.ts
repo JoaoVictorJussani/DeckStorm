@@ -1,4 +1,7 @@
 import { BaseModel, column, belongsTo } from '@adonisjs/lucid/orm'
+import type { BelongsTo } from '@adonisjs/lucid/types/relations'
+import User from '#models/user'
+import Deck from '#models/deck'
 
 export default class Like extends BaseModel {
   public static table = 't_like'
@@ -11,14 +14,9 @@ export default class Like extends BaseModel {
 
   @column()
   declare deck_id: number
-
   @belongsTo(() => User, { foreignKey: 'user_id' })
-  public user: InstanceType<typeof User>
+  public user!: BelongsTo<typeof User>
 
   @belongsTo(() => Deck, { foreignKey: 'deck_id' })
-  public deck: InstanceType<typeof Deck>
+  public deck!: BelongsTo<typeof Deck>
 }
-
-// Import User and Deck after the class definition to avoid circular reference issues
-import User from '#models/user'
-import Deck from '#models/deck'

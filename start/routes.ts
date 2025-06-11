@@ -14,9 +14,8 @@ import Deck from '#models/deck'; // Modèle Deck
 import CardController from '#controllers/card_controller'; // Contrôleur pour les cartes
 import Card from '#models/card'; // Modèle Card
 import ExerciseController from '#controllers/exercise_controller'; // Contrôleur pour les exercices
-import User from '#models/user'; // Ajout pour la route /account/:id
 import FollowController from '#controllers/follow_controller'; // Contrôleur pour le suivi
-import Like from '#models/like'; // Ajout pour les likes
+import type { HttpContext } from '@adonisjs/core/http'; // Import du type HttpContext
 
 // Route pour la page d'accueil
 router
@@ -44,7 +43,7 @@ router
 router
   .get('/deck/:id/edit', async ({ params, view, auth, response }) => {
     const deck = await Deck.find(params.id); // Récupère le deck par ID
-    if (deck && deck.user_id === auth.user.id) { // Vérifie que l'utilisateur est le propriétaire
+    if (deck && auth.user && deck.user_id  === auth.user.id) { // Vérifie que l'utilisateur est le propriétaire
       return view.render('edit_deck', { deck, user: auth.use('web').user });
     }
     return response.redirect().toRoute('home'); // Redirige si l'utilisateur n'est pas le propriétaire
@@ -117,7 +116,11 @@ router
     const deck = await Deck.query()
       .where('id', params.id)
       .andWhere((query) => {
-        query.where('user_id', auth.user.id).orWhere('visibility', 'public'); // Autorise l'accès aux decks publics
+        if (auth.user) {
+          query.where('user_id', auth.user.id).orWhere('visibility', 'public'); // Autorise l'accès aux decks publics
+        } else {
+          query.where('visibility', 'public');
+        }
       })
       .preload('cards') // Précharge les cartes
       .preload('user') // Précharge la relation utilisateur
@@ -126,7 +129,7 @@ router
 
     let hasLiked = false;
     if (deck && auth.user) {
-      hasLiked = !!deck.likes.find(like => like.user_id === auth.user.id);
+      hasLiked = !!deck.likes.find(like => auth.user && like.user_id === auth.user.id);
     }
 
     if (deck) {
@@ -186,7 +189,7 @@ router
 router
   .post('/deck/:deckId/card/:cardId/delete', async ({ params, auth, response, session }) => {
     const deck = await Deck.find(params.deckId); // Récupère le deck par ID
-    if (deck && deck.user_id === auth.user.id) { // Vérifie que l'utilisateur est le propriétaire
+    if (deck && auth.user && deck.user_id  === auth.user.id) { // Vérifie que l'utilisateur est le propriétaire
       const card = await Card.find(params.cardId); // Récupère la carte par ID
       if (card) {
         await card.delete(); // Supprime la carte
@@ -228,7 +231,7 @@ router
 
     // Recherche des decks de l'utilisateur correspondant à la requête
     const userDecks = await Deck.query()
-      .where('user_id', user.id)
+      .where('user_id', user ? user.id : 0)
       .andWhere('title', 'like', `%${userQuery}%`)
       .preload('cards') // Précharge les cartes
       .preload('user'); // Précharge la relation utilisateur
@@ -236,7 +239,7 @@ router
     // Récupère tous les decks publics (non affectés par la recherche personnelle)
     const publicDecks = await Deck.query()
       .where('visibility', 'public')
-      .andWhereNot('user_id', user.id)
+      .andWhereNot('user_id', user ? user.id : 0)
       .preload('cards') // Précharge les cartes
       .preload('user'); // Précharge la relation utilisateur
 
@@ -252,15 +255,25 @@ router
     const publicQuery = request.input('publicQuery', '').trim(); // Récupère la requête de recherche
 
     // Récupère tous les decks personnels (non affectés par la recherche publique)
-    const userDecks = await Deck.query()
-      .where('user_id', user.id)
-      .preload('cards') // Précharge les cartes
-      .preload('user'); // Précharge la relation utilisateur
+    interface UserDeck {
+      id: number;
+      title: string;
+      cards: any[];
+      user: any;
+      [key: string]: any;
+    }
+    let userDecks: UserDeck[] = [];
+    if (user) {
+      userDecks = await Deck.query()
+        .where('user_id', user.id)
+        .preload('cards') // Précharge les cartes
+        .preload('user'); // Précharge la relation utilisateur
+    }
 
     // Recherche des decks publics correspondant à la requête
     const publicDecks = await Deck.query()
       .where('visibility', 'public')
-      .andWhereNot('user_id', user.id)
+      .andWhereNot('user_id', user?.id ?? 0)
       .andWhere('title', 'like', `%${publicQuery}%`)
       .preload('cards') // Précharge les cartes
       .preload('user'); // Précharge la relation utilisateur
