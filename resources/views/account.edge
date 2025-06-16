@@ -92,6 +92,7 @@
       align-items: center;
       gap: 1rem;
       transition: all 0.3s ease;
+      justify-content: space-between; /* Ajouté pour séparer label et valeur */
     }
     .profile-info-row:hover {
       transform: translateY(-2px);
@@ -112,6 +113,12 @@
       padding: 0.5rem 1.2rem;
       border-radius: 12px;
       font-weight: 500;
+    }
+    .profile-value.right {
+      margin-left: auto;
+      text-align: right;
+      min-width: 40px;
+      display: inline-block;
     }
     .change-password-btn {
       width: 100%;
@@ -258,11 +265,11 @@
       padding: 1rem 1.5rem;
       font-size: 1.1rem;
       transition: all 0.3s ease;
-    }
-    .search-input:focus {
-      background: var(--input-focus-bg, rgba(25, 118, 210, 0.08));
-      border-color: #1976d2;
-      transform: translateY(-2px);
+      /* Ajouté pour agrandir la barre */
+      width: 420px;
+      max-width: 100%;
+      min-width: 220px;
+      margin-bottom: 1rem;
     }
     table {
       margin-top: 2rem;
@@ -675,10 +682,9 @@
       @endif
       <h2>Mon profil</h2>
       <div class="profile-info-row">
-        <span class="profile-label">Nom d'utilisateur :</span>
-        <div class="username-container">
-          <span class="profile-value" id="username-display">{{ user.username }}</span>
-          <form id="changeUsernameForm" class="change-form" action="/account/{{ user.id }}/change-username" method="POST">
+        <span class="profile-label">Votre nom :</span>
+        <span style="display:flex; align-items:center; margin-left:auto;">
+          <form id="changeUsernameForm" class="change-form" action="/account/{{ user.id }}/change-username" method="POST" style="margin:0;">
             {{ csrfField() }}
             <input 
               type="text" 
@@ -689,18 +695,19 @@
               value="{{ user.username }}"
             />
           </form>
-          <button class="edit-btn" id="editButton" onclick="toggleUsernameForm()" title="Modifier le nom d'utilisateur">✏️</button>
-        </div>
+          <button class="edit-btn" id="editButton" onclick="toggleUsernameForm()" title="Modifier le nom d'utilisateur" style="margin-right:8px;">✏️</button>
+          <span id="username-display" class="profile-value right" style="margin-right:0;">{{ user.username }}</span>
+        </span>
       </div>
       <div class="profile-info-row">
         <span class="profile-label">Abonnés :</span>
-        <span class="profile-value" id="followers-link" style="cursor:pointer; text-decoration:underline;">
+        <span class="profile-value right" id="followers-link" style="cursor:pointer; text-decoration:underline;">
           {{ followersCount }}
         </span>
       </div>
       <div class="profile-info-row">
         <span class="profile-label">Abonnements :</span>
-        <span class="profile-value" id="following-link" style="cursor:pointer; text-decoration:underline;">
+        <span class="profile-value right" id="following-link" style="cursor:pointer; text-decoration:underline;">
           {{ followingCount }}
         </span>
       </div>

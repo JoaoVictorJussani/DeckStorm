@@ -3,109 +3,132 @@
 <head>
   <meta charset="UTF-8" />
   <title>Commencer l'exercice</title>
-  <link rel="shortcut icon" href="/images/icone.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="/images/icone.ico" type="image/x-icon">
   <style>
-    /* Reset básico */
+    /* Copier ici tout le CSS de home.edge */
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
+
+    /* Style du corps de la page */
     body {
-      min-height: 100vh;
-      background: linear-gradient(135deg, #e0e7ff 0%, #f0fdfa 100%);
+      background: #fff;
+      color: #222;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center; /* Centraliza verticalmente */
-      transition: background 0.5s;
+      justify-content: center;
+      min-height: 100vh;
+      font-size: 1rem;
     }
-    .spacer {
-      display: none; /* Remove o espaçamento do topo */
-    }
-    h1 {
-      font-size: 2.2rem;
-      font-weight: 800;
-      color: #22223b;
-      margin-bottom: 2.5rem;
-      letter-spacing: -1px;
-      text-align: center;
-      background: linear-gradient(90deg, #6366f1 30%, #06b6d4 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      text-fill-color: transparent;
-      animation: fadeInDown 0.7s;
-    }
-    @keyframes fadeInDown {
-      from { opacity: 0; transform: translateY(-30px);}
-      to { opacity: 1; transform: translateY(0);}
-    }
-    .card-form {
+    body.theme-light {
       background: #fff;
-      border-radius: 22px;
-      box-shadow: 0 8px 32px rgba(60, 72, 100, 0.18);
-      padding: 2.5rem 2.2rem 2rem 2.2rem;
-      display: flex;
-      flex-direction: column;
-      align-items: stretch;
-      gap: 1.3rem;
-      min-width: 340px;
-      max-width: 420px;
+      color: #222;
+    }
+    body.theme-dark {
+      background: #0a0c10;
+      color: #e0e0e0;
+    }
+
+    /* Style pour le titre principal */
+    h1 {
+      font-size: 2.5rem;
       margin-bottom: 2rem;
-      animation: fadeInUp 0.8s;
+      color: #1976d2;
+      font-weight: 700;
+      text-align: center;
+      box-shadow: 0 0 15px #1976d2;
     }
-    @keyframes fadeInUp {
-      from { opacity: 0; transform: translateY(40px);}
-      to { opacity: 1; transform: translateY(0);}
-    }
-    label {
-      font-size: 1.08rem;
-      color: #373a53;
+
+    /* Style pour les boutons */
+    button {
+      background: #1976d2;
+      color: #fff;
+      border: 2px solid #1976d2;
+      padding: 0.8rem 1.5rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1.2rem;
       font-weight: 600;
-      margin-bottom: 0.3rem;
+      transition: background 0.3s ease, color 0.3s ease;
     }
-    select {
-      background: #f1f5f9;
-      color: #22223b;
-      border: 2px solid #6366f1;
-      padding: 0.7rem 1.2rem;
-      border-radius: 12px;
-      font-size: 1.08rem;
-      font-weight: 500;
-      margin-bottom: 0.5rem;
-      outline: none;
-      transition: border 0.2s;
+    button:hover {
+      background: #1565c0;
+      color: #fff;
     }
-    select:focus {
-      border-color: #06b6d4;
+    .abandon-button {
+      background: #fff;
+      color: #ff4d4d;
+      border: 2px solid #ff4d4d;
+      padding: 0.8rem 1.5rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1.2rem;
+      font-weight: 600;
+      transition: background 0.3s ease, color 0.3s ease;
     }
+    .abandon-button:hover {
+      background: #ff4d4d;
+      color: #fff;
+    }
+    body.theme-dark .abandon-button {
+      background: #23272f;
+      color: #ff4d4d;
+      border-color: #ff4d4d;
+    }
+    body.theme-dark .abandon-button:hover {
+      background: #ff4d4d;
+      color: #fff;
+    }
+
+    .open .dropdown-menu {
+      display: block;
+    }
+
+    /* Ajout d'un espace en haut pour compenser la navbar fixe */
+    .spacer {
+      height: 80px;
+    }
+
+    .card-link {
+      color: #1976d2;
+      text-decoration: none;
+    }
+
+    .card-link:hover {
+      color: #1565c0; 
+      opacity: 0.8;
+    }
+
+    /* Helpbox styles */
     .helpbox {
       display: inline-block;
-      margin-left: 0.5rem;
-      position: relative;
+      margin-left: 0.7rem;
       vertical-align: middle;
+      position: relative;
     }
     .helpbox-btn {
-      background: linear-gradient(135deg, #6366f1 60%, #06b6d4 100%);
+      background: #1976d2;
       color: #fff;
       border: none;
       border-radius: 50%;
-      width: 26px;
-      height: 26px;
-      font-size: 1rem;
+      width: 28px;
+      height: 28px;
+      font-size: 1.1rem;
       font-weight: bold;
       cursor: pointer;
-      box-shadow: 0 2px 8px rgba(99,102,241,0.10);
-      display: flex;
+      transition: background 0.2s;
+      margin-left: 0.2rem;
+      display: inline-flex;
       align-items: center;
       justify-content: center;
-      transition: background 0.2s, transform 0.2s;
+      box-shadow: 0 2px 8px rgba(25, 118, 210, 0.10);
     }
     .helpbox-btn:hover, .helpbox-btn:focus {
-      background: #06b6d4;
-      transform: scale(1.08);
+      background: #1565c0;
       outline: none;
     }
     .helpbox-content {
@@ -115,101 +138,45 @@
       top: 50%;
       transform: translateY(-50%);
       min-width: 260px;
-      background: #f8fafc;
-      color: #22223b;
-      border: 2px solid #6366f1;
-      border-radius: 12px;
-      box-shadow: 0 4px 20px rgba(99,102,241,0.10);
+      background: #fff;
+      color: #222;
+      border: 2px solid #1976d2;
+      border-radius: 10px;
+      box-shadow: 0 4px 20px rgba(25, 118, 210, 0.10);
       padding: 1rem 1.2rem;
       z-index: 200;
       font-size: 1rem;
       text-align: left;
       line-height: 1.5;
     }
-    .helpbox.open .helpbox-content {
-      display: block;
-      animation: fadeIn 0.3s;
-    }
-    @keyframes fadeIn {
-      from { opacity: 0;}
-      to { opacity: 1;}
+    body.theme-dark .helpbox-content {
+      background: #23272f;
+      color: #e0e0e0;
+      border-color: #1976d2;
     }
     .helpbox-content strong {
-      color: #6366f1;
+      color: #1976d2;
     }
-    .form-actions {
-      display: flex;
-      gap: 1.2rem;
-      margin-top: 1.2rem;
-      justify-content: flex-start;
-    }
-    button[type="submit"] {
-      background: linear-gradient(90deg, #6366f1 60%, #06b6d4 100%);
-      color: #fff;
-      border: none;
-      padding: 0.85rem 2.1rem;
-      border-radius: 14px;
-      font-size: 1.13rem;
-      font-weight: 700;
-      cursor: pointer;
-      box-shadow: 0 2px 8px rgba(99,102,241,0.10);
-      transition: background 0.2s, transform 0.2s;
-    }
-    button[type="submit"]:hover {
-      background: linear-gradient(90deg, #06b6d4 60%, #6366f1 100%);
-      transform: translateY(-2px) scale(1.04);
-    }
-    .abandon-button {
-      background: #fff;
-      color: #ef4444;
-      border: 2px solid #ef4444;
-      padding: 0.85rem 2.1rem;
-      border-radius: 14px;
-      font-size: 1.13rem;
-      font-weight: 700;
-      cursor: pointer;
-      transition: background 0.2s, color 0.2s, transform 0.2s;
-    }
-    .abandon-button:hover {
-      background: #ef4444;
-      color: #fff;
-      transform: translateY(-2px) scale(1.04);
-    }
-    /* Erro */
-    .error-msg {
-      color: #ef4444;
-      background: #fff1f2;
-      border: 1px solid #ef4444;
-      border-radius: 10px;
-      padding: 1rem 1.2rem;
-      margin-top: 2rem;
-      font-size: 1.1rem;
-      text-align: center;
-      max-width: 400px;
-      animation: fadeIn 0.5s;
-    }
-    /* Responsivo */
-    @media (max-width: 600px) {
-      .card-form {
-        min-width: unset;
-        width: 95vw;
-        padding: 1.2rem 0.7rem 1.2rem 0.7rem;
-      }
-      h1 {
-        font-size: 1.3rem;
-      }
+    .helpbox.open .helpbox-content {
+      display: block;
     }
   </style>
 </head>
 <body>
-  @include('components/header')
-  <div class="spacer"></div>
-  <h1>Commencer l'exercice pour le deck "{{ deck.title }}"</h1>
-  @if(deck && deck.id)
-    <form action="{{ route('exercise.presentQuestion', { deckId: deck.id, questionIndex: 0 }) }}" method="GET" onsubmit="handleSubmit(this)" class="card-form">
-      <input type="hidden" name="startTime" id="startTime" />
-      <input type="hidden" name="results" value="[]" />
-      <label for="mode-select">Choisissez un mode :
+    @include('components/header')
+    <div class="spacer"></div>
+    <!-- Titre dynamique basé sur le deck -->
+    <h1>Commencer l'exercice pour le deck "{{ deck.title }}"</h1>
+
+    @if(deck && deck.id)
+      <!-- Formulaire pour démarrer l'exercice -->
+      <form action="{{ route('exercise.presentQuestion', { deckId: deck.id, questionIndex: 0 }) }}" method="GET" onsubmit="handleSubmit(this)" style="display: flex; flex-direction: column; align-items: flex-start; gap: 0.5rem; max-width: 400px;">
+        <!-- Champ caché pour enregistrer l'heure de début -->
+        <input type="hidden" name="startTime" id="startTime" />
+        <!-- Champ caché pour initialiser les résultats -->
+        <input type="hidden" name="results" value="[]" />
+
+        <label for="mode-select" style="font-size:1.2rem;">Choisissez un mode :</label>
         <span class="helpbox">
           <button type="button" class="helpbox-btn" onclick="toggleHelpbox('mode-helpbox')" aria-label="Aide sur les modes">?</button>
           <span class="helpbox-content" id="mode-helpbox">
@@ -218,64 +185,67 @@
             <strong>Mode jusqu'au bout :</strong> Vous devez répondre correctement à toutes les cartes. Les cartes ratées reviennent jusqu'à ce que vous réussissiez tout.
           </span>
         </span>
-      </label>
-      <select id="mode-select" name="mode">
-        <option value="chronometre">Mode chronométré</option>
-        <option value="basique">Mode basique</option>
-        <option value="jusquaubout">Mode jusqu'au bout</option>
-      </select>
-      <label for="direction-select">Sens de l'exercice :</label>
-      <select id="direction-select" name="direction">
-        <option value="question">Question → Réponse</option>
-        <option value="answer">Réponse → Question</option>
-      </select>
-      @if(typeof retryCardIds !== 'undefined' && retryCardIds)
-        @each(id in retryCardIds)
-          <input type="hidden" name="retryCardIds" value="{{ id }}" />
-        @endeach
-      @endif
-      <input type="hidden" name="attempts" value="{{ attempts || 1 }}" />
-      <div class="form-actions">
-        <button type="submit">C'est parti</button>
-        <button type="button" class="abandon-button" onclick="window.location.href='{{ route('decks.show', { id: deck.id }) }}'">Abandonner</button>
-      </div>
-    </form>
-  @else
-    <div class="error-msg">Erreur : deck introuvable ou invalide.</div>
-  @endif
-  <script>
-    // Fonction pour gérer la soumission du formulaire
-    function handleSubmit(form) {
-      const mode = form.mode.value;
-      if(mode === 'chronometre'){
-        document.getElementById('startTime').value = Date.now();
+        <select id="mode-select" name="mode" style="background: #1976d2; color: #fff; border: 2px solid #1976d2; padding: 0.8rem 1.5rem; border-radius: 8px; cursor: pointer; font-size: 1.2rem; font-weight: 600; transition: background 0.3s ease, color 0.3s ease;">
+          <option value="chronometre">Mode chronométré</option>
+          <option value="basique">Mode basique</option>
+          <option value="jusquaubout">Mode jusqu'au bout</option>
+        </select>
+
+        <label for="direction-select" style="font-size:1.2rem;">Sens de l'exercice :</label>
+        <select id="direction-select" name="direction" style="background: #1976d2; color: #fff; border: 2px solid #1976d2; padding: 0.8rem 1.5rem; border-radius: 8px; cursor: pointer; font-size: 1.2rem; font-weight: 600; transition: background 0.3s ease, color 0.3s ease;">
+          <option value="question">Question → Réponse</option>
+          <option value="answer">Réponse → Question</option>
+        </select>
+
+        @if(typeof retryCardIds !== 'undefined' && retryCardIds)
+          @each(id in retryCardIds)
+            <input type="hidden" name="retryCardIds" value="{{ id }}" />
+          @endeach
+        @endif
+        <input type="hidden" name="attempts" value="{{ attempts || 1 }}" />
+        <!-- Boutons pour soumettre ou abandonner -->
+        <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+          <button type="submit">C'est parti</button>
+          <button type="button" class="abandon-button" onclick="window.location.href='{{ route('decks.show', { id: deck.id }) }}'">Abandonner</button>
+        </div>
+      </form>
+    @else
+      <p style="color:#ff4d4d;">Erreur : deck introuvable ou invalide.</p>
+    @endif
+
+    <script>
+      // Fonction pour gérer la soumission du formulaire
+      function handleSubmit(form) {
+        const mode = form.mode.value;
+        if(mode === 'chronometre'){
+          document.getElementById('startTime').value = Date.now();
+        }
+        return true;
       }
-      return true;
-    }
-    // Dropdown JS
-    function toggleDropdownMenu() {
-      const menu = document.getElementById('dropdownMenu');
-      menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
-    }
-    // Helpbox logic
-    function toggleHelpbox(id) {
-      document.querySelectorAll('.helpbox-content').forEach(function(box) {
-        if (box.id !== id) box.parentElement.classList.remove('open');
+      // Dropdown JS
+      function toggleDropdownMenu() {
+        const menu = document.getElementById('dropdownMenu');
+        menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+      }
+      // Helpbox logic
+      function toggleHelpbox(id) {
+        document.querySelectorAll('.helpbox-content').forEach(function(box) {
+          if (box.id !== id) box.parentElement.classList.remove('open');
+        });
+        var el = document.getElementById(id);
+        if (el) {
+          el.parentElement.classList.toggle('open');
+        }
+      }
+      document.addEventListener('click', function(event) {
+        document.querySelectorAll('.helpbox').forEach(function(box) {
+          if (!box.contains(event.target)) box.classList.remove('open');
+        });
+        const menu = document.getElementById('dropdownMenu');
+        if (menu && menu.style.display === 'block' && !menu.contains(event.target) && event.target.className !== 'dropdown-toggle') {
+          menu.style.display = 'none';
+        }
       });
-      var el = document.getElementById(id);
-      if (el) {
-        el.parentElement.classList.toggle('open');
-      }
-    }
-    document.addEventListener('click', function(event) {
-      document.querySelectorAll('.helpbox').forEach(function(box) {
-        if (!box.contains(event.target)) box.classList.remove('open');
-      });
-      const menu = document.getElementById('dropdownMenu');
-      if (menu && menu.style.display === 'block' && !menu.contains(event.target) && event.target.className !== 'dropdown-toggle') {
-        menu.style.display = 'none';
-      }
-    });
-  </script>
-</body>
+    </script>
+  </body>
 </html>
