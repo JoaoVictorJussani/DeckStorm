@@ -29,22 +29,63 @@ export default class AuthController {
 
   // Inscription
   async handleRegister({ request, auth, session, response }: HttpContext) {
-    const { username, password } = await request.validateUsing(registerUserValidator)
+    // Use sempre request.all() para pegar dados do body (JSON ou form)
+    const all = await request.all();
+    const username = all.username;
+    const password = all.password;
 
-    const existingUser = await User.findBy('username', username)
-    if (existingUser) {
-      session.flash('error', "Insciption fail, Ce nom d'utilisateur est déjà pris")
-      return response.redirect().back()
+    // Validação mínima
+    if (!username || !password || password.length < 8) {
+      session.flash('error', "Nom d'utilisateur ou mot de passe invalide (min 8 caractères)");
+      if (request.headers().accept?.includes('application/json')) {
+        return response.status(400).json({ message: "Nom d'utilisateur ou mot de passe invalide (min 8 caractères)" });
+      }
+      return response.redirect().back();
     }
 
-    const user = await User.create({
-      username,
-      password,
-    })
+    // Verifica se já existe usuário (case insensitive)
+    const existingUser = await User.query().whereRaw('LOWER(username) = ?', [username.toLowerCase()]).first();
+    if (existingUser) {
+      session.flash('error', "Insciption fail, Ce nom d'utilisateur est déjà pris");
+      if (request.headers().accept?.includes('application/json')) {
+        return response.status(409).json({ message: "Ce nom d'utilisateur est déjà pris" });
+      }
+      return response.redirect().back();
+    }
 
-    await auth.use('web').login(user)
+    // Cria usuário e salva
+    const user = new User();
+    user.username = username;
+    user.password = password;
+    try {
+      await user.save();
+    } catch (err) {
+      console.error('ERRO AO SALVAR USUÁRIO:', err, { username, password });
+      session.flash('error', "Erreur lors de la création de l'utilisateur.");
+      if (request.headers().accept?.includes('application/json')) {
+        return response.status(500).json({ message: "Erreur lors de la création de l'utilisateur." });
+      }
+      return response.redirect().back();
+    }
 
-    return response.redirect().toRoute('home')
+    if (!user || !user.id) {
+      session.flash('error', "Erreur lors de la création de l'utilisateur.");
+      if (request.headers().accept?.includes('application/json')) {
+        return response.status(500).json({ message: "Erreur lors de la création de l'utilisateur." });
+      }
+      return response.redirect().back();
+    }
+
+    // Autentica o usuário imediatamente após criar
+    await auth.use('web').login(user);
+
+    // Retorna JSON se for API/fetch
+    if (request.headers().accept?.includes('application/json')) {
+      return response.status(201).json({ success: true, user: { id: user.id, username: user.username } });
+    }
+
+    // Redireciona para home (Edge) ou home.html (SPA)
+    return response.redirect().toRoute('home');
   }  
 
   // Changement de mot de passe

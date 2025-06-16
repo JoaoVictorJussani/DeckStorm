@@ -5,7 +5,7 @@ const config: CapacitorConfig = {
   appName: 'Deckstorm',
   webDir: 'dist',
   server: {
-    url: "http://192.168.56.1:3333",
+    url: "http://192.168.0.100:3333", // Altere para o IP do seu backend AdonisJS
     cleartext: true
   }
 
