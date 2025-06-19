@@ -1,4 +1,5 @@
 import type { HttpContext } from '@adonisjs/core/http'; // Type pour le contexte HTTP
+import { DateTime } from 'luxon';
 import Deck from '#models/deck'; // Importation du modèle Deck
 import Follow from '#models/follow'
 import User from '#models/user'
@@ -9,7 +10,20 @@ export default class PageController {
   async home({ view, auth }: HttpContext) {
     const user = auth.use('web').user;
 
-    // Get top 4 most liked decks
+    // Get current date in UTC+2
+    const now = DateTime.now().setZone('UTC+2')
+    const seed = now.toFormat('yyyyLLdd') // Use date as seed for random selection
+
+    // Get deck of the day (using date as seed for consistent daily selection)
+    const deckOfTheDay = await Deck.query()
+      .where('visibility', 'public')
+      .preload('cards' as any)
+      .preload('user' as any)
+      .preload('likes' as any)
+      .orderByRaw('RAND(?)', [parseInt(seed)])
+      .first();
+
+    // Get top 10 most liked decks
     const topLikedDecks = await Deck.query()
       .where('visibility', 'public')
       .preload('cards' as any)
@@ -17,15 +31,15 @@ export default class PageController {
       .preload('likes' as any)
       .withCount('likes'  as any)
       .orderBy('likes_count', 'desc')
-      .limit(4);
+      .limit(10);
 
-    // Get top 4 creators by followers count
+    // Get top 5 creators by followers count
     const topCreatorsByFollowers = await User.query()
       .withCount('followers'  as any)
       .orderBy('followers_count', 'desc')
-      .limit(4);
+      .limit(5);
 
-    // Get top 4 creators by deck count
+    // Get top 5 creators by deck count
     const topCreatorsByDecks = await User.query()
       .withCount('decks'  as any, (query) => {
       query.where('visibility', 'public');
@@ -34,13 +48,14 @@ export default class PageController {
       query.where('visibility', 'public');
       })
       .orderBy('decks_count', 'desc')
-      .limit(4);
+      .limit(5);
 
     return view.render('home', { 
       user,
       topLikedDecks,
       topCreatorsByFollowers,
-      topCreatorsByDecks
+      topCreatorsByDecks,
+      deckOfTheDay
     });
   }
 

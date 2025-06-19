@@ -3,110 +3,106 @@
 <head>
   <meta charset="UTF-8" />
   <title>Commencer l'exercice</title>
-    <link rel="shortcut icon" href="/images/icone.ico" type="image/x-icon">
+  <link rel="shortcut icon" href="/images/icone.ico" type="image/x-icon">
   <style>
-    /* Copier ici tout le CSS de home.edge */
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
-
-    /* Style du corps de la page */
     body {
-      background: #fff;
+      background: #f7faff;
       color: #222;
+      min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
-      min-height: 100vh;
+      justify-content: center; /* Ajouté pour centrage vertical */
       font-size: 1rem;
-    }
-    body.theme-light {
-      background: #fff;
-      color: #222;
+      transition: background 0.5s, color 0.5s;
     }
     body.theme-dark {
       background: #0a0c10;
       color: #e0e0e0;
     }
-
-    /* Style pour le titre principal */
+    .main-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 80vh;
+      width: 100%;
+    }
+    .exercise-card {
+      background: #fff;
+      border-radius: 20px;
+      box-shadow: 0 8px 32px rgba(25, 118, 210, 0.12), 0 1.5px 8px rgba(25, 118, 210, 0.06);
+      padding: 2.5rem 2.5rem 2rem 2.5rem;
+      max-width: 480px;
+      width: 100%;
+      margin: 2rem auto 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      transition: background 0.4s, box-shadow 0.4s;
+    }
+    body.theme-dark .exercise-card {
+      background: #181c23;
+      box-shadow: 0 8px 32px rgba(25, 118, 210, 0.18);
+    }
     h1 {
-      font-size: 2.5rem;
-      margin-bottom: 2rem;
+      font-size: 2.2rem;
+      margin-bottom: 2.2rem;
       color: #1976d2;
       font-weight: 700;
       text-align: center;
-      box-shadow: 0 0 15px #1976d2;
+      letter-spacing: -1px;
+      line-height: 1.2;
+      text-shadow: 0 2px 12px #1976d222;
     }
-
-    /* Style pour les boutons */
-    button {
-      background: #1976d2;
-      color: #fff;
-      border: 2px solid #1976d2;
-      padding: 0.8rem 1.5rem;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 1.2rem;
+    .exercise-form label {
+      font-size: 1.15rem;
       font-weight: 600;
-      transition: background 0.3s ease, color 0.3s ease;
-    }
-    button:hover {
-      background: #1565c0;
-      color: #fff;
-    }
-    .abandon-button {
-      background: #fff;
-      color: #ff4d4d;
-      border: 2px solid #ff4d4d;
-      padding: 0.8rem 1.5rem;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 1.2rem;
-      font-weight: 600;
-      transition: background 0.3s ease, color 0.3s ease;
-    }
-    .abandon-button:hover {
-      background: #ff4d4d;
-      color: #fff;
-    }
-    body.theme-dark .abandon-button {
-      background: #23272f;
-      color: #ff4d4d;
-      border-color: #ff4d4d;
-    }
-    body.theme-dark .abandon-button:hover {
-      background: #ff4d4d;
-      color: #fff;
-    }
-
-    .open .dropdown-menu {
-      display: block;
-    }
-
-    /* Ajout d'un espace en haut pour compenser la navbar fixe */
-    .spacer {
-      height: 80px;
-    }
-
-    .card-link {
       color: #1976d2;
-      text-decoration: none;
+      margin-bottom: 0.5rem;
+      display: block;
+      letter-spacing: 0.2px;
+      transition: color 0.3s;
     }
-
-    .card-link:hover {
-      color: #1565c0; 
-      opacity: 0.8;
+    body.theme-dark .exercise-form label {
+      color: #90caf9;
     }
-
-    /* Helpbox styles */
+    .exercise-form select {
+      width: 100%;
+      background: #f2f6fc;
+      color: #1976d2;
+      border: 2px solid #1976d2;
+      padding: 0.9rem 1.2rem;
+      border-radius: 10px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 1.3rem;
+      margin-top: 0.2rem;
+      transition: background 0.3s, color 0.3s, border 0.3s;
+      outline: none;
+    }
+    .exercise-form select:focus {
+      border-color: #1565c0;
+      background: #e3f2fd;
+    }
+    body.theme-dark .exercise-form select {
+      background: #23272f;
+      color: #90caf9;
+      border-color: #1976d2;
+    }
+    body.theme-dark .exercise-form select:focus {
+      background: #181c23;
+      border-color: #90caf9;
+    }
     .helpbox {
       display: inline-block;
-      margin-left: 0.7rem;
+      margin-left: 0.5rem;
       vertical-align: middle;
       position: relative;
     }
@@ -160,92 +156,162 @@
     .helpbox.open .helpbox-content {
       display: block;
     }
+    .exercise-form .form-row {
+      margin-bottom: 1.5rem;
+      display: flex;
+      flex-direction: column;
+    }
+    .exercise-form .form-actions {
+      display: flex;
+      gap: 1.2rem;
+      margin-top: 1.5rem;
+      justify-content: flex-end;
+    }
+    .exercise-form button, .exercise-form .abandon-button {
+      padding: 0.9rem 2.2rem;
+      border-radius: 10px;
+      font-size: 1.15rem;
+      font-weight: 700;
+      cursor: pointer;
+      border: none;
+      box-shadow: 0 2px 8px rgba(25, 118, 210, 0.08);
+      transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+      outline: none;
+    }
+    .exercise-form button[type="submit"] {
+      background: linear-gradient(90deg, #1976d2 60%, #1565c0 100%);
+      color: #fff;
+      border: 2px solid #1976d2;
+    }
+    .exercise-form button[type="submit"]:hover {
+      background: #1565c0;
+      color: #fff;
+      box-shadow: 0 4px 16px rgba(25, 118, 210, 0.18);
+    }
+    .exercise-form .abandon-button {
+      background: #fff;
+      color: #ff4d4d;
+      border: 2px solid #ff4d4d;
+    }
+    .exercise-form .abandon-button:hover {
+      background: #ff4d4d;
+      color: #fff;
+      border-color: #ff4d4d;
+    }
+    body.theme-dark .exercise-form .abandon-button {
+      background: #23272f;
+      color: #ff4d4d;
+      border-color: #ff4d4d;
+    }
+    body.theme-dark .exercise-form .abandon-button:hover {
+      background: #ff4d4d;
+      color: #fff;
+    }
+    .error-message {
+      color: #ff4d4d;
+      background: rgba(255,77,77,0.08);
+      border: 1px solid #ff4d4d;
+      border-radius: 8px;
+      padding: 1rem;
+      margin: 1.5rem 0;
+      text-align: center;
+      font-size: 1.1rem;
+    }
+    @media (max-width: 600px) {
+      .exercise-card {
+        padding: 1.2rem 0.7rem 1.2rem 0.7rem;
+        max-width: 98vw;
+      }
+      h1 {
+        font-size: 1.3rem;
+        padding: 0 0.2rem;
+      }
+      .exercise-form button, .exercise-form .abandon-button {
+        font-size: 1rem;
+        padding: 0.7rem 1.2rem;
+      }
+      .helpbox-content {
+        left: 0;
+        top: 120%;
+        transform: none;
+        min-width: 180px;
+        font-size: 0.97rem;
+      }
+    }
   </style>
 </head>
 <body>
-    @include('components/header')
-    <div class="spacer"></div>
-    <!-- Titre dynamique basé sur le deck -->
-    <h1>Commencer l'exercice pour le deck "{{ deck.title }}"</h1>
-
-    @if(deck && deck.id)
-      <!-- Formulaire pour démarrer l'exercice -->
-      <form action="{{ route('exercise.presentQuestion', { deckId: deck.id, questionIndex: 0 }) }}" method="GET" onsubmit="handleSubmit(this)" style="display: flex; flex-direction: column; align-items: flex-start; gap: 0.5rem; max-width: 400px;">
-        <!-- Champ caché pour enregistrer l'heure de début -->
-        <input type="hidden" name="startTime" id="startTime" />
-        <!-- Champ caché pour initialiser les résultats -->
-        <input type="hidden" name="results" value="[]" />
-
-        <label for="mode-select" style="font-size:1.2rem;">Choisissez un mode :</label>
-        <span class="helpbox">
-          <button type="button" class="helpbox-btn" onclick="toggleHelpbox('mode-helpbox')" aria-label="Aide sur les modes">?</button>
-          <span class="helpbox-content" id="mode-helpbox">
-            <strong>Mode chronométré :</strong> Répondez à toutes les questions le plus vite possible sans faire d'erreus.<br><br>
-            <strong>Mode basique :</strong> Répondez à chaque carte une seule fois, sans contrainte de temps.<br><br>
-            <strong>Mode jusqu'au bout :</strong> Vous devez répondre correctement à toutes les cartes. Les cartes ratées reviennent jusqu'à ce que vous réussissiez tout.
-          </span>
-        </span>
-        <select id="mode-select" name="mode" style="background: #1976d2; color: #fff; border: 2px solid #1976d2; padding: 0.8rem 1.5rem; border-radius: 8px; cursor: pointer; font-size: 1.2rem; font-weight: 600; transition: background 0.3s ease, color 0.3s ease;">
-          <option value="chronometre">Mode chronométré</option>
-          <option value="basique">Mode basique</option>
-          <option value="jusquaubout">Mode jusqu'au bout</option>
-        </select>
-
-        <label for="direction-select" style="font-size:1.2rem;">Sens de l'exercice :</label>
-        <select id="direction-select" name="direction" style="background: #1976d2; color: #fff; border: 2px solid #1976d2; padding: 0.8rem 1.5rem; border-radius: 8px; cursor: pointer; font-size: 1.2rem; font-weight: 600; transition: background 0.3s ease, color 0.3s ease;">
-          <option value="question">Question → Réponse</option>
-          <option value="answer">Réponse → Question</option>
-        </select>
-
-        @if(typeof retryCardIds !== 'undefined' && retryCardIds)
-          @each(id in retryCardIds)
-            <input type="hidden" name="retryCardIds" value="{{ id }}" />
-          @endeach
-        @endif
-        <input type="hidden" name="attempts" value="{{ attempts || 1 }}" />
-        <!-- Boutons pour soumettre ou abandonner -->
-        <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
-          <button type="submit">C'est parti</button>
-          <button type="button" class="abandon-button" onclick="window.location.href='{{ route('decks.show', { id: deck.id }) }}'">Abandonner</button>
-        </div>
-      </form>
-    @else
-      <p style="color:#ff4d4d;">Erreur : deck introuvable ou invalide.</p>
-    @endif
-
-    <script>
-      // Fonction pour gérer la soumission du formulaire
-      function handleSubmit(form) {
-        const mode = form.mode.value;
-        if(mode === 'chronometre'){
-          document.getElementById('startTime').value = Date.now();
-        }
-        return true;
+  @include('components/header')
+  <div class="main-wrapper">
+    <div class="exercise-card">
+      <h1>Commencer l'exercice pour le deck « {{ deck.title }} »</h1>
+      @if(deck && deck.id)
+        <form class="exercise-form" action="{{ route('exercise.presentQuestion', { deckId: deck.id, questionIndex: 0 }) }}" method="GET" onsubmit="handleSubmit(this)">
+          <input type="hidden" name="startTime" id="startTime" />
+          <input type="hidden" name="results" value="[]" />
+          <div class="form-row">
+            <label for="mode-select">
+              Choisissez un mode :
+              <span class="helpbox">
+                <button type="button" class="helpbox-btn" onclick="toggleHelpbox('mode-helpbox')" aria-label="Aide sur les modes">?</button>
+                <span class="helpbox-content" id="mode-helpbox">
+                  <strong>Mode chronométré :</strong> Répondez à toutes les questions le plus vite possible sans faire d'erreurs.<br><br>
+                  <strong>Mode basique :</strong> Répondez à chaque carte une seule fois, sans contrainte de temps.<br><br>
+                  <strong>Mode jusqu'au bout :</strong> Vous devez répondre correctement à toutes les cartes. Les cartes ratées reviennent jusqu'à ce que vous réussissiez tout.
+                </span>
+              </span>
+            </label>
+            <select id="mode-select" name="mode" required>
+              <option value="chronometre">Mode chronométré</option>
+              <option value="basique">Mode basique</option>
+              <option value="jusquaubout">Mode jusqu'au bout</option>
+            </select>
+          </div>
+          <div class="form-row">
+            <label for="direction-select">Sens de l'exercice :</label>
+            <select id="direction-select" name="direction" required>
+              <option value="question">Question → Réponse</option>
+              <option value="answer">Réponse → Question</option>
+            </select>
+          </div>
+          @if(typeof retryCardIds !== 'undefined' && retryCardIds)
+            @each(id in retryCardIds)
+              <input type="hidden" name="retryCardIds" value="{{ id }}" />
+            @endeach
+          @endif
+          <input type="hidden" name="attempts" value="{{ attempts || 1 }}" />
+          <div class="form-actions">
+            <button type="submit">C'est parti</button>
+            <button type="button" class="abandon-button" onclick="window.location.href='{{ route('decks.show', { id: deck.id }) }}'">Abandonner</button>
+          </div>
+        </form>
+      @else
+        <div class="error-message">Erreur : deck introuvable ou invalide.</div>
+      @endif
+    </div>
+  </div>
+  <script>
+    function handleSubmit(form) {
+      const mode = form.mode.value;
+      if(mode === 'chronometre'){
+        document.getElementById('startTime').value = Date.now();
       }
-      // Dropdown JS
-      function toggleDropdownMenu() {
-        const menu = document.getElementById('dropdownMenu');
-        menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
-      }
-      // Helpbox logic
-      function toggleHelpbox(id) {
-        document.querySelectorAll('.helpbox-content').forEach(function(box) {
-          if (box.id !== id) box.parentElement.classList.remove('open');
-        });
-        var el = document.getElementById(id);
-        if (el) {
-          el.parentElement.classList.toggle('open');
-        }
-      }
-      document.addEventListener('click', function(event) {
-        document.querySelectorAll('.helpbox').forEach(function(box) {
-          if (!box.contains(event.target)) box.classList.remove('open');
-        });
-        const menu = document.getElementById('dropdownMenu');
-        if (menu && menu.style.display === 'block' && !menu.contains(event.target) && event.target.className !== 'dropdown-toggle') {
-          menu.style.display = 'none';
-        }
+      return true;
+    }
+    function toggleHelpbox(id) {
+      document.querySelectorAll('.helpbox-content').forEach(function(box) {
+        if (box.id !== id) box.parentElement.classList.remove('open');
       });
-    </script>
-  </body>
+      var el = document.getElementById(id);
+      if (el) {
+        el.parentElement.classList.toggle('open');
+      }
+    }
+    document.addEventListener('click', function(event) {
+      document.querySelectorAll('.helpbox').forEach(function(box) {
+        if (!box.contains(event.target)) box.classList.remove('open');
+      });
+    });
+  </script>
+</body>
 </html>

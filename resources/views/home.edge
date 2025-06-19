@@ -36,16 +36,17 @@
     }
 
     body {
-      background: #fff;
+      background: #f7faff;
       color: #222;
       min-height: 100vh;
       font-weight: 400;
       line-height: 1.6;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
+      transition: background 0.4s, color 0.4s;
     }
     body.theme-light {
-      background: #fff;
+      background: #f7faff;
       color: #222;
     }
     body.theme-dark {
@@ -98,7 +99,6 @@
       margin-right: auto;
     }
 
-    /* Styles pour la barre de recherche et le switch */
     .search-container {
       max-width: 900px;
       margin: 0 auto 2rem auto;
@@ -140,7 +140,6 @@
       font-style: italic;
     }
 
-    /* Styles du switch/slider */
     .search-switch {
       background: rgba(245,245,245,0.85);
       border: 1.5px solid rgba(25, 118, 210, 0.18);
@@ -199,7 +198,6 @@
       background: #1976d222;
     }
 
-    /* Styles pour le switch de vue */
     .view-switch {
       background: rgba(245,245,245,0.85);
       border: 1.5px solid rgba(25, 118, 210, 0.18);
@@ -275,10 +273,9 @@
       cursor: pointer;
       min-width: 0;
       word-break: break-word;
-      position: relative; /* já existe */
+      position: relative;
     }
 
-    /* Atualize o like-container para o canto inferior direito */
     .like-container {
       position: absolute;
       bottom: 1rem;
@@ -290,14 +287,13 @@
       padding: 0.3rem 0.5rem;
       border-radius: 20px;
       backdrop-filter: blur(4px);
-      pointer-events: auto; /* Garante que sempre pode clicar */
-      z-index: 2;           /* Garante que fique acima do conteúdo da box */
+      pointer-events: auto;
+      z-index: 2;
     }
     body.theme-dark .like-container {
       background: rgba(17,19,23,0.8);
     }
 
-    /* Update like button styles */
     .like-btn {
       background: none;
       border: none;
@@ -312,11 +308,11 @@
 
     .like-btn span {
       transition: color 0.3s;
-      color: #ccc;
+      color: #222222;
     }
 
-    .like-btn.liked span {
-      color: #ff4d4d;
+    body.theme-dark .like-btn span {
+      color: #e0e0e0;
     }
 
     .like-btn:hover {
@@ -380,7 +376,6 @@
       letter-spacing: 0.5px;
     }
 
-    /* Dropdown styles */
     .dropdown {
       position: relative;
       display: inline-block;
@@ -416,7 +411,6 @@
       display: block;
     }
 
-    /* Styles pour le bouton d'ajout */
     .add-deck-btn {
       position: fixed;
       bottom: 2rem;
@@ -447,7 +441,6 @@
       margin-top: -2px;
     }
 
-    /* Table/list mode */
     #decksListContainer table {
       width: 100%;
       max-width: 1200px;
@@ -495,12 +488,152 @@
       outline: none;
     }
 
-    /* Bouton de vue */
     #toggleViewBtn {
       display: none;
     }
 
-    /* Responsive */
+    .home-layout {
+      display: flex;
+      flex-direction: row;
+      gap: 2.5rem;
+      max-width: 1500px;
+      margin: 0 auto;
+      width: 100%;
+    }
+    .sidebar {
+      flex: 0 0 340px;
+      min-width: 260px;
+      max-width: 380px;
+      display: flex;
+      flex-direction: column;
+      gap: 2.5rem;
+    }
+    .main-section {
+      flex: 1 1 0;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 2.5rem;
+    }
+    .top-section {
+      margin-bottom: 0;
+    }
+    .top-creators-section {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
+    .top-creators-title {
+      color: #1976d2;
+      font-size: 1.3rem;
+      margin-bottom: 1rem;
+      text-align: left;
+      font-weight: bold;
+      letter-spacing: 0.5px;
+    }
+    .top-creators-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.7rem;
+    }
+    .creator-item {
+      background: rgba(25, 118, 210, 0.07);
+      border-radius: 8px;
+      padding: 0.8rem 1rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      border: 1px solid rgba(25, 118, 210, 0.10);
+      cursor: pointer;
+      transition: background 0.2s;
+      position: relative;
+    }
+    .creator-item:hover {
+      background: #e3f2fd;
+    }
+    .creator-info {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+    }
+    .creator-username {
+      color: #1976d2;
+      font-weight: 600;
+      font-size: 1.08rem;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .creator-username:hover, .creator-username:focus {
+      color: #1565c0;
+      outline: none;
+    }
+    .creator-stat {
+      color: #555;
+      font-size: 0.97rem;
+      font-weight: 400;
+    }
+    .top-liked-title {
+      color: #1976d2;
+      font-size: 1.8rem;
+      margin-bottom: 1.5rem;
+      text-align: left;
+      font-weight: bold;
+    }
+    .top-liked-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.5rem;
+    }
+    @media (max-width: 1100px) {
+      .home-layout {
+        flex-direction: column;
+        gap: 1.5rem;
+      }
+      .sidebar {
+        flex-direction: row;
+        gap: 1.5rem;
+        max-width: 100%;
+        width: 100%;
+      }
+      .main-section {
+        gap: 1.5rem;
+      }
+    }
+    @media (max-width: 900px) {
+      .sidebar {
+        flex-direction: column;
+        gap: 1.2rem;
+        min-width: 0;
+        max-width: 100%;
+      }
+      .main-section {
+        gap: 1.2rem;
+      }
+      .top-liked-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+      }
+    }
+    @media (max-width: 600px) {
+      .home-layout {
+        flex-direction: column;
+        gap: 0.7rem;
+      }
+      .sidebar {
+        flex-direction: column;
+        gap: 0.7rem;
+        min-width: 0;
+        max-width: 100%;
+      }
+      .main-section {
+        gap: 0.7rem;
+      }
+      .top-liked-title {
+        font-size: 1.2rem;
+        margin-bottom: 0.7rem;
+      }
+    }
     @media (max-width: 900px) {
       .main-content {
         padding: 1rem;
@@ -597,9 +730,9 @@
       border-radius: 8px;
       border: 1px solid rgba(25, 118, 210, 0.10);
       transition: transform 0.2s;
-      position: relative; /* Adicionado para posicionamento absoluto funcionar */
-      overflow: visible;  /* Garante que o botão não seja cortado */
-      z-index: 1;         /* Garante que fique acima de outros elementos */
+      position: relative;
+      overflow: visible;
+      z-index: 1;
     }
 
     .top-item:hover {
@@ -615,57 +748,97 @@
 <body>
   @include('components/header')
 
-  <div class="main-content">
-    <!-- Top Liked Decks -->
-    <div class="top-section">
-      <h2 class="section-title">Decks les plus likés</h2>
-      <div class="top-grid">
-        @each(deck in topLikedDecks)
-          <div class="top-item" onclick="window.location.href='/deck/{{ deck.id }}'">
-            <div class="deck-title">{{ deck.title }}</div>
-            <div class="deck-info">
-              <a href="/public-account/{{ deck.user.id }}" class="deck-author" onclick="event.stopPropagation();">{{ deck.user.username }}</a>
-            </div>
-            <div class="like-container" onclick="event.stopPropagation();">
-              <button 
-                class="like-btn {{ deck.likes?.some(like => like.user_id === user?.id) ? 'liked' : '' }}" 
-                style="font-size:1.3rem; border:none; background:none; cursor:pointer;"
-                onclick="toggleLike({{ deck.id }}, this, 'top')"
-                title="{{ deck.likes?.some(like => like.user_id === user?.id) ? 'Retirer le like' : 'Liker ce deck' }}"
-                >
-                <span class="heart-emoji">{{ deck.likes?.some(like => like.user_id === user?.id) ? '❤️' : '🤍' }}</span>
-                <span class="like-count">{{ deck.$extras.likes_count }}</span>
-              </button>
+  <div class="main-content" style="margin-top: 60px;">
+    <div class="home-layout">
+      <!-- Sidebar: Top Créateurs -->
+      <aside class="sidebar">
+        <div class="top-section top-creators-section">
+          <div>
+            <div class="top-creators-title">Top créateurs (abonnés)</div>
+            <div class="top-creators-list">
+              @each(creator in topCreatorsByFollowers)
+                <div class="creator-item" onclick="window.location.href='/public-account/{{ creator.id }}'" title="Voir le profil de {{ creator.username }}">
+                  <!-- Avatar supprimé -->
+                  <div class="creator-info">
+                    <a href="/public-account/{{ creator.id }}" class="creator-username" onclick="event.stopPropagation();">{{ creator.username }}</a>
+                    <div class="creator-stat" title="Nombre total d'abonnés">👥 {{ creator.$extras.followers_count }} abonnés</div>
+                  </div>
+                </div>
+              @end
             </div>
           </div>
-        @end
-      </div>
-    </div>
+          <div>
+            <div class="top-creators-title">Top créateurs (decks)</div>
+            <div class="top-creators-list">
+              @each(creator in topCreatorsByDecks)
+                <div class="creator-item" onclick="window.location.href='/public-account/{{ creator.id }}'" title="Voir le profil de {{ creator.username }}">
+                  <!-- Avatar supprimé -->
+                  <div class="creator-info">
+                    <a href="/public-account/{{ creator.id }}" class="creator-username" onclick="event.stopPropagation();">{{ creator.username }}</a>
+                    <div class="creator-stat" title="Nombre total de decks publics">📚 {{ creator.$extras.decks_count }} decks</div>
+                  </div>
+                </div>
+              @end
+            </div>
+          </div>
+        </div>
+      </aside>
 
-    <!-- Top Creators by Followers -->
-    <div class="top-section">
-      <h2 class="section-title">Créateurs les plus suivis</h2>
-      <div class="top-grid">
-        @each(creator in topCreatorsByFollowers)
-          <div class="top-item" onclick="window.location.href='/public-account/{{ creator.id }}'" title="Voir le profil de {{ creator.username }}">
-            <div class="deck-title">{{ creator.username }}</div>
-            <div class="creator-stat" title="Nombre total d'abonnés">👥 {{ creator.$extras.followers_count }} abonnés</div>
+      <!-- Main: Decks les plus likés -->
+      <main class="main-section">
+        <!-- Deck du jour -->
+        @if(deckOfTheDay)
+          <div class="top-section">
+            <h2 class="top-liked-title">Deck du jour</h2>
+            <div class="deck-of-the-day">
+              <div class="top-item" onclick="window.location.href='/deck/{{ deckOfTheDay.id }}'">
+                <div class="deck-title">{{ deckOfTheDay.title }}</div>
+                <div class="deck-description">{{ deckOfTheDay.description }}</div>
+                <div class="deck-info">
+                  <a href="/public-account/{{ deckOfTheDay.user.id }}" class="deck-author" onclick="event.stopPropagation();">{{ deckOfTheDay.user.username }}</a>
+                  <span>{{ deckOfTheDay.cards.length }} cartes</span>
+                </div>
+                <div class="like-container" onclick="event.stopPropagation();">
+                  <button 
+                    class="like-btn {{ deckOfTheDay.likes?.some(like => like.user_id === user?.id) ? 'liked' : '' }}" 
+                    style="font-size:1.3rem; border:none; background:none; cursor:pointer;"
+                    onclick="toggleLike({{ deckOfTheDay.id }}, this, 'daily')"
+                    title="{{ deckOfTheDay.likes?.some(like => like.user_id === user?.id) ? 'Retirer le like' : 'Liker ce deck' }}"
+                  >
+                    <span class="heart-emoji">{{ deckOfTheDay.likes?.some(like => like.user_id === user?.id) ? '❤️' : '🤍' }}</span>
+                    <span class="like-count">{{ deckOfTheDay.likes?.length }}</span>
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
         @end
-      </div>
-    </div>
 
-    <!-- Top Creators by Decks -->
-    <div class="top-section">
-      <h2 class="section-title">Créateurs avec le plus de decks</h2>
-      <div class="top-grid">
-        @each(creator in topCreatorsByDecks)
-          <div class="top-item" onclick="window.location.href='/public-account/{{ creator.id }}'" title="Voir le profil de {{ creator.username }}">
-            <div class="deck-title">{{ creator.username }}</div>
-            <div class="creator-stat" title="Nombre total de decks publics">📚 {{ creator.$extras.decks_count }} decks</div>
+        <div class="top-section">
+          <h2 class="top-liked-title">Decks les plus likés</h2>
+          <div class="top-liked-grid">
+            @each(deck in topLikedDecks)
+              <div class="top-item" onclick="window.location.href='/deck/{{ deck.id }}'">
+                <div class="deck-title">{{ deck.title }}</div>
+                <div class="deck-info">
+                  <a href="/public-account/{{ deck.user.id }}" class="deck-author" onclick="event.stopPropagation();">{{ deck.user.username }}</a>
+                </div>
+                <div class="like-container" onclick="event.stopPropagation();">
+                  <button 
+                    class="like-btn {{ deck.likes?.some(like => like.user_id === user?.id) ? 'liked' : '' }}" 
+                    style="font-size:1.3rem; border:none; background:none; cursor:pointer;"
+                    onclick="toggleLike({{ deck.id }}, this, 'top')"
+                    title="{{ deck.likes?.some(like => like.user_id === user?.id) ? 'Retirer le like' : 'Liker ce deck' }}"
+                    >
+                    <span class="heart-emoji">{{ deck.likes?.some(like => like.user_id === user?.id) ? '❤️' : '🤍' }}</span>
+                    <span class="like-count">{{ deck.$extras.likes_count }}</span>
+                  </button>
+                </div>
+              </div>
+            @end
           </div>
-        @end
-      </div>
+        </div>
+      </main>
     </div>
   </div>
 
