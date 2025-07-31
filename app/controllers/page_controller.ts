@@ -4,11 +4,17 @@ import Deck from '#models/deck'; // Importation du modèle Deck
 import Follow from '#models/follow'
 import User from '#models/user'
 import Like from '#models/like'
+import Notification from '#models/notification'
+import UserStats from '#models/user_stats'
 
 export default class PageController {
   // Méthode pour afficher la page d'accueil
   async home({ view, auth }: HttpContext) {
-    const user = auth.use('web').user;
+    const user = auth.user; // Corrigido para garantir que é o usuário autenticado
+    let notifications: Notification[] = []
+    if (user) {
+      notifications = await Notification.query().where('user_id', user.id).where('read', false).orderBy('created_at', 'desc').limit(10)
+    }
 
     // Get current date in UTC+2
     const now = DateTime.now().setZone('UTC+2')
@@ -55,13 +61,18 @@ export default class PageController {
       topLikedDecks,
       topCreatorsByFollowers,
       topCreatorsByDecks,
-      deckOfTheDay
+      deckOfTheDay,
+      notifications
     });
   }
 
   // Méthode pour rechercher des decks publics
   async searchPublicDecks({ request, view, auth }: HttpContext) {
-    const user = auth.use('web').user;
+    const user = auth.user; // Corrigido
+    let notifications: Notification[] = []
+    if (user) {
+      notifications = await Notification.query().where('user_id', user.id).where('read', false).orderBy('created_at', 'desc').limit(10)
+    }
     const query = request.input('q', '').trim();
 
     // Recherche des decks publics correspondant à la requête
@@ -93,17 +104,17 @@ export default class PageController {
     return view.render('result_search', { 
       user,
       publicDecks: decksWithLikeStatus,
-      query 
+      query,
+      notifications
     });
   }
 
   // Ajout : Méthode pour la page "Mon compte" avec followersList/followingList
   async account({ params, view, auth }: HttpContext) {
-    // Si l'utilisateur connecté n'est pas celui demandé, refuse l'accès
     if (!auth.user || auth.user.id !== Number(params.id)) {
       return view.render('./pages/errors/not_found');
     }
-    const user = auth.user;
+    const user = auth.user; // Corrigido
     const userDecks = await Deck.query()
       .where('user_id', user.id)
       .preload('cards')
@@ -119,6 +130,15 @@ export default class PageController {
     // Extraction des utilisateurs
     const followersList = followers.map(f => f.follower);
     const followingList = following.map(f => f.following);
+    const userStats = await UserStats.findBy('user_id', user.id)
+    let notifications: Notification[] = []
+    if (auth.user) {
+      notifications = await Notification.query()
+        .where('user_id', auth.user.id)
+        .where('read', false)
+        .orderBy('created_at', 'desc')
+        .limit(10)
+    }
     return view.render('account', {
       user,
       userDecks,
@@ -127,6 +147,8 @@ export default class PageController {
       followingCount: following.length,
       followersList,
       followingList,
+      userStats,
+      notifications
     });
   }
 
@@ -156,6 +178,14 @@ export default class PageController {
         .andWhere('following_id', user.id)
         .first());
     }
+    let notifications: Notification[] = []
+    if (auth.user) {
+      notifications = await Notification.query()
+        .where('user_id', auth.user.id)
+        .where('read', false)
+        .orderBy('created_at', 'desc')
+        .limit(10)
+    }
     return view.render('public_account', {
       user,
       publicDecks,
@@ -165,6 +195,7 @@ export default class PageController {
       isFollowing,
       followersList,
       followingList,
+      notifications
     });
   }
 
@@ -178,18 +209,27 @@ export default class PageController {
     if (!deck) {
       return view.render('./pages/errors/not_found')
     }
-    const user = auth.user
+    const user = auth.user // Corrigido
     interface LikeType {
       user_id: number;
       [key: string]: any;
     }
     const hasLiked: boolean = !!deck.likes?.find((like: LikeType) => like.user_id === user?.id);
     const likesCount = deck.likes?.length || 0
+    let notifications: Notification[] = []
+    if (auth.user) {
+      notifications = await Notification.query()
+        .where('user_id', auth.user.id)
+        .where('read', false)
+        .orderBy('created_at', 'desc')
+        .limit(10)
+    }
     return view.render('show_deck', {
       deck,
       user,
       hasLiked,
       likesCount,
+      notifications
     })
   }
 }

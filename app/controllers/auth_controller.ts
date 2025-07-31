@@ -8,12 +8,30 @@ export default class AuthController {
   // Connexion
   async handleLogin({ request, auth, session, response }: HttpContext) {
     const { username, password } = await request.validateUsing(loginUserValidator)
-
     const user = await User.verifyCredentials(username, password)
-
     await auth.use('web').login(user)
-
     session.flash('success', "L'utilisateur s'est connecté avec succès")
+
+    // Verifica se há convite não lido
+    const Notification = (await import('#models/notification')).default
+    const inviteNotif = await Notification.query()
+      .where('user_id', user.id)
+      .where('type', 'invite')
+      .where('read', false)
+      .orderBy('created_at', 'desc')
+      .first()
+    if (inviteNotif) {
+      // Extrai deckId do texto da notificação
+      const match = inviteNotif.message.match(/\(ID:(\d+)\)/)
+      const deckId = match ? match[1] : null
+      session.flash('invite_popup', {
+        notifId: inviteNotif.id,
+        deckId,
+        message: inviteNotif.message,
+        inviter: inviteNotif.message.split('«')[1]?.split('»')[0] || '',
+        deckTitle: inviteNotif.message.split('«')[2]?.split('»')[0] || '',
+      })
+    }
 
     return response.redirect().toRoute('home')
   }

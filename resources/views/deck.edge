@@ -164,7 +164,15 @@
       cursor: pointer;
     }
     body.theme-dark select {
-      background-image: url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M5 8L10 13L15 8' stroke='%2390caf9' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      /* Setinha de volta, mas menos chamativa */
+      background-image: url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M5 8L10 13L15 8' stroke='%235c6a7a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 1.2rem center;
+      background-size: 1.2em;
+      background-color: #23272f;
+      color: #90caf9;
+      border-color: #1976d2;
+      box-shadow: 0 2px 8px rgba(25, 118, 210, 0.13);
     }
     .submit-button {
       background: linear-gradient(90deg, #1976d2 60%, #1565c0 100%);
@@ -333,6 +341,7 @@
         <select id="visibility" name="visibility" required>
           <option value="private" {{ flashMessages.get('old.visibility', 'private') === 'private' ? 'selected' : '' }}>Privé</option>
           <option value="public" {{ flashMessages.get('old.visibility', 'private') === 'public' ? 'selected' : '' }}>Public</option>
+          <option value="restricted" {{ flashMessages.get('old.visibility', 'private') === 'restricted' ? 'selected' : '' }}>Restreint</option>
         </select>
 
         <button type="submit" class="submit-button">Créer</button>

@@ -1,6 +1,7 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import Deck from '#models/deck'
 import type Card from '#models/card'
+import UserStats from '#models/user_stats'
 
 export default class ExerciseController {
   async start({ params, view, request, auth }: HttpContext) {
@@ -114,6 +115,26 @@ export default class ExerciseController {
         direction
       });
     }
+
+    // --- MISE À JOUR DES STATISTIQUES UTILISATEUR ---
+    if (auth.user) {
+      const userId = auth.user.id;
+      let userStats = await UserStats.findBy('user_id', userId);
+      if (!userStats) {
+        userStats = new UserStats();
+        userStats.user_id = userId;
+        userStats.decks_studied = 0;
+        userStats.correct_answers = 0;
+        userStats.wrong_answers = 0;
+        userStats.total_study_time = 0;
+      }
+      userStats.decks_studied += 1;
+      userStats.correct_answers += results.length;
+      userStats.wrong_answers += incorrectCards.length;
+      userStats.total_study_time += isNaN(elapsedTime) ? 0 : elapsedTime;
+      await userStats.save();
+    }
+    // --- FIN MISE À JOUR DES STATISTIQUES ---
 
     return view.render('finish_with_time', {
       deck,

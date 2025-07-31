@@ -13,7 +13,9 @@ export default class Card extends BaseModel {
   declare answer: string; // Réponse de la carte
 
   @column({ columnName: 'deck_id' })
-  declare deckId: number; // Identifiant du deck auquel appartient la carte
+  declare deck_id: number; // Identifiant du deck auquel appartient la carte
 
-  
+  // Ajout d'un alias deckId pour la relation HasMany attendue par AdonisJS
+  @column({ columnName: 'deck_id' })
+  declare deckId: number;
 }

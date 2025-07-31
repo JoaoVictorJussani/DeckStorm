@@ -796,7 +796,6 @@
                 <div class="deck-description">{{ deckOfTheDay.description }}</div>
                 <div class="deck-info">
                   <a href="/public-account/{{ deckOfTheDay.user.id }}" class="deck-author" onclick="event.stopPropagation();">{{ deckOfTheDay.user.username }}</a>
-                  <span>{{ deckOfTheDay.cards.length }} cartes</span>
                 </div>
                 <div class="like-container" onclick="event.stopPropagation();">
                   <button 
@@ -845,11 +844,9 @@
   <!-- Campo CSRF escondido para uso no JS -->
   <input type="hidden" id="csrfToken" value="{{ csrfField() | safe }}" style="display:none;" />
 
-
   <a href="{{ route('decks.create') }}" class="add-deck-btn" title="Créer un nouveau deck">
     <span>+</span>
   </a>
-
 
   <script>
     async function toggleLike(deckId, button, context) {
@@ -893,5 +890,6 @@
       }
     }
   </script>
+
 </body>
 </html>

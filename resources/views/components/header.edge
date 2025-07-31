@@ -329,6 +329,50 @@
             title="Afficher les astuces d'utilisation">
       💡
     </button>
+    <!-- Notificações -->
+    <div style="position:relative;">
+      <button id="notif-bell" 
+              style="color: #1976d2; background: none; border: none; cursor: pointer; font-size: 1.8rem; padding: 0; position:relative;"
+              onclick="toggleNotifDropdown()" 
+              title="Notifications">
+        🔔
+        <span id="notif-dot" style="display:none;position:absolute;top:0;right:0;width:12px;height:12px;background:#ff4d4d;border-radius:50%;"></span>
+      </button>
+      <div id="notif-dropdown" style="display:none;position:absolute;right:0;top:40px;min-width:300px;max-width:400px;background:#fff;border:1px solid #1976d2;border-radius:10px;box-shadow:0 4px 20px rgba(25,118,210,0.10);z-index:999;">
+        <div style="padding:1rem;">
+          <b>Notifications</b>
+          <ul style="list-style:none;padding:0;margin:0;max-height:350px;overflow-y:auto;">
+            @if(notifications?.length)
+              @each(n in notifications)
+                <li 
+                  id="notif-li-{{ n.id }}"
+                  data-notif-id="{{ n.id }}"
+                  style="padding:0.5rem 0;border-bottom:1px solid #eee; background:#fff;"
+                >
+                  <div>{{ n.message }}</div>
+                  <div style="font-size:0.85em;color:#888;margin-top:2px;">
+                    {{ n.created_at?.toRelative ? n.created_at.toRelative() : n.created_at }}
+                  </div>
+                  @if(n.type === 'invite')
+                    @set(deckId = n.message.match(/\(ID:(\d+)\)/) ? n.message.match(/\(ID:(\d+)\)/)[1] : '')
+                    <form action="/deck/{{ deckId }}/accept-invite" method="POST" style="display:inline;">
+                      {{ csrfField() }}
+                      <button type="submit" style="margin-right:0.5rem;">Accepter</button>
+                    </form>
+                    <form action="/deck/{{ deckId }}/refuse-invite" method="POST" style="display:inline;">
+                      {{ csrfField() }}
+                      <button type="submit">Refuser</button>
+                    </form>
+                  @endif
+                </li>
+              @endeach
+            @else
+              <li style="color:#888;">Aucune notifications.</li>
+            @endif
+          </ul>
+        </div>
+      </div>
+    </div>
     <!-- Remplacez l'affichage du nom par celui de l'utilisateur connecté -->
     @if(auth?.user)
       Bienvenue {{ auth.user.username }}
@@ -375,7 +419,7 @@
   }
   document.addEventListener('click', function(event) {
     const dropdown = document.getElementById('header-userDropdown');
-    if (!dropdown.contains(event.target)) {
+    if (dropdown && !dropdown.contains(event.target)) {
       dropdown.classList.remove('open');
     }
     // Fermer la box idée si clic en dehors
@@ -383,6 +427,17 @@
     const ideaBtn = document.getElementById('idea-btn');
     if (ideaBox && ideaBox.style.display === 'block' && !ideaBox.contains(event.target) && event.target !== ideaBtn) {
       ideaBox.style.display = 'none';
+    }
+    // Fermer dropdown de notifications si clic en dehors (mais PAS si clic sur la cloche ou le menu)
+    const notifDropdown = document.getElementById('notif-dropdown');
+    const notifBell = document.getElementById('notif-bell');
+    if (
+      notifDropdown &&
+      notifDropdown.style.display === 'block' &&
+      !notifDropdown.contains(event.target) &&
+      event.target !== notifBell
+    ) {
+      notifDropdown.style.display = 'none';
     }
   });
 
@@ -435,5 +490,64 @@
       // Garante que o switch está correto conforme o fundo
       input.checked = document.body.classList.contains('theme-dark');
     }
+
+    // Affichage du dot selon notifications et sessionStorage
+    const dot = document.getElementById('notif-dot');
+    const notificationsCount = {{ notifications?.length || 0 }};
+    if (dot) {
+      if (notificationsCount > 0 && !sessionStorage.getItem('notifDotHidden')) {
+        dot.style.display = 'block';
+      } else {
+        dot.style.display = 'none';
+      }
+      if (notificationsCount === 0) {
+        sessionStorage.removeItem('notifDotHidden');
+      }
+    }
   });
+
+  function colorNotifLis() {
+    // Coloration des notifications jamais vues en bleu clair
+    let seenIds = [];
+    try {
+      seenIds = JSON.parse(localStorage.getItem('seenNotifIds') || '[]');
+    } catch {}
+    const notifLis = document.querySelectorAll('#notif-dropdown li[data-notif-id]');
+    notifLis.forEach(li => {
+      const id = parseInt(li.getAttribute('data-notif-id'));
+      if (!seenIds.includes(id)) {
+        li.style.background = '#e3f2fd';
+      } else {
+        li.style.background = '#fff';
+      }
+    });
+  }
+
+  function toggleNotifDropdown() {
+    const dd = document.getElementById('notif-dropdown');
+    const isOpen = dd.style.display === 'block';
+    dd.style.display = isOpen ? 'none' : 'block';
+    if (!isOpen) {
+      // Affiche le menu, applique la coloration
+      colorNotifLis();
+      // Retire le point rouge après ouverture et marque comme "vu" dans sessionStorage
+      const dot = document.getElementById('notif-dot');
+      if (dot) {
+        dot.style.display = 'none';
+        sessionStorage.setItem('notifDotHidden', '1');
+      }
+      // Marquer toutes les notifications affichées comme "vues" dans localStorage
+      const notifLis = dd.querySelectorAll('li[data-notif-id]');
+      let seenIds = JSON.parse(localStorage.getItem('seenNotifIds') || '[]');
+      notifLis.forEach(li => {
+        const id = parseInt(li.getAttribute('data-notif-id'));
+        if (!seenIds.includes(id)) seenIds.push(id);
+      });
+      localStorage.setItem('seenNotifIds', JSON.stringify(seenIds));
+      // Mettre à jour le fond des notifications
+      notifLis.forEach(li => {
+        li.style.background = '#fff';
+      });
+    }
+  }
 </script>

@@ -40,14 +40,43 @@
       padding: 2rem;
       width: 100%;
       max-width: 1400px;
-      display: grid;
-      grid-template-columns: minmax(300px, 1fr) minmax(600px, 2fr);
-      grid-template-areas: 
-        "profile decks"
-        "liked liked";
+      display: flex;
+      flex-direction: row;
       gap: 2rem;
+      align-items: flex-start;
+    }
+    .left-column {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+      min-width: 320px;
+      max-width: 420px;
+      flex: 1 1 0;
+    }
+    .right-columns {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+      flex: 2 1 0;
+      width: 100%;
+    }
+    .decks-row {
+      display: flex;
+      flex-direction: column; /* était row */
+      gap: 2rem;
+      width: 100%;
+    }
+    .profile-stats-wrapper {
+      display: flex;
+      flex-direction: row;
+      gap: 2rem;
+      width: 100%;
+      align-items: flex-start;
     }
     .profile-section {
+      flex: 1 1 0;
+      min-width: 320px;
+      max-width: 420px;
       background: var(--card-bg, #fff);
       border: none;
       border-radius: 24px;
@@ -55,8 +84,8 @@
       box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
       backdrop-filter: blur(10px);
       transition: all 0.3s ease;
-      grid-area: profile;
       position: relative;
+      margin-bottom: 0;
     }
     body.theme-dark .profile-section {
       background: #181c23;
@@ -225,7 +254,44 @@
       background: rgba(255, 77, 77, 0.15);
       color: #ff6b6b;
     }
+    .stats-section {
+      flex: 1 1 0;
+      min-width: 320px;
+      max-width: 420px;
+      background: var(--card-bg, #fff);
+      border: none;
+      border-radius: 24px;
+      padding: 2.5rem 2rem;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+      margin-top: 0;
+      margin-bottom: 0;
+      transition: all 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      justify-content: flex-start;
+    }
+    body.theme-dark .stats-section {
+      background: #181c23;
+      border-color: #1976d2;
+      box-shadow: 0 4px 20px rgba(25, 118, 210, 0.08);
+    }
+    .stats-section h3 {
+      color: #1976d2;
+      font-size: 1.3rem;
+      margin-bottom: 1.2rem;
+      font-weight: 600;
+      letter-spacing: -0.5px;
+      text-align: left;
+    }
+    .stats-container {
+      margin: 0;
+      max-width: 100%;
+      padding: 0;
+    }
     .decks-section {
+      flex: 1 1 0;
+      margin-top: 0;
       background: var(--card-bg, #fff);
       border: none;
       border-radius: 24px;
@@ -412,11 +478,21 @@
     }
     @media (max-width: 1024px) {
       .main-content {
-        grid-template-columns: 1fr;
+        flex-direction: column;
+        gap: 2rem;
       }
-      .profile-section {
-        max-width: 600px;
-        margin: 0 auto;
+      .left-column, .right-columns {
+        flex-direction: column;
+        max-width: 100%;
+        width: 100%;
+      }
+      .decks-row {
+        flex-direction: column;
+        gap: 2rem;
+        width: 100%;
+      }
+      .decks-section {
+        max-width: 100%;
       }
     }
     .decks-section:last-child {
@@ -660,154 +736,279 @@
       background: #e53935;
       transform: scale(1.1);
     }
+    .stats-container {
+      margin: 1.5rem 0 0 0;
+      padding: 1.5rem 2rem;
+      background: linear-gradient(90deg, #e3f2fd 60%, #bbdefb 100%);
+      border-radius: 18px;
+      box-shadow: 0 2px 12px rgba(25, 118, 210, 0.08);
+      border: 1.5px solid #1976d2;
+      max-width: 350px;
+      margin-left: auto;
+      margin-right: auto;
+      text-align: left;
+      font-size: 1.13rem;
+      color: #1976d2;
+      font-weight: 500;
+      transition: background 0.3s;
+    }
+    body.theme-dark .stats-container {
+      background: linear-gradient(90deg, #23272f 60%, #181c23 100%);
+      color: #90caf9;
+      border-color: #1976d2;
+    }
+    .stats-container ul {
+      margin: 0;
+      padding: 0;
+    }
+    .stats-container li {
+      margin-bottom: 0.7rem;
+      font-size: 1.08rem;
+      color: inherit;
+    }
+    .stats-container li:last-child {
+      margin-bottom: 0;
+    }
+    /* Bouton flottant pour créer un deck */
+    .add-deck-btn {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: linear-gradient(135deg, #1976d2, #1565c0);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      font-size: 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(25, 118, 210, 0.18);
+      transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
+      z-index: 100;
+      text-decoration: none;
+    }
+    .add-deck-btn:focus, .add-deck-btn:hover {
+      background: linear-gradient(135deg, #1565c0, #1976d2);
+      box-shadow: 0 6px 24px rgba(25, 118, 210, 0.25);
+      transform: scale(1.08);
+      outline: none;
+    }
+    .add-deck-btn span {
+      margin-top: -2px;
+    }
+    @media (max-width: 600px) {
+      .add-deck-btn {
+        width: 48px;
+        height: 48px;
+        font-size: 1.5rem;
+        bottom: 1rem;
+        right: 1rem;
+      }
+    }
   </style>
 </head>
 <body>
   @include('components/header')
   <div class="main-content">
-    <!-- Section profil utilisateur avec messages au-dessus -->
-    <div class="profile-section" style="position: relative;">
-      @if(flashMessages.has('profile_success'))
-        <div class="profile-message success">{{ flashMessages.get('profile_success') }}</div>
-      @endif
-      @if(flashMessages.has('profile_error'))
-        <div class="profile-message error">{{ flashMessages.get('profile_error') }}</div>
-      @endif
-      <h2>Mon profil</h2>
-      <div class="profile-info-row">
-        <span class="profile-label">Nom d'utilisateur :</span>
-        <div class="username-container">
-          <span class="profile-value" id="username-display">{{ user.username }}</span>
-          <form id="changeUsernameForm" class="change-form" action="/account/{{ user.id }}/change-username" method="POST">
-            {{ csrfField() }}
-            <input 
-              type="text" 
-              name="new_username" 
-              required 
-              minlength="3"
-              maxlength="30"
-              value="{{ user.username }}"
-            />
-          </form>
-          <button class="edit-btn" id="editButton" onclick="toggleUsernameForm()" title="Modifier le nom d'utilisateur">✏️</button>
+    <div class="left-column">
+      <div class="profile-section" style="position: relative;">
+        @if(flashMessages.has('profile_success'))
+          <div class="profile-message success">{{ flashMessages.get('profile_success') }}</div>
+        @endif
+        @if(flashMessages.has('profile_error'))
+          <div class="profile-message error">{{ flashMessages.get('profile_error') }}</div>
+        @endif
+        <h2>Mon profil</h2>
+        <div class="profile-info-row">
+          <span class="profile-label">Nom d'utilisateur :</span>
+          <div class="username-container">
+            <span class="profile-value" id="username-display">{{ user.username }}</span>
+            <form id="changeUsernameForm" class="change-form" action="/account/{{ user.id }}/change-username" method="POST">
+              {{ csrfField() }}
+              <input 
+                type="text" 
+                name="new_username" 
+                required 
+                minlength="3"
+                maxlength="30"
+                value="{{ user.username }}"
+              />
+            </form>
+            <button class="edit-btn" id="editButton" onclick="toggleUsernameForm()" title="Modifier le nom d'utilisateur">✏️</button>
+          </div>
+        </div>
+        <div class="profile-info-row">
+          <span class="profile-label">Abonnés :</span>
+          <span class="profile-value" id="followers-link" style="cursor:pointer; text-decoration:underline;">
+            {{ followersCount }}
+          </span>
+        </div>
+        <div class="profile-info-row">
+          <span class="profile-label">Abonnements :</span>
+          <span class="profile-value" id="following-link" style="cursor:pointer; text-decoration:underline;">
+            {{ followingCount }}
+          </span>
+        </div>
+        <div class="profile-info-row">
+          <span class="profile-label">Mot de passe :</span>
+          <span class="profile-value">
+            ********
+          </span>
+        </div>
+        <button class="change-password-btn" onclick="toggleChangePasswordForm()">Changer le mot de passe</button>
+        <form id="changePasswordForm" class="change-password-form" action="/account/{{ user.id }}/change-password" method="POST" style="display:none;">
+          {{ csrfField() }}
+          <input type="password" name="old_password" placeholder="Ancien mot de passe" required />
+          <input type="password" name="new_password" placeholder="Nouveau mot de passe" required minlength="8" />
+          <input type="password" name="confirm_new_password" placeholder="Confirmer le nouveau mot de passe" required minlength="8" />
+          <button type="submit">Valider</button>
+        </form>
+      </div>
+      <div class="stats-section">
+        <h3>Statistiques d'apprentissage</h3>
+        <div class="stats-container">
+          @if(userStats)
+            <ul style="list-style:none;padding:0;">
+              <li>Decks étudiés: <b>{{ userStats.decks_studied }}</b></li>
+              <li>Cartes justes: <b>{{ userStats.correct_answers }}</b></li>
+              <li>Cartes fausses: <b>{{ userStats.wrong_answers }}</b></li>
+              <li>Pourcentage de bonnes réponses:
+                <b>
+                  @if(userStats.correct_answers + userStats.wrong_answers > 0)
+                    {{ Math.round(100 * userStats.correct_answers / (userStats.correct_answers + userStats.wrong_answers)) }}%
+                  @else
+                    N/A
+                  @endif
+                </b>
+              </li>
+              <li>Temps total d'étude: <b>{{ Math.floor(userStats.total_study_time/60) }} min</b></li>
+              <li>Moyenne temps/étude par deck:
+                <b>
+                  @if(userStats.decks_studied > 0)
+                    {{ Math.round(userStats.total_study_time / userStats.decks_studied / 60) }} min
+                  @else
+                    N/A
+                  @endif
+                </b>
+              </li>
+              <li>Decks créés: <b>{{ userDecks.length }}</b></li>
+              <li>Cartes créées: <b>{{ userDecks.reduce((acc, d) => acc + d.cards.length, 0) }}</b></li>
+              <li>Dernière session: 
+                <b>
+                  @if(userStats.updated_at)
+                    {{
+                      userStats.updated_at.setZone
+                        ? userStats.updated_at.setZone('UTC+2').toFormat('dd/MM/yyyy HH:mm:ss')
+                        : userStats.updated_at
+                    }}
+                  @else
+                    N/A
+                  @endif
+                </b>
+              </li>
+            </ul>
+          @else
+            <span>Aucune statistique disponible.</span>
+          @endif
         </div>
       </div>
-      <div class="profile-info-row">
-        <span class="profile-label">Abonnés :</span>
-        <span class="profile-value" id="followers-link" style="cursor:pointer; text-decoration:underline;">
-          {{ followersCount }}
-        </span>
-      </div>
-      <div class="profile-info-row">
-        <span class="profile-label">Abonnements :</span>
-        <span class="profile-value" id="following-link" style="cursor:pointer; text-decoration:underline;">
-          {{ followingCount }}
-        </span>
-      </div>
-      <div class="profile-info-row">
-        <span class="profile-label">Mot de passe :</span>
-        <span class="profile-value">
-          ********
-        </span>
-      </div>
-      <button class="change-password-btn" onclick="toggleChangePasswordForm()">Changer le mot de passe</button>
-      <form id="changePasswordForm" class="change-password-form" action="/account/{{ user.id }}/change-password" method="POST" style="display:none;">
-        {{ csrfField() }}
-        <input type="password" name="old_password" placeholder="Ancien mot de passe" required />
-        <input type="password" name="new_password" placeholder="Nouveau mot de passe" required minlength="8" />
-        <input type="password" name="confirm_new_password" placeholder="Confirmer le nouveau mot de passe" required minlength="8" />
-        <button type="submit">Valider</button>
-      </form>
     </div>
-    <!-- 2/3 : Section decks utilisateur -->
-    <div class="decks-section">
-      <h1>
-        Mes decks : 
-        <span id="deckCount">{{ userDecks.length }}</span>
-      </h1>
-      <div class="decks-container">
-        <div class="search-container">
-          <input 
-            type="text" 
-            id="deckSearch" 
-            class="search-input" 
-            placeholder="Rechercher dans mes decks..."
-            onkeyup="searchDecks()"
-          >
-        </div>
-        <table>
-          <thead>
-            <tr>
-              <th>Titre</th>
-              <th>Description</th>
-              <th>Cartes</th>
-              <th>Visibilité</th>
-            </tr>
-          </thead>
-          <tbody id="decksTableBody">
-            @if(userDecks.length)
-              @each(deck in userDecks)
-                <tr onclick="window.location.href='/deck/{{ deck.id }}'">
-                  <td><a style="text-decoration: none; color: #1976d2" href="/deck/{{ deck.id }}">{{ deck.title }}</a></td>
-                  <td>{{ deck.description }}</td>
-                  <td>{{ deck.cards.length }}</td>
-                  <td>
-                    <span title="{{ deck.visibility === 'public' ? 'Public' : 'Privé' }}">
-                      {{ deck.visibility === 'public' ? '🔓' : '🔒' }}
-                    </span>
-                  </td>
+    <div class="right-columns">
+      <div class="decks-row">
+        <div class="decks-section">
+          <h1>
+            Mes decks : 
+            <span id="deckCount">{{ userDecks.length }}</span>
+          </h1>
+          <div class="decks-container">
+            <div class="search-container">
+              <input 
+                type="text" 
+                id="deckSearch" 
+                class="search-input" 
+                placeholder="Rechercher dans mes decks..."
+                onkeyup="searchDecks()"
+              >
+            </div>
+            <table>
+              <thead>
+                <tr>
+                  <th>Titre</th>
+                  <th>Description</th>
+                  <th>Cartes</th>
+                  <th>Visibilité</th>
                 </tr>
-              @endeach
-            @else
-              <tr>
-                <td colspan="4">Aucun deck disponible.</td>
-              </tr>
-            @endif
-          </tbody>
-        </table>
-      </div>
-    </div>
-    <div class="decks-section">
-      <h1>
-        Decks likés :
-        <span id="likedDeckCount">{{ likedDecks?.length || 0 }}</span>
-      </h1>
-      <div class="decks-container" style="max-width:100%;">
-        <div class="search-container">
-          <input 
-            type="text" 
-            id="likedDeckSearch" 
-            class="search-input" 
-            placeholder="Rechercher dans les decks likés..."
-            onkeyup="searchLikedDecks()"
-          >
+              </thead>
+              <tbody id="decksTableBody">
+                @if(userDecks.length)
+                  @each(deck in userDecks)
+                    <tr onclick="window.location.href='/deck/{{ deck.id }}'">
+                      <td><a style="text-decoration: none; color: #1976d2" href="/deck/{{ deck.id }}">{{ deck.title }}</a></td>
+                      <td>{{ deck.description }}</td>
+                      <td>{{ deck.cards.length }}</td>
+                      <td>
+                        <span title="
+                          {{ deck.visibility === 'public' ? 'Public' : deck.visibility === 'restricted' ? 'Restreint' : 'Privé' }}">
+                          {{ deck.visibility === 'public' ? '🔓' : deck.visibility === 'restricted' ? '🔑🔒' : '🔒' }}
+                        </span>
+                      </td>
+                    </tr>
+                  @endeach
+                @else
+                  <tr>
+                    <td colspan="4">Aucun deck disponible.</td>
+                  </tr>
+                @endif
+              </tbody>
+            </table>
+          </div>
         </div>
-        <table style="width:100%; font-size:1.15rem;">
-          <thead>
-            <tr>
-              <th>Titre</th>
-              <th>Description</th>
-              <th>Cartes</th>
-              <th>Auteur</th>
-            </tr>
-          </thead>
-          <tbody id="likedDecksTableBody">
-            @if(likedDecks && likedDecks.length)
-              @each(deck in likedDecks)
-                <tr onclick="window.location.href='/deck/{{ deck.id }}'">
-                  <td><a style="text-decoration: none; color: #1976d2" href="/deck/{{ deck.id }}">{{ deck.title }}</a></td>
-                  <td>{{ deck.description }}</td>
-                  <td>{{ deck.cards.length }}</td>
-                  <td>{{ deck.user.username }}</td>
+        <div class="decks-section">
+          <h1>
+            Decks likés :
+            <span id="likedDeckCount">{{ likedDecks?.length || 0 }}</span>
+          </h1>
+          <div class="decks-container" style="max-width:100%;">
+            <div class="search-container">
+              <input 
+                type="text" 
+                id="likedDeckSearch" 
+                class="search-input" 
+                placeholder="Rechercher dans les decks likés..."
+                onkeyup="searchLikedDecks()"
+              >
+            </div>
+            <table style="width:100%; font-size:1.15rem;">
+              <thead>
+                <tr>
+                  <th>Titre</th>
+                  <th>Description</th>
+                  <th>Cartes</th>
+                  <th>Auteur</th>
                 </tr>
-              @endeach
-            @else
-              <tr>
-                <td colspan="4">Aucun deck liké.</td>
-              </tr>
-            @endif
-          </tbody>
-        </table>
+              </thead>
+              <tbody id="likedDecksTableBody">
+                @if(likedDecks && likedDecks.length)
+                  @each(deck in likedDecks)
+                    <tr onclick="window.location.href='/deck/{{ deck.id }}'">
+                      <td><a style="text-decoration: none; color: #1976d2" href="/deck/{{ deck.id }}">{{ deck.title }}</a></td>
+                      <td>{{ deck.description }}</td>
+                      <td>{{ deck.cards.length }}</td>
+                      <td>{{ deck.user.username }}</td>
+                    </tr>
+                  @endeach
+                @else
+                  <tr>
+                    <td colspan="4">Aucun deck liké.</td>
+                  </tr>
+                @endif
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
     </div>
   </div>
