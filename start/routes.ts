@@ -312,12 +312,6 @@ router
   .as('publicAccount')
   .use(middleware.auth());
 
-// Recherche, invitation, acceptation et refus
-router.get('/api/users/search', [DeckController, 'searchUsers']) // Recherche d'utilisateurs
-router.post('/deck/:id/invite', [DeckController, 'invite']) // Invitation à rejoindre un deck
-router.post('/deck/:id/accept-invite', [DeckController, 'acceptInvite']) // Acceptation d'une invitation
-router.post('/deck/:id/refuse-invite', [DeckController, 'refuseInvite']) // Refus d'une invitation
-
 router.group(() => {
   // API routes for likes
   router
