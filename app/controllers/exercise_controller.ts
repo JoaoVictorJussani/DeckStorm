@@ -75,7 +75,44 @@ export default class ExerciseController {
     }
 
     const card = cards[questionIndex];
-    return view.render('present_question_with_time', { deck, cards, card, questionIndex, startTime, results, mode, retryCardIds, attempts, direction });
+
+    let quizOptions: any[] = []
+    if (request.input('mode') === 'quiz') {
+      const correctText = direction === 'question' ? card.answer : card.question
+      quizOptions.push({ text: correctText, isCorrect: true })
+
+      // Get distractors from the full deck (not just the subset if filtered)
+      // Actually user might want distractors from the full deck even if reviewing subset. 
+      // deck.cards is usually full unless filtered previously? 
+      // In my code `deck.cards` is preload('cards'), so it's full deck.
+      // `cards` variable is used for the session. 
+      // I'll use `deck.cards` for distractors to have more variety.
+      const distractors = (deck.cards as unknown as Card[]).filter(c => c.id !== card.id)
+
+      // Shuffle distractors
+      for (let i = distractors.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [distractors[i], distractors[j]] = [distractors[j], distractors[i]];
+      }
+
+      // Take up to 3
+      const wrong = distractors.slice(0, 3)
+      wrong.forEach(w => {
+        const wrongText = direction === 'question' ? w.answer : w.question
+        // Avoid duplicate answers if multiple cards have same text
+        if (!quizOptions.find(o => o.text === wrongText)) {
+          quizOptions.push({ text: wrongText, isCorrect: false })
+        }
+      })
+
+      // Shuffle options
+      for (let i = quizOptions.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [quizOptions[i], quizOptions[j]] = [quizOptions[j], quizOptions[i]];
+      }
+    }
+
+    return view.render('present_question_with_time', { deck, cards, card, questionIndex, startTime, results, mode, retryCardIds, attempts, direction, quizOptions });
   }
 
   async finish({ params, request, view, auth }: HttpContext) {

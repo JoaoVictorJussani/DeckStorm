@@ -154,6 +154,75 @@
       background: #1565c0;
       color: #fff;
     }
+    /* Quiz Mode Styles */
+    .quiz-container {
+      max-width: 600px;
+      width: 100%;
+      margin: 2rem auto;
+      text-align: center;
+    }
+    .quiz-question {
+      font-size: 1.8rem;
+      margin-bottom: 2rem;
+      color: #333;
+      padding: 1rem;
+      background: #f8f9fa;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    }
+    body.theme-dark .quiz-question {
+      background: #181c23;
+      color: #e0e0e0;
+    }
+    .quiz-options {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+    .quiz-option-btn {
+      background: #fff;
+      color: #1976d2;
+      border: 2px solid #1976d2;
+      padding: 1.5rem;
+      border-radius: 12px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 80px;
+      box-shadow: 0 4px 6px rgba(25, 118, 210, 0.1);
+    }
+    body.theme-dark .quiz-option-btn {
+      background: #181c23;
+      color: #90caf9;
+      border-color: #1565c0;
+    }
+    .quiz-option-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 12px rgba(25, 118, 210, 0.2);
+      background: #e3f2fd;
+    }
+    body.theme-dark .quiz-option-btn:hover {
+      background: #1e222b;
+    }
+    .quiz-option-btn.correct {
+      background: #4caf50 !important;
+      color: white !important;
+      border-color: #4caf50 !important;
+    }
+    .quiz-option-btn.wrong {
+      background: #ff4d4d !important;
+      color: white !important;
+      border-color: #ff4d4d !important;
+    }
+    @media (max-width: 600px) {
+      .quiz-options {
+        grid-template-columns: 1fr;
+      }
+    }
   </style>
 </head>
 <body>
@@ -164,28 +233,49 @@
       <p>Temps écoulé : <span id="elapsed-time"></span></p>
     @endif
 
-  <div class="card-container">
-    <div class="card" onclick="flipCard(this)">
-      <div class="card-face front">
-        @if(direction === 'question')
-          {{ card.question }}
-        @else
-          {{ card.answer }}
-        @endif
-      </div>
-      <div class="card-face back">
-        @if(direction === 'question')
-          {{ card.answer }}
-        @else
-          {{ card.question }}
-        @endif
-        <div class="card-buttons">
-          <button class="check-button" onclick="markCard(event, true)">✔</button>
-          <button class="cross-button" onclick="markCard(event, false)">✘</button>
+    @if(mode === 'quiz')
+      <div class="quiz-container">
+        <div class="quiz-question">
+          @if(direction === 'question')
+            {{ card.question }}
+          @else
+            {{ card.answer }}
+          @endif
+        </div>
+        <div class="quiz-options">
+          @if(quizOptions)
+            @each(option in quizOptions)
+              <button class="quiz-option-btn" onclick="checkQuizAnswer(this, {{ option.isCorrect }})">
+                {{ option.text }}
+              </button>
+            @endeach
+          @endif
         </div>
       </div>
-    </div>
-  </div>
+    @else
+      <div class="card-container">
+        <div class="card" onclick="flipCard(this)">
+          <div class="card-face front">
+            @if(direction === 'question')
+              {{ card.question }}
+            @else
+              {{ card.answer }}
+            @endif
+          </div>
+          <div class="card-face back">
+            @if(direction === 'question')
+              {{ card.answer }}
+            @else
+              {{ card.question }}
+            @endif
+            <div class="card-buttons">
+              <button class="check-button" onclick="markCard(event, true)">✔</button>
+              <button class="cross-button" onclick="markCard(event, false)">✘</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    @endif
 
   <form 
     action="{{ questionIndex + 1 < (typeof cards !== 'undefined' && cards ? cards.length : deck.cards.length) 
@@ -226,6 +316,39 @@
       }
       document.getElementById('results').value = JSON.stringify(results);
       document.getElementById('next-form').style.display = 'block';
+    }
+
+    function checkQuizAnswer(btn, isCorrect) {
+      if (btn.classList.contains('disabled')) return;
+      
+      const allBtns = document.querySelectorAll('.quiz-option-btn');
+      allBtns.forEach(b => {
+        b.classList.add('disabled');
+        b.onclick = null; // Disable click
+      });
+
+      if (isCorrect) {
+        btn.classList.add('correct');
+        results.push(cardId);
+      } else {
+        btn.classList.add('wrong');
+        // Highlight the correct answer
+        allBtns.forEach(b => {
+           // Check if the original onclick string had "true" as second argument
+           // Note: This relies on the rendered HTML onclick attribute
+           const onclickStr = b.getAttribute('onclick');
+           if (onclickStr && onclickStr.includes(', true)')) {
+             b.classList.add('correct');
+           }
+        });
+      }
+
+      document.getElementById('results').value = JSON.stringify(results);
+      
+      // Show next button
+      document.getElementById('next-form').style.display = 'block';
+      // Auto submit after 1.5s? Maybe better to let user click Next to review.
+      // User can click 'Suivant' manually.
     }
 
     if (mode === 'chronometre') {
