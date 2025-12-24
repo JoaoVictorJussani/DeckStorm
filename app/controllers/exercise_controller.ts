@@ -133,6 +133,35 @@ export default class ExerciseController {
       userStats.wrong_answers += incorrectCards.length;
       userStats.total_study_time += isNaN(elapsedTime) ? 0 : elapsedTime;
       await userStats.save();
+
+      // --- SAVE EXERCISE ATTEMPTS (For Reports) ---
+      const attemptsToCreate: any[] = [];
+      const ExerciseAttempt = (await import('#models/exercise_attempt')).default;
+
+      // Correct answers
+      for (const cardId of results) {
+        attemptsToCreate.push({
+          userId: userId,
+          deckId: deck.id,
+          cardId: Number(cardId),
+          isCorrect: true,
+        });
+      }
+
+      // Incorrect answers
+      for (const card of incorrectCards) {
+        attemptsToCreate.push({
+          userId: userId,
+          deckId: deck.id,
+          cardId: card.id,
+          isCorrect: false,
+        });
+      }
+
+      if (attemptsToCreate.length > 0) {
+        await ExerciseAttempt.createMany(attemptsToCreate);
+      }
+      // ---------------------------------------------
     }
     // --- FIN MISE À JOUR DES STATISTIQUES ---
 

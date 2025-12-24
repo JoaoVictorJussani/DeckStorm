@@ -170,6 +170,56 @@ export default class DeckController {
     })
   }
 
+  async report({ params, view, auth, response }: HttpContext) {
+    const deck = await Deck.find(params.id)
+    if (!deck) {
+      return view.render('./pages/errors/not_found')
+    }
+
+    if (!auth.user || deck.user_id !== auth.user.id) {
+      return response.redirect().toRoute('home')
+    }
+
+    const ExerciseAttempt = (await import('#models/exercise_attempt')).default
+
+    // Fetch all attempts for this deck
+    const attempts = await ExerciseAttempt.query()
+      .where('deck_id', deck.id)
+      .preload('user')
+      .preload('card')
+      .orderBy('user_id')
+      .orderBy('created_at', 'desc')
+
+    // Group by user
+    const reportByUser = new Map<number, { user: any, attempts: any[], correctCount: number, wrongCount: number }>()
+
+    for (const attempt of attempts) {
+      if (!attempt.user) continue
+
+      if (!reportByUser.has(attempt.user.id)) {
+        reportByUser.set(attempt.user.id, {
+          user: attempt.user,
+          attempts: [],
+          correctCount: 0,
+          wrongCount: 0
+        })
+      }
+
+      const userReport = reportByUser.get(attempt.user.id)!
+      userReport.attempts.push(attempt)
+      if (attempt.isCorrect) {
+        userReport.correctCount++
+      } else {
+        userReport.wrongCount++
+      }
+    }
+
+    return view.render('deck_report', {
+      deck,
+      reportByUser: Array.from(reportByUser.values())
+    })
+  }
+
   // Convidar usuário para deck restrito
   async inviteUser({ params, request, response, session, auth }: HttpContext) {
     const deck = await Deck.find(params.id)

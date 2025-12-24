@@ -156,6 +156,12 @@ router
   .as('decks.show')
   .use(middleware.auth());
 
+// Route pour le rapport de deck
+router
+  .get('/deck/:id/report', [DeckController, 'report'])
+  .as('decks.report')
+  .use(middleware.auth());
+
 // Route pour abandonner la création d'un deck
 router
   .get('/deck/abandon', async ({ response }) => {

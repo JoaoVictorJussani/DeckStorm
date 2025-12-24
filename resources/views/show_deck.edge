@@ -677,6 +677,36 @@
     body.theme-dark .invite-btn-main {
       border: 1px solid rgba(255,255,255,0.1);
     }
+
+    .report-btn-main {
+      background: linear-gradient(135deg, #4caf50, #2e7d32);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 0.8rem 1.5rem;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(46, 125, 50, 0.2);
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      text-decoration: none;
+    }
+    .report-btn-main:hover {
+      background: linear-gradient(135deg, #2e7d32, #1b5e20);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(46, 125, 50, 0.3);
+      color: #fff;
+    }
+    .report-btn-main::before {
+      content: '📊';
+      font-size: 1.2rem;
+    }
+    body.theme-dark .report-btn-main {
+      border: 1px solid rgba(255,255,255,0.1);
+    }
     
     @keyframes slideIn {
       from { opacity: 0; transform: translateY(20px);}
@@ -838,10 +868,13 @@
       </div>
 
       @if(deck.visibility === 'restricted' && user && deck.user_id === user.id)
-        <div style="margin: 1.5rem 0; text-align: center;">
+        <div style="margin: 1.5rem 0; text-align: center; display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
           <button onclick="document.getElementById('inviteModal').classList.add('active')" class="invite-btn-main">
             Inviter un utilisateur
           </button>
+          <a href="{{ route('decks.report', { id: deck.id }) }}" class="report-btn-main">
+            Voir le rapport
+          </a>
         </div>
 
       @endif

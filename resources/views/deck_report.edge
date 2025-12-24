@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Rapport - {{ deck.title }}</title>
+  <link rel="shortcut icon" href="/images/icone.ico" type="image/x-icon">
+  <script>
+    (function() {
+      let theme = localStorage.getItem('theme');
+      if (!theme) theme = 'theme-light';
+      document.addEventListener('DOMContentLoaded', function() {
+         document.body.classList.remove('theme-light', 'theme-dark');
+         document.body.classList.add(theme);
+      });
+      if (document.body) {
+        document.body.classList.remove('theme-light', 'theme-dark');
+        document.body.classList.add(theme);
+      }
+    })();
+  </script>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    body {
+      background: #f5f7fa;
+      color: #333;
+      transition: background 0.5s, color 0.5s;
+    }
+    body.theme-light { background: #f5f7fa; color: #333; }
+    body.theme-dark { background: #0a0c10; color: #e0e0e0; }
+
+    .container {
+      max-width: 900px;
+      margin: 100px auto 50px;
+      padding: 2rem;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 2rem;
+      color: #1976d2;
+      font-size: 2.5rem;
+    }
+    .back-link {
+      display: inline-block;
+      margin-bottom: 1rem;
+      color: #1976d2;
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .back-link:hover { text-decoration: underline; }
+
+    .user-report-card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      border: 1px solid #e0e0e0;
+      transition: transform 0.2s;
+    }
+    body.theme-dark .user-report-card {
+      background: #181c23;
+      border-color: #333;
+    }
+    .user-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      cursor: pointer;
+    }
+    .user-info h2 {
+      margin: 0;
+      font-size: 1.3rem;
+      color: #1976d2;
+    }
+    .user-stats {
+      font-size: 0.9rem;
+      color: #666;
+    }
+    body.theme-dark .user-stats { color: #aaa; }
+    
+    .stat-badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-weight: bold;
+      font-size: 0.85rem;
+      margin-left: 10px;
+    }
+    .bg-green { background: #e8f5e9; color: #2e7d32; }
+    .bg-red { background: #ffebee; color: #c62828; }
+    body.theme-dark .bg-green { background: rgba(46, 125, 50, 0.2); color: #81c784; }
+    body.theme-dark .bg-red { background: rgba(198, 40, 40, 0.2); color: #e57373; }
+
+    .details-section {
+      display: none;
+      margin-top: 1rem;
+      border-top: 1px solid #eee;
+      padding-top: 1rem;
+    }
+    body.theme-dark .details-section { border-color: #333; }
+    .details-section.active { display: block; }
+    
+    .question-list {
+      list-style: none;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+    .question-item {
+      padding: 8px 12px;
+      border-bottom: 1px solid #f0f0f0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    body.theme-dark .question-item { border-color: #333; }
+    .question-text {
+      flex: 1;
+      font-size: 0.95rem;
+    }
+    .question-status {
+      font-size: 1.2rem;
+      width: 30px;
+      text-align: center;
+    }
+    .date-time {
+      font-size: 0.8rem;
+      color: #888;
+      margin-left: 10px;
+      width: 140px;
+      text-align: right;
+    }
+    
+    .empty-state {
+      text-align: center;
+      padding: 2rem;
+      color: #888;
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+  @include('components/header')
+
+  <div class="container">
+    <a href="{{ route('decks.show', { id: deck.id }) }}" class="back-link">← Retour au deck</a>
+    <h1>Rapport : {{ deck.title }}</h1>
+    
+    @if(reportByUser.length === 0)
+      <div class="empty-state">
+        Aucune activité enregistrée sur ce deck pour le moment.
+      </div>
+    @else
+      @each(report in reportByUser)
+        <div class="user-report-card">
+          <div class="user-header" onclick="this.parentElement.querySelector('.details-section').classList.toggle('active')">
+            <div class="user-info">
+              <h2>{{ report.user.username }}</h2>
+            </div>
+            <div class="user-stats">
+              <span class="stat-badge bg-green">✔ {{ report.correctCount }}</span>
+              <span class="stat-badge bg-red">✘ {{ report.wrongCount }}</span>
+              <span style="margin-left:10px; font-size: 0.8rem;">Click pour détails ▼</span>
+            </div>
+          </div>
+          
+          <div class="details-section">
+            <h3 style="font-size:1.1rem; margin-bottom:0.5rem; color:#444;">Détails des questions</h3>
+            <ul class="question-list">
+              @each(attempt in report.attempts)
+                <li class="question-item">
+                  <span class="question-text">{{ attempt.card ? attempt.card.question : 'Carte supprimée' }}</span>
+                  <span class="question-status">{{ attempt.isCorrect ? '✅' : '❌' }}</span>
+                  <span class="date-time">{{ attempt.createdAt.toFormat('dd/MM/yyyy HH:mm') }}</span>
+                </li>
+              @endeach
+            </ul>
+          </div>
+        </div>
+      @endeach
+    @endif
+  </div>
+</body>
+</html>
