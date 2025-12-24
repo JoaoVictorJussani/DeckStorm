@@ -7,208 +7,38 @@
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   }
 
-  /* Style du corps */
-  body {
-    background: #fff;
-    color: #222;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    min-height: 100vh;
-    font-size: 1rem;
-  }
-
-  body.theme-light {
-    background: #fff;
-    color: #222;
-  }
-  body.theme-dark {
-    background: #0a0c10;
-    color: #e6e9ef;
-  }
-
   /* Barre de navigation */
   .header-navbar {
-    backdrop-filter: blur(8px);
-    background: var(--header-bg, rgba(255,255,255,0.95));
-    box-shadow: 0 2px 15px rgba(25, 118, 210, 0.10);
+    backdrop-filter: blur(10px);
+    background: var(--header-bg, rgba(255,255,255,0.8));
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
     height: 70px;
     width: 100%;
     padding: 0 2rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 2px solid var(--primary, #1976d2);
-    color: var(--header-color, #222);
+    border-bottom: 1px solid var(--border-color, rgba(25, 118, 210, 0.1));
     position: fixed;
     top: 0;
     left: 0;
-    z-index: 10;
+    z-index: 100;
+    transition: background 0.3s, border 0.3s;
   }
 
-  .header-navbar h2 {
-    font-size: 1.8rem;
-    font-weight: 700;
-  }
-
-  .header-navbar button {
-    background: var(--primary, #1976d2);
-    color: white;
-    border: 2px solid var(--primary, #1976d2);
-    padding: 0.7rem 1.2rem;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 1rem;
-    transition: background 0.3s ease;
-  }
-
-  .header-navbar button:hover {
-    background: var(--primary-hover, #1565c0);
-  }
-
-  .header-navbar a {
-    text-decoration: none;
-    color: var(--primary, #1976d2);
-    font-size: 1.5rem;
-    font-weight: bold;
-  }
-
-  .header-navbar img {
-    height: 36px;
-    width: 36px;
-    margin-right: 0.7rem;
-    vertical-align: middle;
-  }
-
-  /* Dropdown styles */
-  .header-dropdown {
-    position: relative;
-    display: inline-block;
-  }
-  .header-dropdown-toggle {
-    background: linear-gradient(135deg, #1976d2, #1565c0);
-    color: white;
-    border: none;
-    box-shadow: 0 2px 8px rgba(25, 118, 210, 0.18);
-    padding: 0.7rem 1.2rem;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 1rem;
-    transition: background 0.3s ease;
-    font-weight: 600;
+  /* Logo / Title */
+  .header-brand {
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    transition: opacity 0.3s;
   }
-  .header-dropdown-toggle:hover, 
-  .header-dropdown-toggle:focus {
-    background: #1565c0;
-    color: #fff;
+  .header-brand:hover {
+    opacity: 0.8;
   }
-  .header-dropdown-menu {
-    display: none;
-    position: absolute;
-    right: 0;
-    backdrop-filter: blur(10px);
-    background: var(--dropdown-bg, rgba(255,255,255,0.98));
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-    border: 1px solid var(--dropdown-border, rgba(25, 118, 210, 0.18));
-    border-radius: 8px;
-    z-index: 100;
-    margin-top: 0.5rem;
-    padding: 0.5rem 0;
-  }
-  .header-dropdown.open .header-dropdown-menu {
-    display: block;
-  }
-  .header-dropdown-menu a, 
-  .header-dropdown-menu button {
-    display: block;
-    width: 100%;
-    background: none;
-    border: none;
-    color: var(--primary, #1976d2);
-    text-align: left;
-    padding: 0.7rem 1.2rem;
-    font-size: 1rem;
-    font-weight: 600;
-    cursor: pointer;
-    border-radius: 6px;
-    transition: background 0.2s, color 0.2s;
-    text-decoration: none;
-  }
-  .header-dropdown-menu a:hover, 
-  .header-dropdown-menu button:hover {
-    background: var(--primary, #1976d2);
-    color: #fff;
-  }
-  .header-logout-btn {
-    color: #ff4d4d;
-  }
-  .header-logout-btn:hover {
-    background: #ff4d4d !important;
-    color: #fff;
-  }
-
-  /* Box survolante d'aide */
-  #idea-box {
-    display:none;
-    position:fixed;
-    top:90px;
-    right:30px;
-    backdrop-filter: blur(10px);
-    background: var(--dropdown-bg, rgba(255,255,255,0.98));
-    color: var(--primary, #1976d2);
-    border: 2px solid var(--primary, #1976d2);
-    box-shadow: 0 8px 32px var(--shadow, rgba(25, 118, 210, 0.10));
-    border-radius: 12px;
-    padding: 1.5rem 2rem 1.5rem 1.5rem;
-    max-width: 350px;
-    z-index: 9999;
-    transform: translateY(10px);
-    animation: slideIn 0.3s ease forwards;
-  }
-
-  @keyframes slideIn {
-    from {
-      opacity: 0;
-      transform: translateY(20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  /* Search bar styles */
-  .header-search {
-    flex: 1;
-    max-width: 500px;
-    margin: 0 2rem;
-    position: relative;
-  }
-
-  .header-search input {
-    width: 100%;
-    padding: 0.6rem 1rem;
-    font-size: 1rem;
-    border: 1.5px solid var(--search-border, rgba(25, 118, 210, 0.25));
-    border-radius: 8px;
-    background: var(--search-bg, rgba(245, 245, 245, 0.85));
-    color: var(--input-color, #222);
-    transition: border 0.2s, box-shadow 0.2s;
-    backdrop-filter: blur(4px);
-  }
-
-  .header-search input:focus {
-    outline: none;
-    border-color: var(--primary, #1976d2);
-    box-shadow: 0 0 8px var(--primary, #1976d2);
-  }
-
-  .header-search input::placeholder {
-    color: #888;
-    opacity: 1;
+  .header-brand img {
+    height: 45px;
+    width: auto;
   }
 
   /* Theme switch styles */
@@ -216,43 +46,43 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    margin-right: 1rem;
     user-select: none;
+    background: var(--switch-bg, rgba(0,0,0,0.03));
+    padding: 4px 12px;
+    border-radius: 20px;
+    transition: background 0.3s;
   }
-  .theme-switch-label {
-    font-size: 1.1rem;
-    color: var(--primary, #1976d2);
-    cursor: pointer;
-    font-weight: 500;
+  .theme-switch:hover {
+    background: var(--switch-bg-hover, rgba(0,0,0,0.06));
   }
   .theme-switch-slider {
-    width: 44px;
-    height: 24px;
-    background: var(--primary, #1976d2);
+    width: 40px;
+    height: 22px;
+    background: #cbd5e1;
     border-radius: 12px;
     position: relative;
     cursor: pointer;
-    transition: background 0.2s;
+    transition: background 0.3s;
     display: inline-block;
   }
   .theme-switch-slider:before {
     content: '';
     position: absolute;
-    left: 3px;
-    top: 3px;
+    left: 2px;
+    top: 2px;
     width: 18px;
     height: 18px;
     background: #fff;
     border-radius: 50%;
-    transition: transform 0.2s;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.10);
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
   }
   .theme-switch-input:checked + .theme-switch-slider {
-    background: #222;
+    background: #1976d2;
   }
   .theme-switch-input:checked + .theme-switch-slider:before {
-    transform: translateX(20px);
-    background: #ffe600;
+    transform: translateX(18px);
+    background: #fff;
   }
   .theme-switch-input {
     display: none;
@@ -260,100 +90,34 @@
 
   /* Dark theme overrides */
   body.theme-dark .header-navbar {
-    --header-bg: rgba(10,12,16,0.95);
-    --header-color: #e6e9ef;
-    --primary: #1976d2;
-    --primary-hover: #1565c0;
-    --dropdown-bg: rgba(34,34,34,0.95);
-    --dropdown-border: rgba(25, 118, 210, 0.18);
-    --shadow: rgba(25, 118, 210, 0.10);
-    --search-bg: rgba(17,19,23,0.85);
-    --search-border: rgba(25, 118, 210, 0.25);
-    --input-color: #e0e0e0;
+    --header-bg: rgba(10, 12, 16, 0.85);
+    --border-color: rgba(255,255,255,0.05);
+    --switch-bg: rgba(255,255,255,0.05);
+    --switch-bg-hover: rgba(255,255,255,0.1);
   }
-  body.theme-dark .header-dropdown-menu,
-  body.theme-dark #idea-box {
-    --dropdown-bg: rgba(34,34,34,0.95);
-    --dropdown-border: rgba(25, 118, 210, 0.18);
-    --shadow: rgba(25, 118, 210, 0.10);
-  }
-  body.theme-dark .header-search input {
-    --search-bg: rgba(17,19,23,0.85);
-    --input-color: #e0e0e0;
-    --search-border: rgba(25, 118, 210, 0.25);
-  }
-
-  @media (max-width: 768px) {
-    .header-search {
-      display: none;
-    }
-  }
-
-  @media (max-width: 1200px) {
-    .search-switch, .view-switch {
-      display: none;
-    }
-    .header-search {
-      margin: 0 1rem;
-    }
+  body.theme-dark .theme-switch-slider {
+    background: #475569;
   }
 </style>
 
 <div class="header-navbar">
+  <!-- Logo -->
+  <a href="/" class="header-brand">
+    <img src="/images/icone.ico" alt="Logo" />
+  </a>
 
-  <div style="display: flex; align-items: center; gap: 1rem;">
-    <!-- Theme switch -->
-    <div class="theme-switch" title="Changer le thème clair/sombre">
-      <span style="font-size:1.2rem;user-select:none;">🌞</span>
-      <input type="checkbox" id="themeSwitch" class="theme-switch-input" style="display:none;" />
-      <span class="theme-switch-slider" onclick="document.getElementById('themeSwitch').click()"></span>
-      <span style="font-size:1.2rem;user-select:none;">🌙</span>
-    </div>
-    <button id="idea-btn" 
-            style="color: #1976d2; background: none; border: none; cursor: pointer; font-size: 1.8rem; padding: 0;">
-      
-    </button>
+  <!-- Theme switch -->
+  <div class="theme-switch" title="Changer le thème">
+    <span style="font-size:1.1rem;">🌞</span>
+    <label style="display:flex; align-items:center; cursor:pointer;">
+      <input type="checkbox" id="themeSwitch" class="theme-switch-input" />
+      <span class="theme-switch-slider"></span>
+    </label>
+    <span style="font-size:1.1rem;">🌙</span>
   </div>
 </div>
 
-
 <script>
-  function headerToggleDropdown() {
-    document.getElementById('header-userDropdown').classList.toggle('open');
-  }
-  document.addEventListener('click', function(event) {
-    const dropdown = document.getElementById('header-userDropdown');
-    if (!dropdown.contains(event.target)) {
-      dropdown.classList.remove('open');
-    }
-    // Fermer la box idée si clic en dehors
-    const ideaBox = document.getElementById('idea-box');
-    const ideaBtn = document.getElementById('idea-btn');
-    if (ideaBox && ideaBox.style.display === 'block' && !ideaBox.contains(event.target) && event.target !== ideaBtn) {
-      ideaBox.style.display = 'none';
-    }
-  });
-
-  // Afficher/masquer la box idée
-  document.getElementById('idea-btn').onclick = function(e) {
-    e.stopPropagation();
-    const box = document.getElementById('idea-box');
-    box.style.display = box.style.display === 'block' ? 'none' : 'block';
-  };
-  function closeIdeaBox() {
-    document.getElementById('idea-box').style.display = 'none';
-  }
-
-  // Fonction de recherche dynamique
-  function headerSearchDecks(event) {
-    const input = document.getElementById('headerSearch');
-    const query = input.value.trim();
-
-    if(event.key === 'Enter' && query.length > 0) {
-      window.location.href = '/deck/search?q=' + encodeURIComponent(query);
-    }
-  }
-
   // Theme switch logic
   function setTheme(theme) {
     document.body.classList.remove('theme-light', 'theme-dark');
@@ -369,19 +133,14 @@
     setTheme(isDark ? 'theme-dark' : 'theme-light');
   }
 
-  // Inicialização do tema ao carregar
+  // Init theme at DOM Content Loaded (script at start of page handles initial flash)
   document.addEventListener('DOMContentLoaded', function() {
-    let theme = localStorage.getItem('theme');
-    if (!theme) {
-      theme = 'theme-light';
-    }
+    let theme = localStorage.getItem('theme') || 'theme-light';
     setTheme(theme);
-    // Corrige o estado do switch se o usuário navegar entre páginas
+    
     var input = document.getElementById('themeSwitch');
     if (input) {
-      input.onchange = toggleTheme;
-      // Garante que o switch está correto conforme o fundo
-      input.checked = document.body.classList.contains('theme-dark');
+      input.addEventListener('change', toggleTheme);
     }
   });
 </script>

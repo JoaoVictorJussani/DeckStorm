@@ -2,477 +2,532 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <title>Profil public de {{ user.username }}</title>
+  <title>Profil de {{ user.username }}</title>
   <link rel="shortcut icon" href="/images/icone.ico" type="image/x-icon">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <script>
+    // Theme init
+    (function() {
+      let theme = localStorage.getItem('theme');
+      if (!theme) theme = 'theme-light';
+      document.addEventListener('DOMContentLoaded', function() {
+        document.body.classList.remove('theme-light', 'theme-dark');
+        document.body.classList.add(theme);
+      });
+      if (document.body) {
+        document.body.classList.remove('theme-light', 'theme-dark');
+        document.body.classList.add(theme);
+      }
+    })();
+  </script>
+
   <style>
-    /* Styles globaux home.edge */
+    :root {
+      /* Premium HSL Color Palette */
+      --color-primary: 37, 99, 235; /* #2563eb */
+      --color-primary-light: 96, 165, 250; /* #60a5fa */
+      --color-primary-dark: 29, 78, 216; /* #1d4ed8 */
+      --color-accent: 124, 58, 237; /* #7c3aed */
+      
+      --color-bg-light: 248, 250, 252;
+      --color-bg-dark: 15, 23, 42;
+      
+      --color-surface-light: 255, 255, 255;
+      --color-surface-dark: 30, 41, 59;
+      
+      --color-text-main-light: 15, 23, 42;
+      --color-text-main-dark: 241, 245, 249;
+      --color-text-muted: 100, 116, 139;
+
+      --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+      --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+      --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+      --shadow-glow: 0 20px 25px -5px rgba(37, 99, 235, 0.15);
+      
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --radius-full: 9999px;
+    }
+
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-family: 'Outfit', 'Segoe UI', sans-serif;
     }
+
     body {
-      background: #fff;
-      color: #222;
+      background: rgb(var(--color-bg-light));
+      color: rgb(var(--color-text-main-light));
+      min-height: 100vh;
+      font-weight: 400;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      transition: background 0.4s, color 0.4s;
+    }
+
+    body.theme-light {
+      background: rgb(var(--color-bg-light));
+      color: rgb(var(--color-text-main-light));
+    }
+    
+    body.theme-dark {
+      background: rgb(var(--color-bg-dark));
+      color: rgb(var(--color-text-main-dark));
+    }
+
+    .main-content {
+      margin-top: 80px;
+      padding: 2rem 1.5rem;
+      width: 100%;
+      max-width: 1000px;
+      margin-left: auto;
+      margin-right: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 2.5rem;
+    }
+
+    /* User Profile Card */
+    .profile-card {
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-radius: var(--radius-lg);
+      border: 1px solid rgba(255,255,255, 0.6);
+      padding: 3rem 2rem;
+      box-shadow: var(--shadow-md);
       display: flex;
       flex-direction: column;
       align-items: center;
-      min-height: 100vh;
-      font-size: 1rem;
-       
-    }
-    body.theme-light {
-      background: #fff;
-      color: #222;
-       
-    }
-    body.theme-dark {
-      background: #0a0c10;
-      color: #e0e0e0;
-       
-    }
-    .main-content {
-      margin-top: 120px;
+      gap: 1.5rem;
+      position: relative;
       text-align: center;
-      padding: 3rem 2rem;
-      width: 100%;
-      max-width: 900px;
-      margin-left: auto;
-      margin-right: auto;
     }
-    .user-stats {
-      background: #fff;
-      border: 2px solid #1976d2;
-      box-shadow: 0 8px 30px rgba(25, 118, 210, 0.08);
-      border-radius: 16px;
-      padding: 1.5rem 2rem;
-      margin: 0 auto 2.5rem;
+    body.theme-dark .profile-card {
+      background: rgba(30, 41, 59, 0.6);
+      border-color: rgba(255,255,255, 0.08);
+      box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+    }
+
+    .profile-avatar {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #bfdbfe, #ddd6fe);
       display: flex;
       align-items: center;
       justify-content: center;
+      font-size: 3rem;
+      box-shadow: var(--shadow-md);
+      border: 4px solid rgba(255,255,255,0.8);
+    }
+    body.theme-dark .profile-avatar {
+      border-color: rgba(255,255,255,0.1);
+      background: linear-gradient(135deg, #1e3a8a, #4c1d95);
+      color: #fff;
+    }
+
+    .profile-name {
+      font-size: 2rem;
+      font-weight: 700;
+      color: rgb(var(--color-text-main-light));
+      background: linear-gradient(135deg, rgb(var(--color-primary)), rgb(var(--color-accent)));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    body.theme-dark .profile-name {
+      background: none;
+      -webkit-text-fill-color: rgb(var(--color-text-main-dark));
+      color: rgb(var(--color-text-main-dark));
+    }
+
+    /* Stats Grid */
+    .stats-grid {
+      display: flex;
       gap: 3rem;
-      max-width: 600px;
-      position: relative;
+      margin: 1.5rem 0;
+      flex-wrap: wrap;
+      justify-content: center;
     }
-    body.theme-dark .user-stats {
-      background: #181c23;
-      border-color: #1976d2;
-      box-shadow: 0 8px 30px rgba(25, 118, 210, 0.08);
-    }
+    
     .stat-item {
       display: flex;
       flex-direction: column;
       align-items: center;
+      gap: 0.25rem;
+      cursor: pointer;
       position: relative;
-      padding: 0.5rem 1.5rem;
-    }
-    .stat-item:not(:last-child):after {
-      content: '';
-      position: absolute;
-      right: -1.5rem;
-      top: 50%;
-      transform: translateY(-50%);
-      height: 70%;
-      width: 1px;
-      background: linear-gradient(to bottom, transparent, #1976d2 60%, transparent);
-    }
-    .stat-label {
-      font-size: 0.85rem;
-      color: #1976d2;
-      font-weight: 500;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-bottom: 0.3rem;
     }
     .stat-value {
       font-size: 1.5rem;
-      color: #1976d2;
+      font-weight: 700;
+      color: rgb(var(--color-primary));
+    }
+    .stat-label {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: rgb(var(--color-text-muted));
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* Buttons */
+    .btn {
+      padding: 0.75rem 2rem;
+      border-radius: var(--radius-full);
       font-weight: 600;
       cursor: pointer;
       transition: all 0.3s ease;
-      position: relative;
-    }
-    .stat-value:hover {
-      color: #1565c0;
-      transform: translateY(-2px);
-    }
-    .stat-value::after {
-      content: '';
-      position: absolute;
-      bottom: -4px;
-      left: 0;
-      width: 100%;
-      height: 2px;
-      background: #1976d2;
-      transform: scaleX(0);
-      transition: transform 0.3s ease;
-    }
-    .stat-value:hover::after {
-      transform: scaleX(1);
-    }
-    .follow-btn, .unfollow-btn {
-      position: relative;
-      padding: 0.8rem 2rem;
-      font-size: 0.95rem;
-      font-weight: 600;
-      letter-spacing: 0.5px;
-      border-radius: 12px;
+      font-size: 1rem;
       border: none;
-      cursor: pointer;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      overflow: hidden;
-      z-index: 1;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      text-decoration: none;
     }
-    .follow-btn {
-      background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%);
-      color: #fff;
-      box-shadow: 0 4px 15px rgba(25, 118, 210, 0.12);
-      border: 2px solid #1976d2;
+    
+    .btn-follow {
+      background: linear-gradient(135deg, rgb(var(--color-primary)), rgb(var(--color-primary-dark)));
+      color: white;
+      box-shadow: 0 4px 12px rgba(var(--color-primary), 0.3);
     }
-    .unfollow-btn {
-      background: linear-gradient(135deg, #ff7676 0%, #ff9999 100%);
-      color: #fff;
-      box-shadow: 0 4px 15px rgba(255, 118, 118, 0.2);
-      border: 2px solid #ff7676;
-    }
-    .follow-btn:hover, .unfollow-btn:hover {
+    .btn-follow:hover {
       transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(25, 118, 210, 0.18);
-      opacity: 0.95;
+      box-shadow: 0 8px 16px rgba(var(--color-primary), 0.4);
     }
+    
+    .btn-unfollow {
+      background: transparent;
+      border: 2px solid #ef4444;
+      color: #ef4444;
+    }
+    .btn-unfollow:hover {
+      background: #ef4444;
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
+    }
+    
+    /* Decks Section */
     .decks-container {
-      width: 100%;
-      margin: auto;
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-radius: var(--radius-lg);
+      border: 1px solid rgba(255,255,255, 0.6);
+      padding: 2rem;
+      box-shadow: var(--shadow-sm);
     }
-    h1 {
-      color: #1976d2;
-      font-size: 2.5rem;
-      margin-bottom: 1rem;
+    body.theme-dark .decks-container {
+      background: rgba(30, 41, 59, 0.6);
+      border-color: rgba(255,255,255, 0.08);
+    }
+
+    .section-header {
+      font-size: 1.5rem;
       font-weight: 700;
+      margin-bottom: 1.5rem;
+      color: rgb(var(--color-text-main-light));
+    }
+    body.theme-dark .section-header { color: rgb(var(--color-text-main-dark)); }
+
+    /* New Table Style */
+    .table-responsive {
+      width: 100%;
+      overflow-x: auto;
     }
     table {
       width: 100%;
-      text-align: left;
-      background: #fff;
-      border: 2px solid #1976d2;
-      border-radius: 10px;
-      overflow: hidden;
-      margin-top: 2rem;
-      box-shadow: 0 2px 10px rgba(25, 118, 210, 0.08);
-    }
-    body.theme-dark table {
-      background: #181c23;
-      border-color: #1976d2;
-    }
-    th, td {
-      padding: 15px;
-      border-bottom: 1px solid #1976d2;
+      border-collapse: separate;
+      border-spacing: 0 0.8rem;
     }
     th {
-      font-size: 1.2rem;
-      font-weight: bold;
-      background: #e3f2fd;
-      color: #1976d2;
-      border-bottom: 2px solid #1976d2;
-    }
-    body.theme-dark th {
-      background: #23272f;
-      color: #1976d2;
+      text-align: left;
+      padding: 1rem;
+      color: rgb(var(--color-text-muted));
+      font-weight: 600;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
     }
     td {
-      font-size: 1.1rem;
+      background: rgba(var(--color-primary-light), 0.05);
+      padding: 1.25rem 1rem;
+      font-size: 1rem;
+      transition: transform 0.2s;
     }
-    tr:hover {
+    body.theme-dark td {
+      background: rgba(255,255,255,0.03);
+    }
+    
+    tr:hover td {
+      background: rgba(var(--color-primary), 0.05);
+      transform: scale(1.01);
       cursor: pointer;
-      background: #e3f2fd;
     }
-    body.theme-dark tr:hover {
-      background: #23272f;
+    body.theme-dark tr:hover td {
+      background: rgba(255,255,255,0.06);
     }
-    .link-action {
-      color: #1976d2;
-      cursor: pointer;
-    }
-    .link-action:hover {
-      color: #1565c0;
-      opacity: 0.8;
-    }
-    .add-deck-btn {
+
+    td:first-child { border-radius: var(--radius-md) 0 0 var(--radius-md); font-weight: 600; color: rgb(var(--color-primary)); }
+    td:last-child { border-radius: 0 var(--radius-md) var(--radius-md) 0; }
+
+    /* Floating Window for Followers */
+    .modal-overlay {
+      display: none;
       position: fixed;
-      bottom: 2rem;
-      right: 2rem;
-      background: linear-gradient(135deg, #1976d2, #1565c0);
-      color: white;
-      border: none;
-      border-radius: 50%;
-      width: 60px;
-      height: 60px;
-      font-size: 2rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      box-shadow: 0 4px 15px rgba(25, 118, 210, 0.18);
-      transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
-      z-index: 100;
-      text-decoration: none;
+      top: 0; left: 0;
+      width: 100%; height: 100vh;
+      background: rgba(0,0,0,0.4);
+      backdrop-filter: blur(4px);
+      z-index: 999;
+      opacity: 0;
+      transition: opacity 0.3s;
     }
-    .add-deck-btn:hover {
-      background: linear-gradient(135deg, #1565c0, #1976d2);
-      box-shadow: 0 6px 24px rgba(25, 118, 210, 0.25);
-      transform: scale(1.08);
+    .modal-overlay.active {
+      display: block;
+      opacity: 1;
     }
-    .add-deck-btn span {
-      margin-top: -2px;
-    }
-    /* Box survolante pour abonnés/abonnements */
+
     .follow-box {
       display: none;
       position: fixed;
-      top: 110px;
+      top: 50%;
       left: 50%;
-      transform: translateX(-50%) scale(0.95);
-      background: #fff;
-      color: #1976d2;
-      border: 2px solid #1976d2;
-      border-radius: 20px;
-      box-shadow: 0 10px 40px rgba(25, 118, 210, 0.10), 0 0 0 1px #1976d2;
-      backdrop-filter: blur(10px);
-      padding: 1.8rem;
+      transform: translate(-50%, -50%) scale(0.95);
+      background: rgb(var(--color-bg-light));
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: var(--radius-lg);
+      padding: 2rem;
       width: 90%;
-      max-width: 400px;
-      z-index: 9999;
+      max-width: 420px;
+      z-index: 1000;
+      box-shadow: var(--shadow-lg);
       opacity: 0;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
     body.theme-dark .follow-box {
-      background: #23272f;
-      color: #1976d2;
-      border-color: #1976d2;
+      background: rgb(var(--color-surface-dark));
+      border-color: rgba(255,255,255,0.1);
     }
+    
     .follow-box.active {
-      transform: translateX(-50%) scale(1);
+      display: block;
       opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
     }
+
     .follow-box-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
       margin-bottom: 1.5rem;
-      padding-bottom: 1rem;
-      border-bottom: 1px solid #1976d2;
+      font-size: 1.25rem;
+      font-weight: 700;
     }
-    .follow-box-title {
-      font-size: 1.5rem;
-      font-weight: 600;
-      color: #1976d2;
-      letter-spacing: -0.5px;
-    }
-    .follow-box-close {
-      background: #e3f2fd;
-      border: 1px solid #1976d2;
-      color: #1976d2;
-      font-size: 1.2rem;
-      cursor: pointer;
-      padding: 0.4rem;
-      border-radius: 12px;
-      width: 36px;
-      height: 36px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.2s ease;
-    }
-    .follow-box-close:hover {
-      background: #1976d2;
-      color: #fff;
-      transform: rotate(90deg);
-    }
-    body.theme-dark .follow-box-close {
-      background: #23272f;
-      color: #fff;
-      border-color: #1976d2;
-    }
-    body.theme-dark .follow-box-close:hover {
-      background: #1976d2;
-      color: #fff;
-    }
-    .follow-box-content {
-      max-height: 400px;
-      overflow-y: auto;
-      padding-right: 0.5rem;
-    }
+
     .follow-box-list {
       list-style: none;
-      margin: 0;
-      padding: 0;
+      max-height: 400px;
+      overflow-y: auto;
       display: flex;
       flex-direction: column;
       gap: 0.5rem;
     }
+    
     .follow-box-item {
-      padding: 0.8rem 1rem;
-      border-radius: 10px;
-      transition: all 0.2s ease;
-      border: 2px solid #1976d2; /* plus visible */
-      background: #e3f2fd;
-      text-align: center; /* centrer le texte */
-      margin-bottom: 0.7rem; /* espacement entre les items */
-      box-shadow: 0 2px 8px rgba(25, 118, 210, 0.07);
+      padding: 0.8rem;
+      border-radius: var(--radius-md);
+      background: rgba(0,0,0,0.03);
+      transition: background 0.2s;
     }
-    body.theme-dark .follow-box-item {
-      background: #23272f;
-      border-color: #1976d2;
+    body.theme-dark .follow-box-item { background: rgba(255,255,255,0.05); }
+    
+    .follow-box-item:hover {
+      background: rgba(var(--color-primary), 0.1);
     }
+    
     .follow-box-link {
-      color: #1976d2;
-      text-decoration: none;
-      font-size: 1.1rem;
-      transition: all 0.2s ease;
-      display: block;
-      text-align: center; /* centrer le texte */
+      color: rgb(var(--color-text-main-light));
       font-weight: 500;
-      letter-spacing: 0.5px;
+      text-decoration: none;
+      display: block;
     }
-    .follow-box-link:hover {
-      color: #1565c0;
+    body.theme-dark .follow-box-link { color: rgb(var(--color-text-main-dark)); }
+
+    .fab-add {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      width: 3.5rem;
+      height: 3.5rem;
+      background: linear-gradient(135deg, rgb(var(--color-primary)), rgb(var(--color-primary-dark)));
+      color: #fff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      box-shadow: var(--shadow-glow);
+      transition: all 0.3s;
+      z-index: 50;
+      text-decoration: none;
+    }
+    .fab-add:hover {
+      transform: scale(1.1) rotate(90deg);
+      box-shadow: 0 10px 30px rgba(37, 99, 235, 0.4);
+    }
+    .fab-add span { margin-top: -4px; }
+    
+    @media (max-width: 640px) {
+      .stats-grid { gap: 1.5rem; }
+      .profile-card { padding: 2rem 1rem; }
+      .profile-name { font-size: 1.5rem; }
     }
   </style>
 </head>
 <body>
   @include('components/header')
+
   <div class="main-content">
-    <div class="user-stats">
-      <div class="stat-item">
-        <span class="stat-label">Abonnés</span>
-        <span class="stat-value" id="followers-link">{{ followersCount }}</span>
+    
+    <!-- Profile Header -->
+    <div class="profile-card">
+       <div class="profile-avatar">
+          👤
+       </div>
+       <h1 class="profile-name">{{ user.username }}</h1>
+       
+       <div class="stats-grid">
+         <div class="stat-item" onclick="showFollowBox('followers-box')" id="followers-link">
+           <span class="stat-value">{{ followersCount }}</span>
+           <span class="stat-label">Abonnés</span>
+         </div>
+         <div class="stat-item" onclick="showFollowBox('following-box')" id="following-link">
+           <span class="stat-value">{{ followingCount }}</span>
+           <span class="stat-label">Abonnements</span>
+         </div>
+         <div class="stat-item">
+            <span class="stat-value" style="color: gray">{{ publicDecks.length }}</span>
+            <span class="stat-label">Decks Publics</span>
+         </div>
+       </div>
+
+       @if(authUser && authUser.id !== user.id)
+        <form action="{{ isFollowing ? route('user.unfollow', { id: user.id }) : route('user.follow', { id: user.id }) }}" method="POST">
+          {{ csrfField() }}
+          <button type="submit" class="btn {{ isFollowing ? 'btn-unfollow' : 'btn-follow' }}">
+            {{ isFollowing ? 'Se désabonner' : 'Suivre' }}
+          </button>
+        </form>
+       @endif
+    </div>
+
+    <!-- Decks List -->
+    <div class="decks-container">
+      <h2 class="section-header">Decks de {{ user.username }}</h2>
+      <div class="table-responsive">
+        <table>
+          <thead>
+            <tr>
+              <th>Titre</th>
+              <th>Description</th>
+              <th>Cartes</th>
+            </tr>
+          </thead>
+          <tbody>
+            @if(publicDecks.length)
+              @each(deck in publicDecks)
+                <tr onclick="window.location.href='/deck/{{ deck.id }}'">
+                  <td>{{ deck.title }}</td>
+                  <td style="color: rgb(var(--color-text-muted));">{{ deck.description || '-' }}</td>
+                  <td><b>{{ deck.cards.length }}</b></td>
+                </tr>
+              @end
+            @else
+              <tr>
+                <td colspan="3" style="text-align:center; color: rgb(var(--color-text-muted));">Aucun deck public disponible.</td>
+              </tr>
+            @endif
+          </tbody>
+        </table>
       </div>
-      <div class="stat-item">
-        <span class="stat-label">Abonnements</span>
-        <span class="stat-value" id="following-link">{{ followingCount }}</span>
-      </div>
-      @if(authUser.id !== user.id)
-      <form action="{{ isFollowing ? route('user.unfollow', { id: user.id }) : route('user.follow', { id: user.id }) }}" method="POST" style="margin:0;">
-        {{ csrfField() }}
-        <button type="submit" class="{{ isFollowing ? 'unfollow-btn' : 'follow-btn' }}">
-          {{ isFollowing ? 'Se désabonner' : 'Suivre' }}
-        </button>
-      </form>
+    </div>
+
+  </div>
+
+  <!-- Hidden Overlay for Modals -->
+  <div id="modal-overlay" class="modal-overlay" onclick="closeAllBoxes()"></div>
+
+  <!-- Followers Modal -->
+  <div id="followers-box" class="follow-box">
+    <div class="follow-box-header">
+      <span>Abonnés ({{ followersCount }})</span>
+      <button onclick="closeAllBoxes()" style="background:none; border:none; font-size:1.5rem; cursor:pointer; color:inherit;">&times;</button>
+    </div>
+    <div class="follow-box-list">
+      @if(followersList && followersList.length)
+        @each(f in followersList)
+          <div class="follow-box-item">
+            <a href="/public-account/{{ f.id }}" class="follow-box-link">{{ f.username }}</a>
+          </div>
+        @end
+      @else
+        <div style="text-align:center; color: rgb(var(--color-text-muted)); padding: 1rem;">Aucun abonné.</div>
       @endif
     </div>
-    <!-- Box survolante pour abonnés -->
-    <div id="followers-box" class="follow-box">
-      <div class="follow-box-header">
-        <span class="follow-box-title">Abonnés ({{ followersCount }})</span>
-        <button onclick="closeFollowersBox()" class="follow-box-close" aria-label="Fermer">×</button>
-      </div>
-      <div class="follow-box-content">
-        @if(followersList && followersList.length)
-          <ul class="follow-box-list">
-            @each(f in followersList)
-              <li class="follow-box-item">
-                <a href="/public-account/{{ f.id }}" class="follow-box-link">{{ f.username }}</a>
-              </li>
-            @endeach
-          </ul>
-        @else
-          <span>Aucun abonné.</span>
-        @endif
-      </div>
+  </div>
+
+  <!-- Following Modal -->
+  <div id="following-box" class="follow-box">
+    <div class="follow-box-header">
+      <span>Abonnements ({{ followingCount }})</span>
+      <button onclick="closeAllBoxes()" style="background:none; border:none; font-size:1.5rem; cursor:pointer; color:inherit;">&times;</button>
     </div>
-    <!-- Box survolante pour abonnements -->
-    <div id="following-box" class="follow-box">
-      <div class="follow-box-header">
-        <span class="follow-box-title">Abonnements ({{ followingCount }})</span>
-        <button onclick="closeFollowingBox()" class="follow-box-close" aria-label="Fermer">×</button>
-      </div>
-      <div class="follow-box-content">
-        @if(followingList && followingList.length)
-          <ul class="follow-box-list">
-            @each(f in followingList)
-              <li class="follow-box-item">
-                <a href="/public-account/{{ f.id }}" class="follow-box-link">{{ f.username }}</a>
-              </li>
-            @endeach
-          </ul>
-        @else
-          <span>Aucun abonnement.</span>
-        @endif
-      </div>
-    </div>
-    <script>
-      function showFollowBox(boxId) {
-        const box = document.getElementById(boxId);
-        box.style.display = 'block';
-        setTimeout(() => {
-          box.classList.add('active');
-        }, 10);
-      }
-      function hideFollowBox(boxId) {
-        const box = document.getElementById(boxId);
-        box.classList.remove('active');
-        setTimeout(() => {
-          box.style.display = 'none';
-        }, 300);
-      }
-      document.getElementById('followers-link').onclick = function(e) {
-        e.stopPropagation();
-        hideFollowBox('following-box');
-        showFollowBox('followers-box');
-      };
-      document.getElementById('following-link').onclick = function(e) {
-        e.stopPropagation();
-        hideFollowBox('followers-box');
-        showFollowBox('following-box');
-      };
-      function closeFollowersBox() {
-        hideFollowBox('followers-box');
-      }
-      function closeFollowingBox() {
-        hideFollowBox('following-box');
-      }
-      document.addEventListener('click', function(event) {
-        const fb = document.getElementById('followers-box');
-        const flb = document.getElementById('following-box');
-        if (fb && fb.style.display === 'block' && !fb.contains(event.target) && event.target.id !== 'followers-link') {
-          fb.style.display = 'none';
-        }
-        if (flb && flb.style.display === 'block' && !flb.contains(event.target) && event.target.id !== 'following-link') {
-          flb.style.display = 'none';
-        }
-      });
-    </script>
-    <h1>Decks de {{ user.username }} : {{ publicDecks.length }}</h1>
-    <div class="decks-container">
-      <table>
-        <thead>
-          <tr>
-            <th>Titre</th>
-            <th>Description</th>
-            <th>Cartes</th>
-          </tr>
-        </thead>
-        <tbody>
-          @if(publicDecks.length)
-            @each(deck in publicDecks)
-              <tr onclick="window.location.href='/deck/{{ deck.id }}'">
-                <td><a style="text-decoration: none; color: #1976d2" href="/deck/{{ deck.id }}">{{ deck.title }}</a></td>
-                <td>{{ deck.description }}</td>
-                <td>{{ deck.cards.length }}</td>
-              </tr>
-            @endeach
-          @else
-            <tr>
-              <td colspan="3">Aucun deck public disponible.</td>
-            </tr>
-          @endif
-        </tbody>
-      </table>
+    <div class="follow-box-list">
+      @if(followingList && followingList.length)
+        @each(f in followingList)
+           <div class="follow-box-item">
+            <a href="/public-account/{{ f.id }}" class="follow-box-link">{{ f.username }}</a>
+          </div>
+        @end
+      @else
+        <div style="text-align:center; color: rgb(var(--color-text-muted)); padding: 1rem;">Aucun abonnement.</div>
+      @endif
     </div>
   </div>
-  <a href="{{ route('decks.create') }}" class="add-deck-btn" title="Créer un nouveau deck">
+
+  <a href="{{ route('decks.create') }}" class="fab-add" title="Créer un nouveau deck">
     <span>+</span>
   </a>
+
+  <script>
+    function showFollowBox(boxId) {
+      document.getElementById('modal-overlay').classList.add('active');
+      const box = document.getElementById(boxId);
+      box.classList.add('active');
+    }
+
+    function closeAllBoxes() {
+      document.getElementById('modal-overlay').classList.remove('active');
+      document.querySelectorAll('.follow-box').forEach(box => {
+        box.classList.remove('active');
+      });
+    }
+
+    // Close on escape key
+    document.addEventListener('keydown', function(event) {
+      if (event.key === "Escape") {
+        closeAllBoxes();
+      }
+    });
+  </script>
 </body>
 </html>
