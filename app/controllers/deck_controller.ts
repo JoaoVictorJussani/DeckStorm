@@ -42,7 +42,7 @@ export default class DeckController {
   // Mise à jour d'un deck
   async update({ params, request, response, session, auth }: HttpContext) {
     const deck = await Deck.find(params.id);
-    if (deck && auth.user && deck.user_id  === auth.user.id) {
+    if (deck && auth.user && deck.user_id === auth.user.id) {
       const data = request.only(['title', 'description', 'visibility']);
 
       // Vérifie la longueur de la description
@@ -63,7 +63,7 @@ export default class DeckController {
   // Suppression d'un deck
   async destroy({ params, response, session, auth }: HttpContext) {
     const deck = await Deck.find(params.id); // Récupère le deck par ID
-    if (deck && auth.user && deck.user_id  === auth.user.id) { // Vérifie que l'utilisateur est le propriétaire
+    if (deck && auth.user && deck.user_id === auth.user.id) { // Vérifie que l'utilisateur est le propriétaire
       await deck.delete(); // Supprime le deck
       session.flash('success', 'Deck supprimé avec succès !'); // Message de succès
     } else {
@@ -80,21 +80,21 @@ export default class DeckController {
     const userId = auth.user.id
     const deckId = Number(params.id)
     const returnView = request.input('returnView')
-    
+
     const exists = await Like.query().where('user_id', userId).andWhere('deck_id', deckId).first()
     if (!exists) {
       await Like.create({ user_id: userId, deck_id: deckId })
     }
-    
+
     // Return to the same view
     if (returnView === 'list') {
-  // Récupère l'URL précédente
-  const referer = request.headers().referer || '/';
-  // Ajoute le paramètre view=list à l'URL précédente
-  const url = new URL(referer, `${request.protocol()}://${request.hostname()}`);
-  url.searchParams.set('view', 'list');
-  return response.redirect(url.pathname + url.search);
-}
+      // Récupère l'URL précédente
+      const referer = request.headers().referer || '/';
+      // Ajoute le paramètre view=list à l'URL précédente
+      const url = new URL(referer, `${request.protocol()}://${request.hostname()}`);
+      url.searchParams.set('view', 'list');
+      return response.redirect(url.pathname + url.search);
+    }
     return response.redirect().back()
   }
 
@@ -106,18 +106,18 @@ export default class DeckController {
     const userId = auth.user.id
     const deckId = Number(params.id)
     const returnView = request.input('returnView')
-    
+
     await Like.query().where('user_id', userId).andWhere('deck_id', deckId).delete()
-    
+
     // Return to the same view
     if (returnView === 'list') {
-  // Récupère l'URL précédente
-  const referer = request.headers().referer || '/';
-  // Ajoute le paramètre view=list à l'URL précédente
-  const url = new URL(referer, `${request.protocol()}://${request.hostname()}`);
-  url.searchParams.set('view', 'list');
-  return response.redirect(url.pathname + url.search);
-}
+      // Récupère l'URL précédente
+      const referer = request.headers().referer || '/';
+      // Ajoute le paramètre view=list à l'URL précédente
+      const url = new URL(referer, `${request.protocol()}://${request.hostname()}`);
+      url.searchParams.set('view', 'list');
+      return response.redirect(url.pathname + url.search);
+    }
     return response.redirect().back()
   }
 
@@ -128,7 +128,7 @@ export default class DeckController {
     }
     const userId = auth.user.id
     const deckId = Number(params.id)
-    
+
     const exists = await Like.query()
       .where('user_id', userId)
       .andWhere('deck_id', deckId)
@@ -154,7 +154,7 @@ export default class DeckController {
     }
     const userId = auth.user.id
     const deckId = Number(params.id)
-    
+
     await Like.query()
       .where('user_id', userId)
       .andWhere('deck_id', deckId)
@@ -169,4 +169,45 @@ export default class DeckController {
       likesCount: likesCount[0].$extras.total
     })
   }
+
+  // Convidar usuário para deck restrito
+  async inviteUser({ params, request, response, session, auth }: HttpContext) {
+    const deck = await Deck.find(params.id)
+    if (!deck || deck.visibility !== 'restricted' || !auth.user || deck.user_id !== auth.user.id) {
+      session.flash('error', 'Action non autorisée.')
+      return response.redirect().back()
+    }
+    const username = request.input('invite_username', '').trim()
+    if (!username) {
+      session.flash('error', 'Nom d\'utilisateur requis.')
+      return response.redirect().back()
+    }
+    // Busca usuário pelo nome
+    const User = (await import('#models/user')).default
+    const invitedUser = await User.findBy('username', username)
+    if (!invitedUser || invitedUser.id === auth.user.id) {
+      session.flash('error', 'Utilisateur invalide ou vous-même.')
+      return response.redirect().back()
+    }
+    // Atualiza allowed_users_ids
+    let allowed = deck.allowed_users_ids ?? []
+    if (!allowed.includes(invitedUser.id)) {
+      allowed.push(invitedUser.id)
+      deck.allowed_users_ids = allowed // Force reassign to trigger dirty state if needed, though pushing to array might not be enough for Lucid to detect change on JSON column sometimes, so reassignment is safer.
+      await deck.save()
+      // Notificação
+      const Notification = (await import('#models/notification')).default
+      await Notification.create({
+        user_id: invitedUser.id,
+        message: `Vous avez été invité à accéder au deck restreint «${deck.title}» (ID:${deck.id}) par «${auth.user.username}»`,
+        type: 'invite',
+        deck_id: deck.id,
+      })
+      session.flash('success', 'Utilisateur invité avec succès.')
+    } else {
+      session.flash('error', 'Utilisateur déjà autorisé.')
+    }
+    return response.redirect().back()
+  }
 }
+

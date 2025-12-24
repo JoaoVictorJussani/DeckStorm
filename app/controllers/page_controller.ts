@@ -35,28 +35,28 @@ export default class PageController {
       .preload('cards' as any)
       .preload('user' as any)
       .preload('likes' as any)
-      .withCount('likes'  as any)
+      .withCount('likes' as any)
       .orderBy('likes_count', 'desc')
       .limit(10);
 
     // Get top 5 creators by followers count
     const topCreatorsByFollowers = await User.query()
-      .withCount('followers'  as any)
+      .withCount('followers' as any)
       .orderBy('followers_count', 'desc')
       .limit(5);
 
     // Get top 5 creators by deck count
     const topCreatorsByDecks = await User.query()
-      .withCount('decks'  as any, (query) => {
-      query.where('visibility', 'public');
+      .withCount('decks' as any, (query) => {
+        query.where('visibility', 'public');
       })
-      .whereHas('decks'  as any, (query) => {
-      query.where('visibility', 'public');
+      .whereHas('decks' as any, (query) => {
+        query.where('visibility', 'public');
       })
       .orderBy('decks_count', 'desc')
       .limit(5);
 
-    return view.render('home', { 
+    return view.render('home', {
       user,
       topLikedDecks,
       topCreatorsByFollowers,
@@ -82,13 +82,13 @@ export default class PageController {
         builder
           .where('title', 'like', `%${query}%`)
           .orWhere('description', 'like', `%${query}%`)
-          .orWhereHas('user'  as any, (userQuery) => {
+          .orWhereHas('user' as any, (userQuery) => {
             userQuery.where('username', 'like', `%${query}%`);
           });
       })
       .preload('cards')
-      .preload('user'  as any)
-      .preload('likes'  as any)
+      .preload('user' as any)
+      .preload('likes' as any)
       .exec();
 
     interface SerializedDeck {
@@ -101,7 +101,7 @@ export default class PageController {
       hasLiked: deck.likes?.some((like: Like) => like.user_id === user?.id) || false,
     }));
 
-    return view.render('result_search', { 
+    return view.render('result_search', {
       user,
       publicDecks: decksWithLikeStatus,
       query,
@@ -118,15 +118,22 @@ export default class PageController {
     const userDecks = await Deck.query()
       .where('user_id', user.id)
       .preload('cards')
-      .preload('user'  as any);
+      .preload('user' as any);
     // Decks likés
     const likedDecks = await Deck.query()
       .whereIn('id', (await Like.query().where('user_id', user.id)).map(like => like.deck_id))
       .preload('cards')
-      .preload('user'  as any);
+      .preload('user' as any);
+    // Decks restreints auxquels j'ai accès
+    const restrictedDecks = await Deck.query()
+      .where('visibility', 'restricted')
+      .andWhereRaw('JSON_CONTAINS(allowed_users_ids, ?)', [String(user.id)])
+      .preload('cards')
+      .preload('user' as any);
+
     // Ajout des compteurs d'abonnés/abonnements et des listes
-    const followers = await Follow.query().where('following_id', user.id).preload('follower'  as any);
-    const following = await Follow.query().where('follower_id', user.id).preload('following'  as any);
+    const followers = await Follow.query().where('following_id', user.id).preload('follower' as any);
+    const following = await Follow.query().where('follower_id', user.id).preload('following' as any);
     // Extraction des utilisateurs
     const followersList = followers.map(f => f.follower);
     const followingList = following.map(f => f.following);
@@ -143,6 +150,7 @@ export default class PageController {
       user,
       userDecks,
       likedDecks,
+      restrictedDecks,
       followersCount: followers.length,
       followingCount: following.length,
       followersList,
@@ -165,10 +173,10 @@ export default class PageController {
       .where('user_id', user.id)
       .andWhere('visibility', 'public')
       .preload('cards')
-      .preload('user'  as any);
+      .preload('user' as any);
     // Followers/following count et listes
-    const followers = await Follow.query().where('following_id', user.id).preload('follower'  as any);
-    const following = await Follow.query().where('follower_id', user.id).preload('following'  as any);
+    const followers = await Follow.query().where('following_id', user.id).preload('follower' as any);
+    const following = await Follow.query().where('follower_id', user.id).preload('following' as any);
     const followersList = followers.map(f => f.follower);
     const followingList = following.map(f => f.following);
     let isFollowing = false;
@@ -203,8 +211,8 @@ export default class PageController {
   async showDeck({ params, view, auth }: HttpContext) {
     const deck = await Deck.query()
       .where('id', params.id)
-      .preload('user'  as any)
-      .preload('likes'  as any)
+      .preload('user' as any)
+      .preload('likes' as any)
       .first()
     if (!deck) {
       return view.render('./pages/errors/not_found')

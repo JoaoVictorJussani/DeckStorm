@@ -20,7 +20,13 @@ export default class Deck extends BaseModel {
   declare user_id: number;
 
   @column()
-  declare visibility: 'private' | 'public';
+  declare visibility: 'private' | 'public' | 'restricted';
+
+  @column({
+    prepare: (value: number[]) => JSON.stringify(value),
+    consume: (value: any) => typeof value === 'string' ? JSON.parse(value) : value,
+  })
+  declare allowed_users_ids?: number[]; // IDs dos usuários autorizados
 
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime;

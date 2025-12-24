@@ -306,6 +306,7 @@
         <select id="visibility" name="visibility" required>
           <option value="private" {{ deck.visibility === 'private' ? 'selected' : '' }}>Privé</option>
           <option value="public" {{ deck.visibility === 'public' ? 'selected' : '' }}>Public</option>
+          <option value="restricted" {{ deck.visibility === 'restricted' ? 'selected' : '' }}>Restreint</option>
         </select>
 
         <button type="submit" class="submit-button">Enregistrer</button>

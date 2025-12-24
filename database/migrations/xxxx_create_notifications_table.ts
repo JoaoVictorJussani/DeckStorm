@@ -11,7 +11,9 @@ export default class extends BaseSchema {
       table.string('type').notNullable()
       table.boolean('read').notNullable().defaultTo(false)
       table.timestamp('created_at', { useTz: true }).notNullable().defaultTo(this.now())
+      table.integer('deck_id').unsigned().nullable()
       table.foreign('user_id').references('id').inTable('t_user').onDelete('CASCADE')
+      table.foreign('deck_id').references('id').inTable('t_deck').onDelete('CASCADE')
     })
   }
 

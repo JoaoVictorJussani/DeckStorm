@@ -15,6 +15,7 @@ import CardController from '#controllers/card_controller'; // Contrôleur pour l
 import Card from '#models/card'; // Modèle Card
 import ExerciseController from '#controllers/exercise_controller'; // Contrôleur pour les exercices
 import FollowController from '#controllers/follow_controller'; // Contrôleur pour le suivi
+import User from '#models/user'
 import type { HttpContext } from '@adonisjs/core/http'; // Import du type HttpContext
 
 // Route pour la page d'accueil
@@ -43,7 +44,7 @@ router
 router
   .get('/deck/:id/edit', async ({ params, view, auth, response }) => {
     const deck = await Deck.find(params.id); // Récupère le deck par ID
-    if (deck && auth.user && deck.user_id  === auth.user.id) { // Vérifie que l'utilisateur est le propriétaire
+    if (deck && auth.user && deck.user_id === auth.user.id) { // Vérifie que l'utilisateur est le propriétaire
       return view.render('edit_deck', { deck, user: auth.use('web').user });
     }
     return response.redirect().toRoute('home'); // Redirige si l'utilisateur n'est pas le propriétaire
@@ -112,31 +113,45 @@ router
 
 // Route pour afficher un deck spécifique
 router
-  .get('/deck/:id', async ({ params, view, auth }) => {
+  .get('/deck/:id', async ({ params, view, auth, response }) => {
     const deck = await Deck.query()
       .where('id', params.id)
-      .andWhere((query) => {
-        if (auth.user) {
-          query.where('user_id', auth.user.id).orWhere('visibility', 'public'); // Autorise l'accès aux decks publics
-        } else {
-          query.where('visibility', 'public');
-        }
-      })
       .preload('cards') // Précharge les cartes
       .preload('user') // Précharge la relation utilisateur
       .preload('likes') // Précharger les likes
       .first();
 
+    if (!deck) {
+      return view.render('./pages/errors/not_found'); // Affiche une page 404 si le deck n'est pas trouvé
+    }
+
+    // Check visibility
+    let isAllowed = false;
+    if (deck.visibility === 'public') {
+      isAllowed = true;
+    } else if (auth.user) {
+      if (deck.user_id === auth.user.id) {
+        isAllowed = true;
+      } else if (deck.visibility === 'restricted') {
+        const allowed = deck.allowed_users_ids ?? [];
+        if (allowed.includes(auth.user.id)) {
+          isAllowed = true;
+        }
+      }
+    }
+
+    if (!isAllowed) {
+      // If not allowed, redirect or show error
+      // Maybe redirect to home with error
+      return response.redirect().toRoute('home');
+    }
+
     let hasLiked = false;
-    if (deck && auth.user) {
+    if (auth.user) {
       hasLiked = !!deck.likes.find(like => auth.user && like.user_id === auth.user.id);
     }
 
-    if (deck) {
-      return view.render('show_deck', { deck, user: auth.use('web').user, hasLiked });
-    } else {
-      return view.render('./pages/errors/not_found'); // Affiche une page 404 si le deck n'est pas trouvé
-    }
+    return view.render('show_deck', { deck, user: auth.use('web').user, hasLiked });
   })
   .as('decks.show')
   .use(middleware.auth());
@@ -189,7 +204,7 @@ router
 router
   .post('/deck/:deckId/card/:cardId/delete', async ({ params, auth, response, session }) => {
     const deck = await Deck.find(params.deckId); // Récupère le deck par ID
-    if (deck && auth.user && deck.user_id  === auth.user.id) { // Vérifie que l'utilisateur est le propriétaire
+    if (deck && auth.user && deck.user_id === auth.user.id) { // Vérifie que l'utilisateur est le propriétaire
       const card = await Card.find(params.cardId); // Récupère la carte par ID
       if (card) {
         await card.delete(); // Supprime la carte
@@ -317,8 +332,79 @@ router.group(() => {
   router
     .post('/api/decks/:id/like', '#controllers/deck_controller.apiLike')
     .as('api.decks.like')
-  
+
   router
     .post('/api/decks/:id/unlike', '#controllers/deck_controller.apiUnlike')
     .as('api.decks.unlike')
+}).use(middleware.auth())
+
+// Route pour inviter un utilisateur à rejoindre un deck
+router
+  .post('/deck/:id/invite-user', [DeckController, 'inviteUser'])
+  .as('decks.inviteUser')
+  .use(middleware.auth()); // Nécessite une authentification
+
+router.get('/api/user-suggestions', async ({ request, response }) => {
+  const query = request.input('query', '').trim()
+  if (!query || query.length < 1) return response.json([])
+  const users = await User.query()
+    .where('username', 'like', `%${query}%`)
+    .limit(8)
+    .select('username')
+  return response.json(users.map(u => u.username))
+})
+
+// Aceitar convite para deck restrito
+router.post('/deck/:id/accept-invite', async ({ params, auth, response, session }) => {
+  // Verifica autenticação
+  // Note: auth middleware ensures auth.user is set, checking it again is fine.
+  const user = auth.user
+  if (!user) return response.unauthorized('User not authenticated')
+
+  const deckId = Number(params.id)
+  const Deck = (await import('#models/deck')).default
+  const Notification = (await import('#models/notification')).default
+
+  const deck = await Deck.find(deckId)
+  if (!deck || deck.visibility !== 'restricted') {
+    session.flash('error', 'Deck non trouvé ou non restreint.')
+    return response.redirect().back()
+  }
+
+  // Adiciona usuário à lista de autorizados se não estiver
+  let allowed = deck.allowed_users_ids ?? []
+  if (!allowed.includes(user.id)) {
+    allowed.push(user.id)
+    deck.allowed_users_ids = allowed
+    await deck.save()
+  }
+
+  // Marca notificação como lida
+  await Notification.query()
+    .where('user_id', user.id)
+    .where('type', 'invite')
+    .andWhereRaw('message LIKE ?', [`%(ID:${deckId})%`])
+    .update({ read: true })
+
+  session.flash('success', 'Vous avez accepté l\'invitation pour ce deck.')
+  return response.redirect(`/deck/${deckId}`)
+}).use(middleware.auth())
+
+// Recusar convite para deck restrito
+router.post('/deck/:id/refuse-invite', async ({ params, auth, response, session }) => {
+  const user = auth.user
+  if (!user) return response.unauthorized('User not authenticated')
+
+  const deckId = Number(params.id)
+  const Notification = (await import('#models/notification')).default
+
+  // Marca notificação como lida
+  await Notification.query()
+    .where('user_id', user.id)
+    .where('type', 'invite')
+    .andWhereRaw('message LIKE ?', [`%(ID:${deckId})%`])
+    .update({ read: true })
+
+  session.flash('success', 'Invitation refusée.')
+  return response.redirect().back()
 }).use(middleware.auth())

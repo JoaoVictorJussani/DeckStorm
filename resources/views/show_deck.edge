@@ -521,6 +521,167 @@
     body.theme-dark #like-count {
       color: #e0e0e0;
     }
+
+    /* Botão de convite */
+    .invite-btn {
+      background: linear-gradient(90deg, #1976d2 60%, #1565c0 100%);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 0.7rem 1.5rem;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      margin-right: 0.5rem;
+      box-shadow: 0 2px 8px rgba(25, 118, 210, 0.10);
+      transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
+    }
+    .invite-btn:hover {
+      background: #1565c0;
+      transform: translateY(-2px) scale(1.05);
+      box-shadow: 0 4px 16px rgba(25, 118, 210, 0.18);
+    }
+    .invite-btn.refuse {
+      background: #fff;
+      color: #ff4d4d;
+      border: 2px solid #ff4d4d;
+      box-shadow: 0 2px 8px rgba(255,77,77,0.08);
+    }
+    .invite-btn.refuse:hover {
+      background: #ff4d4d;
+      color: #fff;
+      border-color: #ff4d4d;
+    }
+
+    /* Modal de convite */
+    /* Modal de convite premium */
+    .invite-modal {
+      display: none;
+      position: fixed;
+      z-index: 10000; /* Increased z-index */
+      top: 0; left: 0; right: 0; bottom: 0; /* Cover entire viewport */
+      background-color: rgba(0, 0, 0, 0.6); /* Darker background */
+      backdrop-filter: blur(5px); /* Reduced blur for clearer dark background */
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    .invite-modal.active {
+      display: flex;
+      opacity: 1;
+    }
+    .invite-modal-content {
+      background: #ffffff;
+      color: #333;
+      border-radius: 24px;
+      margin: auto; /* Extra safety for centering */
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); /* Better shadow */
+      padding: 3rem;
+      max-width: 480px;
+      width: 90%; /* flexible width */
+      position: relative;
+      text-align: center;
+      transform: translateY(20px);
+      transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .invite-modal.active .invite-modal-content {
+      transform: translateY(0);
+    }
+    body.theme-dark .invite-modal-content {
+      background: #1e222b;
+      color: #e6e9ef;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .invite-modal-close {
+      position: absolute;
+      top: 20px; right: 20px;
+      background: rgba(25, 118, 210, 0.1);
+      color: #1976d2;
+      border: none;
+      border-radius: 50%;
+      font-size: 1.5rem;
+      width: 40px; height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .invite-modal-close:hover {
+      background: #1976d2;
+      color: #fff;
+      transform: rotate(90deg);
+    }
+    body.theme-dark .invite-modal-close {
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+    }
+    body.theme-dark .invite-modal-close:hover {
+      background: #fff;
+      color: #1976d2;
+    }
+    
+    /* Input improvement inside modal */
+    .invite-modal-input {
+      width: 100%;
+      padding: 1rem 1.2rem;
+      margin-top: 0.5rem;
+      margin-bottom: 1.5rem;
+      border-radius: 12px;
+      border: 2px solid #e0e6ed;
+      background: #f8fafc;
+      font-size: 1rem;
+      color: #333;
+      transition: all 0.3s ease;
+    }
+    .invite-modal-input:focus {
+      border-color: #1976d2;
+      background: #fff;
+      outline: none;
+      box-shadow: 0 0 0 4px rgba(25, 118, 210, 0.1);
+    }
+    body.theme-dark .invite-modal-input {
+      background: #11141a;
+      border-color: #333;
+      color: #fff;
+    }
+    body.theme-dark .invite-modal-input:focus {
+      border-color: #1976d2;
+      box-shadow: 0 0 0 4px rgba(25, 118, 210, 0.2);
+    }
+    .invite-btn-main {
+      background: linear-gradient(135deg, #1976d2, #1565c0);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 0.8rem 1.5rem;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(25, 118, 210, 0.2);
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .invite-btn-main:hover {
+      background: linear-gradient(135deg, #1565c0, #0d47a1);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(25, 118, 210, 0.3);
+    }
+    .invite-btn-main::before {
+      content: '👤';
+      font-size: 1.2rem;
+    }
+    body.theme-dark .invite-btn-main {
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(20px);}
+      to { opacity: 1; transform: translateY(0);}
+    }
   </style>
 </head>
 <body>
@@ -634,8 +795,14 @@
       <!-- Fin QR Code et partage -->
       <p><strong>Description:</strong> {{ deck.description }}</p>
       <p><strong>Visibilité:</strong> 
-        <span title="{{ deck.visibility === 'public' ? 'Public' : 'Privé' }}">
-          {{ deck.visibility === 'public' ? '🔓 Public' : '🔒 Privé' }}
+        <span title="{{ deck.visibility === 'public' ? 'Public' : (deck.visibility === 'restricted' ? 'Restreint' : 'Privé') }}">
+          @if(deck.visibility === 'public')
+            🔓 Public
+          @elseif(deck.visibility === 'restricted')
+            🔐 Restreint
+          @else
+            🔒 Privé
+          @endif
         </span>
       </p>
       <p><strong>Créateur: </strong>
@@ -669,6 +836,15 @@
           </div>
         @endif
       </div>
+
+      @if(deck.visibility === 'restricted' && user && deck.user_id === user.id)
+        <div style="margin: 1.5rem 0; text-align: center;">
+          <button onclick="document.getElementById('inviteModal').classList.add('active')" class="invite-btn-main">
+            Inviter un utilisateur
+          </button>
+        </div>
+
+      @endif
     </div>
 
     <!-- Liste des cartes -->
@@ -810,5 +986,88 @@
   <a href="{{ route('decks.create') }}" class="add-deck-btn" title="Créer un nouveau deck">
     <span>+</span>
   </a>
+
+
+  <!-- Modal de convite (déplacé ici pour éviter les problèmes de superposition du backdrop-filter) -->
+  @if(deck.visibility === 'restricted' && user && deck.user_id === user.id)
+  <div id="inviteModal" class="invite-modal">
+    <div class="invite-modal-content">
+      <button class="invite-modal-close" onclick="document.getElementById('inviteModal').classList.remove('active')" title="Fermer">×</button>
+      <h2 style="color:#1976d2; margin-bottom:0.5rem; font-size:1.8rem; font-weight:700;">Inviter un utilisateur</h2>
+      <p style="color:#666; margin-bottom:2rem; font-size:1rem;">Entrez le nom d'utilisateur de la personne que vous souhaitez inviter.</p>
+      
+      <form action="/deck/{{ deck.id }}/invite-user" method="POST" autocomplete="off" style="width:100%;">
+        {{ csrfField() }}
+        <div style="text-align:left;">
+          <label for="invite_username" style="display:block; margin-bottom:0.5rem; font-weight:600; color:#1976d2; margin-left:4px;">Nom d'utilisateur</label>
+          <input type="text" name="invite_username" id="invite_username" required 
+                 class="invite-modal-input"
+                 placeholder="Ex: JohnDoe123" autocomplete="off" />
+        </div>
+        <div id="usernameSuggestions" style="margin-bottom:1.5rem; text-align:left; max-height:150px; overflow-y:auto;"></div>
+        
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1rem; margin-top:2rem;">
+          <button type="button" class="invite-btn refuse" onclick="document.getElementById('inviteModal').classList.remove('active')" 
+                  style="width:100%; border:2px solid #ddd; background:#f8fafc; color:#666; box-shadow:none;">
+            Annuler
+          </button>
+          <button type="submit" class="invite-btn-main" style="justify-content:center; width:100%;">
+            Envoyer l'invitation
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+  <script>
+    // Open modal function
+    function openInviteModal() {
+      document.getElementById('inviteModal').classList.add('active');
+    }
+
+    // Ferme le modal si clique en dehors
+    document.addEventListener('click', function(e) {
+      const modal = document.getElementById('inviteModal');
+      if (modal && modal.classList.contains('active') && e.target === modal) {
+        modal.classList.remove('active');
+      }
+    });
+
+    // Autocomplete username
+    const input = document.getElementById('invite_username');
+    const suggestionsBox = document.getElementById('usernameSuggestions');
+    let lastQuery = '';
+    if (input) {
+      input.addEventListener('input', async function() {
+        const query = input.value.trim();
+        if (!query) {
+          suggestionsBox.innerHTML = '';
+          return;
+        }
+        if (query === lastQuery) return;
+        lastQuery = query;
+        // Busca sugestões via AJAX
+        fetch(`/api/user-suggestions?query=${encodeURIComponent(query)}`)
+          .then(res => res.json())
+          .then(data => {
+            if (Array.isArray(data) && data.length) {
+              suggestionsBox.innerHTML = data.map(u =>
+                `<div style="padding:8px; cursor:pointer; border-bottom:1px solid #eee; transition:background 0.2s;" 
+                      onmouseover="this.style.background='#f0f4f8'" 
+                      onmouseout="this.style.background='transparent'"
+                      onclick="document.getElementById('invite_username').value='${u}'; document.getElementById('usernameSuggestions').innerHTML='';">
+                  ${u}
+                 </div>`
+              ).join('');
+            } else {
+              suggestionsBox.innerHTML = '<div style="color:#888; padding:8px; font-style:italic;">Aucun utilisateur trouvé</div>';
+            }
+          })
+          .catch(() => {
+            suggestionsBox.innerHTML = '';
+          });
+      });
+    }
+  </script>
+  @endif
 </body>
 </html>

@@ -20,4 +20,7 @@ export default class Notification extends BaseModel {
   declare read: boolean
   @column.dateTime({ autoCreate: true })
   declare created_at: DateTime
+
+  @column()
+  declare deck_id?: number
 }

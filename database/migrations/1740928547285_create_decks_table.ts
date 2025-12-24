@@ -11,7 +11,8 @@ export default class extends BaseSchema {
       table.text('description'); // Colonne pour la description
       table.integer('user_id').unsigned().notNullable(); // Colonne pour l'ID utilisateur
       table.foreign('user_id').references('id').inTable('t_user').onDelete('CASCADE'); // Clé étrangère vers la table utilisateur
-      table.string('visibility').notNullable().defaultTo('private'); // Colonne pour la visibilité
+      table.string('visibility').notNullable().defaultTo('private'); // Colonne pour la visibilidade
+      table.json('allowed_users_ids').nullable(); // IDs autorizados para decks restritos
       table.timestamps(true); // Colonnes pour les dates de création et de mise à jour
     });
   }

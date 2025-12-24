@@ -1009,8 +1009,64 @@
             </table>
           </div>
         </div>
-      </div>
+  <div class="decks-section" style="margin-top:2rem; grid-column: 1 / -1; width: 100%;">
+    <h1>Decks Restreints autorisés ({{ restrictedDecks?.length || 0 }})</h1>
+    <input type="text" id="restrictedDeckSearch" onkeyup="searchRestrictedDecks()" placeholder="Rechercher dans les decks restreints..." class="search-input" style="width: 100%; max-width: 400px; margin-bottom: 1rem;">
+    <div style="overflow-x: auto;">
+      <table style="width: 100%; text-align: left; border-collapse: separate; border-spacing: 0 0.8rem;">
+        <thead>
+          <tr>
+            <th style="padding: 1rem; color: #666; font-weight: 600;">Titre</th>
+            <th style="padding: 1rem; color: #666; font-weight: 600;">Description</th>
+            <th style="padding: 1rem; color: #666; font-weight: 600;">Cartes</th>
+            <th style="padding: 1rem; color: #666; font-weight: 600;">Créateur</th>
+          </tr>
+        </thead>
+        <tbody id="restrictedDecksTableBody">
+          @if(restrictedDecks && restrictedDecks.length > 0)
+            @each(deck in restrictedDecks)
+              <tr style="cursor: pointer;" onclick="window.location.href='/deck/{{ deck.id }}'">
+                <td style="font-weight: 600; color: #1976d2;">{{ deck.title }}</td>
+                <td>{{ deck.description.length > 50 ? deck.description.substring(0, 50) + '...' : deck.description }}</td>
+                <td>{{ deck.cards ? deck.cards.length : 0 }}</td>
+                <td>{{ deck.user.username }}</td>
+              </tr>
+            @endeach
+          @else
+            <tr>
+              <td colspan="4">Aucun deck restreint accessible.</td>
+            </tr>
+          @endif
+        </tbody>
+      </table>
     </div>
+  </div>
+
+  <script>
+    function searchRestrictedDecks() {
+      const input = document.getElementById('restrictedDeckSearch');
+      const filter = input.value.toLowerCase();
+      const tbody = document.getElementById('restrictedDecksTableBody');
+      const rows = tbody.getElementsByTagName('tr');
+      // Si "Aucun deck" est affiché, ne rien faire
+      if (rows.length === 1 && rows[0].innerText.includes('Aucun deck')) return; 
+
+      for (let row of rows) {
+        const titleCell = row.getElementsByTagName('td')[0];
+        const descriptionCell = row.getElementsByTagName('td')[1];
+        if (titleCell && descriptionCell) {
+          const title = titleCell.textContent || titleCell.innerText;
+          const description = descriptionCell.textContent || descriptionCell.innerText;
+          if (title.toLowerCase().indexOf(filter) > -1 || description.toLowerCase().indexOf(filter) > -1) {
+            row.style.display = '';
+          } else {
+            row.style.display = 'none';
+          }
+        }
+      }
+    }
+  </script>
+  </div>
   </div>
   <!-- Box survolante pour abonnés -->
   <div id="followers-box" class="follow-box">

@@ -297,6 +297,89 @@
       margin: 0 1rem;
     }
   }
+
+  /* Botão de convite */
+  .invite-btn {
+    background: linear-gradient(90deg, #1976d2 60%, #1565c0 100%);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 0.6rem 1.3rem;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin-right: 0.5rem;
+    box-shadow: 0 2px 8px rgba(25, 118, 210, 0.10);
+    transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
+  }
+  .invite-btn:hover {
+    background: #1565c0;
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 4px 16px rgba(25, 118, 210, 0.18);
+  }
+  .invite-btn.refuse {
+    background: #fff;
+    color: #ff4d4d;
+    border: 2px solid #ff4d4d;
+    box-shadow: 0 2px 8px rgba(255,77,77,0.08);
+  }
+  .invite-btn.refuse:hover {
+    background: #ff4d4d;
+    color: #fff;
+    border-color: #ff4d4d;
+  }
+
+  /* Modal de convite */
+  .invite-modal {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    left: 0; top: 0;
+    width: 100vw; height: 100vh;
+    background: rgba(25, 118, 210, 0.18);
+    backdrop-filter: blur(4px);
+    align-items: center;
+    justify-content: center;
+  }
+  .invite-modal.active {
+    display: flex;
+  }
+  .invite-modal-content {
+    background: #fff;
+    color: #1976d2;
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(25, 118, 210, 0.18);
+    padding: 2.5rem 2rem 2rem 2rem;
+    max-width: 400px;
+    width: 90vw;
+    position: relative;
+    text-align: center;
+    animation: slideIn 0.3s ease;
+  }
+  body.theme-dark .invite-modal-content {
+    background: #181c23;
+    color: #e6e9ef;
+  }
+  .invite-modal-close {
+    position: absolute;
+    top: 12px; right: 18px;
+    background: #e3f2fd;
+    color: #1976d2;
+    border: none;
+    border-radius: 50%;
+    font-size: 1.3rem;
+    width: 36px; height: 36px;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+  }
+  .invite-modal-close:hover {
+    background: #1976d2;
+    color: #fff;
+  }
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateY(20px);}
+    to { opacity: 1; transform: translateY(0);}
+  }
 </style>
 
 <div class="header-navbar">
@@ -353,15 +436,14 @@
                   <div style="font-size:0.85em;color:#888;margin-top:2px;">
                     {{ n.created_at?.toRelative ? n.created_at.toRelative() : n.created_at }}
                   </div>
-                  @if(n.type === 'invite')
-                    @set(deckId = n.message.match(/\(ID:(\d+)\)/) ? n.message.match(/\(ID:(\d+)\)/)[1] : '')
-                    <form action="/deck/{{ deckId }}/accept-invite" method="POST" style="display:inline;">
+                  @if(n.type === 'invite' && n.deck_id)
+                    <form action="/deck/{{ n.deck_id }}/accept-invite" method="POST" style="display:inline;">
                       {{ csrfField() }}
-                      <button type="submit" style="margin-right:0.5rem;">Accepter</button>
+                      <button type="submit" class="invite-btn">Accepter</button>
                     </form>
-                    <form action="/deck/{{ deckId }}/refuse-invite" method="POST" style="display:inline;">
+                    <form action="/deck/{{ n.deck_id }}/refuse-invite" method="POST" style="display:inline;">
                       {{ csrfField() }}
-                      <button type="submit">Refuser</button>
+                      <button type="submit" class="invite-btn refuse">Refuser</button>
                     </form>
                   @endif
                 </li>
@@ -410,6 +492,22 @@
       <li>Partagez vos decks publics avec le QR code ou le lien.</li>
       <li>Survolez les boutons pour plus d'infos.</li>
     </ul>
+  </div>
+</div>
+
+<!-- Modal de convite (exemplo, pode ser ativado via JS) -->
+<div id="invite-modal" class="invite-modal">
+  <div class="invite-modal-content">
+    <button class="invite-modal-close" onclick="document.getElementById('invite-modal').classList.remove('active')">×</button>
+    <div id="invite-modal-message">Você foi convidado para um deck restrito!</div>
+    <form id="invite-accept-form" method="POST" style="margin-top:1.5rem;">
+      {{ csrfField() }}
+      <button type="submit" class="invite-btn">Accepter</button>
+    </form>
+    <form id="invite-refuse-form" method="POST" style="margin-top:0.5rem;">
+      {{ csrfField() }}
+      <button type="submit" class="invite-btn refuse">Refuser</button>
+    </form>
   </div>
 </div>
 
