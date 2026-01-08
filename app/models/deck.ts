@@ -28,6 +28,15 @@ export default class Deck extends BaseModel {
   })
   declare allowed_users_ids?: number[]; // IDs dos usuários autorizados
 
+  @column({
+    prepare: (value: string[]) => JSON.stringify(value),
+    consume: (value: any) => typeof value === 'string' ? JSON.parse(value) : value,
+  })
+  declare allowed_modes?: string[]; // Modes d'exercice autorisés
+
+  @column()
+  declare attempt_limit: number | null; // Limite de tentatives (null = illimité)
+
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime;
 

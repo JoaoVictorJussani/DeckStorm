@@ -277,9 +277,38 @@
       padding: 0 5px;
     }
 
-    body.theme-dark .counter {
-      color: #1976d2;
-      background: transparent;
+      body.theme-dark .counter {
+        color: #1976d2;
+        background: transparent;
+      }
+
+    /* Styles Checkbox (Global) */
+    .checkbox-group {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      margin-bottom: 1.2rem;
+      width: 100%;
+    }
+    .checkbox-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 0.8rem;
+      width: 100%;
+    }
+    .checkbox-item input[type="checkbox"] {
+      width: auto;
+      margin: 0 12px 0 0; /* Marge droite pour séparer du texte, pas de marge bas */
+      box-shadow: none;
+      transform: scale(1.2); /* Légèrement plus grand */
+      cursor: pointer;
+    }
+    .checkbox-item label {
+      margin: 0;
+      font-weight: normal;
+      font-size: 1.05rem;
+      cursor: pointer;
+      padding-top: 2px; /* Ajustement fin */
     }
   </style>
 </head>
@@ -308,6 +337,36 @@
           <option value="public" {{ deck.visibility === 'public' ? 'selected' : '' }}>Public</option>
           <option value="restricted" {{ deck.visibility === 'restricted' ? 'selected' : '' }}>Restreint</option>
         </select>
+
+        <label>Modes autorisés :</label>
+        <div class="checkbox-group">
+          <div class="checkbox-item">
+            <input type="checkbox" id="mode_chronometre" name="allowed_modes[]" value="chronometre" 
+              {{ !deck.allowed_modes || deck.allowed_modes.includes('chronometre') ? 'checked' : '' }}>
+            <label for="mode_chronometre">Chronomètre</label>
+          </div>
+          <div class="checkbox-item">
+            <input type="checkbox" id="mode_basique" name="allowed_modes[]" value="basique" 
+              {{ !deck.allowed_modes || deck.allowed_modes.includes('basique') ? 'checked' : '' }}>
+            <label for="mode_basique">Basique</label>
+          </div>
+          <div class="checkbox-item">
+            <input type="checkbox" id="mode_jusquaubout" name="allowed_modes[]" value="jusquaubout" 
+              {{ !deck.allowed_modes || deck.allowed_modes.includes('jusquaubout') ? 'checked' : '' }}>
+            <label for="mode_jusquaubout">Jusqu'au bout</label>
+          </div>
+          <div class="checkbox-item">
+            <input type="checkbox" id="mode_quiz" name="allowed_modes[]" value="quiz" 
+              {{ !deck.allowed_modes || deck.allowed_modes.includes('quiz') ? 'checked' : '' }}>
+            <label for="mode_quiz">Quiz</label>
+          </div>
+        </div>
+
+        <label for="attempt_limit">Date limite (facultatif) :</label>
+        <div style="font-size: 0.9rem; color: #666; margin-bottom: 0.5rem; text-align: left;">
+          Laissez vide pour un nombre illimité de tentatives.
+        </div>
+        <input type="number" id="attempt_limit" name="attempt_limit" min="1" placeholder="Ex: 3" value="{{ deck.attempt_limit !== null ? deck.attempt_limit : '' }}" />
 
         <button type="submit" class="submit-button">Enregistrer</button>
         <button type="button" class="abandon-button" onclick="window.location.href='{{ route('home') }}'">Abandonner</button>

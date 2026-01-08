@@ -22,6 +22,56 @@ export default class ExerciseController {
     let attempts = parseInt(request.input('attempts', '1'), 10) || 1
     const direction = request.input('direction', 'question')
     const user = auth?.user // Ajout de l'utilisateur authentifié
+
+    // Vérifier la limite de tentatives si elle existe
+    if (user && deck.attempt_limit !== null) {
+      const ExerciseAttempt = (await import('#models/exercise_attempt')).default
+
+      // Compter les sessions uniques de cet utilisateur pour ce deck
+      /* 
+         On compte les sessions basées sur le temps comme dans le rapport (pas idéal en SQL direct sans ID de session). 
+         Alternative simple : compter le nombre de fois où l'utilisateur a répondu à au moins une carte de ce deck (groupé par heure/minute ?).
+         
+         Mieux : Compter combien de fois `finish` a été appelé ? Non, on n'a pas de table "sessions".
+         On va approximer : Une "tentative" est une suite d'essais groupés dans le temps.
+         PLUS SIMPLE : Si on veut limiter le nombre de fois qu'on *fait* le deck, on peut compter le nombre d'enregistrements 'distinct created_at rounded to minute' ?
+         
+         Approche robuste : compter le nombre d'essais enregistrés (ExerciseAttempt) qui sont espacés de plus de X minutes.
+         
+         Cependant, pour l'instant, on va utiliser une logique simple : 
+         Si l'utilisateur a fait des essais, on va essayer de compter les "groupes".
+         
+         Pour faire simple et efficace sans grosse requête complexe :
+         On récupère toutes les dates d'essais pour ce user/deck, on les trie, et on compte les "trous" > 5 minutes.
+      */
+
+      const attemptsDates = await ExerciseAttempt.query()
+        .where('user_id', user.id)
+        .where('deck_id', deck.id)
+        .orderBy('created_at', 'asc')
+        .select('created_at')
+
+      let sessionCount = 0
+      if (attemptsDates.length > 0) {
+        sessionCount = 1
+        for (let i = 1; i < attemptsDates.length; i++) {
+          const prev = attemptsDates[i - 1].createdAt
+          const curr = attemptsDates[i].createdAt
+          const diff = curr.diff(prev, 'minutes').minutes
+          if (diff >= 1) { // Même seuil que le rapport (1 minute)
+            sessionCount++
+          }
+        }
+      }
+
+      if (sessionCount >= deck.attempt_limit) {
+        // Rediriger ou afficher une erreur
+        // On peut utiliser une vue d'erreur ou flash message
+        // Comme c'est un GET, on return une vue d'info
+        return view.render('pages/errors/limit_reached', { deck })
+      }
+    }
+
     return view.render('start', { deck, cards, retryCardIds, attempts, direction, user })
   }
 

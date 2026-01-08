@@ -6,6 +6,14 @@ export default class DeckController {
   // Création d'un deck
   async store({ request, response, session, auth }: HttpContext) {
     const data = request.only(['title', 'description', 'visibility']); // Récupère uniquement les champs nécessaires
+    const allowedModes = request.input('allowed_modes', [])
+
+    // Vérifie qu'au moins un mode est sélectionné
+    if (allowedModes.length === 0) {
+      session.flash('error', 'Vous devez sélectionner au moins un mode d\'exercice.');
+      session.flash('old', data);
+      return response.redirect().back();
+    }
 
     // Vérifie si un deck avec le même titre existe déjà
     const existingDeck = await Deck.findBy('title', data.title);
@@ -22,10 +30,14 @@ export default class DeckController {
       return response.redirect().back();
     }
 
+    const attemptLimit = request.input('attempt_limit') ? parseInt(request.input('attempt_limit')) : null;
+
     const deck = new Deck();
     deck.title = data.title; // Définit le titre
     deck.description = data.description; // Définit la description
     deck.visibility = data.visibility; // Définit la visibilité
+    deck.allowed_modes = allowedModes; // Définit les modes autorisés
+    deck.attempt_limit = attemptLimit;
     if (auth.user) {
       deck.user_id = auth.user.id; // Associe le deck à l'utilisateur connecté
     } else {
@@ -44,6 +56,13 @@ export default class DeckController {
     const deck = await Deck.find(params.id);
     if (deck && auth.user && deck.user_id === auth.user.id) {
       const data = request.only(['title', 'description', 'visibility']);
+      const allowedModes = request.input('allowed_modes', [])
+      const attemptLimit = request.input('attempt_limit') ? parseInt(request.input('attempt_limit')) : null;
+
+      if (allowedModes.length === 0) {
+        session.flash('error', 'Vous devez sélectionner au moins un mode d\'exercice.');
+        return response.redirect().back();
+      }
 
       // Vérifie la longueur de la description
       if (data.description.length > 125) {
@@ -52,6 +71,8 @@ export default class DeckController {
       }
 
       deck.merge(data);
+      deck.allowed_modes = allowedModes;
+      deck.attempt_limit = attemptLimit;
       await deck.save();
       session.flash('success', 'Deck mis à jour avec succès !');
     } else {
@@ -190,33 +211,50 @@ export default class DeckController {
       .orderBy('user_id')
       .orderBy('created_at', 'desc')
 
-    // Group by user
-    const reportByUser = new Map<number, { user: any, attempts: any[], correctCount: number, wrongCount: number }>()
+    // Group by (user, session)
+    // We assume a session is defined by attempts happening within a short window (e.g. 5 minutes)
+    const reports: any[] = []
+    let currentReport: any = null
 
     for (const attempt of attempts) {
       if (!attempt.user) continue
 
-      if (!reportByUser.has(attempt.user.id)) {
-        reportByUser.set(attempt.user.id, {
-          user: attempt.user,
-          attempts: [],
-          correctCount: 0,
-          wrongCount: 0
-        })
+      let addToCurrent = false
+      if (currentReport) {
+        const sameUser = currentReport.user.id === attempt.user.id
+        // Time difference in minutes
+        // attempts are ordered desc, so current attempt is older or equal to currentReport.date
+        const diffMinutes = Math.abs(attempt.createdAt.diff(currentReport.date, 'minutes').minutes)
+
+        // Threshold: 1 minute (attempts are saved in bulk at finish, so same session attempts have identical or very close timestamps)
+        if (sameUser && diffMinutes < 1) {
+          addToCurrent = true
+        }
       }
 
-      const userReport = reportByUser.get(attempt.user.id)!
-      userReport.attempts.push(attempt)
-      if (attempt.isCorrect) {
-        userReport.correctCount++
+      if (addToCurrent) {
+        currentReport.attempts.push(attempt)
+        if (attempt.isCorrect) {
+          currentReport.correctCount++
+        } else {
+          currentReport.wrongCount++
+        }
       } else {
-        userReport.wrongCount++
+        // Create new report session
+        currentReport = {
+          user: attempt.user,
+          date: attempt.createdAt,
+          attempts: [attempt],
+          correctCount: attempt.isCorrect ? 1 : 0,
+          wrongCount: attempt.isCorrect ? 0 : 1
+        }
+        reports.push(currentReport)
       }
     }
 
     return view.render('deck_report', {
       deck,
-      reportByUser: Array.from(reportByUser.values())
+      reportByUser: reports
     })
   }
 
@@ -258,6 +296,63 @@ export default class DeckController {
       session.flash('error', 'Utilisateur déjà autorisé.')
     }
     return response.redirect().back()
+  }
+  async exportReport({ params, response, auth }: HttpContext) {
+    const deck = await Deck.find(params.id)
+    if (!deck) {
+      return response.notFound('Deck not found')
+    }
+
+    if (!auth.user || deck.user_id !== auth.user.id) {
+      return response.redirect().toRoute('home')
+    }
+
+    const ExerciseAttempt = (await import('#models/exercise_attempt')).default
+
+    // Fetch all attempts for this deck same as report
+    const attempts = await ExerciseAttempt.query()
+      .where('deck_id', deck.id)
+      .preload('user')
+      .preload('card')
+      .orderBy('user_id')
+      .orderBy('created_at', 'desc')
+
+    const ExcelJS = (await import('exceljs')).default
+    const workbook = new ExcelJS.Workbook()
+    const worksheet = workbook.addWorksheet('Rapport')
+
+    worksheet.columns = [
+      { header: 'Utilisateur', key: 'user', width: 20 },
+      { header: 'Question', key: 'question', width: 40 },
+      { header: 'Réponse', key: 'status', width: 15 },
+      { header: 'Date', key: 'date', width: 20 },
+    ]
+
+    attempts.forEach((attempt) => {
+      if (!attempt.user) return
+      const row = worksheet.addRow({
+        user: attempt.user.username,
+        question: attempt.card ? attempt.card.question : 'Carte supprimée',
+        status: attempt.isCorrect ? 'Correct' : 'Incorrect',
+        date: attempt.createdAt.toFormat('dd/MM/yyyy HH:mm'),
+      })
+
+      // Optional conditional formatting
+      if (attempt.isCorrect) {
+        row.getCell('status').font = { color: { argb: 'FF008000' } } // Green
+      } else {
+        row.getCell('status').font = { color: { argb: 'FFFF0000' } } // Red
+      }
+    })
+
+    // Header styling
+    worksheet.getRow(1).font = { bold: true, size: 12 }
+
+    response.header('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response.header('Content-Disposition', `attachment; filename="Rapport-${deck.title.replace(/[^a-z0-9]/gi, '_')}.xlsx"`)
+
+    const buffer = await workbook.xlsx.writeBuffer()
+    return response.send(buffer)
   }
 }
 

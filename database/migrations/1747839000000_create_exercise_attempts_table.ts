@@ -4,7 +4,8 @@ export default class extends BaseSchema {
     protected tableName = 'exercise_attempts'
 
     async up() {
-        this.schema.createTable(this.tableName, (table) => {
+        /*
+        this.schema.createTableIfNotExists(this.tableName, (table) => {
             table.increments('id')
             table.integer('user_id').unsigned().references('id').inTable('users').onDelete('CASCADE')
             table.integer('deck_id').unsigned().references('id').inTable('decks').onDelete('CASCADE')
@@ -14,6 +15,7 @@ export default class extends BaseSchema {
             table.timestamp('created_at')
             table.timestamp('updated_at')
         })
+    */
     }
 
     async down() {

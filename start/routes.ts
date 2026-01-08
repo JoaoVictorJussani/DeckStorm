@@ -162,6 +162,12 @@ router
   .as('decks.report')
   .use(middleware.auth());
 
+// Route pour exporter le rapport de deck en Excel
+router
+  .get('/deck/:id/report/export', [DeckController, 'exportReport'])
+  .as('decks.report.export')
+  .use(middleware.auth());
+
 // Route pour abandonner la création d'un deck
 router
   .get('/deck/abandon', async ({ response }) => {

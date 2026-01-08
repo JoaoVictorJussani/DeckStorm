@@ -263,10 +263,18 @@
               </span>
             </label>
             <select id="mode-select" name="mode" required>
-              <option value="chronometre">Mode chronométré</option>
-              <option value="basique">Mode basique</option>
-              <option value="jusquaubout">Mode jusqu'au bout</option>
-              <option value="quiz">Mode Quiz</option>
+              @if(!deck.allowed_modes || deck.allowed_modes.includes('chronometre'))
+                <option value="chronometre">Mode chronométré</option>
+              @endif
+              @if(!deck.allowed_modes || deck.allowed_modes.includes('basique'))
+                <option value="basique">Mode basique</option>
+              @endif
+              @if(!deck.allowed_modes || deck.allowed_modes.includes('jusquaubout'))
+                <option value="jusquaubout">Mode jusqu'au bout</option>
+              @endif
+              @if(!deck.allowed_modes || deck.allowed_modes.includes('quiz'))
+                <option value="quiz">Mode Quiz</option>
+              @endif
             </select>
           </div>
           <div class="form-row">

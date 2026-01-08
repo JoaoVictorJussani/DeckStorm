@@ -305,6 +305,40 @@
         right: 8px;
         bottom: 4px;
       }
+      .counter {
+        font-size: 0.85rem;
+        right: 8px;
+        bottom: 4px;
+      }
+    }
+    
+    /* Styles Checkbox (Global) */
+    .checkbox-group {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      margin-bottom: 1.2rem;
+      width: 100%;
+    }
+    .checkbox-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 0.8rem;
+      width: 100%;
+    }
+    .checkbox-item input[type="checkbox"] {
+      width: auto;
+      margin: 0 12px 0 0; /* Marge droite pour séparer du texte, pas de marge bas */
+      box-shadow: none;
+      transform: scale(1.2); /* Légèrement plus grand */
+      cursor: pointer;
+    }
+    .checkbox-item label {
+      margin: 0;
+      font-weight: normal;
+      font-size: 1.05rem;
+      cursor: pointer;
+      padding-top: 2px; /* Ajustement fin */
     }
   </style>
 </head>
@@ -343,6 +377,32 @@
           <option value="public" {{ flashMessages.get('old.visibility', 'private') === 'public' ? 'selected' : '' }}>Public</option>
           <option value="restricted" {{ flashMessages.get('old.visibility', 'private') === 'restricted' ? 'selected' : '' }}>Restreint</option>
         </select>
+
+        <label>Modes autorisés :</label>
+        <div class="checkbox-group">
+          <div class="checkbox-item">
+            <input type="checkbox" id="mode_chronometre" name="allowed_modes[]" value="chronometre" checked>
+            <label for="mode_chronometre">Chronomètre</label>
+          </div>
+          <div class="checkbox-item">
+            <input type="checkbox" id="mode_basique" name="allowed_modes[]" value="basique" checked>
+            <label for="mode_basique">Basique</label>
+          </div>
+          <div class="checkbox-item">
+            <input type="checkbox" id="mode_jusquaubout" name="allowed_modes[]" value="jusquaubout" checked>
+            <label for="mode_jusquaubout">Jusqu'au bout</label>
+          </div>
+          <div class="checkbox-item">
+            <input type="checkbox" id="mode_quiz" name="allowed_modes[]" value="quiz" checked>
+            <label for="mode_quiz">Quiz</label>
+          </div>
+        </div>
+
+        <label for="attempt_limit">Tentatives limitées (facultatif) :</label>
+        <div style="font-size: 0.9rem; color: #666; margin-bottom: 0.5rem; text-align: left;">
+          Laissez vide pour un nombre illimité de tentatives.
+        </div>
+        <input type="number" id="attempt_limit" name="attempt_limit" min="1" placeholder="Ex: 3" value="{{ flashMessages.get('old.attempt_limit', '') }}" />
 
         <button type="submit" class="submit-button">Créer</button>
         <button type="button" class="abandon-button" onclick="window.location.href='{{ route('home') }}'">Abandonner</button>
