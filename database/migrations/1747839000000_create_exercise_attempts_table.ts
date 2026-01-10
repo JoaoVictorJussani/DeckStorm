@@ -4,18 +4,16 @@ export default class extends BaseSchema {
     protected tableName = 'exercise_attempts'
 
     async up() {
-        /*
         this.schema.createTableIfNotExists(this.tableName, (table) => {
             table.increments('id')
-            table.integer('user_id').unsigned().references('id').inTable('users').onDelete('CASCADE')
-            table.integer('deck_id').unsigned().references('id').inTable('decks').onDelete('CASCADE')
-            table.integer('card_id').unsigned().references('id').inTable('cards').onDelete('CASCADE')
+            table.integer('user_id').unsigned().references('id').inTable('t_user').onDelete('CASCADE')
+            table.integer('deck_id').unsigned().references('id').inTable('t_deck').onDelete('CASCADE')
+            table.integer('card_id').unsigned().references('id').inTable('t_card').onDelete('CASCADE')
             table.boolean('is_correct').notNullable()
 
             table.timestamp('created_at')
             table.timestamp('updated_at')
         })
-    */
     }
 
     async down() {

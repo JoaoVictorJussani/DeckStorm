@@ -2,376 +2,307 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <title>Modifier un deck</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Modifier le deck - DeckStorm</title>
   <link rel="shortcut icon" href="/images/icone.ico" type="image/x-icon">
   <script>
-    // Apply theme as early as possible to avoid flash
     (function() {
       let theme = localStorage.getItem('theme');
-      if (!theme) {
-        theme = 'theme-light';
-      }
+      if (!theme) theme = 'theme-light';
+      document.documentElement.className = theme;
       document.addEventListener('DOMContentLoaded', function() {
-        document.body.classList.remove('theme-light', 'theme-dark');
-        document.body.classList.add(theme);
+        document.body.className = theme;
       });
-      if (document.body) {
-        document.body.classList.remove('theme-light', 'theme-dark');
-        document.body.classList.add(theme);
-      }
     })();
   </script>
   <style>
+    :root {
+      /* Palette Clean (Slate/Zinc) */
+      --primary: #3b82f6; 
+      --primary-dark: #2563eb;
+      
+      --bg-body: #f8fafc;
+      --bg-card: #ffffff;
+      
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      
+      --border: #e2e8f0;
+      
+      --danger: #ef4444;
+      --warning: #f59e0b;
+    }
+
+    .theme-dark {
+      --primary: #60a5fa;
+      --primary-dark: #3b82f6;
+      
+      --bg-body: #0f172a;
+      --bg-card: #1e293b;
+      
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      
+      --border: #334155;
+    }
+
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
 
     body {
-      background: #fff;
-      color: #222;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg-body);
+      color: var(--text-main);
       display: flex;
       flex-direction: column;
       align-items: center;
       min-height: 100vh;
-      font-size: 1rem;
-      line-height: 1.6;
-       
+      padding-top: 70px;
+      transition: background-color 0.2s, color 0.2s;
     }
-
-    body.theme-light {
-      background: #fff;
-      color: #222;
-       
-    }
-
-    body.theme-dark {
-      background: #0a0c10;
-      color: #e6e9ef;
-       
-    }
-
-    .navbar {
+    
+    .container {
       width: 100%;
-      padding: 1rem 2rem;
+      max-width: 700px;
+      padding: 3rem 1.5rem;
       display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: rgba(255,255,255,0.95);
-      border-bottom: 2px solid #1976d2;
-      position: fixed;
-      top: 0;
-      left: 0;
-      z-index: 10;
-      backdrop-filter: blur(8px);
-      box-shadow: 0 2px 15px rgba(25, 118, 210, 0.10);
-      transition: all 0.3s ease;
+      flex-direction: column;
+      gap: 2rem;
     }
 
-    body.theme-dark .navbar {
-      background: rgba(10,12,16,0.95);
-      border-bottom-color: #1976d2;
-    }
-
-    .navbar h2 {
-      font-size: 1.8rem;
-      font-weight: 700;
-    }
-
-    .navbar button {
-      background: #1976d2;
-      color: white;
-      border: 2px solid #1976d2;
-      padding: 0.7rem 1.2rem;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 1rem;
-      transition: background 0.3s ease;
-    }
-
-    .navbar button:hover {
-      background: #008c95;
-    }
-
-    /* Dropdown styles */
-    .dropdown {
-      position: relative;
-      display: inline-block;
-    }
-    .dropdown-toggle {
-      background: #1976d2;
-      color: white;
-      border: 2px solid #1976d2;
-      padding: 0.7rem 1.2rem;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 1rem;
-      transition: background 0.3s ease;
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-    .dropdown-toggle:hover, .dropdown-toggle:focus {
-      background: #008c95;
-      color: #fff;
-    }
-    .dropdown-menu {
-      display: none;
-      position: absolute;
-      right: 0;
-      background: #222;
-      min-width: 180px;
-      // box-shadow: 0 2px 10px rgba(0,173,181,0.15);
-      border: 1px solid #1976d2;
-      border-radius: 8px;
-      z-index: 100;
-      margin-top: 0.5rem;
-      padding: 0.5rem 0;
-    }
-    .dropdown.open .dropdown-menu {
-      display: block;
-    }
-    .dropdown-menu a, .dropdown-menu button {
-      display: block;
-      width: 100%;
-      background: none;
-      border: none;
-      color: #1976d2;
-      text-align: left;
-      padding: 0.7rem 1.2rem;
-      font-size: 1rem;
-      font-weight: 600;
-      cursor: pointer;
-      border-radius: 6px;
-      transition: background 0.2s, color 0.2s;
-      text-decoration: none;
-    }
-    .dropdown-menu a:hover, .dropdown-menu button:hover {
-      background: #1976d2;
-      color: #000;
-    }
-    .dropdown-menu .logout-btn {
-      color: #ff4d4d;
-    }
-    .dropdown-menu .logout-btn:hover {
-      background: #ff4d4d;
-      color: #000;
-    }
-
-    .main-content {
-      margin-top: 120px;
+    .page-header {
       text-align: center;
-      padding: 3rem 2rem;
-      width: 100%;
+      margin-bottom: 0.5rem;
+    }
+    .page-title {
+      font-size: 2rem;
+      font-weight: 800;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .page-subtitle {
+      color: var(--text-muted);
+      font-size: 1rem;
     }
 
-    h1 {
-      font-size: 3rem;
+    .edit-form-card {
+      background: var(--bg-card);
+      border-radius: 16px;
+      padding: 2.5rem;
+      box-shadow: 0 10px 30px -10px rgba(0,0,0,0.1);
+      border: 1px solid var(--border);
+    }
+
+    .form-group {
       margin-bottom: 1.5rem;
-      color: #1976d2;
-      font-weight: 700;
     }
 
-    .form-container {
-      width: 95%;
-      max-width: 600px;
-      margin: auto;
-      background: rgba(255,255,255,0.92);
-      padding: 2rem;
-      border-radius: 12px;
-      border: 1px solid rgba(25, 118, 210, 0.10);
-      box-shadow: 0 4px 20px rgba(25, 118, 210, 0.08);
-      backdrop-filter: blur(4px);
-    }
-
-    body.theme-dark .form-container {
-      background: rgba(35, 39, 47, 0.92);
-      border-color: rgba(25, 118, 210, 0.15);
-    }
-
-    label {
-      font-size: 1.2rem;
+    .form-label {
       display: block;
-      margin-top: 15px;
-      color: #1976d2;
-      text-align: left;
+      font-weight: 600;
+      font-size: 0.95rem;
+      margin-bottom: 0.5rem;
+      color: var(--text-main);
     }
 
-    .description-container {
-      position: relative;
+    .form-helper {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-top: 0.3rem;
+    }
+
+    .form-input, .form-textarea, .form-select {
       width: 100%;
+      padding: 0.8rem 1rem;
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      background: var(--bg-body);
+      color: var(--text-main);
+      font-size: 1rem;
+      transition: all 0.2s;
+      font-family: inherit;
+    }
+
+    .form-textarea { min-height: 100px; resize: vertical; }
+
+    .form-input:focus, .form-textarea:focus, .form-select:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+      background: var(--bg-card);
+    }
+    
+    .char-counter {
+      text-align: right;
+      font-size: 0.8rem;
+      color: var(--text-muted);
       margin-top: 5px;
     }
 
-    input, textarea, select {
-      width: 100%;
-      padding: 10px;
-      border-radius: 8px;
-      border: 2px solid rgba(25, 118, 210, 0.25);
-      font-size: 1rem;
-      background: rgba(255,255,255,0.9);
-      color: #222;
-      transition: all 0.3s ease;
+    /* Checkbox Group */
+    .checkbox-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-top: 0.5rem;
     }
-
-    body.theme-dark input,
-    body.theme-dark textarea,
-    body.theme-dark select {
-      background: rgba(17, 19, 23, 0.9);
-      color: #e6e9ef;
-      border-color: rgba(25, 118, 210, 0.3);
-    }
-
-    input:focus, textarea:focus, select:focus {
-      outline: none;
-      border-color: #1976d2;
-      box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.2);
-    }
-
-    .submit-button {
-      background: #1976d2;
-      color: white;
-      border: none;
-      padding: 0.8rem 1.5rem;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 1.1rem;
-      font-weight: 600;
-      transition: all 0.3s ease;
-      box-shadow: 0 2px 8px rgba(25, 118, 210, 0.15);
-    }
-
-    .submit-button:hover {
-      background: #1565c0;
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(25, 118, 210, 0.2);
-    }
-
-    .abandon-button {
-      background: transparent;
-      color: #ff4d4d;
-      border: 2px solid #ff4d4d;
-      padding: 0.8rem 1.5rem;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 1.1rem;
-      font-weight: 600;
-      transition: all 0.3s ease;
-    }
-
-    .abandon-button:hover {
-      background: #ff4d4d;
-      color: white;
-      transform: translateY(-2px);
-    }
-
-    .counter {
-      position: absolute;
-      bottom: 8px;
-      right: 10px;
-      font-size: 0.8rem;
-      color: #1976d2;
-      padding: 0 5px;
-    }
-
-      body.theme-dark .counter {
-        color: #1976d2;
-        background: transparent;
-      }
-
-    /* Styles Checkbox (Global) */
-    .checkbox-group {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      margin-bottom: 1.2rem;
-      width: 100%;
-    }
-    .checkbox-item {
+    .checkbox-card {
       display: flex;
       align-items: center;
-      margin-bottom: 0.8rem;
-      width: 100%;
+      gap: 10px;
+      padding: 1rem;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.2s;
     }
-    .checkbox-item input[type="checkbox"] {
-      width: auto;
-      margin: 0 12px 0 0; /* Marge droite pour séparer du texte, pas de marge bas */
-      box-shadow: none;
-      transform: scale(1.2); /* Légèrement plus grand */
+    .checkbox-card:hover {
+      background: var(--bg-body);
+      border-color: var(--primary);
+    }
+    .checkbox-card input {
+      transform: scale(1.3);
       cursor: pointer;
     }
-    .checkbox-item label {
-      margin: 0;
-      font-weight: normal;
-      font-size: 1.05rem;
+
+    .actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-top: 2.5rem;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.8rem 1.5rem;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 1rem;
       cursor: pointer;
-      padding-top: 2px; /* Ajustement fin */
+      border: none;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: white;
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(59, 130, 246, 0.4);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+    }
+    .btn-secondary:hover {
+      background: rgba(0,0,0,0.05);
+      color: var(--text-main);
+      border-color: var(--text-muted);
+    }
+    .theme-dark .btn-secondary:hover { background: rgba(255,255,255,0.05); }
+
+    .card-icon {
+      font-size: 3rem;
+      text-align: center;
+      margin-bottom: 1rem;
+      animation: float 3s ease-in-out infinite;
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
     }
   </style>
 </head>
 <body>
   @include('components/header')
 
-  <div class="main-content">
-    <h1>Modifier le deck</h1>
-    <div class="form-container">
-      <form action="{{ route('decks.update', { id: deck.id }) }}" method="POST">
-        {{ csrfField() }}
-        <label for="title">Titre du deck :</label>
-        <input type="text" id="title" name="title" value="{{ deck.title }}" required />
-
-        <label for="description">Description :</label>
-        <div class="description-container">
-          <textarea id="description" name="description" maxlength="125" required>{{ deck.description }}</textarea>
-          <div class="counter">
-            <span id="charCount">0</span><span>/125</span>
-          </div>
-        </div>
-
-        <label for="visibility">Visibilité :</label>
-        <select id="visibility" name="visibility" required>
-          <option value="private" {{ deck.visibility === 'private' ? 'selected' : '' }}>Privé</option>
-          <option value="public" {{ deck.visibility === 'public' ? 'selected' : '' }}>Public</option>
-          <option value="restricted" {{ deck.visibility === 'restricted' ? 'selected' : '' }}>Restreint</option>
-        </select>
-
-        <label>Modes autorisés :</label>
-        <div class="checkbox-group">
-          <div class="checkbox-item">
-            <input type="checkbox" id="mode_chronometre" name="allowed_modes[]" value="chronometre" 
-              {{ !deck.allowed_modes || deck.allowed_modes.includes('chronometre') ? 'checked' : '' }}>
-            <label for="mode_chronometre">Chronomètre</label>
-          </div>
-          <div class="checkbox-item">
-            <input type="checkbox" id="mode_basique" name="allowed_modes[]" value="basique" 
-              {{ !deck.allowed_modes || deck.allowed_modes.includes('basique') ? 'checked' : '' }}>
-            <label for="mode_basique">Basique</label>
-          </div>
-          <div class="checkbox-item">
-            <input type="checkbox" id="mode_jusquaubout" name="allowed_modes[]" value="jusquaubout" 
-              {{ !deck.allowed_modes || deck.allowed_modes.includes('jusquaubout') ? 'checked' : '' }}>
-            <label for="mode_jusquaubout">Jusqu'au bout</label>
-          </div>
-          <div class="checkbox-item">
-            <input type="checkbox" id="mode_quiz" name="allowed_modes[]" value="quiz" 
-              {{ !deck.allowed_modes || deck.allowed_modes.includes('quiz') ? 'checked' : '' }}>
-            <label for="mode_quiz">Quiz</label>
-          </div>
-        </div>
-
-        <label for="attempt_limit">Date limite (facultatif) :</label>
-        <div style="font-size: 0.9rem; color: #666; margin-bottom: 0.5rem; text-align: left;">
-          Laissez vide pour un nombre illimité de tentatives.
-        </div>
-        <input type="number" id="attempt_limit" name="attempt_limit" min="1" placeholder="Ex: 3" value="{{ deck.attempt_limit !== null ? deck.attempt_limit : '' }}" />
-
-        <button type="submit" class="submit-button">Enregistrer</button>
-        <button type="button" class="abandon-button" onclick="window.location.href='{{ route('home') }}'">Abandonner</button>
-      </form>
+  <div class="container">
+    <div class="page-header">
+      <div class="card-icon">⚙️</div>
+      <h1 class="page-title">Configuration du Deck</h1>
+      <p class="page-subtitle">Modifiez les paramètres de votre deck</p>
     </div>
+
+    <form class="edit-form-card" action="{{ route('decks.update', { id: deck.id }) }}" method="POST">
+      {{ csrfField() }}
+      
+      <!-- Titre -->
+      <div class="form-group">
+        <label class="form-label" for="title">Titre</label>
+        <input class="form-input" type="text" id="title" name="title" value="{{ deck.title }}" required placeholder="Mon super deck" />
+      </div>
+
+      <!-- Description -->
+      <div class="form-group">
+        <label class="form-label" for="description">Description</label>
+        <textarea class="form-textarea" id="description" name="description" maxlength="125" required placeholder="Description courte (125 car. max)">{{ deck.description }}</textarea>
+        <div class="char-counter">
+          <span id="charCount">0</span>/125
+        </div>
+      </div>
+
+      <!-- Visibilité -->
+      <div class="form-group">
+        <label class="form-label" for="visibility">Visibilité</label>
+        <select class="form-select" id="visibility" name="visibility" required>
+          <option value="private" {{ deck.visibility === 'private' ? 'selected' : '' }}>🔒 Privé(e)</option>
+          <option value="public" {{ deck.visibility === 'public' ? 'selected' : '' }}>🌍 Public</option>
+          <option value="restricted" {{ deck.visibility === 'restricted' ? 'selected' : '' }}>🔐 Restreint (Invitation uniquement)</option>
+        </select>
+        <div class="form-helper">Qui peut voir et utiliser ce deck ?</div>
+      </div>
+
+      <!-- Modes -->
+      <div class="form-group">
+        <label class="form-label">Modes d'exercice autorisés</label>
+        <div class="checkbox-grid">
+          <label class="checkbox-card">
+            <input type="checkbox" name="allowed_modes[]" value="chronometre" {{ !deck.allowed_modes || deck.allowed_modes.includes('chronometre') ? 'checked' : '' }}>
+            Chronométré ⏱
+          </label>
+          <label class="checkbox-card">
+            <input type="checkbox" name="allowed_modes[]" value="basique" {{ !deck.allowed_modes || deck.allowed_modes.includes('basique') ? 'checked' : '' }}>
+            Basique 📝
+          </label>
+          <label class="checkbox-card">
+            <input type="checkbox" name="allowed_modes[]" value="jusquaubout" {{ !deck.allowed_modes || deck.allowed_modes.includes('jusquaubout') ? 'checked' : '' }}>
+            Jusqu'au bout 🔥
+          </label>
+          <label class="checkbox-card">
+            <input type="checkbox" name="allowed_modes[]" value="quiz" {{ !deck.allowed_modes || deck.allowed_modes.includes('quiz') ? 'checked' : '' }}>
+            Quiz ❓
+          </label>
+        </div>
+      </div>
+
+      <!-- Tentatives -->
+      <div class="form-group">
+        <label class="form-label" for="attempt_limit">Limite de tentatives</label>
+        <input class="form-input" type="number" id="attempt_limit" name="attempt_limit" min="1" placeholder="Illimité" value="{{ deck.attempt_limit !== null ? deck.attempt_limit : '' }}" />
+        <div class="form-helper">Laissez vide pour un nombre illimité de tentatives.</div>
+      </div>
+
+      <div class="actions">
+        <!-- CORRECTED LINK FROM route('home') TO route('decks.show', {id: deck.id}) -->
+        <button type="button" class="btn btn-secondary" onclick="window.location.href='{{ route('decks.show', { id: deck.id }) }}'">
+          Annuler
+        </button>
+        <button type="submit" class="btn btn-primary">
+          Sauvegarder
+        </button>
+      </div>
+    </form>
   </div>
 
   <script>
@@ -381,20 +312,12 @@
     function updateCounter() {
       const currentLength = textarea.value.length;
       charCount.textContent = currentLength;
-      
-      // Change la couleur quand on approche de la limite
-      if (currentLength >= 100) {
-        charCount.style.color = '#ff4d4d'; // Rouge
-      } else if (currentLength >= 80) {
-        charCount.style.color = '#ffa500'; // Orange
-      } else {
-        charCount.style.color = '#1976d2'; // Couleur par défaut
-      }
+      if (currentLength >= 100) charCount.style.color = '#ef4444'; 
+      else if (currentLength >= 80) charCount.style.color = '#f59e0b';
+      else charCount.style.color = 'inherit';
     }
 
-    // Initialisation au chargement
     document.addEventListener('DOMContentLoaded', updateCounter);
-    // Mise à jour à chaque changement
     textarea.addEventListener('input', updateCounter);
   </script>
 </body>

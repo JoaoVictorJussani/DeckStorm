@@ -2,326 +2,349 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <title>Commencer l'exercice</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Commencer - DeckStorm</title>
   <link rel="shortcut icon" href="/images/icone.ico" type="image/x-icon">
+  <script>
+    (function() {
+      let theme = localStorage.getItem('theme');
+      if (!theme) theme = 'theme-light';
+      document.documentElement.className = theme;
+      // Sync to body on load
+      document.addEventListener('DOMContentLoaded', function() {
+        document.body.className = theme;
+      });
+    })();
+  </script>
   <style>
+    :root {
+      /* Palette Clean (Slate/Zinc) */
+      --primary: #3b82f6; 
+      --primary-dark: #2563eb;
+      
+      --bg-body: #f8fafc;
+      --bg-card: #ffffff;
+      
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      
+      --border: #e2e8f0;
+      
+      --success: #22c55e;
+      --warning: #f59e0b;
+    }
+
+    .theme-dark {
+      --primary: #60a5fa;
+      --primary-dark: #3b82f6;
+      
+      --bg-body: #0f172a;
+      --bg-card: #1e293b;
+      
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      
+      --border: #334155;
+    }
+
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
+
     body {
-      background: #f7faff;
-      color: #222;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg-body);
+      color: var(--text-main);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
       min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center; /* Ajouté pour centrage vertical */
-      font-size: 1rem;
-      transition: background 0.5s, color 0.5s;
+      padding: 2rem 1rem;
+      transition: background-color 0.2s, color 0.2s;
     }
-    body.theme-dark {
-      background: #0a0c10;
-      color: #e0e0e0;
-    }
-    .main-wrapper {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      min-height: 80vh;
+    
+    /* Universal Theme Selectors */
+    .theme-light body, body.theme-light { background: var(--bg-body); color: var(--text-main); }
+    .theme-dark body, body.theme-dark { background: var(--bg-body); color: var(--text-main); }
+
+    .container {
       width: 100%;
+      max-width: 1100px;
+      margin-top: 4rem;
+      gap: 2rem;
+      display: grid;
+      grid-template-columns: 2fr 1fr;
     }
-    .exercise-card {
-      background: #fff;
-      border-radius: 20px;
-      box-shadow: 0 8px 32px rgba(25, 118, 210, 0.12), 0 1.5px 8px rgba(25, 118, 210, 0.06);
-      padding: 2.5rem 2.5rem 2rem 2.5rem;
-      max-width: 480px;
-      width: 100%;
-      margin: 2rem auto 0 auto;
+    @media (max-width: 850px) {
+      .container { grid-template-columns: 1fr; }
+    }
+
+    /* Cards */
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 2rem;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
       display: flex;
       flex-direction: column;
-      align-items: stretch;
-      transition: background 0.4s, box-shadow 0.4s;
     }
-    body.theme-dark .exercise-card {
-      background: #181c23;
-      box-shadow: 0 8px 32px rgba(25, 118, 210, 0.18);
-    }
-    h1 {
-      font-size: 2.2rem;
-      margin-bottom: 2.2rem;
-      color: #1976d2;
+
+    .section-title {
+      font-size: 1.25rem;
       font-weight: 700;
-      text-align: center;
-      letter-spacing: -1px;
-      line-height: 1.2;
-      text-shadow: 0 2px 12px #1976d222;
+      margin-bottom: 1.5rem;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
     }
-    .exercise-form label {
-      font-size: 1.15rem;
+
+    .section-subtitle {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
       font-weight: 600;
-      color: #1976d2;
-      margin-bottom: 0.5rem;
-      display: block;
-      letter-spacing: 0.2px;
-      transition: color 0.3s;
+      margin-bottom: 1rem;
     }
-    body.theme-dark .exercise-form label {
-      color: #90caf9;
+
+    /* Radio Group Grid */
+    .radio-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
     }
-    .exercise-form select {
-      width: 100%;
-      background: #f2f6fc;
-      color: #1976d2;
-      border: 2px solid #1976d2;
-      padding: 0.9rem 1.2rem;
-      border-radius: 10px;
-      font-size: 1.1rem;
-      font-weight: 600;
-      margin-bottom: 1.3rem;
-      margin-top: 0.2rem;
-      transition: background 0.3s, color 0.3s, border 0.3s;
-      outline: none;
-    }
-    .exercise-form select:focus {
-      border-color: #1565c0;
-      background: #e3f2fd;
-    }
-    body.theme-dark .exercise-form select {
-      background: #23272f;
-      color: #90caf9;
-      border-color: #1976d2;
-    }
-    body.theme-dark .exercise-form select:focus {
-      background: #181c23;
-      border-color: #90caf9;
-    }
-    .helpbox {
-      display: inline-block;
-      margin-left: 0.5rem;
-      vertical-align: middle;
+
+    /* Radio Card Component */
+    .radio-card {
       position: relative;
     }
-    .helpbox-btn {
-      background: #1976d2;
-      color: #fff;
-      border: none;
-      border-radius: 50%;
-      width: 28px;
-      height: 28px;
-      font-size: 1.1rem;
-      font-weight: bold;
-      cursor: pointer;
-      transition: background 0.2s;
-      margin-left: 0.2rem;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 2px 8px rgba(25, 118, 210, 0.10);
-    }
-    .helpbox-btn:hover, .helpbox-btn:focus {
-      background: #1565c0;
-      outline: none;
-    }
-    .helpbox-content {
-      display: none;
+
+    .radio-card input[type="radio"] {
       position: absolute;
-      left: 120%;
-      top: 50%;
-      transform: translateY(-50%);
-      min-width: 260px;
-      background: #fff;
-      color: #222;
-      border: 2px solid #1976d2;
-      border-radius: 10px;
-      box-shadow: 0 4px 20px rgba(25, 118, 210, 0.10);
-      padding: 1rem 1.2rem;
-      z-index: 200;
-      font-size: 1rem;
-      text-align: left;
-      line-height: 1.5;
+      opacity: 0;
+      width: 0;
+      height: 0;
     }
-    body.theme-dark .helpbox-content {
-      background: #23272f;
-      color: #e0e0e0;
-      border-color: #1976d2;
-    }
-    .helpbox-content strong {
-      color: #1976d2;
-    }
-    .helpbox.open .helpbox-content {
-      display: block;
-    }
-    .exercise-form .form-row {
-      margin-bottom: 1.5rem;
+
+    .radio-card-label {
       display: flex;
       flex-direction: column;
-    }
-    .exercise-form .form-actions {
-      display: flex;
-      gap: 1.2rem;
-      margin-top: 1.5rem;
-      justify-content: flex-end;
-    }
-    .exercise-form button, .exercise-form .abandon-button {
-      padding: 0.9rem 2.2rem;
+      height: 100%;
+      padding: 1.25rem;
+      background: var(--bg-card);
+      border: 2px solid var(--border);
       border-radius: 10px;
-      font-size: 1.15rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .radio-card-label:hover {
+      border-color: var(--primary);
+      background: rgba(59, 130, 246, 0.02);
+    }
+    .theme-dark .radio-card-label:hover { background: rgba(59, 130, 246, 0.1); }
+
+    /* Checked State */
+    .radio-card input[type="radio"]:checked + .radio-card-label {
+      border-color: var(--primary);
+      background: rgba(59, 130, 246, 0.05);
+      box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+    }
+    
+    .mode-icon {
+      font-size: 1.5rem;
+      margin-bottom: 0.8rem;
+    }
+    
+    .mode-title {
+      font-weight: 700;
+      font-size: 1rem;
+      margin-bottom: 0.4rem;
+      color: var(--text-main);
+    }
+    
+    .mode-desc {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+
+    /* Stats / Info Side */
+    .deck-stat-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.8rem 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.95rem;
+    }
+    .deck-stat-row:last-child { border-bottom: none; }
+    
+    .stat-label { color: var(--text-muted); }
+    .stat-val { font-weight: 600; color: var(--text-main); }
+
+    /* Primary Action Button */
+    .btn-start {
+      width: 100%;
+      padding: 1.2rem;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 1.1rem;
       font-weight: 700;
       cursor: pointer;
-      border: none;
-      box-shadow: 0 2px 8px rgba(25, 118, 210, 0.08);
-      transition: background 0.2s, color 0.2s, box-shadow 0.2s;
-      outline: none;
+      transition: background 0.2s;
+      margin-top: 1rem;
     }
-    .exercise-form button[type="submit"] {
-      background: linear-gradient(90deg, #1976d2 60%, #1565c0 100%);
-      color: #fff;
-      border: 2px solid #1976d2;
-    }
-    .exercise-form button[type="submit"]:hover {
-      background: #1565c0;
-      color: #fff;
-      box-shadow: 0 4px 16px rgba(25, 118, 210, 0.18);
-    }
-    .exercise-form .abandon-button {
-      background: #fff;
-      color: #ff4d4d;
-      border: 2px solid #ff4d4d;
-    }
-    .exercise-form .abandon-button:hover {
-      background: #ff4d4d;
-      color: #fff;
-      border-color: #ff4d4d;
-    }
-    body.theme-dark .exercise-form .abandon-button {
-      background: #23272f;
-      color: #ff4d4d;
-      border-color: #ff4d4d;
-    }
-    body.theme-dark .exercise-form .abandon-button:hover {
-      background: #ff4d4d;
-      color: #fff;
-    }
-    .error-message {
-      color: #ff4d4d;
-      background: rgba(255,77,77,0.08);
-      border: 1px solid #ff4d4d;
-      border-radius: 8px;
-      padding: 1rem;
-      margin: 1.5rem 0;
+    .btn-start:hover { background: var(--primary-dark); }
+    
+    .btn-cancel {
+      display: block;
       text-align: center;
-      font-size: 1.1rem;
+      margin-top: 1rem;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.9rem;
     }
-    @media (max-width: 600px) {
-      .exercise-card {
-        padding: 1.2rem 0.7rem 1.2rem 0.7rem;
-        max-width: 98vw;
-      }
-      h1 {
-        font-size: 1.3rem;
-        padding: 0 0.2rem;
-      }
-      .exercise-form button, .exercise-form .abandon-button {
-        font-size: 1rem;
-        padding: 0.7rem 1.2rem;
-      }
-      .helpbox-content {
-        left: 0;
-        top: 120%;
-        transform: none;
-        min-width: 180px;
-        font-size: 0.97rem;
-      }
-    }
+    .btn-cancel:hover { color: var(--text-main); text-decoration: underline; }
+
   </style>
 </head>
 <body>
   @include('components/header')
-  <div class="main-wrapper">
-    <div class="exercise-card">
-      <h1>Commencer l'exercice pour le deck « {{ deck.title }} »</h1>
-      @if(deck && deck.id)
-        <form class="exercise-form" action="{{ route('exercise.presentQuestion', { deckId: deck.id, questionIndex: 0 }) }}" method="GET" onsubmit="handleSubmit(this)">
-          <input type="hidden" name="startTime" id="startTime" />
-          <input type="hidden" name="results" value="[]" />
-          <div class="form-row">
-            <label for="mode-select">
-              Choisissez un mode :
-              <span class="helpbox">
-                <button type="button" class="helpbox-btn" onclick="toggleHelpbox('mode-helpbox')" aria-label="Aide sur les modes">?</button>
-                <span class="helpbox-content" id="mode-helpbox">
-                  <strong>Mode chronométré :</strong> Répondez à toutes les questions le plus vite possible sans faire d'erreurs.<br><br>
-                  <strong>Mode basique :</strong> Répondez à chaque carte une seule fois, sans contrainte de temps.<br><br>
-                  <strong>Mode jusqu'au bout :</strong> Vous devez répondre correctement à toutes les cartes. Les cartes ratées reviennent jusqu'à ce que vous réussissiez tout.<br><br>
-                  <strong>Mode Quiz :</strong> Choisir la bonne réponse parmi 4 propositions.
-                </span>
-              </span>
-            </label>
-            <select id="mode-select" name="mode" required>
-              @if(!deck.allowed_modes || deck.allowed_modes.includes('chronometre'))
-                <option value="chronometre">Mode chronométré</option>
-              @endif
-              @if(!deck.allowed_modes || deck.allowed_modes.includes('basique'))
-                <option value="basique">Mode basique</option>
-              @endif
-              @if(!deck.allowed_modes || deck.allowed_modes.includes('jusquaubout'))
-                <option value="jusquaubout">Mode jusqu'au bout</option>
-              @endif
-              @if(!deck.allowed_modes || deck.allowed_modes.includes('quiz'))
-                <option value="quiz">Mode Quiz</option>
-              @endif
-            </select>
-          </div>
-          <div class="form-row">
-            <label for="direction-select">Sens de l'exercice :</label>
-            <select id="direction-select" name="direction" required>
-              <option value="question">Question → Réponse</option>
-              <option value="answer">Réponse → Question</option>
-            </select>
-          </div>
-          @if(typeof retryCardIds !== 'undefined' && retryCardIds)
-            @each(id in retryCardIds)
-              <input type="hidden" name="retryCardIds" value="{{ id }}" />
-            @endeach
-          @endif
-          <input type="hidden" name="attempts" value="{{ attempts || 1 }}" />
-          <div class="form-actions">
-            <button type="submit">C'est parti</button>
-            <button type="button" class="abandon-button" onclick="window.location.href='{{ route('decks.show', { id: deck.id }) }}'">Abandonner</button>
-          </div>
-        </form>
-      @else
-        <div class="error-message">Erreur : deck introuvable ou invalide.</div>
-      @endif
+
+  <div class="container">
+    
+    <!-- Config Column -->
+    <form class="card" action="{{ route('exercise.presentQuestion', { deckId: deck.id, questionIndex: 0 }) }}" method="GET" onsubmit="handleSubmit(this)">
+       <h1 class="section-title">Commencer une session</h1>
+       
+       <input type="hidden" name="startTime" id="startTime" />
+       <input type="hidden" name="results" value="[]" />
+       
+       <!-- Modes -->
+       <div class="section-subtitle">Mode d'exercice</div>
+       <div class="radio-grid">
+         
+         @if(!deck.allowed_modes || deck.allowed_modes.includes('chronometre'))
+         <div class="radio-card">
+           <input type="radio" id="mode_chrono" name="mode" value="chronometre" checked>
+           <label for="mode_chrono" class="radio-card-label">
+             <div class="mode-icon">⏱</div>
+             <div class="mode-title">Chronométré</div>
+             <div class="mode-desc">Répondez le plus vite possible sans erreurs.</div>
+           </label>
+         </div>
+         @endif
+
+         @if(!deck.allowed_modes || deck.allowed_modes.includes('basique'))
+         <div class="radio-card">
+           <input type="radio" id="mode_basic" name="mode" value="basique">
+           <label for="mode_basic" class="radio-card-label">
+             <div class="mode-icon">📚</div>
+             <div class="mode-title">Basique</div>
+             <div class="mode-desc">Parcourez le deck carte par carte, sans stress.</div>
+           </label>
+         </div>
+         @endif
+
+         @if(!deck.allowed_modes || deck.allowed_modes.includes('jusquaubout'))
+         <div class="radio-card">
+           <input type="radio" id="mode_jusquaubout" name="mode" value="jusquaubout">
+           <label for="mode_jusquaubout" class="radio-card-label">
+             <div class="mode-icon">🎯</div>
+             <div class="mode-title">Jusqu'au bout</div>
+             <div class="mode-desc">Répétez les erreurs jusqu'à 100% de réussite.</div>
+           </label>
+         </div>
+         @endif
+
+         @if(!deck.allowed_modes || deck.allowed_modes.includes('quiz'))
+         <div class="radio-card">
+           <input type="radio" id="mode_quiz" name="mode" value="quiz">
+           <label for="mode_quiz" class="radio-card-label">
+             <div class="mode-icon">❓</div>
+             <div class="mode-title">Quiz</div>
+             <div class="mode-desc">Choisissez la bonne réponse parmi 4 choix.</div>
+           </label>
+         </div>
+         @endif
+
+       </div>
+
+       <!-- Direction -->
+       <div class="section-subtitle">Sens d'apprentissage</div>
+       <div class="radio-grid" style="grid-template-columns: 1fr 1fr;">
+         <div class="radio-card">
+           <input type="radio" id="dir_qa" name="direction" value="question" checked>
+           <label for="dir_qa" class="radio-card-label">
+             <div class="mode-title">Question → Réponse</div>
+           </label>
+         </div>
+         <div class="radio-card">
+           <input type="radio" id="dir_aq" name="direction" value="answer">
+           <label for="dir_aq" class="radio-card-label">
+             <div class="mode-title">Réponse → Question</div>
+           </label>
+         </div>
+       </div>
+
+       @if(typeof retryCardIds !== 'undefined' && retryCardIds)
+          @each(id in retryCardIds)
+            <input type="hidden" name="retryCardIds" value="{{ id }}" />
+          @endeach
+       @endif
+       <input type="hidden" name="attempts" value="{{ attempts || 1 }}" />
+
+       <div style="margin-top: auto;">
+         <button type="submit" class="btn-start">🚀 Commencer</button>
+         <a href="{{ route('decks.show', { id: deck.id }) }}" class="btn-cancel">Annuler</a>
+       </div>
+    </form>
+
+    <!-- Info Column -->
+    <div class="card">
+      <div class="section-subtitle">À propos du Deck</div>
+      <h2 style="font-size: 1.5rem; margin-bottom: 0.5rem;">{{ deck.title }}</h2>
+      <p style="color:var(--text-muted); margin-bottom: 2rem; font-size: 0.95rem; line-height: 1.5;">
+        {{ deck.description || 'Aucune description fournie.' }}
+      </p>
+
+      <div class="deck-stat-row">
+        <span class="stat-label">Cartes</span>
+        <span class="stat-val">{{ deck.cards ? deck.cards.length : 0 }}</span>
+      </div>
+      <div class="deck-stat-row">
+        <span class="stat-label">Visibilité</span>
+        <span class="stat-val">{{ deck.visibility === 'public' ? 'Public 🌍' : 'Privé 🔒' }}</span>
+      </div>
+      <div class="deck-stat-row">
+        <span class="stat-label">Créateur</span>
+        <span class="stat-val">{{ (auth.user && deck.user && auth.user.id === deck.user.id) ? 'Vous' : (deck.user ? deck.user.username : 'Inconnu') }}</span>
+      </div>
     </div>
+
   </div>
+
   <script>
     function handleSubmit(form) {
-      const mode = form.mode.value;
-      if(mode === 'chronometre'){
+      // If Chrono mode, capture start time
+      const modeInputs = form.querySelectorAll('input[name="mode"]');
+      let selectedMode = 'basique';
+      modeInputs.forEach(input => {
+        if(input.checked) selectedMode = input.value;
+      });
+
+      if(selectedMode === 'chronometre'){
         document.getElementById('startTime').value = Date.now();
       }
       return true;
     }
-    function toggleHelpbox(id) {
-      document.querySelectorAll('.helpbox-content').forEach(function(box) {
-        if (box.id !== id) box.parentElement.classList.remove('open');
-      });
-      var el = document.getElementById(id);
-      if (el) {
-        el.parentElement.classList.toggle('open');
-      }
-    }
-    document.addEventListener('click', function(event) {
-      document.querySelectorAll('.helpbox').forEach(function(box) {
-        if (!box.contains(event.target)) box.classList.remove('open');
-      });
-    });
   </script>
 </body>
 </html>

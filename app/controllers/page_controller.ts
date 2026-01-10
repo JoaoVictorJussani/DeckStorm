@@ -82,9 +82,6 @@ export default class PageController {
         builder
           .where('title', 'like', `%${query}%`)
           .orWhere('description', 'like', `%${query}%`)
-          .orWhereHas('user' as any, (userQuery) => {
-            userQuery.where('username', 'like', `%${query}%`);
-          });
       })
       .preload('cards')
       .preload('user' as any)

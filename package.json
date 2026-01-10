@@ -11,7 +11,8 @@
     "test": "node ace test",
     "lint": "eslint .",
     "format": "prettier --write .",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "seed": "node ace db:seed --files='./database/seeders/user_seeder.ts' && node ace db:seed --files='./database/seeders/deck_seeder.ts' && node ace db:seed --files='./database/seeders/card_seeder.ts' && node ace db:seed --files='./database/seeders/follow_seeder.ts' && node ace db:seed --files='./database/seeders/like_seeder.ts'"
   },
   "imports": {
     "#controllers/*": "./app/controllers/*.js",

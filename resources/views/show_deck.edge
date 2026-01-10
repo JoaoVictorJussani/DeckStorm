@@ -2,163 +2,280 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <title>Visualisation du deck</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ deck.title }} - DeckStorm</title>
   <link rel="shortcut icon" href="/images/icone.ico" type="image/x-icon">
   <script>
-    // Aplica o tema o mais cedo possível para evitar flash
     (function() {
       let theme = localStorage.getItem('theme');
       if (!theme) theme = 'theme-light';
+      document.documentElement.className = theme;
       document.addEventListener('DOMContentLoaded', function() {
-        document.body.classList.remove('theme-light', 'theme-dark');
-        document.body.classList.add(theme);
+        document.body.className = theme;
       });
-      if (document.body) {
-        document.body.classList.remove('theme-light', 'theme-dark');
-        document.body.classList.add(theme);
-      }
     })();
   </script>
   <style>
-    /* Copier ici tout le CSS de home.edge */
+    :root {
+      /* Palette Clean (Slate/Zinc) */
+      --primary: #3b82f6; 
+      --primary-dark: #2563eb;
+      
+      --bg-body: #f8fafc;
+      --bg-card: #ffffff;
+      
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      
+      --border: #e2e8f0;
+      
+      --success: #22c55e;
+      --danger: #ef4444;
+      --warning: #f59e0b;
+    }
+
+    .theme-dark {
+      --primary: #60a5fa;
+      --primary-dark: #3b82f6;
+      
+      --bg-body: #0f172a;
+      --bg-card: #1e293b;
+      
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      
+      --border: #334155;
+    }
+
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
 
     body {
-      background: #fff;
-      color: #222;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg-body);
+      color: var(--text-main);
       display: flex;
       flex-direction: column;
       align-items: center;
       min-height: 100vh;
-      font-size: 1rem;
-      transition: background 0.5s, color 0.5s; /* Adiciona transição suave */
+      padding: 6rem 2rem 2rem 2rem; /* Top padding for fixed header */
+      transition: background-color 0.2s, color 0.2s;
     }
-    body.theme-light {
-      background: #fff;
-      color: #222;
-      transition: background 0.5s, color 0.5s; /* Adiciona transição suave */
-    }
-    body.theme-dark {
-      background: #0a0c10;
-      color: #e0e0e0;
-      transition: background 0.5s, color 0.5s; /* Adiciona transição suave */
-    }
+    
+    /* Universal Theme Selectors */
+    .theme-light body, body.theme-light { background: var(--bg-body); color: var(--text-main); }
+    .theme-dark body, body.theme-dark { background: var(--bg-body); color: var(--text-main); }
 
-    .main-content {
-      margin-top: 120px;
-      text-align: center;
-      padding: 3rem 2rem;
+    .container {
       width: 100%;
+      max-width: 1400px;
+      display: flex;
+      flex-direction: column;
+      gap: 3rem;
     }
 
-    h1 {
-      font-size: 3rem;
+    /* --- Deck Header Section --- */
+    .deck-header {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 2rem;
+    }
+    @media (max-width: 900px) {
+      .deck-header { grid-template-columns: 1fr; }
+    }
+
+    .deck-info-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 2.5rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+      position: relative;
+    }
+
+    .deck-title {
+      font-size: 2.5rem;
+      font-weight: 800;
+      margin-bottom: 0.5rem;
+      color: var(--text-main);
+      line-height: 1.1;
+    }
+    
+    .deck-meta {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
       margin-bottom: 1.5rem;
-      color: #1976d2;
+      font-size: 0.95rem;
+      color: var(--text-muted);
+    }
+    .deck-meta-item {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .deck-desc {
+      font-size: 1.1rem;
+      line-height: 1.6;
+      color: var(--text-main);
+      margin-bottom: 2rem;
+      max-width: 90%;
+    }
+
+    .deck-actions {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: all 0.2s;
+      text-decoration: none;
+    }
+    
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+    .btn-primary:hover { background: var(--primary-dark); }
+
+    .btn-outline {
+      background: transparent;
+      border-color: var(--border);
+      color: var(--text-main);
+    }
+    .btn-outline:hover { background: rgba(0,0,0,0.03); border-color: var(--text-muted); }
+    .theme-dark .btn-outline:hover { background: rgba(255,255,255,0.05); }
+
+    .btn-danger {
+      background: transparent;
+      color: var(--danger);
+      border-color: var(--danger);
+    }
+    .btn-danger:hover {
+      background: var(--danger);
+      color: white;
+    }
+
+    .btn-lg {
+      padding: 1rem 2rem;
+      font-size: 1.25rem;
+      border-radius: 10px;
+    }
+
+    /* QR / Share Side */
+    .deck-share-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    #qrcode {
+      position: relative; 
+    }
+
+    /* Update CSS Logic - safer selector */
+    #qrcode > img:not(.qr-logo-overlay), #qrcode > canvas {
+      border: 1px solid var(--border);
+      padding: 0.5rem;
+      border-radius: 8px;
+      background: white;
+    }
+
+    .qr-logo-overlay {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 32px;
+      height: 32px;
+      background: white;
+      border-radius: 4px;
+      padding: 2px;
+      box-shadow: 0 0 0 2px white;
+      z-index: 10;
+    }
+
+    .like-section {
+      margin-top: 1.5rem;
+    }
+    .like-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--text-main);
+      padding: 0.5rem 1rem;
+      border-radius: 99px;
+      transition: background 0.2s;
+    }
+    .like-btn:hover { background: rgba(0,0,0,0.05); }
+    .theme-dark .like-btn:hover { background: rgba(255,255,255,0.05); }
+
+    /* --- Cards Grid Section --- */
+    .cards-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    .cards-title {
+      font-size: 1.8rem;
       font-weight: 700;
     }
 
-    .deck-details {
-      width: 95%;
-      max-width: 600px;
-      margin: auto;
-      background: #fff;
-      padding: 2rem;
-      border-radius: 12px;
-      border: 2px solid #1976d2;
-      box-shadow: 0 8px 30px rgba(25, 118, 210, 0.1);
-      backdrop-filter: blur(10px);
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr); /* 5 cols requested */
+      gap: 1.5rem;
     }
-    body.theme-dark .deck-details {
-      background: #181c23;
-      border-color: #1976d2;
-      box-shadow: 0 8px 30px rgba(25, 118, 210, 0.1);
-    }
+    
+    @media (max-width: 1200px) { .cards-grid { grid-template-columns: repeat(4, 1fr); } }
+    @media (max-width: 992px) { .cards-grid { grid-template-columns: repeat(3, 1fr); } }
+    @media (max-width: 768px) { .cards-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 480px) { .cards-grid { grid-template-columns: 1fr; } }
 
-    .deck-details p {
-      font-size: 1.2rem;
-      margin-bottom: 1rem;
-    }
-
-    .button-container {
-      text-align: center;
-      margin-top: 2rem;
-    }
-
-    .button-container button {
-      background: #fff;
-      color: #1976d2;
-      border: 2px solid #1976d2;
-      padding: 0.8rem 1.5rem;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 1.1rem;
-      font-weight: 600;
-      margin: 0 10px;
-      transition: background 0.3s ease, color 0.3s ease;
-    }
-    .button-container button:hover {
-      background: #1976d2;
-      color: #fff;
-    }
-    body.theme-dark .button-container button {
-      background: #23272f;
-    }
-    body.theme-dark .button-container button:hover {
-      background: #1976d2;
-      color: #fff;
-    }
-
-    .abandon-button {
-      background: #fff;
-      color: #ff4d4d;
-      border: 2px solid #ff4d4d;
-      padding: 0.8rem 1.5rem;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 1.1rem;
-      font-weight: 600;
-      transition: background 0.3s ease, color 0.3s ease;
-    }
-    .abandon-button:hover {
-      background: #ff4d4d;
-      color: #fff;
-    }
-    body.theme-dark .abandon-button {
-      background: #23272f;
-      color: #ff4d4d;
-      border: 2px solid #ff4d4d; /* mantém a borda vermelha no escuro */
-    }
-    body.theme-dark .abandon-button:hover {
-      background: #ff4d4d;
-      color: #fff;
-      border: 2px solid #ff4d4d; /* mantém a borda vermelha no hover escuro */
-    }
-
-    /* Add styles for the card flip effect */
-    .card-container {
+    .card-item-container {
       perspective: 1000px;
-      margin: 10px 0;
-      display: inline-block;
+      aspect-ratio: 3/2; /* Standard card ratio */
       position: relative;
-      z-index: 1; /* Garante que as cartas fiquem abaixo do dropdown */
     }
 
-    .card {
-      width: 300px;
-      height: 150px;
+    .card-item {
+      width: 100%;
+      height: 100%;
       position: relative;
       transform-style: preserve-3d;
-      transition: transform 0.6s;
+      transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
       cursor: pointer;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      border-radius: 12px;
     }
-
-    .card.is-flipped {
+    
+    .card-item.is-flipped {
       transform: rotateY(180deg);
     }
 
@@ -170,313 +287,60 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      border: 2px solid #1976d2;
-      border-radius: 10px;
-      background: #fff;
-      color: #222;
-      font-size: 1.2rem;
+      padding: 1.5rem;
       text-align: center;
+      border-radius: 12px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      font-size: 1.3rem;
+      overflow: hidden;
     }
-    body.theme-dark .card-face {
-      background: #23272f;
-      color: #e0e0e0;
-    }
-
+    
     .card-face.front {
-      background: #1976d2;
-      color: #fff;
+      /* Front styles */
+      font-weight: 600;
     }
-
+    
     .card-face.back {
       transform: rotateY(180deg);
-      position: relative;
+      background: var(--bg-card); /* Keep consistent bg */
+      color: var(--text-main);
     }
+    .theme-dark .card-face.back { border-color: var(--primary); }
 
-    .card-buttons {
+    /* Card Actions (Hover) */
+    .card-actions-overlay {
       position: absolute;
-      bottom: 10px;
-      right: 10px;
+      bottom: 0.5rem;
+      right: 0.5rem;
       display: flex;
-      gap: 10px;
+      gap: 0.5rem;
+      opacity: 0;
+      transition: opacity 0.2s;
     }
+    .card-item-container:hover .card-actions-overlay { opacity: 1; }
 
-    .card-buttons button {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      border: none;
-      font-size: 18px;
-      font-weight: bold;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .check-button {
-      background: #4caf50;
-      color: white;
-    }
-
-    .check-button:hover {
-      background: #3e8e41;
-    }
-
-    .cross-button {
-      background: #ff4d4d;
-      color: white;
-    }
-
-    .cross-button:hover {
-      background: #d43c3c;
-    }
-
-    .card-actions {
-      display: flex;
-      justify-content: center;
-      margin-top: 5px;
-    }
-
-    .action-button {
-      width: 20px;
-      height: 20px;
-      margin: 0 5px;
+    .mini-btn {
+      width: 28px;
+      height: 28px;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 14px;
-      font-weight: bold;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      color: var(--text-muted);
       cursor: pointer;
+      font-size: 0.8rem;
     }
-
-    .delete-button {
-      background: #ff4d4d;
-      color: white;
-      border: none;
-    }
-
-    .edit-button {
-      background: #1976d2;
-      color: white;
-      border: none;
-    }
-
-    .delete-button:hover {
-      background: #d43c3c;
-    }
-
-    .edit-button:hover {
-      background: #008c95;
-    }
-
-    .summary-container {
-      display: none;
-      text-align: center;
-      margin-top: 20px;
-    }
-
-    .summary-container.active {
-      display: block;
-    }
-
-    .summary-buttons button {
-      margin: 10px;
-      padding: 10px 20px;
-      font-size: 16px;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-
-    .retry-button {
-      background: #1976d2;
-      color: white;
-    }
-
-    .retry-button:hover {
-      background: #008c95;
-    }
-
-    .restart-button {
-      background: #4caf50;
-      color: white;
-    }
-
-    .restart-button:hover {
-      background: #3e8e41;
-    }
-
-    /* Add red button styles for "Supprimer" and "Abandonner" */
-    .abandon-button {
-      background: #fff;
-      color: #ff4d4d;
-      border: 2px solid #ff4d4d;
-      padding: 0.8rem 1.5rem;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 1.1rem;
-      font-weight: 600;
-      transition: background 0.3s ease, color 0.3s ease;
-    }
-
-    .abandon-button:hover {
-      background: #ff4d4d;
-      color: #fff;
-    }
-
-    .message {
-      margin-bottom: 1rem;
-      padding: 1rem;
-      border-radius: 8px;
-      text-align: center;
-      background: rgba(108, 137, 71, 0.1);
-      border: 1px solid #1976d2;
-      color: #1976d2;
-    }
-
-    .message.error {
-      background: rgba(255, 77, 77, 0.1);
-      border-color: #ff4d4d;
-      color: #ff4d4d;
-    }
-
-    .message.success {
-      background: rgba(76, 175, 80, 0.1);
-      border-color: #4caf50;
-      color: #4caf50;
-    }
-
-    .exercice-container button{
-      background: #fff;
-      color: #4caf50;
-      border: 2px solid #4caf50;
-      padding: 0.8rem 1.5rem;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 1.1rem;
-      font-weight: 600;
-      margin: 0 10px;
-      transition: background 0.3s ease, color 0.3s ease;
-    }
-
-    .exercice-container button:hover {
-      background: #4caf50;
-      color: black;
-    }
-
-    .supprimer-container button{
-      background: #fff;
-      color: rgb(209, 60, 60);
-      border: 2px solid rgb(209, 60, 60);
-      padding: 0.8rem 1.5rem;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 1.1rem;
-      font-weight: 600;
-      margin: 0 10px;
-      transition: background 0.3s ease, color 0.3s ease;
-    }
-
-    .supprimer-container button:hover {
-      background:rgb(209, 60, 60);
-      color: black;
-    }
-
-    /* Supprimer le flex deck-share-wrapper et ajuster .deck-details/.share-container */
-    .share-container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      margin: 2rem 0 1rem 0;
-    }
-    #qrcode {
-      display: inline-block;
-      margin-bottom: 1rem;
-    }
-    #share-btn {
-      background: #1976d2;
-      color: #fff;
-      border: 2px solid #1976d2;
-      padding: 0.8rem 1.5rem;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 1.1rem;
-      font-weight: 600;
-      margin-bottom: 0.5rem;
-      transition: background 0.3s, color 0.3s;
-    }
-    #share-btn:hover {
-      background: #1565c0;
-      color: #fff;
-    }
-    body.theme-dark #share-btn {
-      background: #1565c0;
-      color: #fff;
-      border-color: #1976d2;
-    }
-    body.theme-dark #share-btn:hover {
-      background: #1976d2;
-      color: #fff;
-    }
-    .share-menu-wrapper {
-      position: relative;
-      display: inline-block;
-      z-index: 9999; /* Garante que o dropdown fique acima de tudo */
-    }
-    #share-menu {
-      display: none;
-      background: rgba(17, 17, 17, 0.95);  
-      border: 1px solid #1976d2;
-      border-radius: 12px;
-      margin-top: 0.5rem;
-      padding: 1.2rem;
-      position: absolute;
-      z-index: 100;
-      min-width: 220px;
-      backdrop-filter: blur(10px);
-      box-shadow: 0 8px 30px rgba(108, 137, 71, 0.1);
-    }
-    .share-menu-btn {
-      display: flex;
-      align-items: center;
-      width: 100%;
-      background: transparent;
-      color: #1976d2;
-      border: 1px solid transparent;
-      font-size: 1rem;
-      font-weight: 600;
-      padding: 0.8rem 1rem;
-      margin: 0.3rem 0;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      text-align: left;
-      gap: 0.8rem;
-    }
-    .share-menu-btn:hover {
-      background: rgba(108, 137, 71, 0.1);
-      border-color: #1976d2;
-      transform: translateX(5px);
-    }
-    .share-menu-btn:last-child {
-      color: #ff4d4d;
-      border-color: transparent;
-    }
-    .share-menu-btn:last-child:hover {
-      background: rgba(255, 77, 77, 0.1);
-      border-color: #ff4d4d;
-    }
-    .share-menu-wrapper {
-      position: relative;
-      display: inline-block;
-    }
+    .mini-btn:hover { color: var(--text-main); border-color: var(--text-muted); }
+    .mini-btn.delete:hover { background: var(--danger); color: white; border-color: var(--danger); }
 
     .add-deck-btn {
       position: fixed;
       bottom: 2rem;
       right: 2rem;
-      background: linear-gradient(135deg, #1976d2, #1565c0);
+      background: var(--primary);
       color: white;
       border: none;
       border-radius: 50%;
@@ -487,620 +351,255 @@
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      box-shadow: 0 4px 15px rgba(25, 118, 210, 0.18);
-      transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      transition: transform 0.2s;
       z-index: 100;
       text-decoration: none;
     }
-    .add-deck-btn:focus, .add-deck-btn:hover {
-      background: linear-gradient(135deg, #1565c0, #1976d2);
-      box-shadow: 0 6px 24px rgba(25, 118, 210, 0.25);
-      transform: scale(1.08);
-      outline: none;
-    }
-    .add-deck-btn span {
-      margin-top: -2px;
-    }
+    .add-deck-btn:hover { transform: scale(1.1); background: var(--primary-dark); }
 
-    /* QR Code */
-    #qrcode canvas, #qrcode img {
-      border-radius: 12px;
-      background: #fff;
-      padding: 8px;
-      box-shadow: 0 2px 8px rgba(25, 118, 210, 0.10);
-      border: 2px solid #1976d2;
-    }
-    body.theme-dark #qrcode canvas, body.theme-dark #qrcode img {
-      background: #23272f;
-      border-color: #1976d2;
-    }
-
-    #like-count {
-      color: #222222;
-    }
-    body.theme-dark #like-count {
-      color: #e0e0e0;
-    }
-
-    /* Botão de convite */
-    .invite-btn {
-      background: linear-gradient(90deg, #1976d2 60%, #1565c0 100%);
-      color: #fff;
-      border: none;
-      border-radius: 8px;
-      padding: 0.7rem 1.5rem;
-      font-size: 1.1rem;
-      font-weight: 600;
-      cursor: pointer;
-      margin-right: 0.5rem;
-      box-shadow: 0 2px 8px rgba(25, 118, 210, 0.10);
-      transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
-    }
-    .invite-btn:hover {
-      background: #1565c0;
-      transform: translateY(-2px) scale(1.05);
-      box-shadow: 0 4px 16px rgba(25, 118, 210, 0.18);
-    }
-    .invite-btn.refuse {
-      background: #fff;
-      color: #ff4d4d;
-      border: 2px solid #ff4d4d;
-      box-shadow: 0 2px 8px rgba(255,77,77,0.08);
-    }
-    .invite-btn.refuse:hover {
-      background: #ff4d4d;
-      color: #fff;
-      border-color: #ff4d4d;
-    }
-
-    /* Modal de convite */
-    /* Modal de convite premium */
+    /* Modal Styles (kept similar but updated colors) */
     .invite-modal {
       display: none;
       position: fixed;
-      z-index: 10000; /* Increased z-index */
-      top: 0; left: 0; right: 0; bottom: 0; /* Cover entire viewport */
-      background-color: rgba(0, 0, 0, 0.6); /* Darker background */
-      backdrop-filter: blur(5px); /* Reduced blur for clearer dark background */
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.5);
+      backdrop-filter: blur(4px);
+      z-index: 2000;
       align-items: center;
       justify-content: center;
-      opacity: 0;
-      transition: opacity 0.3s ease;
     }
-    .invite-modal.active {
-      display: flex;
-      opacity: 1;
-    }
+    .invite-modal.active { display: flex; }
+    
     .invite-modal-content {
-      background: #ffffff;
-      color: #333;
-      border-radius: 24px;
-      margin: auto; /* Extra safety for centering */
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); /* Better shadow */
-      padding: 3rem;
-      max-width: 480px;
-      width: 90%; /* flexible width */
+      background: var(--bg-card);
+      padding: 2rem;
+      border-radius: 16px;
+      width: 90%;
+      max-width: 450px;
+      border: 1px solid var(--border);
       position: relative;
-      text-align: center;
-      transform: translateY(20px);
-      transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
-    .invite-modal.active .invite-modal-content {
-      transform: translateY(0);
-    }
-    body.theme-dark .invite-modal-content {
-      background: #1e222b;
-      color: #e6e9ef;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-    }
-    .invite-modal-close {
+    .close-modal {
       position: absolute;
-      top: 20px; right: 20px;
-      background: rgba(25, 118, 210, 0.1);
-      color: #1976d2;
-      border: none;
-      border-radius: 50%;
-      font-size: 1.5rem;
-      width: 40px; height: 40px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-    .invite-modal-close:hover {
-      background: #1976d2;
-      color: #fff;
-      transform: rotate(90deg);
-    }
-    body.theme-dark .invite-modal-close {
-      background: rgba(255, 255, 255, 0.1);
-      color: #fff;
-    }
-    body.theme-dark .invite-modal-close:hover {
-      background: #fff;
-      color: #1976d2;
+      top: 1rem; right: 1rem;
+      background: none; border: none;
+      font-size: 1.5rem; cursor: pointer;
+      color: var(--text-muted);
     }
     
-    /* Input improvement inside modal */
-    .invite-modal-input {
+    .form-input {
       width: 100%;
-      padding: 1rem 1.2rem;
-      margin-top: 0.5rem;
-      margin-bottom: 1.5rem;
-      border-radius: 12px;
-      border: 2px solid #e0e6ed;
-      background: #f8fafc;
-      font-size: 1rem;
-      color: #333;
-      transition: all 0.3s ease;
-    }
-    .invite-modal-input:focus {
-      border-color: #1976d2;
-      background: #fff;
-      outline: none;
-      box-shadow: 0 0 0 4px rgba(25, 118, 210, 0.1);
-    }
-    body.theme-dark .invite-modal-input {
-      background: #11141a;
-      border-color: #333;
-      color: #fff;
-    }
-    body.theme-dark .invite-modal-input:focus {
-      border-color: #1976d2;
-      box-shadow: 0 0 0 4px rgba(25, 118, 210, 0.2);
-    }
-    .invite-btn-main {
-      background: linear-gradient(135deg, #1976d2, #1565c0);
-      color: #fff;
-      border: none;
+      padding: 0.8rem;
+      border: 1px solid var(--border);
       border-radius: 8px;
-      padding: 0.8rem 1.5rem;
-      font-size: 1.1rem;
-      font-weight: 600;
-      cursor: pointer;
-      box-shadow: 0 4px 12px rgba(25, 118, 210, 0.2);
-      transition: all 0.3s ease;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-    .invite-btn-main:hover {
-      background: linear-gradient(135deg, #1565c0, #0d47a1);
-      transform: translateY(-2px);
-      box-shadow: 0 6px 16px rgba(25, 118, 210, 0.3);
-    }
-    .invite-btn-main::before {
-      content: '👤';
-      font-size: 1.2rem;
-    }
-    body.theme-dark .invite-btn-main {
-      border: 1px solid rgba(255,255,255,0.1);
-    }
-
-    .report-btn-main {
-      background: linear-gradient(135deg, #4caf50, #2e7d32);
-      color: #fff;
-      border: none;
-      border-radius: 8px;
-      padding: 0.8rem 1.5rem;
-      font-size: 1.1rem;
-      font-weight: 600;
-      cursor: pointer;
-      box-shadow: 0 4px 12px rgba(46, 125, 50, 0.2);
-      transition: all 0.3s ease;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      text-decoration: none;
-    }
-    .report-btn-main:hover {
-      background: linear-gradient(135deg, #2e7d32, #1b5e20);
-      transform: translateY(-2px);
-      box-shadow: 0 6px 16px rgba(46, 125, 50, 0.3);
-      color: #fff;
-    }
-    .report-btn-main::before {
-      content: '📊';
-      font-size: 1.2rem;
-    }
-    body.theme-dark .report-btn-main {
-      border: 1px solid rgba(255,255,255,0.1);
+      background: var(--bg-body);
+      color: var(--text-main);
+      margin-bottom: 1rem;
     }
     
-    @keyframes slideIn {
-      from { opacity: 0; transform: translateY(20px);}
-      to { opacity: 1; transform: translateY(0);}
+    /* Messages */
+    .alert {
+      padding: 1rem;
+      border-radius: 8px;
+      margin-bottom: 1.5rem;
+      font-weight: 500;
+      text-align: center;
     }
+    .alert-success { background: rgba(34, 197, 94, 0.1); color: var(--success); border: 1px solid var(--success); }
+    .alert-error { background: rgba(239, 68, 68, 0.1); color: var(--danger); border: 1px solid var(--danger); }
+
   </style>
 </head>
 <body>
   @include('components/header')
 
-  <!-- Contenu principal -->
-  <div class="main-content">
-    <h1>{{ deck.title }}</h1> <!-- Titre du deck -->
-    <div class="deck-details">
-      <!-- Messages flash -->
-      @if (flashMessages.has('error'))
-        <div class="message error">
-          {{ flashMessages.get('error') }}
-        </div>
-      @endif
-      @if (flashMessages.has('success'))
-        <div class="message success">
-          {{ flashMessages.get('success') }}
-        </div>
-      @endif
-      <!-- QR Code et partage à l'intérieur du deck-details -->
-      <div class="share-container">
-        <div class="share-menu-wrapper">
-          <button id="share-btn">Partager à</button>
-          <div id="share-menu">
-            <button class="share-menu-btn" onclick="copyLink()">📋 Copier le lien</button>
-            <button class="share-menu-btn" onclick="shareWhatsapp()">🟢 WhatsApp</button>
-            <button class="share-menu-btn" onclick="shareDiscord()">💜 Discord</button>
-            <button class="share-menu-btn" onclick="shareSnapchat()">🟡 Snapchat</button>
-            <button class="share-menu-btn" onclick="shareInstagram()">🟣 Instagram</button>
-            <button class="share-menu-btn" onclick="closeShareMenu()">Fermer</button>
-          </div>
-        </div>
-        <div id="qrcode"></div>
-      </div>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-      <script>
-        // Générer le QR code avec l'URL du deck
-        const deckUrl = window.location.origin + '/deck/{{ deck.id }}';
-        new QRCode(document.getElementById("qrcode"), {
-          text: deckUrl,
-          width: 128,
-          height: 128,
-          colorDark : "#1976d2", // azul
-          colorLight : "#fff",
-        });
-
-        // Partage
-        const shareBtn = document.getElementById('share-btn');
-        const shareMenu = document.getElementById('share-menu');
-        shareBtn.onclick = function(event) {
-          event.stopPropagation();
-          shareMenu.style.display = shareMenu.style.display === 'block' ? 'none' : 'block';
-        };
-        function closeShareMenu() {
-          shareMenu.style.display = 'none';
-        }
-        function copyLink() {
-          navigator.clipboard.writeText(deckUrl);
-          alert('Lien copié !');
-          closeShareMenu();
-        }
-        function shareWhatsapp() {
-          window.open('https://wa.me/?text=' + encodeURIComponent(deckUrl), '_blank');
-          closeShareMenu();
-        }
-        function shareDiscord() {
-          window.open('https://discord.com/channels/@me', '_blank');
-          setTimeout(() => { copyLink(); }, 500);
-          closeShareMenu();
-        }
-        function shareSnapchat() {
-          window.open('https://www.snapchat.com/scan?attachmentUrl=' + encodeURIComponent(deckUrl), '_blank');
-          closeShareMenu();
-        }
-        function shareInstagram() {
-          window.open('https://www.instagram.com/', '_blank');
-          setTimeout(() => { copyLink(); }, 500);
-          closeShareMenu();
-        }
-        // Fermer le menu si clic en dehors
-        document.addEventListener('click', function(event) {
-          if (!shareMenu.contains(event.target) && event.target !== shareBtn) {
-            shareMenu.style.display = 'none';
-          }
-        });
-
-        // Like dynamique
-        async function toggleLike(deckId, button) {
-          const isLiked = button.classList.contains('liked');
-          const endpoint = `/api/decks/${deckId}/${isLiked ? 'unlike' : 'like'}`;
-          // Récupère le token CSRF
-          let csrfTokenInput = document.querySelector('input[name="_csrf"]');
-          let csrfToken = csrfTokenInput ? csrfTokenInput.value : '';
-          if (!csrfToken && window.csrfToken) csrfToken = window.csrfToken;
-          const response = await fetch(endpoint, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'X-CSRF-Token': csrfToken
-            }
-          });
-          if (response.ok) {
-            const data = await response.json();
-            button.classList.toggle('liked');
-            button.querySelector('.heart-emoji').textContent = button.classList.contains('liked') ? '❤️' : '🤍';
-            document.getElementById('like-count').textContent = data.likesCount;
-          }
-        }
-      </script>
-      <!-- Fin QR Code et partage -->
-      <p><strong>Description:</strong> {{ deck.description }}</p>
-      <p><strong>Visibilité:</strong> 
-        <span title="{{ deck.visibility === 'public' ? 'Public' : (deck.visibility === 'restricted' ? 'Restreint' : 'Privé') }}">
-          @if(deck.visibility === 'public')
-            🔓 Public
-          @elseif(deck.visibility === 'restricted')
-            🔐 Restreint
-          @else
-            🔒 Privé
-          @endif
-        </span>
-      </p>
-      <p><strong>Créateur: </strong>
-      <span>{{deck.user.username}}</span></p>
-
-      <!-- Like dynamique -->
-      <div style="margin: 1.5rem 0;">
-        <button id="like-btn" class="like-btn {{ hasLiked ? 'liked' : '' }}" onclick="toggleLike({{ deck.id }}, this)" style="font-size:1.5rem; border:none; background:none; cursor:pointer;">
-          <span class="heart-emoji">{{ hasLiked ? '❤️' : '🤍' }}</span>
-          <span id="like-count">{{ typeof likesCount !== 'undefined' ? likesCount : (deck.likes ? deck.likes.length : 0) }}</span>
-        </button>
-      </div>
-
-      <div class="button-container">
-        <!-- Bouton pour supprimer le deck -->
-        @if(deck.user_id === user.id)
-          <button onclick="window.location.href='{{ route('decks.edit', { id: deck.id }) }}'">Modifier</button>
-        @endif
-
-        {{--  Bouton pour exercer les cartes  --}}
-        @if(deck.cards.length > 0)
-          <div class="exercice-container" style="display: inline-block;">
-            <button onclick="window.location.href='{{ route('exercise.start', { deckId: deck.id }) }}'">Exercer</button>
-          </div>
-        @endif
-
-        {{--  Bouton pour supprimer le deck  --}}
-        @if(deck.user_id === user.id)
-          <div class="supprimer-container" style="display: inline-block;">
-          <button class="abandon-button" onclick="confirmDelete()">Supprimer</button>
-          </div>
-        @endif
-      </div>
-
-      @if(deck.visibility === 'restricted' && user && deck.user_id === user.id)
-        <div style="margin: 1.5rem 0; text-align: center; display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
-          <button onclick="document.getElementById('inviteModal').classList.add('active')" class="invite-btn-main">
-            Inviter un utilisateur
-          </button>
-          <a href="{{ route('decks.report', { id: deck.id }) }}" class="report-btn-main">
-            Voir le rapport
-          </a>
-        </div>
-
-      @endif
-    </div>
-
-    <!-- Liste des cartes -->
-    <h2>Cartes</h2>
-    <div id="cards-container">
-      @if(deck.cards.length)
-        @each(card in deck.cards)
-          <div class="card-container" data-card-id="{{ card.id }}">
-            <div class="card" onclick="flipCard(this)">
-              <div class="card-face front">
-                {{ card.question }}
-              </div>
-              <div class="card-face back">
-                {{ card.answer }}
-                <div class="card-buttons">
-                  <button class="check-button" onclick="markCard(this, true)">✔</button>
-                  <button class="cross-button" onclick="markCard(this, false)">✘</button>
-                </div>
-              </div>
-            </div>
-            <div class="card-actions">
-              @if(deck.user_id === user.id) 
-                <button class="action-button delete-button" onclick="confirmDeleteCard({{ card.id }})">X</button>
-                <button class="action-button edit-button" onclick="window.location.href='{{ route('cards.edit', { deckId: deck.id, cardId: card.id }) }}'">✎</button>
-              @endif
-            </div>
-          </div>
-        @endeach
-      @else
-        <p>Aucune carte disponible.</p>
-      @endif
-    </div>
-
-    <!-- Bouton pour ajouter une carte -->
-    @if(deck.user_id === user.id)
-      <div class="button-container">
-        <button onclick="window.location.href='{{ route('cards.create', { deckId: deck.id }) }}'">Ajouter une carte</button>
-      </div>
+  <div class="container">
+    
+    <!-- Messages -->
+    @if (flashMessages.has('error'))
+      <div class="alert alert-error">{{ flashMessages.get('error') }}</div>
+    @endif
+    @if (flashMessages.has('success'))
+      <div class="alert alert-success">{{ flashMessages.get('success') }}</div>
     @endif
 
-    <!-- Résumé après l'exercice -->
-    <div id="summary-container" class="summary-container">
-      <h2>Vous avez terminé !</h2>
-      <p>Que voulez-vous faire ensuite ?</p>
-      <div class="summary-buttons">
-        <button class="retry-button" id="retry-button" onclick="retryIncorrect()" style="display: none;">Revoir les cartes ratées</button>
-        <button class="restart-button" onclick="restartAll()">Recommencer avec toutes les cartes</button>
+    <!-- Deck Info Header -->
+    <div class="deck-header">
+      <div class="deck-info-card">
+        <h1 class="deck-title">{{ deck.title }}</h1>
+        <div class="deck-meta">
+          <div class="deck-meta-item">
+            <span>👤</span> {{ deck.user ? deck.user.username : 'Inconnu' }}
+          </div>
+          <div class="deck-meta-item">
+            <span>🎴</span> {{ deck.cards ? deck.cards.length : 0 }} cartes
+          </div>
+          <div class="deck-meta-item">
+            @if(deck.visibility === 'public')
+              <span>🔓</span> Public
+            @elseif(deck.visibility === 'restricted')
+              <span>🔐</span> Restreint
+            @else
+              <span>🔒</span> Privé
+            @endif
+          </div>
+        </div>
+        
+        <p class="deck-desc">
+          {{ deck.description || 'Aucune description disponible pour ce deck.' }}
+        </p>
+
+        <div class="deck-actions">
+          @if(deck.cards.length > 0)
+            <a href="{{ route('exercise.start', { deckId: deck.id }) }}" class="btn btn-primary btn-lg">
+              ▶ S'exercer
+            </a>
+          @endif
+
+          @if(deck.user_id === user.id)
+            <a href="{{ route('decks.edit', { id: deck.id }) }}" class="btn btn-outline">✏ Modifier</a>
+            <button onclick="confirmDelete()" class="btn btn-danger">🗑 Supprimer</button>
+          @endif
+          
+          @if(deck.visibility === 'restricted' && user && deck.user_id === user.id)
+             <button onclick="openInviteModal()" class="btn btn-outline">✉ Inviter</button>
+             <a href="{{ route('decks.report', { id: deck.id }) }}" class="btn btn-outline">📊 Rapport</a>
+          @endif
+        </div>
+      </div>
+
+      <!-- Share / QR Box -->
+      <div class="deck-share-card">
+        <div id="qrcode">
+          <img src="/images/icone.ico" alt="DeckStorm" class="qr-logo-overlay">
+        </div>
+        <div class="like-section">
+           <button id="like-btn" class="like-btn {{ hasLiked ? 'liked' : '' }}" onclick="toggleLike({{ deck.id }}, this)">
+             <span class="heart-emoji">{{ hasLiked ? '❤️' : '🤍' }}</span>
+             <span id="like-count">{{ typeof likesCount !== 'undefined' ? likesCount : (deck.likes ? deck.likes.length : 0) }}</span>
+           </button>
+        </div>
+        <button onclick="copyDeckLink()" class="btn btn-outline" style="margin-top: 1rem; width: 100%;">
+          🔗 Copier le lien
+        </button>
       </div>
     </div>
 
+    <!-- Cards Grid -->
+    <div>
+      <div class="cards-header">
+        <h2 class="cards-title">Cartes du Deck</h2>
+        @if(deck.user_id === user.id)
+          <a href="{{ route('cards.create', { deckId: deck.id }) }}" class="btn btn-primary">
+            + Ajouter une carte
+          </a>
+        @endif
+      </div>
+      
+      <div class="cards-grid">
+        @if(deck.cards.length)
+          @each(card in deck.cards)
+            <div class="card-item-container">
+              <div class="card-item" onclick="this.classList.toggle('is-flipped')">
+                <div class="card-face front">{{ card.question }}</div>
+                <div class="card-face back">{{ card.answer }}</div>
+              </div>
+              
+              <!-- Owner Actions -->
+              @if(deck.user_id === user.id)
+                <div class="card-actions-overlay">
+                  <a href="{{ route('cards.edit', { deckId: deck.id, cardId: card.id }) }}" class="mini-btn" title="Modifier">✎</a>
+                  <button class="mini-btn delete" onclick="confirmDeleteCard({{ card.id }})" title="Supprimer">🗑</button>
+                </div>
+              @endif
+            </div>
+          @endeach
+        @else
+          <div style="grid-column: 1 / -1; text-align: center; padding: 4rem; color: var(--text-muted); background: var(--bg-card); border-radius: 12px; border: 1px solid var(--border);">
+            Ce deck ne contient pas encore de cartes.
+          </div>
+        @endif
+      </div>
+    </div>
   </div>
 
-  <script>
-    let incorrectCards = [];
-    let remainingCards = [...document.querySelectorAll('.card-container')];
-
-    function flipCard(cardElement) {
-      cardElement.classList.toggle('is-flipped');
-    }
-
-    function markCard(button, isCorrect) {
-      const cardContainer = button.closest('.card-container');
-      const cardId = cardContainer.dataset.cardId;
-
-      if (!isCorrect) {
-        // Stocker l'HTML et l'ID de la carte dans le tableau incorrectCards
-        incorrectCards.push({
-          id: cardId,
-          html: cardContainer.outerHTML,
-        });
-      }
-
-      cardContainer.remove();
-      remainingCards = remainingCards.filter((card) => card !== cardContainer);
-
-      if (remainingCards.length === 0) {
-        showSummary();
-      }
-    }
-
-    function showSummary() {
-      document.getElementById('cards-container').style.display = 'none';
-      document.getElementById('summary-container').classList.add('active');
-
-      // Assurez-vous que le bouton "Revoir les cartes ratées" est caché s'il n'y a pas de cartes incorrectes
-      const retryButton = document.getElementById('retry-button');
-      retryButton.style.display = incorrectCards.length > 0 ? 'inline-block' : 'none';
-    }
-
-    function retryIncorrect() {
-      const cardsContainer = document.getElementById('cards-container');
-      cardsContainer.style.display = 'block';
-      document.getElementById('summary-container').classList.remove('active');
-
-      // Ré-ajouter les cartes incorrectes au DOM
-      incorrectCards.forEach((card) => {
-        const tempDiv = document.createElement('div');
-        tempDiv.innerHTML = card.html.trim();
-        const cardElement = tempDiv.firstChild;
-        cardsContainer.appendChild(cardElement);
-      });
-
-      // Vider le tableau incorrectCards et mettre à jour remainingCards
-      incorrectCards = [];
-      remainingCards = [...document.querySelectorAll('.card-container')];
-    }
-
-    function restartAll() {
-      location.reload();
-    }
-
-    function confirmDelete() {
-      if (confirm('Êtes-vous sûr de vouloir supprimer ce deck ?')) {
-        document.getElementById('delete-form').submit();
-      }
-    }
-
-    function confirmDeleteCard(cardId) {
-      if (confirm('Êtes-vous sûr de vouloir supprimer cette carte ?')) {
-        const form = document.getElementById(`delete-card-form-${cardId}`);
-        if (form) {
-          form.submit();
-        }
-      }
-    }
-  </script>
-
-  <!-- Formulaires cachés pour la suppression -->
+  <!-- Forms Hidden -->
+  <form id="delete-form" action="{{ route('decks.delete', { id: deck.id }) }}" method="POST" style="display: none;">{{ csrfField() }}</form>
   @each(card in deck.cards)
-    <form id="delete-card-form-{{ card.id }}" action="{{ route('cards.delete', { deckId: deck.id, cardId: card.id }) }}" method="POST" style="display: none;">
-      {{ csrfField() }}
-    </form>
+    <form id="delete-card-form-{{ card.id }}" action="{{ route('cards.delete', { deckId: deck.id, cardId: card.id }) }}" method="POST" style="display: none;">{{ csrfField() }}</form>
   @endeach
 
-  <form id="delete-form" action="{{ route('decks.delete', { id: deck.id }) }}" method="POST" style="display: none;">
-    {{ csrfField() }}
-  </form>
-
-  <a href="{{ route('decks.create') }}" class="add-deck-btn" title="Créer un nouveau deck">
-    <span>+</span>
-  </a>
-
-
-  <!-- Modal de convite (déplacé ici pour éviter les problèmes de superposition du backdrop-filter) -->
-  @if(deck.visibility === 'restricted' && user && deck.user_id === user.id)
+  <!-- Invite Modal -->
+  @if(deck.visibility === 'restricted')
   <div id="inviteModal" class="invite-modal">
     <div class="invite-modal-content">
-      <button class="invite-modal-close" onclick="document.getElementById('inviteModal').classList.remove('active')" title="Fermer">×</button>
-      <h2 style="color:#1976d2; margin-bottom:0.5rem; font-size:1.8rem; font-weight:700;">Inviter un utilisateur</h2>
-      <p style="color:#666; margin-bottom:2rem; font-size:1rem;">Entrez le nom d'utilisateur de la personne que vous souhaitez inviter.</p>
-      
-      <form action="/deck/{{ deck.id }}/invite-user" method="POST" autocomplete="off" style="width:100%;">
+      <button class="close-modal" onclick="document.getElementById('inviteModal').classList.remove('active')">&times;</button>
+      <h3 style="margin-bottom: 1rem; font-size: 1.5rem;">Inviter un utilisateur</h3>
+      <form action="/deck/{{ deck.id }}/invite-user" method="POST">
         {{ csrfField() }}
-        <div style="text-align:left;">
-          <label for="invite_username" style="display:block; margin-bottom:0.5rem; font-weight:600; color:#1976d2; margin-left:4px;">Nom d'utilisateur</label>
-          <input type="text" name="invite_username" id="invite_username" required 
-                 class="invite-modal-input"
-                 placeholder="Ex: JohnDoe123" autocomplete="off" />
-        </div>
-        <div id="usernameSuggestions" style="margin-bottom:1.5rem; text-align:left; max-height:150px; overflow-y:auto;"></div>
-        
-        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1rem; margin-top:2rem;">
-          <button type="button" class="invite-btn refuse" onclick="document.getElementById('inviteModal').classList.remove('active')" 
-                  style="width:100%; border:2px solid #ddd; background:#f8fafc; color:#666; box-shadow:none;">
-            Annuler
-          </button>
-          <button type="submit" class="invite-btn-main" style="justify-content:center; width:100%;">
-            Envoyer l'invitation
-          </button>
-        </div>
+        <p style="margin-bottom: 0.5rem; color: var(--text-muted);">Nom d'utilisateur</p>
+        <input type="text" name="invite_username" class="form-input" required placeholder="Ex: JohnDoe" autocomplete="off">
+        <button type="submit" class="btn btn-primary" style="width: 100%;">Envoyer</button>
       </form>
     </div>
   </div>
+  @endif
+
+  <!-- Scripts -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <script>
-    // Open modal function
+    // QR Code
+    const deckUrl = window.location.origin + '/deck/{{ deck.id }}';
+    new QRCode(document.getElementById("qrcode"), {
+      text: deckUrl,
+      width: 120,
+      height: 120,
+      colorDark : "#333",
+      colorLight : "#fff",
+      correctLevel : QRCode.CorrectLevel.H
+    });
+
+    function copyDeckLink() {
+      navigator.clipboard.writeText(deckUrl).then(() => alert('Lien copié !'));
+    }
+
+    function confirmDelete() {
+      if(confirm('Supprimer ce deck ? Cette action est irréversible.')) {
+        document.getElementById('delete-form').submit();
+      }
+    }
+    
+    function confirmDeleteCard(id) {
+      if(confirm('Supprimer cette carte ?')) {
+        document.getElementById('delete-card-form-'+id).submit();
+      }
+    }
+
     function openInviteModal() {
       document.getElementById('inviteModal').classList.add('active');
     }
 
-    // Ferme le modal si clique en dehors
-    document.addEventListener('click', function(e) {
-      const modal = document.getElementById('inviteModal');
-      if (modal && modal.classList.contains('active') && e.target === modal) {
-        modal.classList.remove('active');
-      }
-    });
-
-    // Autocomplete username
-    const input = document.getElementById('invite_username');
-    const suggestionsBox = document.getElementById('usernameSuggestions');
-    let lastQuery = '';
-    if (input) {
-      input.addEventListener('input', async function() {
-        const query = input.value.trim();
-        if (!query) {
-          suggestionsBox.innerHTML = '';
-          return;
+    // Like Logic
+    async function toggleLike(deckId, button) {
+      const isLiked = button.classList.contains('liked');
+      // Assume API exists
+      const endpoint = `/api/decks/${deckId}/${isLiked ? 'unlike' : 'like'}`;
+      let csrfToken = document.querySelector('input[name="_csrf"]')?.value || '';
+      
+      try {
+        const response = await fetch(endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': csrfToken }
+        });
+        if (response.ok) {
+          const data = await response.json();
+          button.classList.toggle('liked');
+          button.querySelector('.heart-emoji').textContent = button.classList.contains('liked') ? '❤️' : '🤍';
+          document.getElementById('like-count').textContent = data.likesCount;
         }
-        if (query === lastQuery) return;
-        lastQuery = query;
-        // Busca sugestões via AJAX
-        fetch(`/api/user-suggestions?query=${encodeURIComponent(query)}`)
-          .then(res => res.json())
-          .then(data => {
-            if (Array.isArray(data) && data.length) {
-              suggestionsBox.innerHTML = data.map(u =>
-                `<div style="padding:8px; cursor:pointer; border-bottom:1px solid #eee; transition:background 0.2s;" 
-                      onmouseover="this.style.background='#f0f4f8'" 
-                      onmouseout="this.style.background='transparent'"
-                      onclick="document.getElementById('invite_username').value='${u}'; document.getElementById('usernameSuggestions').innerHTML='';">
-                  ${u}
-                 </div>`
-              ).join('');
-            } else {
-              suggestionsBox.innerHTML = '<div style="color:#888; padding:8px; font-style:italic;">Aucun utilisateur trouvé</div>';
-            }
-          })
-          .catch(() => {
-            suggestionsBox.innerHTML = '';
-          });
-      });
+      } catch(e) { console.error(e); }
     }
   </script>
-  @endif
 </body>
 </html>

@@ -75,6 +75,7 @@ export default class DeckController {
       deck.attempt_limit = attemptLimit;
       await deck.save();
       session.flash('success', 'Deck mis à jour avec succès !');
+      return response.redirect().toRoute('decks.show', { id: deck.id });
     } else {
       session.flash('error', 'Vous ne pouvez pas modifier ce deck.');
     }
@@ -223,11 +224,12 @@ export default class DeckController {
       if (currentReport) {
         const sameUser = currentReport.user.id === attempt.user.id
         // Time difference in minutes
-        // attempts are ordered desc, so current attempt is older or equal to currentReport.date
-        const diffMinutes = Math.abs(attempt.createdAt.diff(currentReport.date, 'minutes').minutes)
+        const lastAttempt = currentReport.attempts[currentReport.attempts.length - 1]
+        const diffMinutes = Math.abs(attempt.createdAt.diff(lastAttempt.createdAt, 'minutes').minutes)
 
-        // Threshold: 1 minute (attempts are saved in bulk at finish, so same session attempts have identical or very close timestamps)
-        if (sameUser && diffMinutes < 1) {
+        // Threshold: 30 minutes between attempts to group them in the same session,
+        // allowing for "jusqu'au-bout" retries which might happen after a review period.
+        if (sameUser && diffMinutes < 30) {
           addToCurrent = true
         }
       }

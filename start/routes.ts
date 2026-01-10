@@ -361,7 +361,7 @@ router.get('/api/user-suggestions', async ({ request, response }) => {
   if (!query || query.length < 1) return response.json([])
   const users = await User.query()
     .where('username', 'like', `%${query}%`)
-    .limit(8)
+    .limit(100)
     .select('username')
   return response.json(users.map(u => u.username))
 })

@@ -2,250 +2,349 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <title>Question</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Question - DeckStorm</title>
   <link rel="shortcut icon" href="/images/icone.ico" type="image/x-icon">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
   <script>
-    // Applique le même thème que la page précédente (start.edge)
     (function() {
       let theme = localStorage.getItem('theme');
       if (!theme) theme = 'theme-light';
+      document.documentElement.className = theme;
+      // Sync to body once loaded for compatibility with header scripts
       document.addEventListener('DOMContentLoaded', function() {
-        document.body.classList.remove('theme-light', 'theme-dark');
-        document.body.classList.add(theme);
+        document.body.className = theme;
       });
-      if (document.body) {
-        document.body.classList.remove('theme-light', 'theme-dark');
-        document.body.classList.add(theme);
-      }
     })();
   </script>
   <style>
+    :root {
+      --primary: #4f46e5;
+      --primary-hover: #4338ca;
+      --success: #10b981;
+      --danger: #ef4444;
+      --bg-gradient-light: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+      --bg-gradient-dark: linear-gradient(135deg, #111827 0%, #1f2937 100%);
+      --card-bg-light: #ffffff;
+      --card-bg-dark: #1f2937;
+      --text-light: #1f2937;
+      --text-dark: #f3f4f6;
+    }
+
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
 
     body {
-      background: #fff;
-      color: #222;
+      font-family: 'Outfit', sans-serif;
+      min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
+      transition: background 0.3s ease;
+      overflow-x: hidden;
+    }
+
+    /* Universal Theme Selectors (Works on HTML or BODY) */
+    .theme-light body, body.theme-light { background: var(--bg-gradient-light); color: var(--text-light); }
+    .theme-dark body, body.theme-dark { background: var(--bg-gradient-dark); color: var(--text-dark); }
+
+    /* Layout */
+    .top-bar {
+      width: 100%;
+      padding: 1.5rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1200px;
+    }
+
+    .progress-container {
+      flex: 1;
+      max-width: 300px;
+      margin: 0 2rem;
+    }
+
+    .progress-label {
+      text-align: center;
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      opacity: 0.8;
+      letter-spacing: 0.05em;
+    }
+
+    .progress-track {
+      height: 8px;
+      background: rgba(0,0,0,0.1);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .theme-dark .progress-track { background: rgba(255,255,255,0.1); }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--primary);
+      width: 0%; /* JS will set this */
+      transition: width 0.5s ease;
+    }
+
+    .timer-badge {
+      font-variant-numeric: tabular-nums;
+      font-weight: 600;
+      background: rgba(var(--primary), 0.1);
+      color: var(--primary);
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-size: 0.9rem;
+    }
+
+    /* Main Content */
+    .study-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
       justify-content: center;
-      min-height: 100vh;
-      font-size: 1rem;
-       
+      align-items: center;
+      width: 100%;
+      padding: 2rem;
+      perspective: 1500px; /* Depth for 3D flip */
     }
-    body.theme-light {
-      background: #fff;
-      color: #222;
-       
-    }
-    body.theme-dark {
-      background: #0a0c10;
-      color: #e0e0e0;
-       
-    }
-    h1 {
-      font-size: 2.5rem;
-      margin-bottom: 1.5rem;
-      color: #1976d2;
-      font-weight: 700;
-      text-align: center;
-    }
-    p {
-      font-size: 1.5rem;
-      margin-bottom: 2rem;
-      text-align: center;
-    }
-    .card-container {
-      perspective: 1000px;
-      margin: 10px 0;
-      display: inline-block;
+
+    /* Flashcard */
+    .card-scene {
+      width: 100%;
+      max-width: 700px;
+      aspect-ratio: 16/9;
       position: relative;
-    }
-    .card {
-      width: 300px;
-      height: 150px;
-      position: relative;
-      transform-style: preserve-3d;
-      transition: transform 0.6s;
       cursor: pointer;
     }
+
+    .card {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 0.6s cubic-bezier(0.4, 0.0, 0.2, 1);
+      border-radius: 24px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+    }
+    
     .card.is-flipped {
       transform: rotateY(180deg);
     }
+
     .card-face {
       position: absolute;
       width: 100%;
       height: 100%;
       backface-visibility: hidden;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
-      border: 2px solid #1976d2;
-      border-radius: 10px;
-      background: #fff;
-      color: #222;
-      font-size: 1.2rem;
+      border-radius: 24px;
+      padding: 3rem;
       text-align: center;
+      background: var(--card-bg-light);
+      border: 1px solid rgba(0,0,0,0.05);
     }
+    
     body.theme-dark .card-face {
-      background: #23272f;
-      color: #e0e0e0;
-      border-color: #1976d2;
+      background: var(--card-bg-dark);
+      border-color: rgba(255,255,255,0.05);
+      box-shadow: 0 20px 50px rgba(0,0,0,0.3);
     }
+
     .card-face.front {
-      background: #1976d2;
-      color: #fff;
+      /* Front specific styles */
     }
+
     .card-face.back {
       transform: rotateY(180deg);
-      position: relative;
+      background: #f8fafc; /* Slightly different for back */
     }
-    .card-buttons {
+    body.theme-dark .card-face.back { background: #1a202c; }
+
+    .card-label {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: #9ca3af;
+      margin-bottom: 1.5rem;
+      font-weight: 800;
+    }
+
+    .card-content {
+      font-size: 2rem;
+      font-weight: 600;
+      line-height: 1.4;
+      color: var(--text-light);
+    }
+    body.theme-dark .card-content { color: var(--text-dark); }
+
+    .hint-text {
       position: absolute;
-      bottom: 10px;
-      right: 10px;
-      display: flex;
-      gap: 10px;
-    }
-    .card-buttons button {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      border: none;
-      font-size: 18px;
-      font-weight: bold;
-      cursor: pointer;
+      bottom: 1.5rem;
+      font-size: 0.85rem;
+      color: #9ca3af;
+      opacity: 0.6;
       display: flex;
       align-items: center;
+      gap: 0.5rem;
+    }
+    
+    /* Controls area (below card) */
+    .controls-area {
+      margin-top: 3rem;
+      height: 80px; /* reserve space */
+      display: flex;
+      gap: 2rem;
+      width: 100%;
+      max-width: 500px;
       justify-content: center;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: all 0.3s ease;
+      pointer-events: none;
     }
-    .check-button {
-      background: #4caf50;
-      color: white;
+
+    .controls-area.visible {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
     }
-    .check-button:hover {
-      background: #3e8e41;
-    }
-    .cross-button {
-      background: #ff4d4d;
-      color: white;
-    }
-    .cross-button:hover {
-      background: #d43c3c;
-    }
-    button {
-      background: #1976d2;
-      color: #fff;
-      border: 2px solid #1976d2;
-      padding: 0.8rem 1.5rem;
-      border-radius: 8px;
+
+    .action-btn {
+      flex: 1;
+      border: none;
+      padding: 1rem 2rem;
+      border-radius: 16px;
+      font-size: 1.1rem;
+      font-weight: 700;
       cursor: pointer;
-      font-size: 1.2rem;
-      font-weight: 600;
-      transition: background 0.3s ease, color 0.3s ease;
-      margin-top: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.3rem;
+      transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s;
+      color: white;
     }
-    button:hover {
-      background: #1565c0;
-      color: #fff;
-    }
+
+    .action-btn:active { transform: scale(0.95); }
+    .action-btn:hover { transform: translateY(-4px); box-shadow: 0 10px 20px rgba(0,0,0,0.15); }
+
+    .btn-wrong { background: var(--danger); box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3); }
+    .btn-correct { background: var(--success); box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3); }
+
+    .btn-sub { font-size: 0.8rem; font-weight: 400; opacity: 0.9; }
+
     /* Quiz Mode Styles */
     .quiz-container {
-      max-width: 600px;
       width: 100%;
-      margin: 2rem auto;
+      max-width: 700px;
+    }
+    
+    .quiz-question-card {
+      background: var(--card-bg-light);
+      padding: 3rem;
+      border-radius: 24px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.05);
       text-align: center;
-    }
-    .quiz-question {
-      font-size: 1.8rem;
       margin-bottom: 2rem;
-      color: #333;
-      padding: 1rem;
-      background: #f8f9fa;
-      border-radius: 12px;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+      font-size: 1.8rem;
+      font-weight: 600;
     }
-    body.theme-dark .quiz-question {
-      background: #181c23;
-      color: #e0e0e0;
-    }
-    .quiz-options {
+    body.theme-dark .quiz-question-card { background: var(--card-bg-dark); }
+
+    .quiz-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 1.5rem;
     }
-    .quiz-option-btn {
-      background: #fff;
-      color: #1976d2;
-      border: 2px solid #1976d2;
+
+    .quiz-option {
+      background: transparent;
+      border: 2px solid rgba(0,0,0,0.1);
       padding: 1.5rem;
-      border-radius: 12px;
+      border-radius: 16px;
       font-size: 1.1rem;
       font-weight: 600;
+      color: var(--text-light);
       cursor: pointer;
-      transition: all 0.2s ease;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 80px;
-      box-shadow: 0 4px 6px rgba(25, 118, 210, 0.1);
+      transition: all 0.2s;
     }
-    body.theme-dark .quiz-option-btn {
-      background: #181c23;
-      color: #90caf9;
-      border-color: #1565c0;
+    body.theme-dark .quiz-option { border-color: rgba(255,255,255,0.1); color: var(--text-dark); }
+
+    .quiz-option:hover {
+      background: rgba(79, 70, 229, 0.05);
+      border-color: var(--primary);
+      color: var(--primary);
     }
-    .quiz-option-btn:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 6px 12px rgba(25, 118, 210, 0.2);
-      background: #e3f2fd;
-    }
-    body.theme-dark .quiz-option-btn:hover {
-      background: #1e222b;
-    }
-    .quiz-option-btn.correct {
-      background: #4caf50 !important;
+
+    .quiz-option.correct {
+      background: var(--success) !important;
+      border-color: var(--success) !important;
       color: white !important;
-      border-color: #4caf50 !important;
     }
-    .quiz-option-btn.wrong {
-      background: #ff4d4d !important;
+    
+    .quiz-option.wrong {
+      background: var(--danger) !important;
+      border-color: var(--danger) !important;
       color: white !important;
-      border-color: #ff4d4d !important;
+      opacity: 0.5;
     }
-    @media (max-width: 600px) {
-      .quiz-options {
-        grid-template-columns: 1fr;
-      }
+    
+    .quiz-option.disabled { pointer-events: none; }
+
+    @media (max-width: 640px) {
+      .card-scene { aspect-ratio: 4/5; max-height: 60vh; }
+      .quiz-grid { grid-template-columns: 1fr; }
+      .controls-area { flex-direction: row; gap: 1rem; }
+      .top-bar { padding: 1rem; }
+      .progress-container { margin: 0 1rem; }
     }
   </style>
 </head>
 <body>
-  <div class="spacer"></div>
-  <h1>Question {{ questionIndex + 1 }} sur {{ (typeof cards !== 'undefined' && cards ? cards.length : deck.cards.length) }}</h1>
+  
+  <div class="top-bar">
+    <a href="{{ route('home') }}" style="text-decoration: none; color: inherit; font-weight: 600; opacity: 0.6; transition: opacity 0.2s;">
+      ✕ Quitter
+    </a>
+    
+    <div class="progress-container">
+      <div class="progress-label">Question {{ questionIndex + 1 }} sur {{ (typeof cards !== 'undefined' && cards ? cards.length : deck.cards.length) }}</div>
+      <div class="progress-track">
+        <div class="progress-fill" style="width: {{ ((questionIndex) / (typeof cards !== 'undefined' && cards ? cards.length : deck.cards.length)) * 100 }}%"></div>
+      </div>
+    </div>
 
     @if(mode === 'chronometre')
-      <p>Temps écoulé : <span id="elapsed-time"></span></p>
+      <div class="timer-badge" id="elapsed-time">0m 0s</div>
+    @else
+      <div style="width: 60px;"></div> <!-- Spacer for balance -->
     @endif
+  </div>
 
+  <div class="study-container">
     @if(mode === 'quiz')
       <div class="quiz-container">
-        <div class="quiz-question">
+        <div class="quiz-question-card">
           @if(direction === 'question')
             {{ card.question }}
           @else
             {{ card.answer }}
           @endif
         </div>
-        <div class="quiz-options">
+        <div class="quiz-grid">
           @if(quizOptions)
             @each(option in quizOptions)
-              <button class="quiz-option-btn" onclick="checkQuizAnswer(this, {{ option.isCorrect }})">
+              <button class="quiz-option" onclick="checkQuizAnswer(this, {{ option.isCorrect }})">
                 {{ option.text }}
               </button>
             @endeach
@@ -253,30 +352,49 @@
         </div>
       </div>
     @else
-      <div class="card-container">
-        <div class="card" onclick="flipCard(this)">
+      <!-- Flashcard Mode -->
+      <div class="card-scene" onclick="flipCard()">
+        <div class="card" id="flashcard">
           <div class="card-face front">
-            @if(direction === 'question')
-              {{ card.question }}
-            @else
-              {{ card.answer }}
-            @endif
+            <div class="card-label">Question</div>
+            <div class="card-content">
+              @if(direction === 'question')
+                {{ card.question }}
+              @else
+                {{ card.answer }}
+              @endif
+            </div>
+            <div class="hint-text">
+              <span>Clic pour retourner</span> ⟳
+            </div>
           </div>
           <div class="card-face back">
-            @if(direction === 'question')
-              {{ card.answer }}
-            @else
-              {{ card.question }}
-            @endif
-            <div class="card-buttons">
-              <button class="check-button" onclick="markCard(event, true)">✔</button>
-              <button class="cross-button" onclick="markCard(event, false)">✘</button>
+            <div class="card-label">Réponse</div>
+            <div class="card-content">
+              @if(direction === 'question')
+                {{ card.answer }}
+              @else
+                {{ card.question }}
+              @endif
             </div>
           </div>
         </div>
       </div>
-    @endif
 
+      <div class="controls-area" id="controls">
+        <button class="action-btn btn-wrong" onclick="markCard(event, false)">
+          <span>✘ Incorrect</span>
+          <span class="btn-sub">À revoir</span>
+        </button>
+        <button class="action-btn btn-correct" onclick="markCard(event, true)">
+          <span>✔ Correct</span>
+          <span class="btn-sub">Bien joué</span>
+        </button>
+      </div>
+    @endif
+  </div>
+
+  <!-- Hidden Form for submission -->
   <form 
     action="{{ questionIndex + 1 < (typeof cards !== 'undefined' && cards ? cards.length : deck.cards.length) 
       ? route('exercise.presentQuestion', { deckId: deck.id, questionIndex: questionIndex + 1 }) 
@@ -294,7 +412,7 @@
       @endeach
     @endif
     <input type="hidden" name="attempts" value="{{ attempts || 1 }}" />
-    <button type="submit">{{ questionIndex + 1 < deck.cards.length ? 'Suivant' : 'Terminer' }}</button>
+    <button type="submit" id="submitBtn">Suivant</button>
   </form>
 
   <script>
@@ -302,29 +420,54 @@
     const mode = '{{ mode }}';
     const results = JSON.parse('{{ results || "[]" }}');
     const cardId = parseInt('{{ card.id }}', 10);
+    let isFlipped = false;
 
-    function flipCard(cardElement) {
-      cardElement.classList.toggle('is-flipped');
+    // Timer logic
+    if (mode === 'chronometre') {
+      setInterval(() => {
+        const elapsed = Math.floor((Date.now() - startTime) / 1000);
+        document.getElementById('elapsed-time').textContent = `${Math.floor(elapsed / 60)}m ${elapsed % 60}s`;
+        const elapsedInput = document.querySelector('input[name="elapsedTime"]');
+        if(elapsedInput) elapsedInput.value = elapsed;
+      }, 1000);
+    }
+
+    // Flashcard Logic
+    function flipCard() {
+      if (mode !== 'quiz') {
+        const card = document.getElementById('flashcard');
+        const controls = document.getElementById('controls');
+        
+        isFlipped = !isFlipped;
+        card.classList.toggle('is-flipped');
+        
+        if (isFlipped) {
+          controls.classList.add('visible');
+        } else {
+          controls.classList.remove('visible');
+        }
+      }
     }
 
     function markCard(event, isCorrect) {
-      event.stopPropagation();
-      const cardButtons = event.currentTarget.parentElement;
-      cardButtons.querySelectorAll('button').forEach(btn => btn.disabled = true);
+      if(event) event.stopPropagation();
+      
       if (isCorrect) {
         results.push(cardId);
       }
       document.getElementById('results').value = JSON.stringify(results);
-      document.getElementById('next-form').style.display = 'block';
+      
+      // Submit immediately
+      document.getElementById('next-form').submit();
     }
 
+    // Quiz Logic
     function checkQuizAnswer(btn, isCorrect) {
       if (btn.classList.contains('disabled')) return;
       
-      const allBtns = document.querySelectorAll('.quiz-option-btn');
+      const allBtns = document.querySelectorAll('.quiz-option');
       allBtns.forEach(b => {
         b.classList.add('disabled');
-        b.onclick = null; // Disable click
       });
 
       if (isCorrect) {
@@ -332,32 +475,34 @@
         results.push(cardId);
       } else {
         btn.classList.add('wrong');
-        // Highlight the correct answer
+        // Highlight correct one
         allBtns.forEach(b => {
-           // Check if the original onclick string had "true" as second argument
-           // Note: This relies on the rendered HTML onclick attribute
-           const onclickStr = b.getAttribute('onclick');
-           if (onclickStr && onclickStr.includes(', true)')) {
-             b.classList.add('correct');
-           }
+          const onclickStr = b.getAttribute('onclick');
+          if (onclickStr && onclickStr.includes(', true)')) {
+            b.classList.add('correct');
+          }
         });
       }
 
       document.getElementById('results').value = JSON.stringify(results);
       
-      // Show next button
-      document.getElementById('next-form').style.display = 'block';
-      // Auto submit after 1.5s? Maybe better to let user click Next to review.
-      // User can click 'Suivant' manually.
+      // Slight delay before next question
+      setTimeout(() => {
+        document.getElementById('next-form').submit();
+      }, 1200);
     }
-
-    if (mode === 'chronometre') {
-      setInterval(() => {
-        const elapsed = Math.floor((Date.now() - startTime) / 1000);
-        document.getElementById('elapsed-time').textContent = `${Math.floor(elapsed / 60)}m ${elapsed % 60}s`;
-        document.querySelector('input[name="elapsedTime"]').value = elapsed;
-      }, 1000);
-    }
+    
+    // Progress Bar Animation
+    document.addEventListener('DOMContentLoaded', () => {
+      // Small delay to trigger CSS transition
+      setTimeout(() => {
+         const fill = document.querySelector('.progress-fill');
+         // We might need to recalculate width if it relies on server side render
+         // It is already inline style, so it should animate on load if we wanted. 
+         // But for smooth entry, we can zero it first? 
+         // Actually current implementation sets width in HTML so it will just be there.
+      }, 100);
+    });
   </script>
 </body>
 </html>

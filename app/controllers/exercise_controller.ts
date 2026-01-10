@@ -5,7 +5,7 @@ import UserStats from '#models/user_stats'
 
 export default class ExerciseController {
   async start({ params, view, request, auth }: HttpContext) {
-    const deck = await Deck.query().where('id', params.deckId).preload('cards').first()
+    const deck = await Deck.query().where('id', params.deckId).preload('cards').preload('user').first()
     if (!deck) {
       return view.render('./pages/errors/not_found')
     }
@@ -187,23 +187,7 @@ export default class ExerciseController {
     let attempts = parseInt(request.input('attempts', '1'), 10) || 1
     const direction = request.input('direction', 'question')
 
-    if (mode === 'jusquaubout' && incorrectCards.length > 0) {
-      // On incrémente le nombre de passages pour le prochain tour
-      return view.render('finish_with_time', {
-        deck,
-        cards,
-        elapsedTime,
-        results,
-        mode,
-        incorrectCards,
-        showRetry: true,
-        retryCardIds: incorrectCards.map((card: Card) => card.id),
-        attempts: (attempts as number) + 1,
-        direction
-      });
-    }
-
-    // --- MISE À JOUR DES STATISTIQUES UTILISATEUR ---
+    // --- MISE À JOUR DES STATISTIQUES UTILISATEUR ET SAUVEGARDE DES TENTATIVES ---
     if (auth.user) {
       const userId = auth.user.id;
       let userStats = await UserStats.findBy('user_id', userId);
@@ -215,10 +199,17 @@ export default class ExerciseController {
         userStats.wrong_answers = 0;
         userStats.total_study_time = 0;
       }
-      userStats.decks_studied += 1;
+
+      // On met à jour les stats cumulatives
       userStats.correct_answers += results.length;
       userStats.wrong_answers += incorrectCards.length;
       userStats.total_study_time += isNaN(elapsedTime) ? 0 : elapsedTime;
+
+      // On incrémente decks_studied seulement si l'exercice est terminé (pas de retry ou hors mode jusquaubout)
+      if (mode !== 'jusquaubout' || incorrectCards.length === 0) {
+        userStats.decks_studied += 1;
+      }
+
       await userStats.save();
 
       // --- SAVE EXERCISE ATTEMPTS (For Reports) ---
@@ -251,6 +242,22 @@ export default class ExerciseController {
       // ---------------------------------------------
     }
     // --- FIN MISE À JOUR DES STATISTIQUES ---
+
+    if (mode === 'jusquaubout' && incorrectCards.length > 0) {
+      // On incrémente le nombre de passages pour le prochain tour
+      return view.render('finish_with_time', {
+        deck,
+        cards,
+        elapsedTime,
+        results,
+        mode,
+        incorrectCards,
+        showRetry: true,
+        retryCardIds: incorrectCards.map((card: Card) => card.id),
+        attempts: (attempts as number) + 1,
+        direction
+      });
+    }
 
     return view.render('finish_with_time', {
       deck,

@@ -2,326 +2,284 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Accueil</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Résultats de recherche - DeckStorm</title>
   <link rel="shortcut icon" href="/images/icone.ico" type="image/x-icon">
   <script>
-    // Applique le thème le plus tôt possible pour éviter flash
     (function() {
       let theme = localStorage.getItem('theme');
-      if (!theme) {
-        theme = 'theme-light';
-      }
+      if (!theme) theme = 'theme-light';
+      document.documentElement.className = theme;
       document.addEventListener('DOMContentLoaded', function() {
-        document.body.classList.remove('theme-light', 'theme-dark');
-        document.body.classList.add(theme);
+        document.body.className = theme;
       });
-      if (document.body) {
-        document.body.classList.remove('theme-light', 'theme-dark');
-        document.body.classList.add(theme);
-      }
     })();
   </script>
   <style>
+    :root {
+      --primary: #3b82f6; 
+      --primary-dark: #2563eb;
+      --bg-body: #f8fafc;
+      --bg-card: #ffffff;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --success: #22c55e;
+      --danger: #ef4444;
+    }
+
+    .theme-dark {
+      --primary: #60a5fa;
+      --primary-dark: #3b82f6;
+      --bg-body: #0f172a;
+      --bg-card: #1e293b;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --border: #334155;
+    }
+
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
-
-    html {
-      scroll-behavior: smooth;
     }
 
     body {
-      background: #fff;
-      color: #222;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg-body);
+      color: var(--text-main);
       min-height: 100vh;
-      font-weight: 400;
-      line-height: 1.6;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-       
-    }
-    body.theme-light {
-      background: #fff;
-      color: #222;
-       
-    }
-    body.theme-dark {
-      background: #0a0c10;
-      color: #e6e9ef;
-       
+      padding-top: 70px;
+      transition: background-color 0.2s, color 0.2s;
     }
 
-    .navbar {
+    .container {
       width: 100%;
-      padding: 1rem 2rem;
+      max-width: 1200px;
+      padding: 2rem 1.5rem;
+      margin: 0 auto;
+    }
+
+    /* Search Header */
+    .search-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .search-title {
+      font-size: 2rem;
+      font-weight: 800;
+      margin-bottom: 1.5rem;
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    /* Tab Navigation */
+    .search-tabs {
       display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: rgba(255,255,255,0.95);
-      border-bottom: 2px solid #1976d2;
-      position: fixed;
-      top: 0;
-      left: 0;
-      z-index: 10;
-      backdrop-filter: blur(8px);
-      box-shadow: 0 2px 15px rgba(108, 137, 71, 0.15);
-      transition: box-shadow 0.3s;
-    }
-    body.theme-dark .navbar {
-      background: rgba(10,12,16,0.95);
-      border-bottom: 2px solid #1976d2;
-    }
-
-    .navbar a {
-      text-decoration: none;
-      color: #1976d2;
-      font-size: 1.5rem;
-      font-weight: bold;
-      transition: color 0.2s;
-    }
-    .navbar a:focus, .navbar a:hover {
-      color: #a6d672;
-      outline: none;
-    }
-
-    .navbar img {
-      height: 36px;
-      width: 36px;
-      margin-right: 0.7rem;
-      vertical-align: middle;
-    }
-
-    .main-content {
-      margin-top: 100px;
-      padding: 2rem;
-      width: 100%;
-      max-width: 1400px;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-bottom: 2rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 0.5rem;
+      max-width: 400px;
       margin-left: auto;
       margin-right: auto;
     }
 
-    /* Styles pour la barre de recherche et le switch */
-    .search-container {
-      max-width: 900px;
-      margin: 0 auto 2rem auto;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 1rem;
-      width: 100%;
-    }
-
-    .search-wrapper {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      width: 100%;
-    }
-
-    .search-input {
-      width: 100%;
-      padding: 12px 20px;
-      font-size: 1.1rem;
-      border: 1.5px solid rgba(108, 137, 71, 0.4);
+    .tab-btn {
+      flex: 1;
+      padding: 0.75rem 1.5rem;
+      background: transparent;
+      border: none;
       border-radius: 8px;
-      background: rgba(245,245,245,0.85);
-      color: #222;
-      transition: border 0.2s, box-shadow 0.2s;
-      backdrop-filter: blur(4px);
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
-    }
-    body.theme-dark .search-input {
-      background: rgba(17,19,23,0.85);
-      color: #e0e0e0;
-      border: 1.5px solid rgba(25, 118, 210, 0.25);
-    }
-    .search-input:focus {
-      outline: none;
-      border-color: #a6d672;
-      box-shadow: 0 0 8px #6c8947;
-      background: rgba(17, 19, 23, 0.95);
-    }
-    .search-input::placeholder {
-      color: #888;
-      opacity: 1;
-      font-style: italic;
-    }
-
-    /* Styles du switch/slider */
-    .search-switch {
-      background: rgba(17, 19, 23, 0.85);
-      border: 1.5px solid rgba(56, 66, 34, 0.3);
-      border-radius: 25px;
-      padding: 4px;
-      width: 320px;
-      height: 40px;
-      position: relative;
+      font-weight: 600;
+      font-size: 1rem;
       cursor: pointer;
+      transition: all 0.2s;
+      color: var(--text-muted);
       display: flex;
       align-items: center;
-      transition: border 0.2s, box-shadow 0.2s;
-      backdrop-filter: blur(4px);
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
-      user-select: none;
-    }
-    .search-switch:focus {
-      outline: 2px solid #6c8947;
+      justify-content: center;
+      gap: 0.5rem;
     }
 
-    .switch-option {
-      width: 50%;
-      text-align: center;
-      font-size: 1rem;
-      color: #e0e0e0;
-      z-index: 1;
-      transition: color 0.3s;
-      padding: 5px 0;
+    .tab-btn.active {
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: white;
+      box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+    }
+
+    .tab-btn:hover:not(.active) {
+      background: var(--bg-body);
+      color: var(--text-main);
+    }
+
+    .search-query {
+      font-size: 1.2rem;
+      color: var(--text-muted);
       font-weight: 600;
-      letter-spacing: 0.5px;
-      cursor: pointer;
-      border-radius: 20px;
+      margin-bottom: 1rem;
     }
 
-    .switch-slider {
-      position: absolute;
-      left: 4px;
-      top: 4px;
-      width: calc(50% - 4px);
-      height: calc(100% - 8px);
-      background: linear-gradient(90deg, #6c8947 60%, #a6d672 100%);
-      border-radius: 20px;
-      transition: transform 0.3s;
-      box-shadow: 0 2px 8px rgba(108, 137, 71, 0.15);
-    }
-
-    .search-switch[data-mode="author"] .switch-slider {
-      transform: translateX(calc(100% + 4px));
-    }
-    .search-switch[data-mode="author"] .switch-option:last-child {
-      color: #222;
-      background: #a6d67222;
-    }
-    .search-switch[data-mode="content"] .switch-option:first-child {
-      color: #222;
-      background: #a6d67222;
-    }
-
-    /* Styles pour le switch de vue */
-    .view-switch {
-      background: rgba(17, 19, 23, 0.85);
-      border: 1.5px solid rgba(56, 66, 34, 0.3);
-      border-radius: 25px;
-      padding: 4px;
-      width: 140px;
-      height: 40px;
-      position: relative;
-      cursor: pointer;
-      display: flex;
+    .search-count {
+      display: inline-flex;
       align-items: center;
-      transition: border 0.2s, box-shadow 0.2s;
-      backdrop-filter: blur(4px);
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
-      user-select: none;
-      margin-left: 0.5rem;
-    }
-    .view-switch-option {
-      width: 50%;
-      text-align: center;
-      font-size: 1rem;
-      color: #e0e0e0;
-      z-index: 1;
-      transition: color 0.3s;
-      padding: 5px 0;
+      gap: 0.5rem;
+      padding: 0.5rem 1.5rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
       font-weight: 600;
-      letter-spacing: 0.5px;
-      cursor: pointer;
-      border-radius: 20px;
-    }
-    .view-switch-slider {
-      position: absolute;
-      left: 4px;
-      top: 4px;
-      width: calc(50% - 4px);
-      height: calc(100% - 8px);
-      background: linear-gradient(90deg, #6c8947 60%, #a6d672 100%);
-      border-radius: 20px;
-      transition: transform 0.3s;
-      box-shadow: 0 2px 8px rgba(108, 137, 71, 0.15);
+      color: var(--primary);
     }
 
-    .view-switch[data-view="list"] .view-switch-slider {
-      transform: translateX(calc(100% + 4px));
-    }
-    .view-switch[data-view="list"] .view-switch-option:last-child {
-      color: #222;
-      background: #a6d67222;
-    }
-    .view-switch[data-view="grid"] .view-switch-option:first-child {
-      color: #222;
-      background: #a6d67222;
-    }
-
-    .decks-grid {
+    /* Deck Grid */
+    .deck-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: 2rem;
-      max-width: 1200px;
-      margin: 0 auto;
-      width: 100%;
-      transition: gap 0.2s;
+      gap: 1.5rem;
+      margin-top: 2rem;
     }
 
     .deck-card {
-      background: rgba(245,245,245,0.92);
-      border: 1.5px solid rgba(25, 118, 210, 0.10);
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.13);
+      background: var(--bg-card);
+      border: 1px solid var(--border);
       border-radius: 12px;
       padding: 1.5rem;
-      transition: transform 0.2s, box-shadow 0.2s, border 0.2s;
       cursor: pointer;
-      min-width: 0;
-      word-break: break-word;
-      position: relative; /* Added for absolute positioning of like button */
-    }
-    body.theme-dark .deck-card {
-      background: rgba(17,19,23,0.92);
-      border: 1.5px solid rgba(25, 118, 210, 0.25);
+      transition: all 0.2s;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      position: relative;
     }
 
-    /* Move like button styles here and update */
+    .deck-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+      border-color: var(--primary);
+    }
+
+    .deck-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--primary);
+      line-height: 1.3;
+    }
+
+    .deck-description {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+      flex: 1;
+      min-height: 2.5em;
+    }
+
+    .deck-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 0.75rem;
+      border-top: 1px solid var(--border);
+      font-size: 0.85rem;
+    }
+
+    .deck-cards-count {
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .deck-author {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+    .deck-author:hover {
+      text-decoration: underline;
+    }
+
+    /* User Cards */
+    .user-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .user-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+      border-color: var(--primary);
+    }
+
+    .user-avatar {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .user-info {
+      flex: 1;
+    }
+
+    .user-name {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 0.25rem;
+    }
+
+    .user-stats {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      display: flex;
+      gap: 1rem;
+    }
+
+    /* Like Button */
     .like-container {
       position: absolute;
       top: 1rem;
       right: 1rem;
       display: flex;
       align-items: center;
-      gap: 0.3rem;
-      background: rgba(245,245,245,0.8);
-      padding: 0.3rem 0.5rem;
+      gap: 0.5rem;
+      background: var(--bg-body);
+      padding: 0.5rem 0.75rem;
       border-radius: 20px;
-      backdrop-filter: blur(4px);
+      border: 1px solid var(--border);
       opacity: 0;
-      pointer-events: none;
       transition: opacity 0.2s;
     }
-    .deck-card:hover .like-container,
-    .deck-card:focus-within .like-container {
+
+    .deck-card:hover .like-container {
       opacity: 1;
-      pointer-events: auto;
-    }
-    body.theme-dark .like-container {
-      background: rgba(17,19,23,0.8);
     }
 
     .like-btn {
       background: none;
       border: none;
       cursor: pointer;
-      font-size: 1.3rem;
-      padding: 0.3rem 0.5rem;
+      font-size: 1.2rem;
+      padding: 0;
       display: flex;
       align-items: center;
       gap: 0.3rem;
@@ -333,244 +291,122 @@
     }
 
     .like-btn.liked {
-      color: #ff4d4d;
       animation: likeAnimation 0.3s ease;
     }
 
     @keyframes likeAnimation {
-      0% { transform: scale(1); }
+      0%, 100% { transform: scale(1); }
       50% { transform: scale(1.3); }
-      100% { transform: scale(1); }
     }
 
     .like-count {
-      font-size: 1rem;
-      color: #1976d2;
-      min-width: 1.5rem;
-      text-align: center;
-    }
-
-    .deck-title {
-      color: #1976d2;
-      font-size: 1.5rem;
-      letter-spacing: 0.5px;
-      margin-bottom: 1rem;
-      font-weight: bold;
-      overflow-wrap: anywhere;
-    }
-    body.theme-dark .deck-title {
-      color: #1976d2;
-    }
-
-    .deck-description {
-      color: #222;
-      margin-bottom: 1rem;
-      line-height: 1.4;
-      font-size: 1.05rem;
-      min-height: 2.2em;
-      opacity: 0.95;
-    }
-    body.theme-dark .deck-description {
-      color: #e0e0e0;
-    }
-
-    .deck-info {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      color: #b0b0b0;
-      font-size: 0.95rem;
-      margin-top: 0.5rem;
-    }
-
-    .deck-author {
-      color: #1976d2;
-      text-decoration: underline;
-      font-weight: 500;
-      transition: color 0.2s;
-    }
-    .deck-author:hover, .deck-author:focus {
-      color: #1976d2;
-      outline: none;
-    }
-
-    .no-decks {
-      text-align: center;
-      color: #888;
-      font-size: 1.2rem;
-      margin-top: 2rem;
-      letter-spacing: 0.5px;
-    }
-
-    /* Dropdown styles */
-    .dropdown {
-      position: relative;
-      display: inline-block;
-    }
-    .dropdown-toggle {
-      background: #6c8947;
-      color: white;
-      border: none;
-      padding: 0.7rem 1.2rem;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 1rem;
-      transition: background 0.2s;
+      font-size: 0.9rem;
       font-weight: 600;
-    }
-    .dropdown-toggle:focus, .dropdown-toggle:hover {
-      background: #7b995c;
-      outline: none;
-    }
-    .dropdown-menu {
-      display: none;
-      position: absolute;
-      right: 0;
-      background: #222;
-      min-width: 180px;
-      box-shadow: 0 2px 10px rgba(0,173,181,0.15);
-      border: 1px solid #6c8947;
-      border-radius: 8px;
-      z-index: 100;
-      margin-top: 0.5rem;
-    }
-    .dropdown.open .dropdown-menu {
-      display: block;
+      color: var(--text-main);
     }
 
-    
-    .add-deck-btn {
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: 4rem 2rem;
+      color: var(--text-muted);
+    }
+
+    .empty-icon {
+      font-size: 4rem;
+      margin-bottom: 1rem;
+    }
+
+    .empty-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      color: var(--text-main);
+    }
+
+    .empty-text {
+      font-size: 1rem;
+    }
+
+    /* FAB */
+    .fab {
       position: fixed;
       bottom: 2rem;
       right: 2rem;
-      background: linear-gradient(135deg, #1976d2, #1565c0);
-      color: white;
-      border: none;
-      border-radius: 50%;
       width: 60px;
       height: 60px;
-      font-size: 2rem;
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: white;
+      border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
+      font-size: 2rem;
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
       cursor: pointer;
-      box-shadow: 0 4px 15px rgba(25, 118, 210, 0.18);
-      transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
+      transition: all 0.2s;
+      text-decoration: none;
       z-index: 100;
+    }
+
+    .fab:hover {
+      transform: scale(1.1) rotate(90deg);
+      box-shadow: 0 6px 16px rgba(59, 130, 246, 0.4);
+    }
+
+    /* Pagination */
+    .pagination {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 1rem;
+      margin-top: 3rem;
+      padding: 2rem 0;
+    }
+
+    .pagination-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.5rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--text-main);
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
       text-decoration: none;
     }
-    .add-deck-btn:hover {
-      background: linear-gradient(135deg, #1565c0, #1976d2);
-      box-shadow: 0 6px 24px rgba(25, 118, 210, 0.25);
-      transform: scale(1.08);
-    }
-    .add-deck-btn span {
-      margin-top: -2px;
+
+    .pagination-btn:hover:not(:disabled) {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+      transform: translateY(-2px);
     }
 
-    /* Table/list mode */
-    #decksListContainer table {
-      width: 100%;
-      max-width: 1200px;
-      margin: 0 auto;
-      border-collapse: collapse;
-      background: rgba(245,245,245,0.92);
-      border-radius: 10px;
-      overflow: hidden;
-      font-size: 1.05rem;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.08);
-    }
-    body.theme-dark #decksListContainer table {
-      background: rgba(17,19,23,0.92);
+    .pagination-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
     }
 
-    #decksListContainer th, #decksListContainer td {
-      padding: 14px 10px;
-      border-bottom: 1px solid #6c8947;
-      text-align: left;
-    }
-    #decksListContainer th {
-      background: #e3f2fd;
-      color: #6c8947;
-      font-size: 1.1rem;
-      font-weight: bold;
-      cursor: pointer;
-      user-select: none;
-      transition: background 0.2s;
-    }
-    body.theme-dark #decksListContainer th {
-      background: #23272f;
-    }
-    #decksListContainer th:focus, #decksListContainer th:hover {
-      background: #232d1a;
-      outline: none;
-    }
-    #decksListContainer th .sort-arrow {
-      margin-left: 4px;
-      font-size: 0.95em;
-    }
-    #decksListContainer tr:hover {
-      background: #e3f2fd;
-    }
-    body.theme-dark #decksListContainer tr:hover {
-      background: #2d333b;
+    .pagination-info {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      font-weight: 500;
     }
 
-    /* Responsive */
-    @media (max-width: 900px) {
-      .main-content {
-        padding: 1rem;
-      }
-      .search-container {
-        max-width: 100%;
-      }
-      .decks-grid {
-        gap: 1rem;
-      }
-      #decksListContainer table {
-        font-size: 0.98rem;
-      }
-    }
-    @media (max-width: 600px) {
-      .main-content {
-        margin-top: 80px;
-        padding: 0.5rem;
-      }
-      .search-container {
-        gap: 0.5rem;
-      }
-      .search-switch {
-        width: 180px;
-        font-size: 0.9rem;
-        min-width: 0;
-      }
-      .search-input {
-        font-size: 1rem;
-        padding: 10px 12px;
-      }
-      .decks-grid {
+    @media (max-width: 768px) {
+      .deck-grid {
         grid-template-columns: 1fr;
-        gap: 0.7rem;
       }
-      .deck-card {
-        padding: 1rem;
-        font-size: 0.98rem;
+      .search-title {
+        font-size: 1.5rem;
       }
-      #decksListContainer th, #decksListContainer td {
-        padding: 8px 5px;
-      }
-      #toggleViewBtn {
-        padding: 0.5rem 0.8rem;
-        font-size: 1rem;
-      }
-    }
-    @media (max-width: 400px) {
-      .search-switch {
-        width: 120px;
-        font-size: 0.8rem;
-      }
-      .deck-title {
-        font-size: 1.1rem;
+      .search-query {
+        font-size: 1.2rem;
       }
     }
   </style>
@@ -578,228 +414,99 @@
 <body>
   @include('components/header')
 
-  <div class="main-content">
-    <div style="text-align:center; margin-bottom:2rem;">
-      <h1 style="color:#1976d2; margin-bottom:0.5rem">Résultats de "{{ query }}"</h1>
-      <div style="margin-top:1rem; color:#1976d2; font-weight:600; font-size:1.2rem;">
-        Decks trouvés : <span id="deckCount">{{ publicDecks.length }}</span>
+  <div class="container">
+    <div class="search-header">
+      <h1 class="search-title">Résultats de recherche</h1>
+      <div class="search-query">"{{ query }}"</div>
+      
+      <!-- Tab Navigation -->
+      <div class="search-tabs">
+        <button class="tab-btn active" id="decksTab" onclick="switchTab('decks')">
+          <span>📚</span>
+          <span>Decks</span>
+        </button>
+        <button class="tab-btn" id="usersTab" onclick="switchTab('users')">
+          <span>👤</span>
+          <span>Utilisateurs</span>
+        </button>
+      </div>
+
+      <div class="search-count" id="searchCount">
+        <span id="countIcon">📚</span>
+        <span id="countValue">{{ publicDecks.length }}</span>
+        <span id="countLabel">deck(s) trouvé(s)</span>
       </div>
     </div>
 
-    <!-- Suppression du container de recherche -->
-
-    <div class="decks-grid" id="decksContainer">
+    <!-- Decks Section -->
+    <div id="decksSection">
       @if(publicDecks.length)
-        @each(deck in publicDecks)
-          <div class="deck-card" onclick="window.location.href='/deck/{{ deck.id }}'">
-            <div class="like-container">
-              <button 
-                onclick="event.preventDefault(); event.stopPropagation(); toggleLike({{ deck.id }}, this)"
-                class="like-btn {{ deck.hasLiked ? 'liked' : '' }}"
-                title="{{ deck.hasLiked ? 'Je n\'aime plus' : 'J\'aime' }}"
-              >
-                <span class="heart-emoji">{{ deck.hasLiked ? '❤️' : '🤍' }}</span>
-                <span class="like-count">{{ deck.likes.length }}</span>
-              </button>
+        <div class="deck-grid" id="deckGrid">
+          @each(deck in publicDecks)
+            <div class="deck-card deck-item" onclick="window.location.href='/deck/{{ deck.id }}'">
+              <div class="like-container">
+                <button 
+                  onclick="event.preventDefault(); event.stopPropagation(); toggleLike({{ deck.id }}, this)"
+                  class="like-btn {{ deck.hasLiked ? 'liked' : '' }}"
+                  title="{{ deck.hasLiked ? 'Je n\'aime plus' : 'J\'aime' }}"
+                >
+                  <span class="heart-emoji">{{ deck.hasLiked ? '❤️' : '🤍' }}</span>
+                  <span class="like-count">{{ deck.likes.length }}</span>
+                </button>
+              </div>
+              
+              <div class="deck-title">{{ deck.title }}</div>
+              <div class="deck-description">{{ deck.description || 'Aucune description' }}</div>
+              
+              <div class="deck-meta">
+                <span class="deck-cards-count">{{ deck.cards.length }} carte(s)</span>
+                <a href="/public-account/{{ deck.user.id }}" class="deck-author" onclick="event.stopPropagation();">
+                  {{ deck.user.username }}
+                </a>
+              </div>
             </div>
-            <div class="deck-title">{{ deck.title }}</div>
-            <div class="deck-description">{{ deck.description }}</div>
-            <div class="deck-info">
-              <span>{{ deck.cards.length }} cartes</span>
-              <a href="/public-account/{{ deck.user.id }}" class="deck-author" onclick="event.stopPropagation();">{{ deck.user.username }}</a>
-            </div>
-          </div>
-        @endeach
-      @else
-        <div class="no-decks">Aucun deck public disponible</div>
-      @end
-    </div>
-
-    <!-- Affichage en mode liste (table), caché par défaut -->
-    <div id="decksListContainer" style="display:none;">
-      <table style="width:100%; max-width:1200px; margin:0 auto; border-collapse:collapse; background:rgba(17,19,23,0.8); border-radius:10px; overflow:hidden;">
-        <thead>
-          <tr>
-            <th onclick="sortListBy('title')" id="th-title">
-              Titre <span class="sort-arrow" id="sortArrow-title">▲</span>
-            </th>
-            <th onclick="sortListBy('description')" id="th-description">
-              Description <span class="sort-arrow" id="sortArrow-description"></span>
-            </th>
-            <th onclick="sortListBy('cards')" id="th-cards">
-              Cartes <span class="sort-arrow" id="sortArrow-cards"></span>
-            </th>
-            <th onclick="sortListBy('author')" id="th-author">
-              Auteur <span class="sort-arrow" id="sortArrow-author"></span>
-            </th>
-            <th onclick="sortListBy('likes')" id="th-likes">
-              Likes <span class="sort-arrow" id="sortArrow-likes"></span>
-            </th>
-          </tr>
-        </thead>
-        <tbody id="decksListBody">
-          @if(publicDecks.length)
-            @each(deck in publicDecks)
-              <tr class="deck-list-row" style="cursor:pointer;" onclick="window.location.href='/deck/{{ deck.id }}'">
-                <td class="deck-title-cell">{{ deck.title }}</td>
-                <td>{{ deck.description }}</td>
-                <td>{{ deck.cards.length }}</td>
-                <td><a href="/public-account/{{ deck.user.id }}" class="deck-author">{{ deck.user.username }}</a></td>
-                <td>
-                  <form action="{{ route(deck.hasLiked ? 'decks.unlike' : 'decks.like', { id: deck.id }) }}" method="GET" style="display:inline;" onclick="event.stopPropagation();">
-                    <input type="hidden" name="returnTo" value="list">
-                    <button type="submit" class="like-btn {{ deck.hasLiked ? 'liked' : '' }}">
-                      <span title="{{ deck.hasLiked ? 'Je n\'aime plus' : 'J\'aime' }}">
-                        {{ deck.hasLiked ? '❤️' : '🤍' }}
-                      </span>
-                    </button>
-                    <span class="like-count">{{ deck.likes ? deck.likes.length : 0 }}</span>
-                  </form>
-                </td>
-              </tr>
-            @endeach
-          @else
-            <tr><td colspan="4" style="text-align:center;">Aucun deck public disponible</td></tr>
           @end
-        </tbody>
-      </table>
+        </div>
+
+        <!-- Pagination Controls -->
+        <div class="pagination" id="pagination" style="display: none;">
+          <button class="pagination-btn" id="prevBtn" onclick="changePage(-1)">
+            ← Précédent
+          </button>
+          <span class="pagination-info">
+            Page <span id="currentPage">1</span> sur <span id="totalPages">1</span>
+          </span>
+          <button class="pagination-btn" id="nextBtn" onclick="changePage(1)">
+            Suivant →
+          </button>
+        </div>
+      @else
+        <div class="empty-state">
+          <div class="empty-icon">🔍</div>
+          <h2 class="empty-title">Aucun deck trouvé</h2>
+          <p class="empty-text">Essayez avec d'autres mots-clés</p>
+        </div>
+      @endif
     </div>
 
-    <a href="{{ route('decks.create') }}" class="add-deck-btn" title="Créer un nouveau deck">
-    <span>+</span>
-  </a>
+    <!-- Users Section (Hidden by default) -->
+    <div id="usersSection" style="display: none;">
+      <div class="deck-grid" id="userGrid">
+        <!-- Users will be loaded dynamically -->
+      </div>
+      <div class="empty-state" id="usersEmpty" style="display: none;">
+        <div class="empty-icon">👤</div>
+        <h2 class="empty-title">Aucun utilisateur trouvé</h2>
+        <p class="empty-text">Essayez avec d'autres mots-clés</p>
+      </div>
+    </div>
   </div>
 
+  <a href="{{ route('decks.create') }}" class="fab" title="Créer un nouveau deck">
+    <span>+</span>
+  </a>
+
   <script>
-    // Simplification du script, garder uniquement la gestion de l'affichage grid/list
-    let isGridView = true;
-    let sortField = 'title';
-    let sortAsc = true;
-
-    const decksContainer = document.getElementById('decksContainer');
-    const decksListContainer = document.getElementById('decksListContainer');
-    const viewSwitch = document.getElementById('viewSwitch');
-
-    function setSortArrows() {
-      const fields = ['title', 'description', 'cards', 'author', 'likes'];
-      fields.forEach(f => {
-        document.getElementById('sortArrow-' + f).textContent = '';
-      });
-      document.getElementById('sortArrow-' + sortField).textContent = sortAsc ? '▲' : '▼';
-    }
-
-    function sortListBy(field) {
-      if (sortField === field) {
-        sortAsc = !sortAsc;
-      } else {
-        sortField = field;
-        sortAsc = true;
-      }
-      setSortArrows();
-      updateListFromGrid();
-    }
-
-    function updateListFromGrid() {
-      const gridCards = Array.from(document.querySelectorAll('.deck-card'));
-      const listBody = document.getElementById('decksListBody');
-      const visibleDecks = gridCards.filter(card => card.style.display !== 'none').map(card => {
-        const likeButton = card.querySelector('.like-btn');
-        const likeCount = card.querySelector('.like-count');
-        return {
-          title: card.querySelector('.deck-title').textContent,
-          description: card.querySelector('.deck-description').textContent,
-          cards: parseInt(card.querySelector('.deck-info span').textContent) || 0,
-          author: card.querySelector('.deck-author').textContent,
-          authorLink: card.querySelector('.deck-author').getAttribute('href'),
-          deckUrl: card.getAttribute('onclick').match(/'([^']+)'/)[1],
-          hasLiked: likeButton.classList.contains('liked'),
-          likesCount: likeCount ? parseInt(likeCount.textContent) || 0 : 0,
-          id: card.getAttribute('onclick').match(/\/deck\/(\d+)/)[1]
-        };
-      });
-      
-      if (visibleDecks.length > 1) {
-        visibleDecks.sort((a, b) => {
-          let va = a[sortField], vb = b[sortField];
-          if (sortField === 'cards' && 'likes') {
-            va = Number(va); vb = Number(vb);
-            return sortAsc ? va - vb : vb - va;
-          }
-          va = (va || '').toString().toLowerCase();
-          vb = (vb || '').toString().toLowerCase();
-          if (va < vb) return sortAsc ? -1 : 1;
-          if (va > vb) return sortAsc ? 1 : -1;
-          return 0;
-        });
-      }
-      listBody.innerHTML = visibleDecks.length
-        ? visibleDecks.map(deck => `
-          <tr class="deck-list-row" style="cursor:pointer;" onclick="window.location.href='${deck.deckUrl}'">
-            <td class="deck-title-cell">${deck.title}</td>
-            <td>${deck.description}</td>
-            <td>${deck.cards}</td>
-            <td><a href="${deck.authorLink}" class="deck-author">${deck.author}</a></td>
-            <td>
-              <form action="/deck/${deck.id}/${deck.hasLiked ? 'unlike' : 'like'}" method="POST" style="display:inline;" onclick="event.stopPropagation();">
-                {{ csrfField() }}
-                <input type="hidden" name="returnTo" value="list">
-                <button type="submit" class="like-btn${deck.hasLiked ? ' liked' : ''}" title="${deck.hasLiked ? 'Je n\'aime plus' : 'J\'aime'}">
-                  <span>${deck.hasLiked ? '❤️' : '🤍'}</span>
-                </button>
-                <span class="like-count">${deck.likesCount}</span>
-              </form>
-            </td>
-          </tr>
-        `).join('')
-        : '<tr><td colspan="5" style="text-align:center;">Aucun deck public disponible</td></tr>';
-      document.getElementById('deckCount').textContent = visibleDecks.length;
-    }
-
-    // Fix: switch grid/list (event handler must update isGridView and toggle containers)
-    viewSwitch.addEventListener('click', function () {
-      isGridView = viewSwitch.getAttribute('data-view') === 'grid';
-      if (isGridView) {
-        viewSwitch.setAttribute('data-view', 'list');
-        decksContainer.style.display = 'none';
-        decksListContainer.style.display = '';
-        updateListFromGrid();
-      } else {
-        viewSwitch.setAttribute('data-view', 'grid');
-        decksContainer.style.display = '';
-        decksListContainer.style.display = 'none';
-      }
-      // Toggle isGridView for next click
-      isGridView = !isGridView;
-    });
-    viewSwitch.addEventListener('keydown', function(e) {
-      if (e.key === ' ' || e.key === 'Enter') {
-        e.preventDefault();
-        viewSwitch.click();
-      }
-    });
-
-    document.addEventListener('click', function(event) {
-      const dropdown = document.getElementById('userDropdown');
-      if (dropdown && !dropdown.contains(event.target)) {
-        dropdown.classList.remove('open');
-      }
-    });
-
-    setSortArrows();
-
-    document.addEventListener('DOMContentLoaded', function() {
-      // Check if we should show list view
-      const urlParams = new URLSearchParams(window.location.search);
-      const view = urlParams.get('returnTo') || 'grid';
-      if (view === 'list') {
-        viewSwitch.setAttribute('data-view', 'list');
-        decksContainer.style.display = 'none';
-        decksListContainer.style.display = '';
-        isGridView = false;
-        updateListFromGrid();
-      }
-    });
-
     async function toggleLike(deckId, button) {
       try {
         const isLiked = button.classList.contains('liked');
@@ -809,24 +516,173 @@
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'X-CSRF-Token': document.querySelector('[name="_csrf"]').value
+            'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]')?.content || ''
           }
         });
 
         if (response.ok) {
           const data = await response.json();
           button.classList.toggle('liked');
-          // Atualiza o emoji do coração
+          
           const heartEmoji = button.querySelector('.heart-emoji');
           heartEmoji.textContent = button.classList.contains('liked') ? '❤️' : '🤍';
-          // Atualiza o contador
+          
           const countElement = button.querySelector('.like-count');
           countElement.textContent = data.likesCount;
         }
       } catch (error) {
-        console.error('Error:', error);
+        console.error('Error toggling like:', error);
       }
     }
+
+    // Tab Switching
+    let currentTab = 'decks';
+    let usersData = [];
+    let usersLoaded = false;
+
+    async function switchTab(tab) {
+      if (tab === currentTab) return;
+      
+      currentTab = tab;
+      
+      // Update tab buttons
+      document.getElementById('decksTab').classList.toggle('active', tab === 'decks');
+      document.getElementById('usersTab').classList.toggle('active', tab === 'users');
+      
+      // Update sections
+      document.getElementById('decksSection').style.display = tab === 'decks' ? '' : 'none';
+      document.getElementById('usersSection').style.display = tab === 'users' ? '' : 'none';
+      
+      // Update count
+      if (tab === 'decks') {
+        const deckCount = document.querySelectorAll('.deck-item').length;
+        document.getElementById('countIcon').textContent = '📚';
+        document.getElementById('countValue').textContent = deckCount;
+        document.getElementById('countLabel').textContent = 'deck(s) trouvé(s)';
+      } else {
+        // Load users if not already loaded
+        if (!usersLoaded) {
+          await loadUsers();
+        }
+        document.getElementById('countIcon').textContent = '�';
+        document.getElementById('countValue').textContent = usersData.length;
+        document.getElementById('countLabel').textContent = 'utilisateur(s) trouvé(s)';
+      }
+    }
+
+    async function loadUsers() {
+      try {
+        const query = "{{ query }}";
+        const response = await fetch(`/api/user-suggestions?query=${encodeURIComponent(query)}`);
+        
+        if (response.ok) {
+          const usernames = await response.json();
+          usersData = usernames;
+          usersLoaded = true;
+          
+          const userGrid = document.getElementById('userGrid');
+          const usersEmpty = document.getElementById('usersEmpty');
+          
+          if (usernames.length > 0) {
+            userGrid.innerHTML = usernames.map(username => `
+              <div class="user-card" onclick="window.location.href='/public-account/${username}'">
+                <div class="user-avatar">${username.charAt(0).toUpperCase()}</div>
+                <div class="user-info">
+                  <div class="user-name">${username}</div>
+                  <div class="user-stats">
+                    <span>Voir le profil →</span>
+                  </div>
+                </div>
+              </div>
+            `).join('');
+            usersEmpty.style.display = 'none';
+          } else {
+            userGrid.innerHTML = '';
+            usersEmpty.style.display = 'block';
+          }
+        }
+      } catch (error) {
+        console.error('Error loading users:', error);
+        document.getElementById('usersEmpty').style.display = 'block';
+      }
+    }
+
+    // Auto-detect if we should show users tab by default
+    async function autoDetectTab() {
+      const query = "{{ query }}".toLowerCase();
+      const deckCount = document.querySelectorAll('.deck-item').length;
+      
+      // If no decks found, try loading users
+      if (deckCount === 0) {
+        await loadUsers();
+        if (usersData.length > 0) {
+          // Switch to users tab automatically
+          switchTab('users');
+        }
+      } else {
+        // Load users in background for faster switching
+        loadUsers();
+      }
+    }
+
+    // Pagination Logic
+    const ITEMS_PER_PAGE = 51;
+    let currentPage = 1;
+    let totalPages = 1;
+
+    function initPagination() {
+      const deckItems = document.querySelectorAll('.deck-item');
+      const totalItems = deckItems.length;
+      
+      if (totalItems <= ITEMS_PER_PAGE) {
+        // No need for pagination
+        return;
+      }
+
+      totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
+      document.getElementById('pagination').style.display = 'flex';
+      updatePagination();
+    }
+
+    function updatePagination() {
+      const deckItems = document.querySelectorAll('.deck-item');
+      const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+      const endIndex = startIndex + ITEMS_PER_PAGE;
+
+      // Hide all items
+      deckItems.forEach((item, index) => {
+        if (index >= startIndex && index < endIndex) {
+          item.style.display = '';
+        } else {
+          item.style.display = 'none';
+        }
+      });
+
+      // Update pagination UI
+      document.getElementById('currentPage').textContent = currentPage;
+      document.getElementById('totalPages').textContent = totalPages;
+      
+      // Update button states
+      document.getElementById('prevBtn').disabled = currentPage === 1;
+      document.getElementById('nextBtn').disabled = currentPage === totalPages;
+
+      // Scroll to top
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function changePage(direction) {
+      const newPage = currentPage + direction;
+      if (newPage >= 1 && newPage <= totalPages) {
+        currentPage = newPage;
+        updatePagination();
+      }
+    }
+
+    // Initialize pagination on page load
+    document.addEventListener('DOMContentLoaded', function() {
+      initPagination();
+      autoDetectTab();
+    });
   </script>
 </body>
 </html>
