@@ -101,6 +101,23 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Create .env file for build
+        run: |
+          cat > .env << EOF
+          NODE_ENV=production
+          PORT=3333
+          HOST=localhost
+          APP_KEY=test-app-key-32-characters-long
+          LOG_LEVEL=silent
+          SESSION_DRIVER=memory
+          DB_HOST=127.0.0.1
+          DB_PORT=3306
+          DB_USER=root
+          DB_PASSWORD=root
+          DB_DATABASE=deckstorm_test
+          LIMITER_STORE=memory
+          EOF
+
       - name: Build application
         run: npm run build
 
