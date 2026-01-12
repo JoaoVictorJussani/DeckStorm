@@ -52,45 +52,48 @@ export default class DeckController {
   }
 
   // Mise à jour d'un deck
-  async update({ params, request, response, session, auth }: HttpContext) {
+  async update({ params, request, response, session, bouncer }: HttpContext) {
     const deck = await Deck.find(params.id);
-    if (deck && auth.user && deck.user_id === auth.user.id) {
-      const data = request.only(['title', 'description', 'visibility']);
-      const allowedModes = request.input('allowed_modes', [])
-      const attemptLimit = request.input('attempt_limit') ? parseInt(request.input('attempt_limit')) : null;
+    const data = request.only(['title', 'description', 'visibility']);
+    const allowedModes = request.input('allowed_modes', [])
+    const attemptLimit = request.input('attempt_limit') ? parseInt(request.input('attempt_limit')) : null;
 
-      if (allowedModes.length === 0) {
-        session.flash('error', 'Vous devez sélectionner au moins un mode d\'exercice.');
-        return response.redirect().back();
-      }
-
-      // Vérifie la longueur de la description
-      if (data.description.length > 125) {
-        session.flash('error', 'La description ne peut pas dépasser 125 caractères.');
-        return response.redirect().back();
-      }
-
-      deck.merge(data);
-      deck.allowed_modes = allowedModes;
-      deck.attempt_limit = attemptLimit;
-      await deck.save();
-      session.flash('success', 'Deck mis à jour avec succès !');
-      return response.redirect().toRoute('decks.show', { id: deck.id });
-    } else {
-      session.flash('error', 'Vous ne pouvez pas modifier ce deck.');
+    if (!deck) {
+      return response.notFound('Deck not found')
     }
-    return response.redirect().toRoute('home');
+    await bouncer.with('DeckPolicy').authorize('update', deck)
+
+    if (allowedModes.length === 0) {
+      session.flash('error', 'Vous devez sélectionner au moins un mode d\'exercice.');
+      return response.redirect().back();
+    }
+
+    // Vérifie la longueur de la description
+    if (data.description.length > 125) {
+      session.flash('error', 'La description ne peut pas dépasser 125 caractères.');
+      return response.redirect().back();
+    }
+
+    deck.merge(data);
+    deck.allowed_modes = allowedModes;
+    deck.attempt_limit = attemptLimit;
+    await deck.save();
+    session.flash('success', 'Deck mis à jour avec succès !');
+    return response.redirect().toRoute('decks.show', { id: deck.id });
   }
 
   // Suppression d'un deck
-  async destroy({ params, response, session, auth }: HttpContext) {
+  async destroy({ params, response, session, bouncer }: HttpContext) {
     const deck = await Deck.find(params.id); // Récupère le deck par ID
-    if (deck && auth.user && deck.user_id === auth.user.id) { // Vérifie que l'utilisateur est le propriétaire
-      await deck.delete(); // Supprime le deck
-      session.flash('success', 'Deck supprimé avec succès !'); // Message de succès
-    } else {
-      session.flash('error', 'Vous ne pouvez pas supprimer ce deck.'); // Message d'erreur
+    if (!deck) {
+      session.flash('error', 'Deck introuvable.');
+      return response.redirect().toRoute('home');
     }
+    await bouncer.with('DeckPolicy').authorize('delete', deck)
+
+    await deck.delete(); // Supprime le deck
+    session.flash('success', 'Deck supprimé avec succès !'); // Message de succès
+
     return response.redirect().toRoute('home'); // Redirige vers la page d'accueil
   }
 
@@ -192,15 +195,13 @@ export default class DeckController {
     })
   }
 
-  async report({ params, view, auth, response }: HttpContext) {
+  async report({ params, view, bouncer }: HttpContext) {
     const deck = await Deck.find(params.id)
     if (!deck) {
       return view.render('./pages/errors/not_found')
     }
 
-    if (!auth.user || deck.user_id !== auth.user.id) {
-      return response.redirect().toRoute('home')
-    }
+    await bouncer.with('DeckPolicy').authorize('edit', deck)
 
     const ExerciseAttempt = (await import('#models/exercise_attempt')).default
 
@@ -261,10 +262,18 @@ export default class DeckController {
   }
 
   // Convidar usuário para deck restrito
-  async inviteUser({ params, request, response, session, auth }: HttpContext) {
+  async inviteUser({ params, request, response, session, auth, bouncer }: HttpContext) {
+    const user = auth.user!
     const deck = await Deck.find(params.id)
-    if (!deck || deck.visibility !== 'restricted' || !auth.user || deck.user_id !== auth.user.id) {
-      session.flash('error', 'Action non autorisée.')
+    if (!deck) {
+      session.flash('error', 'Deck non trouvé')
+      return response.redirect().back()
+    }
+
+    await bouncer.with('DeckPolicy').authorize('edit', deck)
+
+    if (deck.visibility !== 'restricted') {
+      session.flash('error', 'Ce deck n\'est pas restreint.')
       return response.redirect().back()
     }
     const username = request.input('invite_username', '').trim()
@@ -275,7 +284,7 @@ export default class DeckController {
     // Busca usuário pelo nome
     const User = (await import('#models/user')).default
     const invitedUser = await User.findBy('username', username)
-    if (!invitedUser || invitedUser.id === auth.user.id) {
+    if (!invitedUser || invitedUser.id === user.id) {
       session.flash('error', 'Utilisateur invalide ou vous-même.')
       return response.redirect().back()
     }
@@ -289,7 +298,7 @@ export default class DeckController {
       const Notification = (await import('#models/notification')).default
       await Notification.create({
         user_id: invitedUser.id,
-        message: `Vous avez été invité à accéder au deck restreint «${deck.title}» (ID:${deck.id}) par «${auth.user.username}»`,
+        message: `Vous avez été invité à accéder au deck restreint «${deck.title}» (ID:${deck.id}) par «${user.username}»`,
         type: 'invite',
         deck_id: deck.id,
       })
@@ -299,15 +308,13 @@ export default class DeckController {
     }
     return response.redirect().back()
   }
-  async exportReport({ params, response, auth }: HttpContext) {
+  async exportReport({ params, response, bouncer }: HttpContext) {
     const deck = await Deck.find(params.id)
     if (!deck) {
       return response.notFound('Deck not found')
     }
 
-    if (!auth.user || deck.user_id !== auth.user.id) {
-      return response.redirect().toRoute('home')
-    }
+    await bouncer.with('DeckPolicy').authorize('edit', deck)
 
     const ExerciseAttempt = (await import('#models/exercise_attempt')).default
 

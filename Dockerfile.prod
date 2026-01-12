@@ -1,0 +1,57 @@
+# Stage 1: Builder
+FROM node:20-alpine AS builder
+
+WORKDIR /app
+
+# Copier les fichiers de dépendances
+COPY package*.json ./
+
+# Installer toutes les dépendances (y compris dev pour le build)
+RUN npm ci
+
+# Copier le code source
+COPY . .
+
+# Construire l'application
+RUN npm run build
+
+# Stage 2: Production
+FROM node:20-alpine
+
+WORKDIR /app
+
+# Installer dumb-init pour gérer les signaux correctement
+RUN apk add --no-cache dumb-init
+
+# Créer un utilisateur non-root
+RUN addgroup -g 1001 -S nodejs && adduser -S nodejs -u 1001
+
+# Copier les fichiers nécessaires depuis le builder
+COPY --from=builder --chown=nodejs:nodejs /app/build ./build
+COPY --from=builder --chown=nodejs:nodejs /app/node_modules ./node_modules
+COPY --from=builder --chown=nodejs:nodejs /app/package*.json ./
+
+# Copier les fichiers statiques et ressources
+COPY --chown=nodejs:nodejs resources ./resources
+COPY --chown=nodejs:nodejs public ./public
+COPY --chown=nodejs:nodejs database ./database
+
+# Créer les dossiers nécessaires avec les bonnes permissions
+RUN mkdir -p tmp/sessions uploads && \
+    chown -R nodejs:nodejs tmp uploads
+
+# Passer à l'utilisateur non-root
+USER nodejs
+
+# Exposer le port
+EXPOSE 3333
+
+# Healthcheck
+HEALTHCHECK --interval=30s --timeout=3s --start-period=40s --retries=3 \
+  CMD node -e "require('http').get('http://localhost:3333/health', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"
+
+# Utiliser dumb-init pour gérer les signaux
+ENTRYPOINT ["dumb-init", "--"]
+
+# Démarrer l'application
+CMD ["node", "build/bin/server.js"]

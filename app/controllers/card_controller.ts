@@ -73,36 +73,48 @@ export default class CardController {
   }
 
   // Met à jour une carte
-  async update({ params, request, response, session, auth }: HttpContext) {
+  async update({ params, request, response, session, auth, bouncer }: HttpContext) {
     await auth.use('web').authenticate();
     const deck = await Deck.find(params.deckId); // Récupère le deck par ID
-    if (deck && auth.user && deck.user_id  === auth.user.id) { // Vérifie que l'utilisateur est le propriétaire
-      const card = await Card.find(params.cardId); // Récupère la carte par ID
-      if (card) {
-        const data = request.only(['question', 'answer']); // Récupère les champs nécessaires
-        card.merge(data); // Met à jour les champs de la carte
-        await card.save(); // Enregistre les modifications
-        session.flash('success', 'Carte mise à jour avec succès.'); // Message de succès
-        return response.redirect().toRoute('decks.show', { id: deck.id }); // Redirige vers la page du deck
-      }
+
+    if (!deck) {
+      session.flash('error', 'Deck introuvable.');
+      return response.redirect().toRoute('home');
     }
-    session.flash('error', 'Vous ne pouvez pas modifier cette carte.'); // Message d'erreur
-    return response.redirect().toRoute('home'); // Redirige vers la page d'accueil
+    await bouncer.with('DeckPolicy').authorize('edit', deck)
+
+    const card = await Card.find(params.cardId); // Récupère la carte par ID
+    if (card) {
+      const data = request.only(['question', 'answer']); // Récupère les champs nécessaires
+      card.merge(data); // Met à jour les champs de la carte
+      await card.save(); // Enregistre les modifications
+      session.flash('success', 'Carte mise à jour avec succès.'); // Message de succès
+      return response.redirect().toRoute('decks.show', { id: deck.id }); // Redirige vers la page du deck
+    }
+
+    session.flash('error', 'Carte introuvable.');
+    return response.redirect().toRoute('decks.show', { id: deck.id });
   }
 
   // Supprime une carte
-  async destroy({ params, response, session, auth }: HttpContext) {
+  async destroy({ params, response, session, auth, bouncer }: HttpContext) {
     await auth.use('web').authenticate();
     const deck = await Deck.find(params.deckId); // Récupère le deck par ID
-    if (deck && auth.user && deck.user_id  === auth.user.id) { // Vérifie que l'utilisateur est le propriétaire
-      const card = await Card.find(params.cardId); // Récupère la carte par ID
-      if (card) {
-        await card.delete(); // Supprime la carte
-        session.flash('success', 'Carte supprimée avec succès.'); // Message de succès
-        return response.redirect().toRoute('decks.show', { id: deck.id }); // Redirige vers la page du deck
-      }
+
+    if (!deck) {
+      session.flash('error', 'Deck introuvable.');
+      return response.redirect().toRoute('home');
     }
-    session.flash('error', 'Vous ne pouvez pas supprimer cette carte.'); // Message d'erreur
-    return response.redirect().toRoute('home'); // Redirige vers la page d'accueil
+    await bouncer.with('DeckPolicy').authorize('edit', deck) // Editing deck implies deleting cards
+
+    const card = await Card.find(params.cardId); // Récupère la carte par ID
+    if (card) {
+      await card.delete(); // Supprime la carte
+      session.flash('success', 'Carte supprimée avec succès.'); // Message de succès
+      return response.redirect().toRoute('decks.show', { id: deck.id }); // Redirige vers la page du deck
+    }
+
+    session.flash('error', 'Carte introuvable.'); // Message d'erreur
+    return response.redirect().toRoute('decks.show', { id: deck.id });
   }
 }

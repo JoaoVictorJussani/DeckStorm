@@ -15,7 +15,7 @@ export default class extends BaseSeeder {
     const follows = new Set()
     const followData = []
 
-    while (followData.length < 15000) {
+    while (followData.length < 75000) {
       const follower_id = userIds[Math.floor(Math.random() * userIds.length)]
       const following_id = userIds[Math.floor(Math.random() * userIds.length)]
 

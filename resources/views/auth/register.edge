@@ -215,9 +215,13 @@
           <div class="form-group">
             <label for="password">Mot de passe</label>
             <input type="password" id="password" name="password" required placeholder="• • • • • • • •" />
-            <p id="password-length-msg" class="validation-msg invalid">
-              8 caractères minimum
-            </p>
+            <div style="margin-top: 5px;">
+              <p id="rule-length" class="validation-msg invalid">8 caractères minimum</p>
+              <p id="rule-upper" class="validation-msg invalid">Une majuscule</p>
+              <p id="rule-lower" class="validation-msg invalid">Une minuscule</p>
+              <p id="rule-digit" class="validation-msg invalid">Un chiffre</p>
+              <p id="rule-special" class="validation-msg invalid">Un caractère spécial (@$!%*?&)</p>
+            </div>
           </div>
 
           <div class="form-group">
@@ -243,25 +247,41 @@
         const passwordInput = document.querySelector("#password");
         const confirmPasswordInput = document.querySelector("#confirm_password");
         const submitButton = document.querySelector("#submit-button");
-        const passwordLengthMsg = document.getElementById("password-length-msg");
+        const ruleLength = document.getElementById("rule-length");
+        const ruleUpper = document.getElementById("rule-upper");
+        const ruleLower = document.getElementById("rule-lower");
+        const ruleDigit = document.getElementById("rule-digit");
+        const ruleSpecial = document.getElementById("rule-special");
         const passwordMatchMsg = document.getElementById("password-match-msg");
+
+        function updateRule(element, isValid) {
+          if (isValid) {
+            element.classList.remove('invalid');
+            element.classList.add('valid');
+          } else {
+            element.classList.remove('valid');
+            element.classList.add('invalid');
+          }
+        }
 
         function validateForm() {
           const usernameValid = usernameInput.value.trim().length >= 3;
-          const passwordLen = passwordInput.value.length;
-          const passwordValid = passwordLen >= 8;
-          const passwordsMatch = passwordInput.value === confirmPasswordInput.value && passwordLen > 0;
+          const val = passwordInput.value;
+          
+          const hasLength = val.length >= 8;
+          const hasUpper = /[A-Z]/.test(val);
+          const hasLower = /[a-z]/.test(val);
+          const hasDigit = /\d/.test(val);
+          const hasSpecial = /[@$!%*?&]/.test(val);
 
-          // Update UI styles
-          if (passwordValid) {
-            passwordLengthMsg.classList.remove('invalid');
-            passwordLengthMsg.classList.add('valid');
-            passwordLengthMsg.innerHTML = "Longueur correcte";
-          } else {
-            passwordLengthMsg.classList.remove('valid');
-            passwordLengthMsg.classList.add('invalid');
-            passwordLengthMsg.innerHTML = "8 caractères minimum";
-          }
+          updateRule(ruleLength, hasLength);
+          updateRule(ruleUpper, hasUpper);
+          updateRule(ruleLower, hasLower);
+          updateRule(ruleDigit, hasDigit);
+          updateRule(ruleSpecial, hasSpecial);
+
+          const passwordValid = hasLength && hasUpper && hasLower && hasDigit && hasSpecial;
+          const passwordsMatch = val === confirmPasswordInput.value && val.length > 0;
 
           if (passwordsMatch) {
             passwordMatchMsg.classList.remove('invalid');

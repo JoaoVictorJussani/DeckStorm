@@ -3,14 +3,25 @@ import type { HttpContext } from '@adonisjs/core/http'
 import { loginUserValidator, registerUserValidator } from '#validators/auth'
 import User from '#models/user'
 import hash from '@adonisjs/core/services/hash'
+import logger from '@adonisjs/core/services/logger'
 
 export default class AuthController {
   // Connexion
   async handleLogin({ request, auth, session, response }: HttpContext) {
     const { username, password } = await request.validateUsing(loginUserValidator)
-    const user = await User.verifyCredentials(username, password)
-    await auth.use('web').login(user)
-    session.flash('success', "L'utilisateur s'est connecté avec succès")
+
+    let user
+    try {
+      user = await User.verifyCredentials(username, password)
+      await auth.use('web').login(user)
+      session.flash('success', "L'utilisateur s'est connecté avec succès")
+    } catch (error) {
+      logger.warn({ username, ip: request.ip() }, 'Login failed: Invalid credentials')
+      session.flash('error', 'Identifiants incorrects')
+      return response.redirect().back()
+    }
+
+    if (!user) return response.redirect().toRoute('home') // Should not happen due to return in catch, but safe guard
 
     // Verifica se há convite não lido
     const Notification = (await import('#models/notification')).default
@@ -20,6 +31,7 @@ export default class AuthController {
       .where('read', false)
       .orderBy('created_at', 'desc')
       .first()
+
     if (inviteNotif) {
       // Extrai deckId do texto da notificação
       const match = inviteNotif.message.match(/\(ID:(\d+)\)/)
@@ -52,11 +64,25 @@ export default class AuthController {
     const username = all.username;
     const password = all.password;
 
-    // Validação mínima
-    if (!username || !password || password.length < 8) {
-      session.flash('error', "Nom d'utilisateur ou mot de passe invalide (min 8 caractères)");
+    // Fonction de validation de mot de passe
+    const isPasswordStrong = (pwd: string) => {
+      const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+      return regex.test(pwd);
+    };
+
+    // Validação du nom d'utilisateur et mot de passe
+    if (!username) {
+      session.flash('error', "Nom d'utilisateur requis");
       if (request.headers().accept?.includes('application/json')) {
-        return response.status(400).json({ message: "Nom d'utilisateur ou mot de passe invalide (min 8 caractères)" });
+        return response.status(400).json({ message: "Nom d'utilisateur requis" });
+      }
+      return response.redirect().back();
+    }
+
+    if (!isPasswordStrong(password)) {
+      session.flash('error', "Le mot de passe doit contenir au moins 8 caractères, une majuscule, une minuscule, un chiffre et un caractère spécial.");
+      if (request.headers().accept?.includes('application/json')) {
+        return response.status(400).json({ message: "Mot de passe trop faible" });
       }
       return response.redirect().back();
     }
@@ -104,7 +130,7 @@ export default class AuthController {
 
     // Redireciona para home (Edge) ou home.html (SPA)
     return response.redirect().toRoute('home');
-  }  
+  }
 
   // Changement de mot de passe
   async changePassword({ request, auth, session, response }: HttpContext) {
@@ -126,9 +152,14 @@ export default class AuthController {
       return response.redirect().back()
     }
 
-    // Vérifie la longueur du nouveau mot de passe
-    if (!new_password || new_password.length < 8) {
-      session.flash('profile_error', "Le nouveau mot de passe doit avoir au moins 8 caractères.")
+    // Vérifie la complexité du nouveau mot de passe
+    const isPasswordStrong = (pwd: string) => {
+      const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+      return regex.test(pwd);
+    };
+
+    if (!isPasswordStrong(new_password)) {
+      session.flash('profile_error', "Le nouveau mot de passe doit contenir au moins 8 caractères, une majuscule, une minuscule, un chiffre et un caractère spécial.")
       return response.redirect().back()
     }
 

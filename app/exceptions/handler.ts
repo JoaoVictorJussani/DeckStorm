@@ -1,6 +1,9 @@
 import app from '@adonisjs/core/services/app'
 import { HttpContext, ExceptionHandler } from '@adonisjs/core/http'
 import type { StatusPageRange, StatusPageRenderer } from '@adonisjs/core/types/http'
+// import { errors } from '@adonisjs/limiter'
+import { DateTime } from 'luxon'
+import logger from '@adonisjs/core/services/logger'
 
 export default class HttpExceptionHandler extends ExceptionHandler {
   /**
@@ -35,6 +38,27 @@ export default class HttpExceptionHandler extends ExceptionHandler {
    * response to the client
    */
   async handle(error: unknown, ctx: HttpContext) {
+    // console.log('DEBUG: Error caught:', error) // Uncomment for debugging
+    if ((error as any).code === 'E_TOO_MANY_REQUESTS' || (error as any).status === 429) {
+      logger.warn({ ip: ctx.request.ip(), url: ctx.request.url() }, 'Rate limit exceeded')
+      const retryAfter = (error as any).retryAfter || 600
+      const unlockTime = DateTime.now().plus({ seconds: retryAfter, hours: 1 }).toFormat('HH:mm:ss')
+      ctx.session.flash('error', `Trop de tentatives. Vous êtes bloqué. Réessayez à ${unlockTime}.`)
+      return ctx.response.redirect().back()
+    }
+
+    if ((error as any).code === 'E_AUTHORIZATION_FAILURE' || (error as any).status === 403) {
+      const user = ctx.auth?.user
+      logger.warn({
+        user_id: user?.id || 'guest',
+        ip: ctx.request.ip(),
+        url: ctx.request.url(),
+        method: ctx.request.method()
+      }, 'Unauthorized access attempt (403)')
+
+      const html = await ctx.view.render('pages/errors/forbidden')
+      return ctx.response.status(403).send(html)
+    }
     return super.handle(error, ctx)
   }
 

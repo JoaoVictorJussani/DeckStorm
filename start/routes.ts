@@ -6,17 +6,26 @@
 */
 
 import AuthController from '#controllers/auth_controller'; // Contrôleur pour l'authentification
+import SocialAuthController from '#controllers/social_auth_controller'; // Contrôleur pour l'authentification OAuth
 import PageController from '#controllers/page_controller'; // Contrôleur pour les pages
 import DeckController from '#controllers/deck_controller'; // Contrôleur pour les decks
 import router from '@adonisjs/core/services/router'; // Service de routage
 import { middleware } from './kernel.js'; // Middleware
+// import { throttle } from './limiter.js'; // Rate limiting middleware
+import { throttle, authThrottle } from './limiter.js';
 import Deck from '#models/deck'; // Modèle Deck
 import CardController from '#controllers/card_controller'; // Contrôleur pour les cartes
-import Card from '#models/card'; // Modèle Card
+// import Card from '#models/card'; // Modèle Card (Removed)
+
 import ExerciseController from '#controllers/exercise_controller'; // Contrôleur pour les exercices
 import FollowController from '#controllers/follow_controller'; // Contrôleur pour le suivi
 import User from '#models/user'
 import type { HttpContext } from '@adonisjs/core/http'; // Import du type HttpContext
+
+// Health check endpoint (pour Docker et monitoring)
+router.get('/health', async ({ response }: HttpContext) => {
+  return response.json({ status: 'ok', timestamp: new Date().toISOString() })
+})
 
 // Route pour la page d'accueil
 router
@@ -38,16 +47,18 @@ router.get('/register', async ({ view }) => {
 router
   .post('/register', [AuthController, 'handleRegister'])
   .as('auth.handleRegister')
-  .use(middleware.guest()); // Accessible uniquement aux invités
+  .use(middleware.guest())
+  .use(authThrottle); // Apply rate limiting
 
 // Route pour afficher la page d'édition d'un deck
 router
-  .get('/deck/:id/edit', async ({ params, view, auth, response }) => {
+  .get('/deck/:id/edit', async ({ params, view, bouncer, auth }) => {
     const deck = await Deck.find(params.id); // Récupère le deck par ID
-    if (deck && auth.user && deck.user_id === auth.user.id) { // Vérifie que l'utilisateur est le propriétaire
-      return view.render('edit_deck', { deck, user: auth.use('web').user });
-    }
-    return response.redirect().toRoute('home'); // Redirige si l'utilisateur n'est pas le propriétaire
+    if (!deck) return view.render('pages/errors/not_found')
+
+    await bouncer.with('DeckPolicy').authorize('edit', deck)
+
+    return view.render('edit_deck', { deck, user: auth.use('web').user });
   })
   .as('decks.edit')
   .use(middleware.auth()); // Nécessite une authentification
@@ -68,13 +79,26 @@ router
 router
   .post('/login', [AuthController, 'handleLogin'])
   .as('auth.handleLogin')
-  .use(middleware.guest());
+  .use(middleware.guest())
+  .use(authThrottle); // Apply rate limiting
 
 // Route pour gérer la déconnexion
 router
   .post('/logout', [AuthController, 'handleLogout'])
   .as('auth.handleLogout')
   .use(middleware.auth());
+
+
+// OAuth Routes - Generic route for all providers
+router
+  .get('/auth/:provider', [SocialAuthController, 'redirect'])
+  .as('auth.provider.redirect')
+
+router
+  .get('/auth/:provider/callback', [SocialAuthController, 'callback'])
+  .as('auth.provider.callback')
+
+
 
 // Like/unlike routes - support both GET and POST for flexibility
 router
@@ -113,7 +137,7 @@ router
 
 // Route pour afficher un deck spécifique
 router
-  .get('/deck/:id', async ({ params, view, auth, response }) => {
+  .get('/deck/:id', async ({ params, view, auth, bouncer }) => {
     const deck = await Deck.query()
       .where('id', params.id)
       .preload('cards') // Précharge les cartes
@@ -125,26 +149,8 @@ router
       return view.render('./pages/errors/not_found'); // Affiche une page 404 si le deck n'est pas trouvé
     }
 
-    // Check visibility
-    let isAllowed = false;
-    if (deck.visibility === 'public') {
-      isAllowed = true;
-    } else if (auth.user) {
-      if (deck.user_id === auth.user.id) {
-        isAllowed = true;
-      } else if (deck.visibility === 'restricted') {
-        const allowed = deck.allowed_users_ids ?? [];
-        if (allowed.includes(auth.user.id)) {
-          isAllowed = true;
-        }
-      }
-    }
-
-    if (!isAllowed) {
-      // If not allowed, redirect or show error
-      // Maybe redirect to home with error
-      return response.redirect().toRoute('home');
-    }
+    // Check visibility using Bouncer
+    await bouncer.with('DeckPolicy').authorize('view', deck)
 
     let hasLiked = false;
     if (auth.user) {
@@ -214,19 +220,7 @@ router
 
 // Route pour supprimer une carte
 router
-  .post('/deck/:deckId/card/:cardId/delete', async ({ params, auth, response, session }) => {
-    const deck = await Deck.find(params.deckId); // Récupère le deck par ID
-    if (deck && auth.user && deck.user_id === auth.user.id) { // Vérifie que l'utilisateur est le propriétaire
-      const card = await Card.find(params.cardId); // Récupère la carte par ID
-      if (card) {
-        await card.delete(); // Supprime la carte
-        session.flash('success', 'Carte supprimée avec succès.');
-        return response.redirect().toRoute('decks.show', { id: deck.id });
-      }
-    }
-    session.flash('error', 'Vous ne pouvez pas supprimer cette carte.');
-    return response.redirect().toRoute('home'); // Redirige si l'utilisateur n'est pas le propriétaire
-  })
+  .post('/deck/:deckId/card/:cardId/delete', [CardController, 'destroy'])
   .as('cards.delete')
   .use(middleware.auth()); // Nécessite une authentification
 
@@ -364,7 +358,7 @@ router.get('/api/user-suggestions', async ({ request, response }) => {
     .limit(100)
     .select('username')
   return response.json(users.map(u => u.username))
-})
+}).use(middleware.auth())
 
 // Aceitar convite para deck restrito
 router.post('/deck/:id/accept-invite', async ({ params, auth, response, session }) => {

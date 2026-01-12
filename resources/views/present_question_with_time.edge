@@ -412,6 +412,7 @@
       @endeach
     @endif
     <input type="hidden" name="attempts" value="{{ attempts || 1 }}" />
+    <input type="hidden" name="exerciseToken" value="{{ exerciseToken || '' }}" />
     <button type="submit" id="submitBtn">Suivant</button>
   </form>
 

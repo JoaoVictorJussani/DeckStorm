@@ -9,7 +9,7 @@ import Like from '#models/like'
 import Deck from '#models/deck' // Ajout de l'importation de Deck
 
 const AuthFinder = withAuthFinder(() => hash.use('scrypt'), {
-  uids: ['username'],
+  uids: ['username', 'email'],
   passwordColumnName: 'password',
 })
 
@@ -24,7 +24,19 @@ export default class User extends compose(BaseModel, AuthFinder) {
   declare username: string
 
   @column({ serializeAs: null })
-  declare password: string
+  declare password: string | null
+
+  @column()
+  declare email: string | null
+
+  @column()
+  declare oauthProvider: string | null
+
+  @column()
+  declare oauthId: string | null
+
+  @column()
+  declare avatarUrl: string | null
 
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime

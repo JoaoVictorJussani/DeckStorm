@@ -19,7 +19,7 @@ export default class extends BaseSeeder {
     const likes = new Set()
     const likeData = []
 
-    while (likeData.length < 10000) {
+    while (likeData.length < 50000) {
       const user_id = userIds[Math.floor(Math.random() * userIds.length)]
       const deck_id = deckIds[Math.floor(Math.random() * deckIds.length)]
 

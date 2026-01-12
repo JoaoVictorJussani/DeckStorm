@@ -12,7 +12,7 @@ export default class extends BaseSeeder {
       return
     }
 
-    const cards = Array.from({ length: 10000 }, (_, i) => ({
+    const cards = Array.from({ length: 50000 }, (_, i) => ({
       question: `Sample Question ${i + 1}`,
       answer: `Sample Answer ${i + 1}`,
       deck_id: deckIds[i % deckIds.length], // Distribute cards across all existing decks
