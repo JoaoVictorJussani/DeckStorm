@@ -3,7 +3,16 @@ import Deck from '#models/deck'
 
 export default class extends BaseSeeder {
   async run() {
-    const subjects = ['Math', 'History', 'Science', 'Geography', 'Literature', 'Programming', 'Languages', 'Art']
+    const subjects = [
+      'Math',
+      'History',
+      'Science',
+      'Geography',
+      'Literature',
+      'Programming',
+      'Languages',
+      'Art',
+    ]
     const levels = ['Basic', 'Intermediate', 'Advanced']
 
     const decks = Array.from({ length: 10000 }, (_, i) => {
@@ -13,7 +22,7 @@ export default class extends BaseSeeder {
         title: `${subject} - ${level} #${i + 1}`,
         description: `${level} level ${subject.toLowerCase()} flashcards`,
         user_id: Math.floor(Math.random() * 1000) + 1,
-        visibility: Math.random() > 0.3 ? 'public' as 'public' : 'private' as 'private',
+        visibility: Math.random() > 0.3 ? ('public' as 'public') : ('private' as 'private'),
       }
     })
 

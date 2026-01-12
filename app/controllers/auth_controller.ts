@@ -73,60 +73,71 @@ export default class AuthController {
 
     // Validação du nom d'utilisateur et mot de passe
     if (!username) {
-      session.flash('error', "Nom d'utilisateur requis");
+      session.flash('error', "Nom d'utilisateur requis")
       if (request.headers().accept?.includes('application/json')) {
-        return response.status(400).json({ message: "Nom d'utilisateur requis" });
+        return response.status(400).json({ message: "Nom d'utilisateur requis" })
       }
-      return response.redirect().back();
+      return response.redirect().back()
     }
 
     if (!isPasswordStrong(password)) {
-      session.flash('error', "Le mot de passe doit contenir au moins 8 caractères, une majuscule, une minuscule, un chiffre et un caractère spécial.");
+      session.flash(
+        'error',
+        'Le mot de passe doit contenir au moins 8 caractères, une majuscule, une minuscule, un chiffre et un caractère spécial.'
+      )
       if (request.headers().accept?.includes('application/json')) {
-        return response.status(400).json({ message: "Mot de passe trop faible" });
+        return response.status(400).json({ message: 'Mot de passe trop faible' })
       }
-      return response.redirect().back();
+      return response.redirect().back()
     }
 
     // Verifica se já existe usuário (case insensitive)
-    const existingUser = await User.query().whereRaw('LOWER(username) = ?', [username.toLowerCase()]).first();
+    const existingUser = await User.query()
+      .whereRaw('LOWER(username) = ?', [username.toLowerCase()])
+      .first()
     if (existingUser) {
-      session.flash('error', "Insciption fail, Ce nom d'utilisateur est déjà pris");
+      session.flash('error', "Insciption fail, Ce nom d'utilisateur est déjà pris")
       if (request.headers().accept?.includes('application/json')) {
-        return response.status(409).json({ message: "Ce nom d'utilisateur est déjà pris" });
+        return response.status(409).json({ message: "Ce nom d'utilisateur est déjà pris" })
       }
-      return response.redirect().back();
+      return response.redirect().back()
     }
 
     // Cria usuário e salva
-    const user = new User();
-    user.username = username;
-    user.password = password;
+    const user = new User()
+    user.username = username
+    user.password = password
     try {
-      await user.save();
+      await user.save()
     } catch (err) {
-      console.error('ERRO AO SALVAR USUÁRIO:', err, { username, password });
-      session.flash('error', "Erreur lors de la création de l'utilisateur.");
+      console.error('ERRO AO SALVAR USUÁRIO:', err, { username, password })
+      session.flash('error', "Erreur lors de la création de l'utilisateur.")
       if (request.headers().accept?.includes('application/json')) {
-        return response.status(500).json({ message: "Erreur lors de la création de l'utilisateur." });
+        return response
+          .status(500)
+          .json({ message: "Erreur lors de la création de l'utilisateur." })
       }
-      return response.redirect().back();
+      return response.redirect().back()
     }
 
     if (!user || !user.id) {
-      session.flash('error', "Erreur lors de la création de l'utilisateur.");
+      session.flash('error', "Erreur lors de la création de l'utilisateur.")
       if (request.headers().accept?.includes('application/json')) {
-        return response.status(500).json({ message: "Erreur lors de la création de l'utilisateur." });
+        return response
+          .status(500)
+          .json({ message: "Erreur lors de la création de l'utilisateur." })
       }
-      return response.redirect().back();
+      return response.redirect().back()
     }
 
     // Autentica o usuário imediatamente após criar
-    await auth.use('web').login(user);
+    await auth.use('web').login(user)
 
     // Retorna JSON se for API/fetch
     if (request.headers().accept?.includes('application/json')) {
-      return response.status(201).json({ success: true, user: { id: user.id, username: user.username } });
+      return response
+        .status(201)
+        .json({ success: true, user: { id: user.id, username: user.username } })
     }
 
     // Redireciona para home (Edge) ou home.html (SPA)
@@ -135,20 +146,20 @@ export default class AuthController {
 
   // Changement de mot de passe
   async changePassword({ request, auth, session, response }: HttpContext) {
-    const user = auth.user;
+    const user = auth.user
     if (!user) {
-      session.flash('profile_error', "Vous devez être connecté.")
+      session.flash('profile_error', 'Vous devez être connecté.')
       return response.redirect().back()
     }
 
-    const { old_password, new_password, confirm_new_password } = request.only([
-      'old_password',
-      'new_password',
-      'confirm_new_password',
-    ])
+    const {
+      old_password: oldPassword,
+      new_password: newPassword,
+      confirm_new_password: confirmNewPassword,
+    } = request.only(['old_password', 'new_password', 'confirm_new_password'])
 
     // Vérifie l'ancien mot de passe
-    if (!user.password || !(await hash.verify(user.password, old_password))) {
+    if (!user.password || !(await hash.verify(user.password, oldPassword))) {
       session.flash('profile_error', "L'ancien mot de passe est incorrect.")
       return response.redirect().back()
     }
@@ -159,41 +170,44 @@ export default class AuthController {
       return regex.test(pwd)
     }
 
-    if (!isPasswordStrong(new_password)) {
-      session.flash('profile_error', "Le nouveau mot de passe doit contenir au moins 8 caractères, une majuscule, une minuscule, un chiffre et un caractère spécial.")
+    if (!isPasswordStrong(newPassword)) {
+      session.flash(
+        'profile_error',
+        'Le nouveau mot de passe doit contenir au moins 8 caractères, une majuscule, une minuscule, un chiffre et un caractère spécial.'
+      )
       return response.redirect().back()
     }
 
     // Vérifie la confirmation
-    if (new_password !== confirm_new_password) {
-      session.flash('profile_error', "Les nouveaux mots de passe ne correspondent pas.")
+    if (newPassword !== confirmNewPassword) {
+      session.flash('profile_error', 'Les nouveaux mots de passe ne correspondent pas.')
       return response.redirect().back()
     }
 
-    user.password = new_password;
-    await user.save();
-    session.flash('profile_success', "Mot de passe changé avec succès.")
+    user.password = newPassword
+    await user.save()
+    session.flash('profile_success', 'Mot de passe changé avec succès.')
     return response.redirect().back()
   }
 
   async changeUsername({ request, auth, session, response }: HttpContext) {
-    const user = auth.user;
+    const user = auth.user
     if (!user) {
-      session.flash('profile_error', "Vous devez être connecté.")
+      session.flash('profile_error', 'Vous devez être connecté.')
       return response.redirect().back()
     }
 
-    const { new_username } = request.only(['new_username'])
+    const { new_username: newUsername } = request.only(['new_username'])
 
     // Check if username is already taken
-    const existingUser = await User.findBy('username', new_username)
+    const existingUser = await User.findBy('username', newUsername)
     if (existingUser) {
       session.flash('profile_error', "Ce nom d'utilisateur est déjà pris.")
       return response.redirect().back()
     }
 
     // Update username
-    user.username = new_username
+    user.username = newUsername
     await user.save()
     session.flash('profile_success', "Nom d'utilisateur changé avec succès.")
     return response.redirect().back()

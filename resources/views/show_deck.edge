@@ -1,605 +1,756 @@
 <!DOCTYPE html>
 <html lang="fr">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{{ deck.title }} - DeckStorm</title>
-  <link rel="shortcut icon" href="/images/icone.ico" type="image/x-icon">
-  <script>
-    (function() {
-      let theme = localStorage.getItem('theme');
-      if (!theme) theme = 'theme-light';
-      document.documentElement.className = theme;
-      document.addEventListener('DOMContentLoaded', function() {
-        document.body.className = theme;
-      });
-    })();
-  </script>
-  <style>
-    :root {
-      /* Palette Clean (Slate/Zinc) */
-      --primary: #3b82f6; 
-      --primary-dark: #2563eb;
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      {{ deck.title }} - DeckStorm
+    </title>
+    <link rel="shortcut icon" href="/images/icone.ico" type="image/x-icon" />
+    <script>
+      (function() {
+        let theme = localStorage.getItem("theme");
+        if (!theme) theme = "theme-light";
+        document.documentElement.className = theme;
+        document.addEventListener("DOMContentLoaded", function() {
+          document.body.className = theme;
+        });
+      })();
+    </script>
+    <style>
+      :root {
+        /* Palette Clean (Slate/Zinc) */
+        --primary: #3b82f6;
+        --primary-dark: #2563eb;
+        --bg-body: #f8fafc;
+        --bg-card: #ffffff;
+        --text-main: #0f172a;
+        --text-muted: #64748b;
+        --border: #e2e8f0;
+        --success: #22c55e;
+        --danger: #ef4444;
+        --warning: #f59e0b;
+      }
       
-      --bg-body: #f8fafc;
-      --bg-card: #ffffff;
+      .theme-dark {
+        --primary: #60a5fa;
+        --primary-dark: #3b82f6;
+        --bg-body: #0f172a;
+        --bg-card: #1e293b;
+        --text-main: #f8fafc;
+        --text-muted: #94a3b8;
+        --border: #334155;
+      }
       
-      --text-main: #0f172a;
-      --text-muted: #64748b;
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
       
-      --border: #e2e8f0;
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        background-color: var(--bg-body);
+        color: var(--text-main);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-height: 100vh;
+        padding: 6rem 2rem 2rem 2rem;
+        /* Top padding for fixed header */
+        transition: background-color 0.2s, color 0.2s;
+      }
       
-      --success: #22c55e;
-      --danger: #ef4444;
-      --warning: #f59e0b;
-    }
-
-    .theme-dark {
-      --primary: #60a5fa;
-      --primary-dark: #3b82f6;
+      /* Universal Theme Selectors */
       
-      --bg-body: #0f172a;
-      --bg-card: #1e293b;
+      .theme-light body,
+      body.theme-light {
+        background: var(--bg-body);
+        color: var(--text-main);
+      }
       
-      --text-main: #f8fafc;
-      --text-muted: #94a3b8;
+      .theme-dark body,
+      body.theme-dark {
+        background: var(--bg-body);
+        color: var(--text-main);
+      }
       
-      --border: #334155;
-    }
+      .container {
+        width: 100%;
+        max-width: 1400px;
+        display: flex;
+        flex-direction: column;
+        gap: 3rem;
+      }
+      
+      /* --- Deck Header Section --- */
+      
+      .deck-header {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 2rem;
+      }
+      
+      @media (max-width: 900px) {
+        .deck-header {
+          grid-template-columns: 1fr;
+        }
+      }
+      
+      .deck-info-card {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 2.5rem;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        position: relative;
+      }
+      
+      .deck-title {
+        font-size: 2.5rem;
+        font-weight: 800;
+        margin-bottom: 0.5rem;
+        color: var(--text-main);
+        line-height: 1.1;
+      }
+      
+      .deck-meta {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+        margin-bottom: 1.5rem;
+        font-size: 0.95rem;
+        color: var(--text-muted);
+      }
+      
+      .deck-meta-item {
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+      }
+      
+      .deck-desc {
+        font-size: 1.1rem;
+        line-height: 1.6;
+        color: var(--text-main);
+        margin-bottom: 2rem;
+        max-width: 90%;
+      }
+      
+      .deck-actions {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+      }
+      
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 1rem;
+        cursor: pointer;
+        border: 1px solid transparent;
+        transition: all 0.2s;
+        text-decoration: none;
+      }
+      
+      .btn-primary {
+        background: var(--primary);
+        color: white;
+      }
+      
+      .btn-primary:hover {
+        background: var(--primary-dark);
+      }
+      
+      .btn-outline {
+        background: transparent;
+        border-color: var(--border);
+        color: var(--text-main);
+      }
+      
+      .btn-outline:hover {
+        background: rgba(0,0,0,0.03);
+        border-color: var(--text-muted);
+      }
+      
+      .theme-dark .btn-outline:hover {
+        background: rgba(255,255,255,0.05);
+      }
+      
+      .btn-danger {
+        background: transparent;
+        color: var(--danger);
+        border-color: var(--danger);
+      }
+      
+      .btn-danger:hover {
+        background: var(--danger);
+        color: white;
+      }
+      
+      .btn-lg {
+        padding: 1rem 2rem;
+        font-size: 1.25rem;
+        border-radius: 10px;
+      }
+      
+      /* QR / Share Side */
+      
+      .deck-share-card {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 2rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+      }
+      
+      #qrcode {
+        position: relative;
+      }
+      
+      /* Update CSS Logic - safer selector */
+      
+      #qrcode > img:not(.qr-logo-overlay),
+      #qrcode > canvas {
+        border: 1px solid var(--border);
+        padding: 0.5rem;
+        border-radius: 8px;
+        background: white;
+      }
+      
+      .qr-logo-overlay {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 32px;
+        height: 32px;
+        background: white;
+        border-radius: 4px;
+        padding: 2px;
+        box-shadow: 0 0 0 2px white;
+        z-index: 10;
+      }
+      
+      .like-section {
+        margin-top: 1.5rem;
+      }
+      
+      .like-btn {
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: var(--text-main);
+        padding: 0.5rem 1rem;
+        border-radius: 99px;
+        transition: background 0.2s;
+      }
+      
+      .like-btn:hover {
+        background: rgba(0,0,0,0.05);
+      }
+      
+      .theme-dark .like-btn:hover {
+        background: rgba(255,255,255,0.05);
+      }
+      
+      /* --- Cards Grid Section --- */
+      
+      .cards-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+      }
+      
+      .cards-title {
+        font-size: 1.8rem;
+        font-weight: 700;
+      }
+      
+      .cards-grid {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        /* 5 cols requested */
+        gap: 1.5rem;
+      }
+      
+      @media (max-width: 1200px) {
+        .cards-grid {
+          grid-template-columns: repeat(4, 1fr);
+        }
+      }
+      
+      @media (max-width: 992px) {
+        .cards-grid {
+          grid-template-columns: repeat(3, 1fr);
+        }
+      }
+      
+      @media (max-width: 768px) {
+        .cards-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+      
+      @media (max-width: 480px) {
+        .cards-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+      
+      .card-item-container {
+        perspective: 1000px;
+        aspect-ratio: 3/2;
+        /* Standard card ratio */
+        position: relative;
+      }
+      
+      .card-item {
+        width: 100%;
+        height: 100%;
+        position: relative;
+        transform-style: preserve-3d;
+        transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        cursor: pointer;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        border-radius: 12px;
+      }
+      
+      .card-item.is-flipped {
+        transform: rotateY(180deg);
+      }
+      
+      .card-face {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        backface-visibility: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 1.5rem;
+        text-align: center;
+        border-radius: 12px;
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        font-size: 1.3rem;
+        overflow: hidden;
+      }
+      
+      .card-face.front {
+        /* Front styles */
+        font-weight: 600;
+      }
+      
+      .card-face.back {
+        transform: rotateY(180deg);
+        background: var(--bg-card);
+        /* Keep consistent bg */
+        color: var(--text-main);
+      }
+      
+      .theme-dark .card-face.back {
+        border-color: var(--primary);
+      }
+      
+      /* Card Actions (Hover) */
+      
+      .card-actions-overlay {
+        position: absolute;
+        bottom: 0.5rem;
+        right: 0.5rem;
+        display: flex;
+        gap: 0.5rem;
+        opacity: 0;
+        transition: opacity 0.2s;
+      }
+      
+      .card-item-container:hover .card-actions-overlay {
+        opacity: 1;
+      }
+      
+      .mini-btn {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid var(--border);
+        background: var(--bg-card);
+        color: var(--text-muted);
+        cursor: pointer;
+        font-size: 0.8rem;
+      }
+      
+      .mini-btn:hover {
+        color: var(--text-main);
+        border-color: var(--text-muted);
+      }
+      
+      .mini-btn.delete:hover {
+        background: var(--danger);
+        color: white;
+        border-color: var(--danger);
+      }
+      
+      .add-deck-btn {
+        position: fixed;
+        bottom: 2rem;
+        right: 2rem;
+        background: var(--primary);
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 60px;
+        height: 60px;
+        font-size: 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        transition: transform 0.2s;
+        z-index: 100;
+        text-decoration: none;
+      }
+      
+      .add-deck-btn:hover {
+        transform: scale(1.1);
+        background: var(--primary-dark);
+      }
+      
+      /* Modal Styles (kept similar but updated colors) */
+      
+      .invite-modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0,0,0,0.5);
+        backdrop-filter: blur(4px);
+        z-index: 2000;
+        align-items: center;
+        justify-content: center;
+      }
+      
+      .invite-modal.active {
+        display: flex;
+      }
+      
+      .invite-modal-content {
+        background: var(--bg-card);
+        padding: 2rem;
+        border-radius: 16px;
+        width: 90%;
+        max-width: 450px;
+        border: 1px solid var(--border);
+        position: relative;
+      }
+      
+      .close-modal {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        cursor: pointer;
+        color: var(--text-muted);
+      }
+      
+      .form-input {
+        width: 100%;
+        padding: 0.8rem;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        background: var(--bg-body);
+        color: var(--text-main);
+        margin-bottom: 1rem;
+      }
+      
+      /* Messages */
+      
+      .alert {
+        padding: 1rem;
+        border-radius: 8px;
+        margin-bottom: 1.5rem;
+        font-weight: 500;
+        text-align: center;
+      }
+      
+      .alert-success {
+        background: rgba(34, 197, 94, 0.1);
+        color: var(--success);
+        border: 1px solid var(--success);
+      }
+      
+      .alert-error {
+        background: rgba(239, 68, 68, 0.1);
+        color: var(--danger);
+        border: 1px solid var(--danger);
+      }
+    </style>
+  </head>
+  <body>
+    @include('components/header')
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    <div class="container">
 
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      background-color: var(--bg-body);
-      color: var(--text-main);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      min-height: 100vh;
-      padding: 6rem 2rem 2rem 2rem; /* Top padding for fixed header */
-      transition: background-color 0.2s, color 0.2s;
-    }
-    
-    /* Universal Theme Selectors */
-    .theme-light body, body.theme-light { background: var(--bg-body); color: var(--text-main); }
-    .theme-dark body, body.theme-dark { background: var(--bg-body); color: var(--text-main); }
-
-    .container {
-      width: 100%;
-      max-width: 1400px;
-      display: flex;
-      flex-direction: column;
-      gap: 3rem;
-    }
-
-    /* --- Deck Header Section --- */
-    .deck-header {
-      display: grid;
-      grid-template-columns: 2fr 1fr;
-      gap: 2rem;
-    }
-    @media (max-width: 900px) {
-      .deck-header { grid-template-columns: 1fr; }
-    }
-
-    .deck-info-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 2.5rem;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-      position: relative;
-    }
-
-    .deck-title {
-      font-size: 2.5rem;
-      font-weight: 800;
-      margin-bottom: 0.5rem;
-      color: var(--text-main);
-      line-height: 1.1;
-    }
-    
-    .deck-meta {
-      display: flex;
-      align-items: center;
-      gap: 1.5rem;
-      margin-bottom: 1.5rem;
-      font-size: 0.95rem;
-      color: var(--text-muted);
-    }
-    .deck-meta-item {
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
-    }
-
-    .deck-desc {
-      font-size: 1.1rem;
-      line-height: 1.6;
-      color: var(--text-main);
-      margin-bottom: 2rem;
-      max-width: 90%;
-    }
-
-    .deck-actions {
-      display: flex;
-      gap: 1rem;
-      flex-wrap: wrap;
-    }
-
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-      padding: 0.75rem 1.5rem;
-      border-radius: 8px;
-      font-weight: 600;
-      font-size: 1rem;
-      cursor: pointer;
-      border: 1px solid transparent;
-      transition: all 0.2s;
-      text-decoration: none;
-    }
-    
-    .btn-primary {
-      background: var(--primary);
-      color: white;
-    }
-    .btn-primary:hover { background: var(--primary-dark); }
-
-    .btn-outline {
-      background: transparent;
-      border-color: var(--border);
-      color: var(--text-main);
-    }
-    .btn-outline:hover { background: rgba(0,0,0,0.03); border-color: var(--text-muted); }
-    .theme-dark .btn-outline:hover { background: rgba(255,255,255,0.05); }
-
-    .btn-danger {
-      background: transparent;
-      color: var(--danger);
-      border-color: var(--danger);
-    }
-    .btn-danger:hover {
-      background: var(--danger);
-      color: white;
-    }
-
-    .btn-lg {
-      padding: 1rem 2rem;
-      font-size: 1.25rem;
-      border-radius: 10px;
-    }
-
-    /* QR / Share Side */
-    .deck-share-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 2rem;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-    }
-
-    #qrcode {
-      position: relative; 
-    }
-
-    /* Update CSS Logic - safer selector */
-    #qrcode > img:not(.qr-logo-overlay), #qrcode > canvas {
-      border: 1px solid var(--border);
-      padding: 0.5rem;
-      border-radius: 8px;
-      background: white;
-    }
-
-    .qr-logo-overlay {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 32px;
-      height: 32px;
-      background: white;
-      border-radius: 4px;
-      padding: 2px;
-      box-shadow: 0 0 0 2px white;
-      z-index: 10;
-    }
-
-    .like-section {
-      margin-top: 1.5rem;
-    }
-    .like-btn {
-      background: none;
-      border: none;
-      cursor: pointer;
-      font-size: 1.5rem;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      color: var(--text-main);
-      padding: 0.5rem 1rem;
-      border-radius: 99px;
-      transition: background 0.2s;
-    }
-    .like-btn:hover { background: rgba(0,0,0,0.05); }
-    .theme-dark .like-btn:hover { background: rgba(255,255,255,0.05); }
-
-    /* --- Cards Grid Section --- */
-    .cards-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1.5rem;
-    }
-    .cards-title {
-      font-size: 1.8rem;
-      font-weight: 700;
-    }
-
-    .cards-grid {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr); /* 5 cols requested */
-      gap: 1.5rem;
-    }
-    
-    @media (max-width: 1200px) { .cards-grid { grid-template-columns: repeat(4, 1fr); } }
-    @media (max-width: 992px) { .cards-grid { grid-template-columns: repeat(3, 1fr); } }
-    @media (max-width: 768px) { .cards-grid { grid-template-columns: repeat(2, 1fr); } }
-    @media (max-width: 480px) { .cards-grid { grid-template-columns: 1fr; } }
-
-    .card-item-container {
-      perspective: 1000px;
-      aspect-ratio: 3/2; /* Standard card ratio */
-      position: relative;
-    }
-
-    .card-item {
-      width: 100%;
-      height: 100%;
-      position: relative;
-      transform-style: preserve-3d;
-      transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-      cursor: pointer;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-      border-radius: 12px;
-    }
-    
-    .card-item.is-flipped {
-      transform: rotateY(180deg);
-    }
-
-    .card-face {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      backface-visibility: hidden;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 1.5rem;
-      text-align: center;
-      border-radius: 12px;
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      font-size: 1.3rem;
-      overflow: hidden;
-    }
-    
-    .card-face.front {
-      /* Front styles */
-      font-weight: 600;
-    }
-    
-    .card-face.back {
-      transform: rotateY(180deg);
-      background: var(--bg-card); /* Keep consistent bg */
-      color: var(--text-main);
-    }
-    .theme-dark .card-face.back { border-color: var(--primary); }
-
-    /* Card Actions (Hover) */
-    .card-actions-overlay {
-      position: absolute;
-      bottom: 0.5rem;
-      right: 0.5rem;
-      display: flex;
-      gap: 0.5rem;
-      opacity: 0;
-      transition: opacity 0.2s;
-    }
-    .card-item-container:hover .card-actions-overlay { opacity: 1; }
-
-    .mini-btn {
-      width: 28px;
-      height: 28px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border: 1px solid var(--border);
-      background: var(--bg-card);
-      color: var(--text-muted);
-      cursor: pointer;
-      font-size: 0.8rem;
-    }
-    .mini-btn:hover { color: var(--text-main); border-color: var(--text-muted); }
-    .mini-btn.delete:hover { background: var(--danger); color: white; border-color: var(--danger); }
-
-    .add-deck-btn {
-      position: fixed;
-      bottom: 2rem;
-      right: 2rem;
-      background: var(--primary);
-      color: white;
-      border: none;
-      border-radius: 50%;
-      width: 60px;
-      height: 60px;
-      font-size: 2rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-      transition: transform 0.2s;
-      z-index: 100;
-      text-decoration: none;
-    }
-    .add-deck-btn:hover { transform: scale(1.1); background: var(--primary-dark); }
-
-    /* Modal Styles (kept similar but updated colors) */
-    .invite-modal {
-      display: none;
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0,0,0,0.5);
-      backdrop-filter: blur(4px);
-      z-index: 2000;
-      align-items: center;
-      justify-content: center;
-    }
-    .invite-modal.active { display: flex; }
-    
-    .invite-modal-content {
-      background: var(--bg-card);
-      padding: 2rem;
-      border-radius: 16px;
-      width: 90%;
-      max-width: 450px;
-      border: 1px solid var(--border);
-      position: relative;
-    }
-    .close-modal {
-      position: absolute;
-      top: 1rem; right: 1rem;
-      background: none; border: none;
-      font-size: 1.5rem; cursor: pointer;
-      color: var(--text-muted);
-    }
-    
-    .form-input {
-      width: 100%;
-      padding: 0.8rem;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      background: var(--bg-body);
-      color: var(--text-main);
-      margin-bottom: 1rem;
-    }
-    
-    /* Messages */
-    .alert {
-      padding: 1rem;
-      border-radius: 8px;
-      margin-bottom: 1.5rem;
-      font-weight: 500;
-      text-align: center;
-    }
-    .alert-success { background: rgba(34, 197, 94, 0.1); color: var(--success); border: 1px solid var(--success); }
-    .alert-error { background: rgba(239, 68, 68, 0.1); color: var(--danger); border: 1px solid var(--danger); }
-
-  </style>
-</head>
-<body>
-  @include('components/header')
-
-  <div class="container">
-    
-    <!-- Messages -->
-    @if (flashMessages.has('error'))
-      <div class="alert alert-error">{{ flashMessages.get('error') }}</div>
-    @endif
-    @if (flashMessages.has('success'))
-      <div class="alert alert-success">{{ flashMessages.get('success') }}</div>
-    @endif
-
-    <!-- Deck Info Header -->
-    <div class="deck-header">
-      <div class="deck-info-card">
-        <h1 class="deck-title">{{ deck.title }}</h1>
-        <div class="deck-meta">
-          <div class="deck-meta-item">
-            <span>👤</span> {{ deck.user ? deck.user.username : 'Inconnu' }}
+      <!-- Messages -->
+      @if (flashMessages.has('error'))
+        <div class="alert alert-error">
+          {{ flashMessages.get('error') }}
+        </div>
+      @endif
+      @if (flashMessages.has('success'))
+        <div class="alert alert-success">
+          {{ flashMessages.get('success') }}
+        </div>
+      @endif
+      
+      <!-- Deck Info Header -->
+      <div class="deck-header">
+        <div class="deck-info-card">
+          <h1 class="deck-title">
+            {{ deck.title }}
+          </h1>
+          <div class="deck-meta">
+            <div class="deck-meta-item">
+              <span>👤</span>{{ deck.user ? deck.user.username : 'Inconnu' }}
+            </div>
+            <div class="deck-meta-item">
+              <span>🎴</span>{{ deck.cards ? deck.cards.length : 0 }} cartes
+            </div>
+            <div class="deck-meta-item">
+              @if(deck.visibility === 'public')
+                <span>🔓</span>Public
+              @elseif(deck.visibility === 'restricted')
+                <span>🔐</span>Restreint
+              @else
+                <span>🔒</span>Privé
+              @endif
+            </div>
           </div>
-          <div class="deck-meta-item">
-            <span>🎴</span> {{ deck.cards ? deck.cards.length : 0 }} cartes
-          </div>
-          <div class="deck-meta-item">
-            @if(deck.visibility === 'public')
-              <span>🔓</span> Public
-            @elseif(deck.visibility === 'restricted')
-              <span>🔐</span> Restreint
-            @else
-              <span>🔒</span> Privé
+
+          <p class="deck-desc">
+            {{ deck.description || 'Aucune description disponible pour ce deck.' }}
+          </p>
+
+          <div class="deck-actions">
+            @if(deck.cards.length > 0)
+              <a href="{{ route('exercise.start', { deckId: deck.id }) }}" class="btn btn-primary btn-lg">
+                ▶ S'exercer
+            </a>
+            @endif
+            
+            @if(deck.user_id === user.id)
+              <a href="{{ route('decks.edit', { id: deck.id }) }}" class="btn btn-outline">✏ Modifier</a>
+              <button onclick="confirmDelete()" class="btn btn-danger">🗑 Supprimer</button>
+            @endif
+            
+            @if(deck.visibility === 'restricted' && user && deck.user_id === user.id)
+              <button onclick="openInviteModal()" class="btn btn-outline">✉ Inviter</button>
+              <a href="{{ route('decks.report', { id: deck.id }) }}" class="btn btn-outline">📊 Rapport</a>
             @endif
           </div>
         </div>
-        
-        <p class="deck-desc">
-          {{ deck.description || 'Aucune description disponible pour ce deck.' }}
-        </p>
 
-        <div class="deck-actions">
-          @if(deck.cards.length > 0)
-            <a href="{{ route('exercise.start', { deckId: deck.id }) }}" class="btn btn-primary btn-lg">
-              ▶ S'exercer
-            </a>
-          @endif
-
-          @if(deck.user_id === user.id)
-            <a href="{{ route('decks.edit', { id: deck.id }) }}" class="btn btn-outline">✏ Modifier</a>
-            <button onclick="confirmDelete()" class="btn btn-danger">🗑 Supprimer</button>
-          @endif
-          
-          @if(deck.visibility === 'restricted' && user && deck.user_id === user.id)
-             <button onclick="openInviteModal()" class="btn btn-outline">✉ Inviter</button>
-             <a href="{{ route('decks.report', { id: deck.id }) }}" class="btn btn-outline">📊 Rapport</a>
-          @endif
-        </div>
-      </div>
-
-      <!-- Share / QR Box -->
-      <div class="deck-share-card">
-        <div id="qrcode">
-          <img src="/images/icone.ico" alt="DeckStorm" class="qr-logo-overlay">
-        </div>
-        <div class="like-section">
-           <button id="like-btn" class="like-btn {{ hasLiked ? 'liked' : '' }}" onclick="toggleLike({{ deck.id }}, this)">
-             <span class="heart-emoji">{{ hasLiked ? '❤️' : '🤍' }}</span>
-             <span id="like-count">{{ typeof likesCount !== 'undefined' ? likesCount : (deck.likes ? deck.likes.length : 0) }}</span>
-           </button>
-        </div>
-        <button onclick="copyDeckLink()" class="btn btn-outline" style="margin-top: 1rem; width: 100%;">
-          🔗 Copier le lien
-        </button>
-      </div>
-    </div>
-
-    <!-- Cards Grid -->
-    <div>
-      <div class="cards-header">
-        <h2 class="cards-title">Cartes du Deck</h2>
-        @if(deck.user_id === user.id)
-          <a href="{{ route('cards.create', { deckId: deck.id }) }}" class="btn btn-primary">
-            + Ajouter une carte
-          </a>
-        @endif
-      </div>
-      
-      <div class="cards-grid">
-        @if(deck.cards.length)
-          @each(card in deck.cards)
-            <div class="card-item-container">
-              <div class="card-item" onclick="this.classList.toggle('is-flipped')">
-                <div class="card-face front">{{ card.question }}</div>
-                <div class="card-face back">{{ card.answer }}</div>
-              </div>
-              
-              <!-- Owner Actions -->
-              @if(deck.user_id === user.id)
-                <div class="card-actions-overlay">
-                  <a href="{{ route('cards.edit', { deckId: deck.id, cardId: card.id }) }}" class="mini-btn" title="Modifier">✎</a>
-                  <button class="mini-btn delete" onclick="confirmDeleteCard({{ card.id }})" title="Supprimer">🗑</button>
-                </div>
-              @endif
-            </div>
-          @endeach
-        @else
-          <div style="grid-column: 1 / -1; text-align: center; padding: 4rem; color: var(--text-muted); background: var(--bg-card); border-radius: 12px; border: 1px solid var(--border);">
-            Ce deck ne contient pas encore de cartes.
+        <!-- Share / QR Box -->
+        <div class="deck-share-card">
+          <div id="qrcode">
+            <img src="/images/icone.ico" alt="DeckStorm" class="qr-logo-overlay" />
           </div>
-        @endif
+          <div class="like-section">
+            <button
+              id="like-btn"
+              class="like-btn {{ hasLiked ? 'liked' : '' }}"
+              onclick="toggleLike({{ deck.id }}, this)"
+            >
+              <span class="heart-emoji">{{ hasLiked ? '❤️' : '🤍' }}</span>
+              <span id="like-count">{{ typeof likesCount !== 'undefined' ? likesCount : (deck.likes ? deck.likes.length : 0) }}</span>
+            </button>
+          </div>
+          <button onclick="copyDeckLink()" class="btn btn-outline" style="margin-top: 1rem; width: 100%;">
+            🔗 Copier le lien
+        </button>
+        </div>
+      </div>
+
+      <!-- Cards Grid -->
+      <div>
+        <div class="cards-header">
+          <h2 class="cards-title">
+            Cartes du Deck
+          </h2>
+          @if(deck.user_id === user.id)
+            <a href="{{ route('cards.create', { deckId: deck.id }) }}" class="btn btn-primary">
+              + Ajouter une carte
+          </a>
+          @endif
+        </div>
+
+        <div class="cards-grid">
+          @if(deck.cards.length)
+            @each(card in deck.cards)
+              <div class="card-item-container">
+                <div class="card-item" onclick="this.classList.toggle('is-flipped')">
+                  <div class="card-face front">
+                    {{ card.question }}
+                  </div>
+                  <div class="card-face back">
+                    {{ card.answer }}
+                  </div>
+                </div>
+
+                <!-- Owner Actions -->
+                @if(deck.user_id === user.id)
+                  <div class="card-actions-overlay">
+                    <a
+                      href="{{ route('cards.edit', { deckId: deck.id, cardId: card.id }) }}"
+                      class="mini-btn"
+                      title="Modifier"
+                    >✎</a>
+                    <button class="mini-btn delete" onclick="confirmDeleteCard({{ card.id }})" title="Supprimer">🗑</button>
+                  </div>
+                @endif
+              </div>
+            @endeach
+          @else
+            <div
+              style="grid-column: 1 / -1; text-align: center; padding: 4rem; color: var(--text-muted); background: var(--bg-card); border-radius: 12px; border: 1px solid var(--border);"
+            >
+              Ce deck ne contient pas encore de cartes.
+            </div>
+          @endif
+        </div>
       </div>
     </div>
-  </div>
 
-  <!-- Forms Hidden -->
-  <form id="delete-form" action="{{ route('decks.delete', { id: deck.id }) }}" method="POST" style="display: none;">{{ csrfField() }}</form>
-  @each(card in deck.cards)
-    <form id="delete-card-form-{{ card.id }}" action="{{ route('cards.delete', { deckId: deck.id, cardId: card.id }) }}" method="POST" style="display: none;">{{ csrfField() }}</form>
-  @endeach
-
-  <!-- Invite Modal -->
-  @if(deck.visibility === 'restricted')
-  <div id="inviteModal" class="invite-modal">
-    <div class="invite-modal-content">
-      <button class="close-modal" onclick="document.getElementById('inviteModal').classList.remove('active')">&times;</button>
-      <h3 style="margin-bottom: 1rem; font-size: 1.5rem;">Inviter un utilisateur</h3>
-      <form action="/deck/{{ deck.id }}/invite-user" method="POST">
+    <!-- Forms Hidden -->
+    <form
+      id="delete-form"
+      action="{{ route('decks.delete', { id: deck.id }) }}"
+      method="POST"
+      style="display: none;"
+    >
+      {{ csrfField() }}
+    </form>
+    @each(card in deck.cards)
+      <form
+        id="delete-card-form-{{ card.id }}"
+        action="{{ route('cards.delete', { deckId: deck.id, cardId: card.id }) }}"
+        method="POST"
+        style="display: none;"
+      >
         {{ csrfField() }}
-        <p style="margin-bottom: 0.5rem; color: var(--text-muted);">Nom d'utilisateur</p>
-        <input type="text" name="invite_username" class="form-input" required placeholder="Ex: JohnDoe" autocomplete="off">
-        <button type="submit" class="btn btn-primary" style="width: 100%;">Envoyer</button>
       </form>
-    </div>
-  </div>
-  @endif
-
-  <!-- Scripts -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-  <script>
-    // QR Code
-    const deckUrl = window.location.origin + '/deck/{{ deck.id }}';
-    new QRCode(document.getElementById("qrcode"), {
-      text: deckUrl,
-      width: 120,
-      height: 120,
-      colorDark : "#333",
-      colorLight : "#fff",
-      correctLevel : QRCode.CorrectLevel.H
-    });
-
-    function copyDeckLink() {
-      navigator.clipboard.writeText(deckUrl).then(() => alert('Lien copié !'));
-    }
-
-    function confirmDelete() {
-      if(confirm('Supprimer ce deck ? Cette action est irréversible.')) {
-        document.getElementById('delete-form').submit();
-      }
-    }
+    @endeach
     
-    function confirmDeleteCard(id) {
-      if(confirm('Supprimer cette carte ?')) {
-        document.getElementById('delete-card-form-'+id).submit();
-      }
-    }
-
-    function openInviteModal() {
-      document.getElementById('inviteModal').classList.add('active');
-    }
-
-    // Like Logic
-    async function toggleLike(deckId, button) {
-      const isLiked = button.classList.contains('liked');
-      // Assume API exists
-      const endpoint = `/api/decks/${deckId}/${isLiked ? 'unlike' : 'like'}`;
-      let csrfToken = document.querySelector('input[name="_csrf"]')?.value || '';
+    <!-- Invite Modal -->
+    @if(deck.visibility === 'restricted')
+      <div id="inviteModal" class="invite-modal">
+        <div class="invite-modal-content">
+          <button class="close-modal" onclick="document.getElementById('inviteModal').classList.remove('active')">&times;</button>
+          <h3 style="margin-bottom: 1rem; font-size: 1.5rem;">
+            Inviter un utilisateur
+          </h3>
+          <form action="/deck/{{ deck.id }}/invite-user" method="POST">
+            {{ csrfField() }}
+            <p style="margin-bottom: 0.5rem; color: var(--text-muted);">
+              Nom d'utilisateur
+            </p>
+            <input
+              type="text"
+              name="invite_username"
+              class="form-input"
+              required
+              placeholder="Ex: JohnDoe"
+              autocomplete="off"
+            />
+            <button type="submit" class="btn btn-primary" style="width: 100%;">Envoyer</button>
+          </form>
+        </div>
+      </div>
+    @endif
+    
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js">
       
-      try {
-        const response = await fetch(endpoint, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': csrfToken }
-        });
-        if (response.ok) {
-          const data = await response.json();
-          button.classList.toggle('liked');
-          button.querySelector('.heart-emoji').textContent = button.classList.contains('liked') ? '❤️' : '🤍';
-          document.getElementById('like-count').textContent = data.likesCount;
+    </script>
+    <script>
+      // QR Code
+      const deckUrl = window.location.origin + "/deck/{{ deck.id }}";
+      
+      new QRCode(document.getElementById("qrcode"), {
+        text: deckUrl,
+        width: 120,
+        height: 120,
+        colorDark: "#333",
+        colorLight: "#fff",
+        correctLevel: QRCode.CorrectLevel.H
+      });
+      
+      function copyDeckLink() {
+        navigator.clipboard.writeText(deckUrl).then(() => alert("Lien copié !"));
+      }
+      
+      function confirmDelete() {
+        if (confirm("Supprimer ce deck ? Cette action est irréversible.")) {
+          document.getElementById("delete-form").submit();
         }
-      } catch(e) { console.error(e); }
-    }
-  </script>
-</body>
+      }
+      
+      function confirmDeleteCard(id) {
+        if (confirm("Supprimer cette carte ?")) {
+          document.getElementById("delete-card-form-" + id).submit();
+        }
+      }
+      
+      function openInviteModal() {
+        document.getElementById("inviteModal").classList.add("active");
+      }
+      // Like Logic
+      
+      async function toggleLike(deckId, button) {
+        const isLiked = button.classList.contains("liked");
+        // Assume API exists
+        const endpoint = `/api/decks/${deckId}/${isLiked ? "unlike" : "like"}`;
+        let csrfToken = document.querySelector('input[name="_csrf"]')?.value || "";
+        try {
+          const response = await fetch(endpoint, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "X-CSRF-Token": csrfToken
+            }
+          });
+          if (response.ok) {
+            const data = await response.json();
+            button.classList.toggle("liked");
+            button.querySelector(".heart-emoji").textContent = button.classList.contains("liked") ? "❤️" : "🤍";
+            document.getElementById("like-count").textContent = data.likesCount;
+          }
+        } catch (e) {
+          console.error(e);
+        }
+      }
+    </script>
+  </body>
 </html>

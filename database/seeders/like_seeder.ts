@@ -20,13 +20,13 @@ export default class extends BaseSeeder {
     const likeData = []
 
     while (likeData.length < 50000) {
-      const user_id = userIds[Math.floor(Math.random() * userIds.length)]
-      const deck_id = deckIds[Math.floor(Math.random() * deckIds.length)]
+      const userId = userIds[Math.floor(Math.random() * userIds.length)]
+      const deckId = deckIds[Math.floor(Math.random() * deckIds.length)]
 
-      const likePair = `${user_id}-${deck_id}`
+      const likePair = `${userId}-${deckId}`
       if (!likes.has(likePair)) {
         likes.add(likePair)
-        likeData.push({ user_id, deck_id })
+        likeData.push({ user_id: userId, deck_id: deckId })
       }
     }
 

@@ -1,1250 +1,1459 @@
 <!DOCTYPE html>
 <html lang="fr">
-<head>
-  <meta charset="UTF-8" />
-  <title>Mon compte</title>
-  <link rel="shortcut icon" href="/images/icone.ico" type="image/x-icon">
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
-    body {
-      background: #fff;
-      color: #222;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      min-height: 100vh;
-      font-size: 1rem;
-      line-height: 1.6;
-      transition: background 0.5s, color 0.5s; /* Adiciona transição suave */
-
-    }
-    body.theme-light {
-      background: #fff;
-      color: #222;
-      transition: background 0.5s, color 0.5s; /* Adiciona transição suave */
-
-    }
-    body.theme-dark {
-      background: #0a0c10;
-      color: #e0e0e0;
-      transition: background 0.5s, color 0.5s; /* Adiciona transição suave */
-
-    }
-    .main-content {
-      margin-top: 100px;
-      padding: 2rem;
-      width: 100%;
-      max-width: 1400px;
-      display: flex;
-      flex-direction: row;
-      gap: 2rem;
-      align-items: flex-start;
-    }
-    .left-column {
-      display: flex;
-      flex-direction: column;
-      gap: 2rem;
-      min-width: 320px;
-      max-width: 420px;
-      flex: 1 1 0;
-    }
-    .right-columns {
-      display: flex;
-      flex-direction: column;
-      gap: 2rem;
-      flex: 2 1 0;
-      width: 100%;
-    }
-    .decks-row {
-      display: flex;
-      flex-direction: column; /* était row */
-      gap: 2rem;
-      width: 100%;
-    }
-    .profile-stats-wrapper {
-      display: flex;
-      flex-direction: row;
-      gap: 2rem;
-      width: 100%;
-      align-items: flex-start;
-    }
-    .profile-section {
-      flex: 1 1 0;
-      min-width: 320px;
-      max-width: 420px;
-      background: var(--card-bg, #fff);
-      border: none;
-      border-radius: 24px;
-      padding: 3rem;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
-      backdrop-filter: blur(10px);
-      transition: all 0.3s ease;
-      position: relative;
-      margin-bottom: 0;
-    }
-    body.theme-dark .profile-section {
-      background: #181c23;
-      border-color: #1976d2;
-      box-shadow: 0 4px 20px rgba(25, 118, 210, 0.08);
-    }
-    .profile-section h2 {
-      color: #1976d2;
-      font-size: 2rem;
-      margin-bottom: 2.5rem;
-      font-weight: 600;
-      letter-spacing: -0.5px;
-      position: relative;
-      padding-bottom: 0.8rem;
-    }
-    .profile-section h2::after {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 60px;
-      height: 3px;
-      background: #1976d2;
-      border-radius: 2px;
-    }
-    .profile-info-row {
-      position: relative;
-      background: var(--row-bg, rgba(25, 118, 210, 0.04));
-      border-radius: 16px;
-      padding: 1.5rem 2rem;
-      margin-bottom: 1.5rem;
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      transition: all 0.3s ease;
-    }
-    .profile-info-row:hover {
-      transform: translateY(-2px);
-      background: var(--row-hover-bg, rgba(25, 118, 210, 0.08));
-      box-shadow: 0 4px 20px rgba(25, 118, 210, 0.12);
-    }
-    .profile-label {
-      font-size: 1rem;
-      font-weight: 500;
-      color: var(--label-color, #1976d2);
-      text-transform: none;
-      letter-spacing: 0;
-    }
-    .profile-value {
-      font-size: 1.1rem;
-      color: var(--value-color, #222);
-      background: var(--value-bg, rgba(25, 118, 210, 0.08));
-      padding: 0.5rem 1.2rem;
-      border-radius: 12px;
-      font-weight: 500;
-    }
-    .change-password-btn {
-      width: 100%;
-      background: transparent;
-      color: #1976d2;
-      border: 2px solid #1976d2;
-      padding: 1rem 1.5rem;
-      border-radius: 12px;
-      font-weight: 600;
-      font-size: 1rem;
-      cursor: pointer;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      margin-top: 1rem;
-      letter-spacing: 0.5px;
-      text-transform: uppercase;
-    }
-    .change-password-btn:hover {
-      background: #1976d2;
-      color: #fff;
-      transform: translateY(-2px);
-      box-shadow: 0 4px 15px rgba(25, 118, 210, 0.12);
-    }
-    .change-password-btn:active {
-      transform: translateY(0);
-    }
-    .change-password-form {
-      margin-top: 1rem;
-      width: 100%;
-      display: none;
-      flex-direction: column;
-      gap: 0.7rem;
-    }
-    .change-password-form input {
-      width: 100%;
-      padding: 0.8rem;
-      margin-bottom: 0.8rem;
-      border-radius: 8px;
-      border: 1.5px solid #1976d2;
-      background: #fff;
-      color: #222;
-      transition: all 0.3s ease-in-out;
-    }
-    body.theme-dark .change-password-form input {
-      background: #23272f;
-      color: #e0e0e0;
-      border-color: #1976d2;
-    }
-    .change-password-form input:focus {
-      border-color: #1565c0;
-      outline: none;
-      box-shadow: 0 0 0 2px #1976d2;
-    }
-    .change-password-form button {
-      background: #1976d2;
-      color: #fff;
-      border: 2px solid #1976d2;
-      padding: 0.6rem 1.2rem;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 1rem;
-      font-weight: 600;
-      margin-top: 0.5rem;
-      transition: background 0.3s, color 0.3s;
-    }
-    .change-password-form button:hover {
-      background: #1565c0;
-      color: #fff;
-      border-color: #1565c0;
-    }
-    /* Amélioration des messages d'état */
-    .profile-message {
-      position: absolute;
-      top: -60px;
-      left: 50%;
-      transform: translateX(-50%);
-      padding: 1rem 2rem;
-      border-radius: 12px;
-      font-size: 1rem;
-      text-align: center;
-      min-width: 300px;
-      max-width: 90%;
-      z-index: 1;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-      animation: slideIn 0.3s ease;
-    }
-    @keyframes slideIn {
-      from {
-        transform: translateY(-10px);
-        opacity: 0;
+  <head>
+    <meta charset="UTF-8" />
+    <title>
+      Mon compte
+    </title>
+    <link rel="shortcut icon" href="/images/icone.ico" type="image/x-icon" />
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       }
-      to {
+      
+      body {
+        background: #fff;
+        color: #222;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-height: 100vh;
+        font-size: 1rem;
+        line-height: 1.6;
+        transition: background 0.5s, color 0.5s;
+        /* Adiciona transição suave */
+      }
+      
+      body.theme-light {
+        background: #fff;
+        color: #222;
+        transition: background 0.5s, color 0.5s;
+        /* Adiciona transição suave */
+      }
+      
+      body.theme-dark {
+        background: #0a0c10;
+        color: #e0e0e0;
+        transition: background 0.5s, color 0.5s;
+        /* Adiciona transição suave */
+      }
+      
+      .main-content {
+        margin-top: 100px;
+        padding: 2rem;
+        width: 100%;
+        max-width: 1400px;
+        display: flex;
+        flex-direction: row;
+        gap: 2rem;
+        align-items: flex-start;
+      }
+      
+      .left-column {
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+        min-width: 320px;
+        max-width: 420px;
+        flex: 1 1 0;
+      }
+      
+      .right-columns {
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+        flex: 2 1 0;
+        width: 100%;
+      }
+      
+      .decks-row {
+        display: flex;
+        flex-direction: column;
+        /* était row */
+        gap: 2rem;
+        width: 100%;
+      }
+      
+      .profile-stats-wrapper {
+        display: flex;
+        flex-direction: row;
+        gap: 2rem;
+        width: 100%;
+        align-items: flex-start;
+      }
+      
+      .profile-section {
+        flex: 1 1 0;
+        min-width: 320px;
+        max-width: 420px;
+        background: var(--card-bg, #fff);
+        border: none;
+        border-radius: 24px;
+        padding: 3rem;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+        backdrop-filter: blur(10px);
+        transition: all 0.3s ease;
+        position: relative;
+        margin-bottom: 0;
+      }
+      
+      body.theme-dark .profile-section {
+        background: #181c23;
+        border-color: #1976d2;
+        box-shadow: 0 4px 20px rgba(25, 118, 210, 0.08);
+      }
+      
+      .profile-section h2 {
+        color: #1976d2;
+        font-size: 2rem;
+        margin-bottom: 2.5rem;
+        font-weight: 600;
+        letter-spacing: -0.5px;
+        position: relative;
+        padding-bottom: 0.8rem;
+      }
+      
+      .profile-section h2::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 60px;
+        height: 3px;
+        background: #1976d2;
+        border-radius: 2px;
+      }
+      
+      .profile-info-row {
+        position: relative;
+        background: var(--row-bg, rgba(25, 118, 210, 0.04));
+        border-radius: 16px;
+        padding: 1.5rem 2rem;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        transition: all 0.3s ease;
+      }
+      
+      .profile-info-row:hover {
+        transform: translateY(-2px);
+        background: var(--row-hover-bg, rgba(25, 118, 210, 0.08));
+        box-shadow: 0 4px 20px rgba(25, 118, 210, 0.12);
+      }
+      
+      .profile-label {
+        font-size: 1rem;
+        font-weight: 500;
+        color: var(--label-color, #1976d2);
+        text-transform: none;
+        letter-spacing: 0;
+      }
+      
+      .profile-value {
+        font-size: 1.1rem;
+        color: var(--value-color, #222);
+        background: var(--value-bg, rgba(25, 118, 210, 0.08));
+        padding: 0.5rem 1.2rem;
+        border-radius: 12px;
+        font-weight: 500;
+      }
+      
+      .change-password-btn {
+        width: 100%;
+        background: transparent;
+        color: #1976d2;
+        border: 2px solid #1976d2;
+        padding: 1rem 1.5rem;
+        border-radius: 12px;
+        font-weight: 600;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        margin-top: 1rem;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+      }
+      
+      .change-password-btn:hover {
+        background: #1976d2;
+        color: #fff;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(25, 118, 210, 0.12);
+      }
+      
+      .change-password-btn:active {
         transform: translateY(0);
+      }
+      
+      .change-password-form {
+        margin-top: 1rem;
+        width: 100%;
+        display: none;
+        flex-direction: column;
+        gap: 0.7rem;
+      }
+      
+      .change-password-form input {
+        width: 100%;
+        padding: 0.8rem;
+        margin-bottom: 0.8rem;
+        border-radius: 8px;
+        border: 1.5px solid #1976d2;
+        background: #fff;
+        color: #222;
+        transition: all 0.3s ease-in-out;
+      }
+      
+      body.theme-dark .change-password-form input {
+        background: #23272f;
+        color: #e0e0e0;
+        border-color: #1976d2;
+      }
+      
+      .change-password-form input:focus {
+        border-color: #1565c0;
+        outline: none;
+        box-shadow: 0 0 0 2px #1976d2;
+      }
+      
+      .change-password-form button {
+        background: #1976d2;
+        color: #fff;
+        border: 2px solid #1976d2;
+        padding: 0.6rem 1.2rem;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 1rem;
+        font-weight: 600;
+        margin-top: 0.5rem;
+        transition: background 0.3s, color 0.3s;
+      }
+      
+      .change-password-form button:hover {
+        background: #1565c0;
+        color: #fff;
+        border-color: #1565c0;
+      }
+      
+      /* Amélioration des messages d'état */
+      
+      .profile-message {
+        position: absolute;
+        top: -60px;
+        left: 50%;
+        transform: translateX(-50%);
+        padding: 1rem 2rem;
+        border-radius: 12px;
+        font-size: 1rem;
+        text-align: center;
+        min-width: 300px;
+        max-width: 90%;
+        z-index: 1;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        animation: slideIn 0.3s ease;
+      }
+      
+      @keyframes slideIn {
+        from {
+          transform: translateY(-10px);
+          opacity: 0;
+        }
+      
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+      
+      .profile-message.success {
+        background: rgba(76, 175, 80, 0.1);
+        color: #4caf50;
+        border: 1px solid #4caf50;
+      }
+      
+      .profile-message.error {
+        background: rgba(255, 77, 77, 0.1);
+        color: #ff4d4d;
+        border: 1px solid #ff4d4d;
+      }
+      
+      body.theme-dark .profile-message.success {
+        background: rgba(76, 175, 80, 0.15);
+        color: #81c784;
+      }
+      
+      body.theme-dark .profile-message.error {
+        background: rgba(255, 77, 77, 0.15);
+        color: #ff6b6b;
+      }
+      
+      .stats-section {
+        flex: 1 1 0;
+        min-width: 320px;
+        max-width: 420px;
+        background: var(--card-bg, #fff);
+        border: none;
+        border-radius: 24px;
+        padding: 2.5rem 2rem;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+        margin-top: 0;
+        margin-bottom: 0;
+        transition: all 0.3s ease;
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        justify-content: flex-start;
+      }
+      
+      body.theme-dark .stats-section {
+        background: #181c23;
+        border-color: #1976d2;
+        box-shadow: 0 4px 20px rgba(25, 118, 210, 0.08);
+      }
+      
+      .stats-section h3 {
+        color: #1976d2;
+        font-size: 1.3rem;
+        margin-bottom: 1.2rem;
+        font-weight: 600;
+        letter-spacing: -0.5px;
+        text-align: left;
+      }
+      
+      .stats-container {
+        margin: 0;
+        max-width: 100%;
+        padding: 0;
+      }
+      
+      .decks-section {
+        flex: 1 1 0;
+        margin-top: 0;
+        background: var(--card-bg, #fff);
+        border: none;
+        border-radius: 24px;
+        padding: 3rem;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+      }
+      
+      .decks-section h1 {
+        color: #1976d2;
+        font-size: 2rem;
+        margin-bottom: 2rem;
+        font-weight: 600;
+        letter-spacing: -0.5px;
+        position: relative;
+        padding-bottom: 0.8rem;
+      }
+      
+      .decks-section h1::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 60px;
+        height: 3px;
+        background: #1976d2;
+        border-radius: 2px;
+      }
+      
+      .search-input {
+        background: var(--input-bg, rgba(25, 118, 210, 0.04));
+        border: 2px solid transparent;
+        border-radius: 16px;
+        padding: 1rem 1.5rem;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+      }
+      
+      .search-input:focus {
+        background: var(--input-focus-bg, rgba(25, 118, 210, 0.08));
+        border-color: #1976d2;
+        transform: translateY(-2px);
+      }
+      
+      table {
+        margin-top: 2rem;
+        border-spacing: 0 0.8rem;
+      }
+      
+      tr {
+        transition: all 0.3s ease;
+      }
+      
+      td {
+        background: var(--row-bg, rgba(25, 118, 210, 0.04));
+        padding: 1.2rem 1.5rem;
+        border: none;
+      }
+      
+      tr:hover td {
+        background: var(--row-hover-bg, rgba(25, 118, 210, 0.08));
+        transform: translateY(-2px);
+      }
+      
+      td:first-child {
+        border-radius: 12px 0 0 12px;
+      }
+      
+      td:last-child {
+        border-radius: 0 12px 12px 0;
+      }
+      
+      /* Dark mode variables */
+      
+      body.theme-dark {
+        --card-bg: #181c23;
+        --row-bg: rgba(25, 118, 210, 0.06);
+        --row-hover-bg: rgba(25, 118, 210, 0.1);
+        --label-color: #1976d2;
+        --value-color: #e0e0e0;
+        --value-bg: rgba(25, 118, 210, 0.1);
+        --btn-bg: rgba(25, 118, 210, 0.15);
+        --btn-color: #1976d2;
+        --btn-hover-bg: #1976d2;
+        --input-bg: rgba(25, 118, 210, 0.06);
+        --input-focus-bg: rgba(25, 118, 210, 0.1);
+      }
+      
+      /* Box survolante pour abonnés/abonnements */
+      
+      .follow-box {
+        display: none;
+        position: fixed;
+        top: 110px;
+        left: 50%;
+        transform: translateX(-50%) scale(0.95);
+        background: #fff;
+        color: #1976d2;
+        border: 2px solid #1976d2;
+        border-radius: 20px;
+        box-shadow: 0 10px 40px rgba(25, 118, 210, 0.10), 0 0 0 1px #1976d2;
+        backdrop-filter: blur(10px);
+        padding: 1.8rem;
+        width: 90%;
+        max-width: 400px;
+        z-index: 9999;
+        opacity: 0;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      
+      body.theme-dark .follow-box {
+        background: #23272f;
+        color: #1976d2;
+        border-color: #1976d2;
+      }
+      
+      .follow-box.active {
+        transform: translateX(-50%) scale(1);
         opacity: 1;
       }
-    }
-    .profile-message.success {
-      background: rgba(76, 175, 80, 0.1);
-      color: #4caf50;
-      border: 1px solid #4caf50;
-    }
-    .profile-message.error {
-      background: rgba(255, 77, 77, 0.1);
-      color: #ff4d4d;
-      border: 1px solid #ff4d4d;
-    }
-    body.theme-dark .profile-message.success {
-      background: rgba(76, 175, 80, 0.15);
-      color: #81c784;
-    }
-    body.theme-dark .profile-message.error {
-      background: rgba(255, 77, 77, 0.15);
-      color: #ff6b6b;
-    }
-    .stats-section {
-      flex: 1 1 0;
-      min-width: 320px;
-      max-width: 420px;
-      background: var(--card-bg, #fff);
-      border: none;
-      border-radius: 24px;
-      padding: 2.5rem 2rem;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
-      margin-top: 0;
-      margin-bottom: 0;
-      transition: all 0.3s ease;
-      display: flex;
-      flex-direction: column;
-      align-items: stretch;
-      justify-content: flex-start;
-    }
-    body.theme-dark .stats-section {
-      background: #181c23;
-      border-color: #1976d2;
-      box-shadow: 0 4px 20px rgba(25, 118, 210, 0.08);
-    }
-    .stats-section h3 {
-      color: #1976d2;
-      font-size: 1.3rem;
-      margin-bottom: 1.2rem;
-      font-weight: 600;
-      letter-spacing: -0.5px;
-      text-align: left;
-    }
-    .stats-container {
-      margin: 0;
-      max-width: 100%;
-      padding: 0;
-    }
-    .decks-section {
-      flex: 1 1 0;
-      margin-top: 0;
-      background: var(--card-bg, #fff);
-      border: none;
-      border-radius: 24px;
-      padding: 3rem;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
-    }
-    .decks-section h1 {
-      color: #1976d2;
-      font-size: 2rem;
-      margin-bottom: 2rem;
-      font-weight: 600;
-      letter-spacing: -0.5px;
-      position: relative;
-      padding-bottom: 0.8rem;
-    }
-    .decks-section h1::after {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 60px;
-      height: 3px;
-      background: #1976d2;
-      border-radius: 2px;
-    }
-    .search-input {
-      background: var(--input-bg, rgba(25, 118, 210, 0.04));
-      border: 2px solid transparent;
-      border-radius: 16px;
-      padding: 1rem 1.5rem;
-      font-size: 1.1rem;
-      transition: all 0.3s ease;
-    }
-    .search-input:focus {
-      background: var(--input-focus-bg, rgba(25, 118, 210, 0.08));
-      border-color: #1976d2;
-      transform: translateY(-2px);
-    }
-    table {
-      margin-top: 2rem;
-      border-spacing: 0 0.8rem;
-    }
-    tr {
-      transition: all 0.3s ease;
-    }
-    td {
-      background: var(--row-bg, rgba(25, 118, 210, 0.04));
-      padding: 1.2rem 1.5rem;
-      border: none;
-    }
-    tr:hover td {
-      background: var(--row-hover-bg, rgba(25, 118, 210, 0.08));
-      transform: translateY(-2px);
-    }
-    td:first-child { border-radius: 12px 0 0 12px; }
-    td:last-child { border-radius: 0 12px 12px 0; }
-
-    /* Dark mode variables */
-    body.theme-dark {
-      --card-bg: #181c23;
-      --row-bg: rgba(25, 118, 210, 0.06);
-      --row-hover-bg: rgba(25, 118, 210, 0.1);
-      --label-color: #1976d2;
-      --value-color: #e0e0e0;
-      --value-bg: rgba(25, 118, 210, 0.1);
-      --btn-bg: rgba(25, 118, 210, 0.15);
-      --btn-color: #1976d2;
-      --btn-hover-bg: #1976d2;
-      --input-bg: rgba(25, 118, 210, 0.06);
-      --input-focus-bg: rgba(25, 118, 210, 0.1);
-    }
-
-    /* Box survolante pour abonnés/abonnements */
-    .follow-box {
-      display: none;
-      position: fixed;
-      top: 110px;
-      left: 50%;
-      transform: translateX(-50%) scale(0.95);
-      background: #fff;
-      color: #1976d2;
-      border: 2px solid #1976d2;
-      border-radius: 20px;
-      box-shadow: 0 10px 40px rgba(25, 118, 210, 0.10), 0 0 0 1px #1976d2;
-      backdrop-filter: blur(10px);
-      padding: 1.8rem;
-      width: 90%;
-      max-width: 400px;
-      z-index: 9999;
-      opacity: 0;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    body.theme-dark .follow-box {
-      background: #23272f;
-      color: #1976d2;
-      border-color: #1976d2;
-    }
-    .follow-box.active {
-      transform: translateX(-50%) scale(1);
-      opacity: 1;
-    }
-    .follow-box-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1.5rem;
-      padding-bottom: 1rem;
-      border-bottom: 1px solid #1976d2;
-    }
-    .follow-box-title {
-      font-size: 1.5rem;
-      font-weight: 600;
-      color: #1976d2;
-      letter-spacing: -0.5px;
-    }
-    .follow-box-close {
-      background: #e3f2fd;
-      border: 1px solid #1976d2;
-      color: #1976d2;
-      font-size: 1.2rem;
-      cursor: pointer;
-      padding: 0.4rem;
-      border-radius: 12px;
-      width: 36px;
-      height: 36px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.2s ease;
-    }
-    .follow-box-close:hover {
-      background: #1976d2;
-      color: #fff;
-      transform: rotate(90deg);
-    }
-    body.theme-dark .follow-box-close {
-      background: #23272f;
-      color: #fff;
-      border-color: #1976d2;
-    }
-    body.theme-dark .follow-box-close:hover {
-      background: #1976d2;
-      color: #fff;
-    }
-    .follow-box-content {
-      max-height: 400px;
-      overflow-y: auto;
-      padding-right: 0.5rem;
-    }
-    .follow-box-list {
-      list-style: none;
-      margin: 0;
-      padding: 0;
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-    }
-    .follow-box-item {
-      padding: 0.8rem 1rem;
-      border-radius: 10px;
-      transition: all 0.2s ease;
-      border: 2px solid #1976d2; /* plus visible */
-      background: #e3f2fd;
-      text-align: center; /* centrer le texte */
-      margin-bottom: 0.7rem; /* espacement entre les items */
-      box-shadow: 0 2px 8px rgba(25, 118, 210, 0.07);
-    }
-    body.theme-dark .follow-box-item {
-      background: #23272f;
-      border-color: #1976d2;
-    }
-    .follow-box-link {
-      color: #1976d2;
-      text-decoration: none;
-      font-size: 1.1rem;
-      transition: all 0.2s ease;
-      display: block;
-      text-align: center; /* centrer le texte */
-      font-weight: 500;
-      letter-spacing: 0.5px;
-    }
-    .follow-box-link:hover {
-      color: #1565c0;
-    }
-    @media (max-width: 1024px) {
-      .main-content {
-        flex-direction: column;
-        gap: 2rem;
+      
+      .follow-box-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid #1976d2;
       }
-      .left-column, .right-columns {
-        flex-direction: column;
-        max-width: 100%;
-        width: 100%;
-      }
-      .decks-row {
-        flex-direction: column;
-        gap: 2rem;
-        width: 100%;
-      }
-      .decks-section {
-        max-width: 100%;
-      }
-    }
-    .decks-section:last-child {
-      grid-area: liked;
-      grid-column: 1 / -1; /* Prend toute la largeur */
-      width: 100%;
-    }
-    /* Form improvements */
-    .change-form input {
-      width: 100%;
-      padding: 0.8rem 1.2rem;
-      border: 2px solid #1976d2;
-      border-radius: 8px;
-      font-size: 1rem;
-      background: #fff;
-      color: #222;
-      transition: all 0.3s ease;
-      margin-bottom: 1rem;
-    }
-
-    .change-form input:focus {
-      outline: none;
-      border-color: #1565c0;
-      box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.2);
-      transform: translateY(-1px);
-    }
-
-    body.theme-dark .change-form input {
-      background: #23272f;
-      color: #e0e0e0;
-      border-color: #1976d2;
-    }
-
-    /* Enhanced button styles */
-    .submit-btn, .cancel-btn {
-      padding: 0.8rem 2rem;
-      border-radius: 8px;
-      font-size: 0.95rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.25s ease;
-      min-width: 120px;
-      border: none;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
-
-    .submit-btn {
-      background: #1976d2;
-      color: white;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .submit-btn::after {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(
-        90deg,
-        transparent,
-        rgba(255, 255, 255, 0.2),
-        transparent
-      );
-      transition: 0.5s;
-    }
-
-    .submit-btn:hover {
-      background: #1565c0;
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(25, 118, 210, 0.3);
-    }
-
-    .submit-btn:hover::after {
-      left: 100%;
-    }
-
-    .submit-btn:active {
-      transform: translateY(0);
-    }
-
-    .cancel-btn {
-      background: #f5f5f5;
-      color: #666;
-      border: 1px solid #ddd;
-    }
-
-    .cancel-btn:hover {
-      background: #e0e0e0;
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    }
-
-    .cancel-btn:active {
-      transform: translateY(0);
-    }
-
-    .form-actions {
-      display: flex;
-      gap: 1rem;
-      margin-top: 1rem;
-    }
-
-    body.theme-dark .submit-btn {
-      background: #1976d2;
-    }
-
-    body.theme-dark .cancel-btn {
-      background: #333;
-      color: #fff;
-      border-color: #444;
-    }
-
-    body.theme-dark .cancel-btn:hover {
-      background: #444;
-    }
-
-    /* Edit button improvements */
-    .edit-btn {
-      width: 40px;
-      height: 40px;
-      background: var(--btn-bg, rgba(25, 118, 210, 0.1));
-      border-radius: 50%;
-      border: none;
-      color: var(--btn-color, #1976d2);
-      font-size: 1.2rem;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .edit-btn:hover {
-      background: var(--btn-hover-bg, #1976d2);
-      color: white;
-      transform: rotate(180deg);
-    }
-
-    body.theme-dark .edit-btn {
-      background: rgba(25, 118, 210, 0.2);
-      color: #1976d2;
-    }
-
-    body.theme-dark .edit-btn:hover {
-      background: #1976d2;
-      color: #fff;
-    }
-
-    /* Style pour la zone du nom d'utilisateur */
-    .username-container {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      flex: 1;
-      position: relative;
-    }
-
-    .change-form {
-      display: none;
-      margin: 0;
-      flex: 1;
-    }
-
-    .change-form input {
-      width: 100%;
-      margin: 0;
-      padding: 0.5rem 1.2rem;
-      font-size: 1.1rem;
-      color: var(--value-color, #222);
-      background: var(--value-bg, rgba(25, 118, 210, 0.08));
-      border: 2px solid #1976d2;
-      border-radius: 12px;
-      transition: all 0.3s ease;
-    }
-
-    .change-form input:focus {
-      outline: none;
-      border-color: #1565c0;
-      background: var(--value-bg-focus, rgba(25, 118, 210, 0.12));
-      box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.2);
-    }
-
-    body.theme-dark .change-form input {
-      background: var(--value-bg-dark, rgba(25, 118, 210, 0.12));
-      color: #e0e0e0;
-      border-color: #1976d2;
-    }
-
-    body.theme-dark .change-form input:focus {
-      background: var(--value-bg-dark-focus, rgba(25, 118, 210, 0.16));
-      border-color: #1565c0;
-    }
-
-    .edit-btn {
-      opacity: 0;
-      transition: all 0.3s ease;
-    }
-
-    .profile-info-row:hover .edit-btn {
-      opacity: 1;
-    }
-
-    /* Style pour les boutons de confirmation/annulation */
-    .confirm-actions {
-      display: none;
-      gap: 0.5rem;
-      margin-left: 0.5rem;
-    }
-
-    .confirm-btn, .cancel-edit-btn {
-      width: 30px;
-      height: 30px;
-      border-radius: 50%;
-      border: none;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-
-    .confirm-btn {
-      background: #4caf50;
-      color: white;
-    }
-
-    .confirm-btn:hover {
-      background: #43a047;
-      transform: scale(1.1);
-    }
-
-    .cancel-edit-btn {
-      background: #ff4d4d;
-      color: white;
-    }
-
-    .cancel-edit-btn:hover {
-      background: #e53935;
-      transform: scale(1.1);
-    }
-    .stats-container {
-      margin: 1.5rem 0 0 0;
-      padding: 1.5rem 2rem;
-      background: linear-gradient(90deg, #e3f2fd 60%, #bbdefb 100%);
-      border-radius: 18px;
-      box-shadow: 0 2px 12px rgba(25, 118, 210, 0.08);
-      border: 1.5px solid #1976d2;
-      max-width: 350px;
-      margin-left: auto;
-      margin-right: auto;
-      text-align: left;
-      font-size: 1.13rem;
-      color: #1976d2;
-      font-weight: 500;
-      transition: background 0.3s;
-    }
-    body.theme-dark .stats-container {
-      background: linear-gradient(90deg, #23272f 60%, #181c23 100%);
-      color: #90caf9;
-      border-color: #1976d2;
-    }
-    .stats-container ul {
-      margin: 0;
-      padding: 0;
-    }
-    .stats-container li {
-      margin-bottom: 0.7rem;
-      font-size: 1.08rem;
-      color: inherit;
-    }
-    .stats-container li:last-child {
-      margin-bottom: 0;
-    }
-    /* Bouton flottant pour créer un deck */
-    .add-deck-btn {
-      position: fixed;
-      bottom: 2rem;
-      right: 2rem;
-      background: linear-gradient(135deg, #1976d2, #1565c0);
-      color: white;
-      border: none;
-      border-radius: 50%;
-      width: 60px;
-      height: 60px;
-      font-size: 2rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      box-shadow: 0 4px 15px rgba(25, 118, 210, 0.18);
-      transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
-      z-index: 100;
-      text-decoration: none;
-    }
-    .add-deck-btn:focus, .add-deck-btn:hover {
-      background: linear-gradient(135deg, #1565c0, #1976d2);
-      box-shadow: 0 6px 24px rgba(25, 118, 210, 0.25);
-      transform: scale(1.08);
-      outline: none;
-    }
-    .add-deck-btn span {
-      margin-top: -2px;
-    }
-    @media (max-width: 600px) {
-      .add-deck-btn {
-        width: 48px;
-        height: 48px;
+      
+      .follow-box-title {
         font-size: 1.5rem;
-        bottom: 1rem;
-        right: 1rem;
+        font-weight: 600;
+        color: #1976d2;
+        letter-spacing: -0.5px;
       }
-    }
-  </style>
-</head>
-<body>
-  @include('components/header')
-  <div class="main-content">
-    <div class="left-column">
-      <div class="profile-section" style="position: relative;">
-        @if(flashMessages.has('profile_success'))
-          <div class="profile-message success">{{ flashMessages.get('profile_success') }}</div>
-        @endif
-        @if(flashMessages.has('profile_error'))
-          <div class="profile-message error">{{ flashMessages.get('profile_error') }}</div>
-        @endif
-        <h2>Mon profil</h2>
-        <div class="profile-info-row">
-          <span class="profile-label">Nom d'utilisateur :</span>
-          <div class="username-container">
-            <span class="profile-value" id="username-display">{{ user.username }}</span>
-            <form id="changeUsernameForm" class="change-form" action="/account/{{ user.id }}/change-username" method="POST">
-              {{ csrfField() }}
-              <input 
-                type="text" 
-                name="new_username" 
-                required 
-                minlength="3"
-                maxlength="30"
-                value="{{ user.username }}"
-              />
-            </form>
-            <button class="edit-btn" id="editButton" onclick="toggleUsernameForm()" title="Modifier le nom d'utilisateur">✏️</button>
+      
+      .follow-box-close {
+        background: #e3f2fd;
+        border: 1px solid #1976d2;
+        color: #1976d2;
+        font-size: 1.2rem;
+        cursor: pointer;
+        padding: 0.4rem;
+        border-radius: 12px;
+        width: 36px;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s ease;
+      }
+      
+      .follow-box-close:hover {
+        background: #1976d2;
+        color: #fff;
+        transform: rotate(90deg);
+      }
+      
+      body.theme-dark .follow-box-close {
+        background: #23272f;
+        color: #fff;
+        border-color: #1976d2;
+      }
+      
+      body.theme-dark .follow-box-close:hover {
+        background: #1976d2;
+        color: #fff;
+      }
+      
+      .follow-box-content {
+        max-height: 400px;
+        overflow-y: auto;
+        padding-right: 0.5rem;
+      }
+      
+      .follow-box-list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+      
+      .follow-box-item {
+        padding: 0.8rem 1rem;
+        border-radius: 10px;
+        transition: all 0.2s ease;
+        border: 2px solid #1976d2;
+        /* plus visible */
+        background: #e3f2fd;
+        text-align: center;
+        /* centrer le texte */
+        margin-bottom: 0.7rem;
+        /* espacement entre les items */
+        box-shadow: 0 2px 8px rgba(25, 118, 210, 0.07);
+      }
+      
+      body.theme-dark .follow-box-item {
+        background: #23272f;
+        border-color: #1976d2;
+      }
+      
+      .follow-box-link {
+        color: #1976d2;
+        text-decoration: none;
+        font-size: 1.1rem;
+        transition: all 0.2s ease;
+        display: block;
+        text-align: center;
+        /* centrer le texte */
+        font-weight: 500;
+        letter-spacing: 0.5px;
+      }
+      
+      .follow-box-link:hover {
+        color: #1565c0;
+      }
+      
+      @media (max-width: 1024px) {
+        .main-content {
+          flex-direction: column;
+          gap: 2rem;
+        }
+      
+        .left-column,
+        .right-columns {
+          flex-direction: column;
+          max-width: 100%;
+          width: 100%;
+        }
+      
+        .decks-row {
+          flex-direction: column;
+          gap: 2rem;
+          width: 100%;
+        }
+      
+        .decks-section {
+          max-width: 100%;
+        }
+      }
+      
+      .decks-section:last-child {
+        grid-area: liked;
+        grid-column: 1 / -1;
+        /* Prend toute la largeur */
+        width: 100%;
+      }
+      
+      /* Form improvements */
+      
+      .change-form input {
+        width: 100%;
+        padding: 0.8rem 1.2rem;
+        border: 2px solid #1976d2;
+        border-radius: 8px;
+        font-size: 1rem;
+        background: #fff;
+        color: #222;
+        transition: all 0.3s ease;
+        margin-bottom: 1rem;
+      }
+      
+      .change-form input:focus {
+        outline: none;
+        border-color: #1565c0;
+        box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.2);
+        transform: translateY(-1px);
+      }
+      
+      body.theme-dark .change-form input {
+        background: #23272f;
+        color: #e0e0e0;
+        border-color: #1976d2;
+      }
+      
+      /* Enhanced button styles */
+      
+      .submit-btn,
+      .cancel-btn {
+        padding: 0.8rem 2rem;
+        border-radius: 8px;
+        font-size: 0.95rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.25s ease;
+        min-width: 120px;
+        border: none;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+      
+      .submit-btn {
+        background: #1976d2;
+        color: white;
+        position: relative;
+        overflow: hidden;
+      }
+      
+      .submit-btn::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+                    90deg,
+                    transparent,
+                    rgba(255, 255, 255, 0.2),
+                    transparent
+                  );
+        transition: 0.5s;
+      }
+      
+      .submit-btn:hover {
+        background: #1565c0;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(25, 118, 210, 0.3);
+      }
+      
+      .submit-btn:hover::after {
+        left: 100%;
+      }
+      
+      .submit-btn:active {
+        transform: translateY(0);
+      }
+      
+      .cancel-btn {
+        background: #f5f5f5;
+        color: #666;
+        border: 1px solid #ddd;
+      }
+      
+      .cancel-btn:hover {
+        background: #e0e0e0;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      }
+      
+      .cancel-btn:active {
+        transform: translateY(0);
+      }
+      
+      .form-actions {
+        display: flex;
+        gap: 1rem;
+        margin-top: 1rem;
+      }
+      
+      body.theme-dark .submit-btn {
+        background: #1976d2;
+      }
+      
+      body.theme-dark .cancel-btn {
+        background: #333;
+        color: #fff;
+        border-color: #444;
+      }
+      
+      body.theme-dark .cancel-btn:hover {
+        background: #444;
+      }
+      
+      /* Edit button improvements */
+      
+      .edit-btn {
+        width: 40px;
+        height: 40px;
+        background: var(--btn-bg, rgba(25, 118, 210, 0.1));
+        border-radius: 50%;
+        border: none;
+        color: var(--btn-color, #1976d2);
+        font-size: 1.2rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      
+      .edit-btn:hover {
+        background: var(--btn-hover-bg, #1976d2);
+        color: white;
+        transform: rotate(180deg);
+      }
+      
+      body.theme-dark .edit-btn {
+        background: rgba(25, 118, 210, 0.2);
+        color: #1976d2;
+      }
+      
+      body.theme-dark .edit-btn:hover {
+        background: #1976d2;
+        color: #fff;
+      }
+      
+      /* Style pour la zone du nom d'utilisateur */
+      
+      .username-container {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        flex: 1;
+        position: relative;
+      }
+      
+      .change-form {
+        display: none;
+        margin: 0;
+        flex: 1;
+      }
+      
+      .change-form input {
+        width: 100%;
+        margin: 0;
+        padding: 0.5rem 1.2rem;
+        font-size: 1.1rem;
+        color: var(--value-color, #222);
+        background: var(--value-bg, rgba(25, 118, 210, 0.08));
+        border: 2px solid #1976d2;
+        border-radius: 12px;
+        transition: all 0.3s ease;
+      }
+      
+      .change-form input:focus {
+        outline: none;
+        border-color: #1565c0;
+        background: var(--value-bg-focus, rgba(25, 118, 210, 0.12));
+        box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.2);
+      }
+      
+      body.theme-dark .change-form input {
+        background: var(--value-bg-dark, rgba(25, 118, 210, 0.12));
+        color: #e0e0e0;
+        border-color: #1976d2;
+      }
+      
+      body.theme-dark .change-form input:focus {
+        background: var(--value-bg-dark-focus, rgba(25, 118, 210, 0.16));
+        border-color: #1565c0;
+      }
+      
+      .edit-btn {
+        opacity: 0;
+        transition: all 0.3s ease;
+      }
+      
+      .profile-info-row:hover .edit-btn {
+        opacity: 1;
+      }
+      
+      /* Style pour les boutons de confirmation/annulation */
+      
+      .confirm-actions {
+        display: none;
+        gap: 0.5rem;
+        margin-left: 0.5rem;
+      }
+      
+      .confirm-btn,
+      .cancel-edit-btn {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        border: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+      
+      .confirm-btn {
+        background: #4caf50;
+        color: white;
+      }
+      
+      .confirm-btn:hover {
+        background: #43a047;
+        transform: scale(1.1);
+      }
+      
+      .cancel-edit-btn {
+        background: #ff4d4d;
+        color: white;
+      }
+      
+      .cancel-edit-btn:hover {
+        background: #e53935;
+        transform: scale(1.1);
+      }
+      
+      .stats-container {
+        margin: 1.5rem 0 0 0;
+        padding: 1.5rem 2rem;
+        background: linear-gradient(90deg, #e3f2fd 60%, #bbdefb 100%);
+        border-radius: 18px;
+        box-shadow: 0 2px 12px rgba(25, 118, 210, 0.08);
+        border: 1.5px solid #1976d2;
+        max-width: 350px;
+        margin-left: auto;
+        margin-right: auto;
+        text-align: left;
+        font-size: 1.13rem;
+        color: #1976d2;
+        font-weight: 500;
+        transition: background 0.3s;
+      }
+      
+      body.theme-dark .stats-container {
+        background: linear-gradient(90deg, #23272f 60%, #181c23 100%);
+        color: #90caf9;
+        border-color: #1976d2;
+      }
+      
+      .stats-container ul {
+        margin: 0;
+        padding: 0;
+      }
+      
+      .stats-container li {
+        margin-bottom: 0.7rem;
+        font-size: 1.08rem;
+        color: inherit;
+      }
+      
+      .stats-container li:last-child {
+        margin-bottom: 0;
+      }
+      
+      /* Bouton flottant pour créer un deck */
+      
+      .add-deck-btn {
+        position: fixed;
+        bottom: 2rem;
+        right: 2rem;
+        background: linear-gradient(135deg, #1976d2, #1565c0);
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 60px;
+        height: 60px;
+        font-size: 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        box-shadow: 0 4px 15px rgba(25, 118, 210, 0.18);
+        transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
+        z-index: 100;
+        text-decoration: none;
+      }
+      
+      .add-deck-btn:focus,
+      .add-deck-btn:hover {
+        background: linear-gradient(135deg, #1565c0, #1976d2);
+        box-shadow: 0 6px 24px rgba(25, 118, 210, 0.25);
+        transform: scale(1.08);
+        outline: none;
+      }
+      
+      .add-deck-btn span {
+        margin-top: -2px;
+      }
+      
+      @media (max-width: 600px) {
+        .add-deck-btn {
+          width: 48px;
+          height: 48px;
+          font-size: 1.5rem;
+          bottom: 1rem;
+          right: 1rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    @include('components/header')
+    <div class="main-content">
+      <div class="left-column">
+        <div class="profile-section" style="position: relative;">
+          @if(flashMessages.has('profile_success'))
+            <div class="profile-message success">
+              {{ flashMessages.get('profile_success') }}
+            </div>
+          @endif
+          @if(flashMessages.has('profile_error'))
+            <div class="profile-message error">
+              {{ flashMessages.get('profile_error') }}
+            </div>
+          @endif
+          <h2>
+            Mon profil
+          </h2>
+          <div class="profile-info-row">
+            <span class="profile-label">Nom d'utilisateur :</span>
+            <div class="username-container">
+              <span class="profile-value" id="username-display">{{ user.username }}</span>
+              <form
+                id="changeUsernameForm"
+                class="change-form"
+                action="/account/{{ user.id }}/change-username"
+                method="POST"
+              >
+                {{ csrfField() }}
+              <input
+                  type="text"
+                  name="new_username"
+                  required
+                  minlength="3"
+                  maxlength="30"
+                  value="{{ user.username }}"
+                />
+              </form>
+              <button
+                class="edit-btn"
+                id="editButton"
+                onclick="toggleUsernameForm()"
+                title="Modifier le nom d'utilisateur"
+              >✏️</button>
+            </div>
+          </div>
+          <div class="profile-info-row">
+            <span class="profile-label">Abonnés :</span>
+            <span class="profile-value" id="followers-link" style="cursor:pointer; text-decoration:underline;">
+              {{ followersCount }}
+          </span>
+          </div>
+          <div class="profile-info-row">
+            <span class="profile-label">Abonnements :</span>
+            <span class="profile-value" id="following-link" style="cursor:pointer; text-decoration:underline;">
+              {{ followingCount }}
+          </span>
+          </div>
+          <div class="profile-info-row">
+            <span class="profile-label">Mot de passe :</span>
+            <span class="profile-value">
+              ********
+          </span>
+          </div>
+          <button class="change-password-btn" onclick="toggleChangePasswordForm()">Changer le mot de passe</button>
+          <form
+            id="changePasswordForm"
+            class="change-password-form"
+            action="/account/{{ user.id }}/change-password"
+            method="POST"
+            style="display:none;"
+          >
+            {{ csrfField() }}
+          <input type="password" name="old_password" placeholder="Ancien mot de passe" required />
+            <input type="password" name="new_password" placeholder="Nouveau mot de passe" required minlength="8" />
+            <input
+              type="password"
+              name="confirm_new_password"
+              placeholder="Confirmer le nouveau mot de passe"
+              required
+              minlength="8"
+            />
+            <button type="submit">Valider</button>
+          </form>
+        </div>
+        <div class="stats-section">
+          <h3>
+            Statistiques d'apprentissage
+          </h3>
+          <div class="stats-container">
+            @if(userStats)
+              <ul style="list-style:none;padding:0;">
+                <li>
+                  Decks étudiés: <b>{{ userStats.decks_studied }}</b>
+                </li>
+                <li>
+                  Cartes justes: <b>{{ userStats.correct_answers }}</b>
+                </li>
+                <li>
+                  Cartes fausses: <b>{{ userStats.wrong_answers }}</b>
+                </li>
+                <li>
+                  Pourcentage de bonnes réponses:
+                <b>
+                    @if(userStats.correct_answers + userStats.wrong_answers > 0)
+                      {{ Math.round(100 * userStats.correct_answers / (userStats.correct_answers + userStats.wrong_answers)) }}%
+                    @else
+                      N/A
+                    @endif
+                  </b>
+                </li>
+                <li>
+                  Temps total d'étude: <b>{{ Math.floor(userStats.total_study_time/60) }} min</b>
+                </li>
+                <li>
+                  Moyenne temps/étude par deck:
+                <b>
+                    @if(userStats.decks_studied > 0)
+                      {{ Math.round(userStats.total_study_time / userStats.decks_studied / 60) }} min
+                    @else
+                      N/A
+                    @endif
+                  </b>
+                </li>
+                <li>
+                  Decks créés: <b>{{ userDecks.length }}</b>
+                </li>
+                <li>
+                  Cartes créées: <b>{{ userDecks.reduce((acc, d) => acc + d.cards.length, 0) }}</b>
+                </li>
+                <li>
+                  Dernière session: 
+                <b>
+                    @if(userStats.updated_at)
+                      {{ userStats.updated_at.setZone                        ? userStats.updated_at.setZone('UTC+2').toFormat('dd/MM/yyyy HH:mm:ss')                        : userStats.updated_at }}
+                    @else
+                      N/A
+                    @endif
+                  </b>
+                </li>
+              </ul>
+            @else
+              <span>Aucune statistique disponible.</span>
+            @endif
           </div>
         </div>
-        <div class="profile-info-row">
-          <span class="profile-label">Abonnés :</span>
-          <span class="profile-value" id="followers-link" style="cursor:pointer; text-decoration:underline;">
-            {{ followersCount }}
-          </span>
-        </div>
-        <div class="profile-info-row">
-          <span class="profile-label">Abonnements :</span>
-          <span class="profile-value" id="following-link" style="cursor:pointer; text-decoration:underline;">
-            {{ followingCount }}
-          </span>
-        </div>
-        <div class="profile-info-row">
-          <span class="profile-label">Mot de passe :</span>
-          <span class="profile-value">
-            ********
-          </span>
-        </div>
-        <button class="change-password-btn" onclick="toggleChangePasswordForm()">Changer le mot de passe</button>
-        <form id="changePasswordForm" class="change-password-form" action="/account/{{ user.id }}/change-password" method="POST" style="display:none;">
-          {{ csrfField() }}
-          <input type="password" name="old_password" placeholder="Ancien mot de passe" required />
-          <input type="password" name="new_password" placeholder="Nouveau mot de passe" required minlength="8" />
-          <input type="password" name="confirm_new_password" placeholder="Confirmer le nouveau mot de passe" required minlength="8" />
-          <button type="submit">Valider</button>
-        </form>
       </div>
-      <div class="stats-section">
-        <h3>Statistiques d'apprentissage</h3>
-        <div class="stats-container">
-          @if(userStats)
-            <ul style="list-style:none;padding:0;">
-              <li>Decks étudiés: <b>{{ userStats.decks_studied }}</b></li>
-              <li>Cartes justes: <b>{{ userStats.correct_answers }}</b></li>
-              <li>Cartes fausses: <b>{{ userStats.wrong_answers }}</b></li>
-              <li>Pourcentage de bonnes réponses:
-                <b>
-                  @if(userStats.correct_answers + userStats.wrong_answers > 0)
-                    {{ Math.round(100 * userStats.correct_answers / (userStats.correct_answers + userStats.wrong_answers)) }}%
-                  @else
-                    N/A
-                  @endif
-                </b>
-              </li>
-              <li>Temps total d'étude: <b>{{ Math.floor(userStats.total_study_time/60) }} min</b></li>
-              <li>Moyenne temps/étude par deck:
-                <b>
-                  @if(userStats.decks_studied > 0)
-                    {{ Math.round(userStats.total_study_time / userStats.decks_studied / 60) }} min
-                  @else
-                    N/A
-                  @endif
-                </b>
-              </li>
-              <li>Decks créés: <b>{{ userDecks.length }}</b></li>
-              <li>Cartes créées: <b>{{ userDecks.reduce((acc, d) => acc + d.cards.length, 0) }}</b></li>
-              <li>Dernière session: 
-                <b>
-                  @if(userStats.updated_at)
-                    {{
-                      userStats.updated_at.setZone
-                        ? userStats.updated_at.setZone('UTC+2').toFormat('dd/MM/yyyy HH:mm:ss')
-                        : userStats.updated_at
-                    }}
-                  @else
-                    N/A
-                  @endif
-                </b>
-              </li>
-            </ul>
-          @else
-            <span>Aucune statistique disponible.</span>
-          @endif
-        </div>
-      </div>
-    </div>
-    <div class="right-columns">
-      <div class="decks-row">
-        <div class="decks-section">
-          <h1>
-            Mes decks : 
+      <div class="right-columns">
+        <div class="decks-row">
+          <div class="decks-section">
+            <h1>
+              Mes decks : 
             <span id="deckCount">{{ userDecks.length }}</span>
-          </h1>
-          <div class="decks-container">
-            <div class="search-container">
-              <input 
-                type="text" 
-                id="deckSearch" 
-                class="search-input" 
-                placeholder="Rechercher dans mes decks..."
-                onkeyup="searchDecks()"
-              >
-            </div>
-            <table>
-              <thead>
-                <tr>
-                  <th>Titre</th>
-                  <th>Description</th>
-                  <th>Cartes</th>
-                  <th>Visibilité</th>
-                </tr>
-              </thead>
-              <tbody id="decksTableBody">
-                @if(userDecks.length)
-                  @each(deck in userDecks)
-                    <tr onclick="window.location.href='/deck/{{ deck.id }}'">
-                      <td><a style="text-decoration: none; color: #1976d2" href="/deck/{{ deck.id }}">{{ deck.title }}</a></td>
-                      <td>{{ deck.description }}</td>
-                      <td>{{ deck.cards.length }}</td>
-                      <td>
-                        <span title="
-                          {{ deck.visibility === 'public' ? 'Public' : deck.visibility === 'restricted' ? 'Restreint' : 'Privé' }}">
-                          {{ deck.visibility === 'public' ? '🔓' : deck.visibility === 'restricted' ? '🔑🔒' : '🔒' }}
+            </h1>
+            <div class="decks-container">
+              <div class="search-container">
+                <input
+                  type="text"
+                  id="deckSearch"
+                  class="search-input"
+                  placeholder="Rechercher dans mes decks..."
+                  onkeyup="searchDecks()"
+                />
+              </div>
+              <table>
+                <thead>
+                  <tr>
+                    <th>
+                      Titre
+                    </th>
+                    <th>
+                      Description
+                    </th>
+                    <th>
+                      Cartes
+                    </th>
+                    <th>
+                      Visibilité
+                    </th>
+                  </tr>
+                </thead>
+                <tbody id="decksTableBody">
+                  @if(userDecks.length)
+                    @each(deck in userDecks)
+                      <tr onclick="window.location.href='/deck/{{ deck.id }}'">
+                        <td>
+                          <a style="text-decoration: none; color: #1976d2" href="/deck/{{ deck.id }}">{{ deck.title }}</a>
+                        </td>
+                        <td>
+                          {{ deck.description }}
+                        </td>
+                        <td>
+                          {{ deck.cards.length }}
+                        </td>
+                        <td>
+                          <span
+                            title="
+                          {{ deck.visibility === 'public' ? 'Public' : deck.visibility === 'restricted' ? 'Restreint' : 'Privé' }}"
+                          >
+                            {{ deck.visibility === 'public' ? '🔓' : deck.visibility === 'restricted' ? '🔑🔒' : '🔒' }}
                         </span>
+                        </td>
+                      </tr>
+                    @endeach
+                  @else
+                    <tr>
+                      <td colspan="4">
+                        Aucun deck disponible.
                       </td>
                     </tr>
-                  @endeach
-                @else
-                  <tr>
-                    <td colspan="4">Aucun deck disponible.</td>
-                  </tr>
-                @endif
-              </tbody>
-            </table>
-          </div>
-        </div>
-        <div class="decks-section">
-          <h1>
-            Decks likés :
-            <span id="likedDeckCount">{{ likedDecks?.length || 0 }}</span>
-          </h1>
-          <div class="decks-container" style="max-width:100%;">
-            <div class="search-container">
-              <input 
-                type="text" 
-                id="likedDeckSearch" 
-                class="search-input" 
-                placeholder="Rechercher dans les decks likés..."
-                onkeyup="searchLikedDecks()"
-              >
+                  @endif
+                </tbody>
+              </table>
             </div>
-            <table style="width:100%; font-size:1.15rem;">
-              <thead>
-                <tr>
-                  <th>Titre</th>
-                  <th>Description</th>
-                  <th>Cartes</th>
-                  <th>Auteur</th>
-                </tr>
-              </thead>
-              <tbody id="likedDecksTableBody">
-                @if(likedDecks && likedDecks.length)
-                  @each(deck in likedDecks)
-                    <tr onclick="window.location.href='/deck/{{ deck.id }}'">
-                      <td><a style="text-decoration: none; color: #1976d2" href="/deck/{{ deck.id }}">{{ deck.title }}</a></td>
-                      <td>{{ deck.description }}</td>
-                      <td>{{ deck.cards.length }}</td>
-                      <td>{{ deck.user.username }}</td>
-                    </tr>
-                  @endeach
-                @else
-                  <tr>
-                    <td colspan="4">Aucun deck liké.</td>
-                  </tr>
-                @endif
-              </tbody>
-            </table>
           </div>
+          <div class="decks-section">
+            <h1>
+              Decks likés :
+            <span id="likedDeckCount">{{ likedDecks?.length || 0 }}</span>
+            </h1>
+            <div class="decks-container" style="max-width:100%;">
+              <div class="search-container">
+                <input
+                  type="text"
+                  id="likedDeckSearch"
+                  class="search-input"
+                  placeholder="Rechercher dans les decks likés..."
+                  onkeyup="searchLikedDecks()"
+                />
+              </div>
+              <table style="width:100%; font-size:1.15rem;">
+                <thead>
+                  <tr>
+                    <th>
+                      Titre
+                    </th>
+                    <th>
+                      Description
+                    </th>
+                    <th>
+                      Cartes
+                    </th>
+                    <th>
+                      Auteur
+                    </th>
+                  </tr>
+                </thead>
+                <tbody id="likedDecksTableBody">
+                  @if(likedDecks && likedDecks.length)
+                    @each(deck in likedDecks)
+                      <tr onclick="window.location.href='/deck/{{ deck.id }}'">
+                        <td>
+                          <a style="text-decoration: none; color: #1976d2" href="/deck/{{ deck.id }}">{{ deck.title }}</a>
+                        </td>
+                        <td>
+                          {{ deck.description }}
+                        </td>
+                        <td>
+                          {{ deck.cards.length }}
+                        </td>
+                        <td>
+                          {{ deck.user.username }}
+                        </td>
+                      </tr>
+                    @endeach
+                  @else
+                    <tr>
+                      <td colspan="4">
+                        Aucun deck liké.
+                      </td>
+                    </tr>
+                  @endif
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="decks-section" style="margin-top:2rem; grid-column: 1 / -1; width: 100%;">
+            <h1>
+              Decks Restreints autorisés ({{ restrictedDecks?.length || 0 }})
+            </h1>
+            <input
+              type="text"
+              id="restrictedDeckSearch"
+              onkeyup="searchRestrictedDecks()"
+              placeholder="Rechercher dans les decks restreints..."
+              class="search-input"
+              style="width: 100%; max-width: 400px; margin-bottom: 1rem;"
+            />
+            <div style="overflow-x: auto;">
+              <table style="width: 100%; text-align: left; border-collapse: separate; border-spacing: 0 0.8rem;">
+                <thead>
+                  <tr>
+                    <th style="padding: 1rem; color: #666; font-weight: 600;">
+                      Titre
+                    </th>
+                    <th style="padding: 1rem; color: #666; font-weight: 600;">
+                      Description
+                    </th>
+                    <th style="padding: 1rem; color: #666; font-weight: 600;">
+                      Cartes
+                    </th>
+                    <th style="padding: 1rem; color: #666; font-weight: 600;">
+                      Créateur
+                    </th>
+                  </tr>
+                </thead>
+                <tbody id="restrictedDecksTableBody">
+                  @if(restrictedDecks && restrictedDecks.length > 0)
+                    @each(deck in restrictedDecks)
+                      <tr style="cursor: pointer;" onclick="window.location.href='/deck/{{ deck.id }}'">
+                        <td style="font-weight: 600; color: #1976d2;">
+                          {{ deck.title }}
+                        </td>
+                        <td>
+                          {{ deck.description.length > 50 ? deck.description.substring(0, 50) + '...' : deck.description }}
+                        </td>
+                        <td>
+                          {{ deck.cards ? deck.cards.length : 0 }}
+                        </td>
+                        <td>
+                          {{ deck.user.username }}
+                        </td>
+                      </tr>
+                    @endeach
+                  @else
+                    <tr>
+                      <td colspan="4">
+                        Aucun deck restreint accessible.
+                      </td>
+                    </tr>
+                  @endif
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <script>
+            function searchRestrictedDecks() {
+              const input = document.getElementById("restrictedDeckSearch");
+              const filter = input.value.toLowerCase();
+              const tbody = document.getElementById("restrictedDecksTableBody");
+              const rows = tbody.getElementsByTagName("tr");
+              // Si "Aucun deck" est affiché, ne rien faire
+              if (rows.length === 1 && rows[0].innerText.includes("Aucun deck")) return;
+              for (let row of rows) {
+                const titleCell = row.getElementsByTagName("td")[0];
+                const descriptionCell = row.getElementsByTagName("td")[1];
+                if (titleCell && descriptionCell) {
+                  const title = titleCell.textContent || titleCell.innerText;
+                  const description = descriptionCell.textContent || descriptionCell.innerText;
+                  if (title.toLowerCase().indexOf(filter) > -1 || description.toLowerCase().indexOf(filter) > -1) {
+                    row.style.display = "";
+                  } else {
+                    row.style.display = "none";
+                  }
+                }
+              }
+            }
+          </script>
         </div>
-  <div class="decks-section" style="margin-top:2rem; grid-column: 1 / -1; width: 100%;">
-    <h1>Decks Restreints autorisés ({{ restrictedDecks?.length || 0 }})</h1>
-    <input type="text" id="restrictedDeckSearch" onkeyup="searchRestrictedDecks()" placeholder="Rechercher dans les decks restreints..." class="search-input" style="width: 100%; max-width: 400px; margin-bottom: 1rem;">
-    <div style="overflow-x: auto;">
-      <table style="width: 100%; text-align: left; border-collapse: separate; border-spacing: 0 0.8rem;">
-        <thead>
-          <tr>
-            <th style="padding: 1rem; color: #666; font-weight: 600;">Titre</th>
-            <th style="padding: 1rem; color: #666; font-weight: 600;">Description</th>
-            <th style="padding: 1rem; color: #666; font-weight: 600;">Cartes</th>
-            <th style="padding: 1rem; color: #666; font-weight: 600;">Créateur</th>
-          </tr>
-        </thead>
-        <tbody id="restrictedDecksTableBody">
-          @if(restrictedDecks && restrictedDecks.length > 0)
-            @each(deck in restrictedDecks)
-              <tr style="cursor: pointer;" onclick="window.location.href='/deck/{{ deck.id }}'">
-                <td style="font-weight: 600; color: #1976d2;">{{ deck.title }}</td>
-                <td>{{ deck.description.length > 50 ? deck.description.substring(0, 50) + '...' : deck.description }}</td>
-                <td>{{ deck.cards ? deck.cards.length : 0 }}</td>
-                <td>{{ deck.user.username }}</td>
-              </tr>
-            @endeach
+      </div>
+      <!-- Box survolante pour abonnés -->
+      <div id="followers-box" class="follow-box">
+        <div class="follow-box-header">
+          <span class="follow-box-title">Abonnés ({{ followersCount }})</span>
+          <button onclick="closeFollowersBox()" class="follow-box-close" aria-label="Fermer">×</button>
+        </div>
+        <div class="follow-box-content">
+          @if(followersList && followersList.length)
+            <ul class="follow-box-list">
+              @each(f in followersList)
+                <li class="follow-box-item">
+                  <a href="/public-account/{{ f.id }}" class="follow-box-link">{{ f.username }}</a>
+                </li>
+              @endeach
+            </ul>
           @else
-            <tr>
-              <td colspan="4">Aucun deck restreint accessible.</td>
-            </tr>
+            <span>Aucun abonné.</span>
           @endif
-        </tbody>
-      </table>
-    </div>
-  </div>
-
-  <script>
-    function searchRestrictedDecks() {
-      const input = document.getElementById('restrictedDeckSearch');
-      const filter = input.value.toLowerCase();
-      const tbody = document.getElementById('restrictedDecksTableBody');
-      const rows = tbody.getElementsByTagName('tr');
-      // Si "Aucun deck" est affiché, ne rien faire
-      if (rows.length === 1 && rows[0].innerText.includes('Aucun deck')) return; 
-
-      for (let row of rows) {
-        const titleCell = row.getElementsByTagName('td')[0];
-        const descriptionCell = row.getElementsByTagName('td')[1];
-        if (titleCell && descriptionCell) {
-          const title = titleCell.textContent || titleCell.innerText;
-          const description = descriptionCell.textContent || descriptionCell.innerText;
-          if (title.toLowerCase().indexOf(filter) > -1 || description.toLowerCase().indexOf(filter) > -1) {
-            row.style.display = '';
-          } else {
-            row.style.display = 'none';
+        </div>
+      </div>
+      <!-- Box survolante pour abonnements -->
+      <div id="following-box" class="follow-box">
+        <div class="follow-box-header">
+          <span class="follow-box-title">Abonnements ({{ followingCount }})</span>
+          <button onclick="closeFollowingBox()" class="follow-box-close" aria-label="Fermer">×</button>
+        </div>
+        <div class="follow-box-content">
+          @if(followingList && followingList.length)
+            <ul class="follow-box-list">
+              @each(f in followingList)
+                <li class="follow-box-item">
+                  <a href="/public-account/{{ f.id }}" class="follow-box-link">{{ f.username }}</a>
+                </li>
+              @endeach
+            </ul>
+          @else
+            <span>Aucun abonnement.</span>
+          @endif
+        </div>
+      </div>
+      <a href="{{ route('decks.create') }}" class="add-deck-btn" title="Créer un nouveau deck">
+        <span>+</span>
+      </a>
+      <script>
+        function toggleChangePasswordForm() {
+          const form = document.getElementById("changePasswordForm");
+          form.style.display = form.style.display === "none" ? "flex" : "none";
+        }
+        
+        function toggleUsernameForm() {
+          const form = document.getElementById("changeUsernameForm");
+          const display = document.getElementById("username-display");
+          const input = form.querySelector("input");
+          const editBtn = document.getElementById("editButton");
+          if (form.style.display === "none" || !form.style.display) {
+            display.style.display = "none";
+            form.style.display = "block";
+            editBtn.style.display = "none";
+            input.focus();
+            // Soumet le formulaire quand on appuie sur Enter
+            input.onkeydown = function(e) {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                form.submit();
+              }
+              if (e.key === "Escape") {
+                resetForm();
+              }
+            };
+            // Soumet le formulaire quand on clique en dehors
+            document.addEventListener("click", function handleClickOutside(event) {
+              if (!form.contains(event.target) && event.target.className !== "edit-btn") {
+                form.submit();
+                document.removeEventListener("click", handleClickOutside);
+              }
+            });
           }
         }
-      }
-    }
-  </script>
-  </div>
-  </div>
-  <!-- Box survolante pour abonnés -->
-  <div id="followers-box" class="follow-box">
-    <div class="follow-box-header">
-      <span class="follow-box-title">Abonnés ({{ followersCount }})</span>
-      <button onclick="closeFollowersBox()" class="follow-box-close" aria-label="Fermer">×</button>
-    </div>
-    <div class="follow-box-content">
-      @if(followersList && followersList.length)
-        <ul class="follow-box-list">
-          @each(f in followersList)
-            <li class="follow-box-item">
-              <a href="/public-account/{{ f.id }}" class="follow-box-link">{{ f.username }}</a>
-            </li>
-          @endeach
-        </ul>
-      @else
-        <span>Aucun abonné.</span>
-      @endif
-    </div>
-  </div>
-  <!-- Box survolante pour abonnements -->
-  <div id="following-box" class="follow-box">
-    <div class="follow-box-header">
-      <span class="follow-box-title">Abonnements ({{ followingCount }})</span>
-      <button onclick="closeFollowingBox()" class="follow-box-close" aria-label="Fermer">×</button>
-    </div>
-    <div class="follow-box-content">
-      @if(followingList && followingList.length)
-        <ul class="follow-box-list">
-          @each(f in followingList)
-            <li class="follow-box-item">
-              <a href="/public-account/{{ f.id }}" class="follow-box-link">{{ f.username }}</a>
-            </li>
-          @endeach
-        </ul>
-      @else
-        <span>Aucun abonnement.</span>
-      @endif
-    </div>
-  </div>
-  <a href="{{ route('decks.create') }}" class="add-deck-btn" title="Créer un nouveau deck">
-    <span>+</span>
-  </a>
-  <script>
-    function toggleChangePasswordForm() {
-      const form = document.getElementById('changePasswordForm');
-      form.style.display = form.style.display === 'none' ? 'flex' : 'none';
-    }
-    function toggleUsernameForm() {
-      const form = document.getElementById('changeUsernameForm');
-      const display = document.getElementById('username-display');
-      const input = form.querySelector('input');
-      const editBtn = document.getElementById('editButton');
-      
-      if (form.style.display === 'none' || !form.style.display) {
-        display.style.display = 'none';
-        form.style.display = 'block';
-        editBtn.style.display = 'none';
-        input.focus();
         
-        // Soumet le formulaire quand on appuie sur Enter
-        input.onkeydown = function(e) {
-          if (e.key === 'Enter') {
-            e.preventDefault();
-            form.submit();
-          }
-          if (e.key === 'Escape') {
-            resetForm();
-          }
+        function resetForm() {
+          const form = document.getElementById("changeUsernameForm");
+          const display = document.getElementById("username-display");
+          const editBtn = document.getElementById("editButton");
+          const input = form.querySelector("input");
+          form.style.display = "none";
+          display.style.display = "block";
+          editBtn.style.display = "block";
+          input.value = display.textContent;
+        }
+        
+        function showFollowBox(boxId) {
+          const box = document.getElementById(boxId);
+          box.style.display = "block";
+          setTimeout(() => {
+            box.classList.add("active");
+          }, 10);
+        }
+        
+        function hideFollowBox(boxId) {
+          const box = document.getElementById(boxId);
+          box.classList.remove("active");
+          setTimeout(() => {
+            box.style.display = "none";
+          }, 300);
+        }
+        
+        document.getElementById("followers-link").onclick = function(e) {
+          e.stopPropagation();
+          hideFollowBox("following-box");
+          showFollowBox("followers-box");
         };
         
-        // Soumet le formulaire quand on clique en dehors
-        document.addEventListener('click', function handleClickOutside(event) {
-          if (!form.contains(event.target) && event.target.className !== 'edit-btn') {
-            form.submit();
-            document.removeEventListener('click', handleClickOutside);
+        document.getElementById("following-link").onclick = function(e) {
+          e.stopPropagation();
+          hideFollowBox("followers-box");
+          showFollowBox("following-box");
+        };
+        
+        function closeFollowersBox() {
+          hideFollowBox("followers-box");
+        }
+        
+        function closeFollowingBox() {
+          hideFollowBox("following-box");
+        }
+        
+        document.addEventListener("click", function(event) {
+          const fb = document.getElementById("followers-box");
+          const flb = document.getElementById("following-box");
+          if (fb && fb.style.display === "block" && !fb.contains(event.target) && event.target.id !== "followers-link") {
+            fb.style.display = "none";
+          }
+          if (flb && flb.style.display === "block" && !flb.contains(event.target) && event.target.id !== "following-link") {
+            flb.style.display = "none";
           }
         });
-      }
-    }
-
-    function resetForm() {
-      const form = document.getElementById('changeUsernameForm');
-      const display = document.getElementById('username-display');
-      const editBtn = document.getElementById('editButton');
-      const input = form.querySelector('input');
-      
-      form.style.display = 'none';
-      display.style.display = 'block';
-      editBtn.style.display = 'block';
-      input.value = display.textContent;
-    }
-    
-    function showFollowBox(boxId) {
-      const box = document.getElementById(boxId);
-      box.style.display = 'block';
-      setTimeout(() => {
-        box.classList.add('active');
-      }, 10);
-    }
-    function hideFollowBox(boxId) {
-      const box = document.getElementById(boxId);
-      box.classList.remove('active');
-      setTimeout(() => {
-        box.style.display = 'none';
-      }, 300);
-    }
-    document.getElementById('followers-link').onclick = function(e) {
-      e.stopPropagation();
-      hideFollowBox('following-box');
-      showFollowBox('followers-box');
-    };
-    document.getElementById('following-link').onclick = function(e) {
-      e.stopPropagation();
-      hideFollowBox('followers-box');
-      showFollowBox('following-box');
-    };
-    function closeFollowersBox() {
-      hideFollowBox('followers-box');
-    }
-    function closeFollowingBox() {
-      hideFollowBox('following-box');
-    }
-    document.addEventListener('click', function(event) {
-      const fb = document.getElementById('followers-box');
-      const flb = document.getElementById('following-box');
-      if (fb && fb.style.display === 'block' && !fb.contains(event.target) && event.target.id !== 'followers-link') {
-        fb.style.display = 'none';
-      }
-      if (flb && flb.style.display === 'block' && !flb.contains(event.target) && event.target.id !== 'following-link') {
-        flb.style.display = 'none';
-      }
-    });
-    function searchDecks() {
-      const input = document.getElementById('deckSearch');
-      const filter = input.value.toLowerCase();
-      const tbody = document.getElementById('decksTableBody');
-      const rows = tbody.getElementsByTagName('tr');
-      let visibleCount = 0;
-      for (let row of rows) {
-        const titleCell = row.getElementsByTagName('td')[0];
-        const descriptionCell = row.getElementsByTagName('td')[1];
-        if (titleCell && descriptionCell) {
-          const title = titleCell.textContent || titleCell.innerText;
-          const description = descriptionCell.textContent || descriptionCell.innerText;
-          if (title.toLowerCase().indexOf(filter) > -1 || description.toLowerCase().indexOf(filter) > -1) {
-            row.style.display = '';
-            visibleCount++;
-          } else {
-            row.style.display = 'none';
+        
+        function searchDecks() {
+          const input = document.getElementById("deckSearch");
+          const filter = input.value.toLowerCase();
+          const tbody = document.getElementById("decksTableBody");
+          const rows = tbody.getElementsByTagName("tr");
+          let visibleCount = 0;
+          for (let row of rows) {
+            const titleCell = row.getElementsByTagName("td")[0];
+            const descriptionCell = row.getElementsByTagName("td")[1];
+            if (titleCell && descriptionCell) {
+              const title = titleCell.textContent || titleCell.innerText;
+              const description = descriptionCell.textContent || descriptionCell.innerText;
+              if (title.toLowerCase().indexOf(filter) > -1 || description.toLowerCase().indexOf(filter) > -1) {
+                row.style.display = "";
+                visibleCount++;
+              } else {
+                row.style.display = "none";
+              }
+            }
           }
+          document.getElementById("deckCount").textContent = visibleCount;
         }
-      }
-      document.getElementById('deckCount').textContent = visibleCount;
-    }
-    function searchLikedDecks() {
-      const input = document.getElementById('likedDeckSearch');
-      const filter = input.value.toLowerCase();
-      const tbody = document.getElementById('likedDecksTableBody');
-      const rows = tbody.getElementsByTagName('tr');
-      let visibleCount = 0;
-      for (let row of rows) {
-        const titleCell = row.getElementsByTagName('td')[0];
-        const descriptionCell = row.getElementsByTagName('td')[1];
-        if (titleCell && descriptionCell) {
-          const title = titleCell.textContent || titleCell.innerText;
-          const description = descriptionCell.textContent || descriptionCell.innerText;
-          if (title.toLowerCase().indexOf(filter) > -1 || description.toLowerCase().indexOf(filter) > -1) {
-            row.style.display = '';
-            visibleCount++;
-          } else {
-            row.style.display = 'none';
+        
+        function searchLikedDecks() {
+          const input = document.getElementById("likedDeckSearch");
+          const filter = input.value.toLowerCase();
+          const tbody = document.getElementById("likedDecksTableBody");
+          const rows = tbody.getElementsByTagName("tr");
+          let visibleCount = 0;
+          for (let row of rows) {
+            const titleCell = row.getElementsByTagName("td")[0];
+            const descriptionCell = row.getElementsByTagName("td")[1];
+            if (titleCell && descriptionCell) {
+              const title = titleCell.textContent || titleCell.innerText;
+              const description = descriptionCell.textContent || descriptionCell.innerText;
+              if (title.toLowerCase().indexOf(filter) > -1 || description.toLowerCase().indexOf(filter) > -1) {
+                row.style.display = "";
+                visibleCount++;
+              } else {
+                row.style.display = "none";
+              }
+            }
           }
+          document.getElementById("likedDeckCount").textContent = visibleCount;
         }
-      }
-      document.getElementById('likedDeckCount').textContent = visibleCount;
-    }
-  </script>
-</body>
-</html>
+      </script>
+    </body>
+  </html>

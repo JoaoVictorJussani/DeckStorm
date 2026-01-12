@@ -1,920 +1,1030 @@
 <!DOCTYPE html>
 <html lang="fr">
-<head>
-  <meta charset="UTF-8" />
-  <title>Accueil</title>
-  <link rel="shortcut icon" href="/images/icone.ico" type="image/x-icon">
-  <script>
-    // Aplica o tema o mais cedo possível para evitar flash
-    (function() {
-      let theme = localStorage.getItem('theme');
-      // Sempre começa no claro se não houver preferência salva
-      if (!theme) {
-        theme = 'theme-light';
+  <head>
+    <meta charset="UTF-8" />
+    <title>
+      Accueil
+    </title>
+    <link rel="shortcut icon" href="/images/icone.ico" type="image/x-icon" />
+    <script>
+      // Aplica o tema o mais cedo possível para evitar flash
+      (function() {
+        let theme = localStorage.getItem("theme");
+        // Sempre começa no claro se não houver preferência salva
+        if (!theme) {
+          theme = "theme-light";
+        }
+        document.addEventListener("DOMContentLoaded", function() {
+          document.body.classList.remove("theme-light", "theme-dark");
+          document.body.classList.add(theme);
+        });
+        // Para garantir que o body já tenha a classe antes do render
+        if (document.body) {
+          document.body.classList.remove("theme-light", "theme-dark");
+          document.body.classList.add(theme);
+        }
+      })();
+    </script>
+    <style>
+      :root {
+        /* Palette de couleurs principale */
+        --primary: #1976d2;
+        --primary-rgb: 25, 118, 210;
+        --primary-hover: #1565c0;
+        --primary-light: #e3f2fd;
+        /* Utilisé pour les hovers légers et th */
+        /* Arrière-plans */
+        --bg-body: #f7faff;
+        --bg-navbar: rgba(255, 255, 255, 0.95);
+        --bg-card: rgba(245, 245, 245, 0.92);
+        --bg-input: rgba(245, 245, 245, 0.85);
+        --bg-switch: rgba(245, 245, 245, 0.85);
+        --bg-top-section: rgba(245, 245, 245, 0.92);
+        --bg-like-container: rgba(245, 245, 245, 0.8);
+        --bg-creator-item: rgba(25, 118, 210, 0.07);
+        /* Textes */
+        --text-main: #222222;
+        --text-muted: #888888;
+        --text-inverse: #ffffff;
+        /* Bordures et Ombres */
+        --border-color: rgba(25, 118, 210, 0.10);
+        --border-focus: #1976d2;
+        --shadow-soft: 0 2px 10px rgba(0, 0, 0, 0.08);
+        --shadow-primary: 0 2px 15px rgba(25, 118, 210, 0.10);
+        /* Transitions */
+        --trans-speed: 0.2s;
       }
-      document.addEventListener('DOMContentLoaded', function() {
-        document.body.classList.remove('theme-light', 'theme-dark');
-        document.body.classList.add(theme);
-      });
-      // Para garantir que o body já tenha a classe antes do render
-      if (document.body) {
-        document.body.classList.remove('theme-light', 'theme-dark');
-        document.body.classList.add(theme);
+      
+      body.theme-dark {
+        --bg-body: #0a0c10;
+        --bg-navbar: rgba(30, 30, 35, 0.95);
+        /* Ajusté pour le dark mode */
+        --bg-card: rgba(30, 35, 45, 0.92);
+        --bg-input: rgba(40, 45, 55, 0.85);
+        --bg-switch: rgba(40, 45, 55, 0.85);
+        --bg-top-section: #23272f;
+        --bg-like-container: rgba(17, 19, 23, 0.8);
+        --bg-creator-item: rgba(25, 118, 210, 0.15);
+        /* Plus visible en dark */
+        --text-main: #e6e9ef;
+        --text-muted: #a0a0a0;
+        --primary-light: rgba(25, 118, 210, 0.3);
+        /* Ajusté pour dark mode */
+        --border-color: rgba(255, 255, 255, 0.10);
+        --shadow-soft: 0 2px 10px rgba(0, 0, 0, 0.3);
       }
-    })();
-  </script>
-  <style>
-    :root {
-      /* Palette de couleurs principale */
-      --primary: #1976d2;
-      --primary-rgb: 25, 118, 210;
-      --primary-hover: #1565c0;
-      --primary-light: #e3f2fd; /* Utilisé pour les hovers légers et th */
       
-      /* Arrière-plans */
-      --bg-body: #f7faff;
-      --bg-navbar: rgba(255, 255, 255, 0.95);
-      --bg-card: rgba(245, 245, 245, 0.92);
-      --bg-input: rgba(245, 245, 245, 0.85);
-      --bg-switch: rgba(245, 245, 245, 0.85);
-      --bg-top-section: rgba(245, 245, 245, 0.92);
-      --bg-like-container: rgba(245, 245, 245, 0.8);
-      --bg-creator-item: rgba(25, 118, 210, 0.07);
-
-      /* Textes */
-      --text-main: #222222;
-      --text-muted: #888888;
-      --text-inverse: #ffffff;
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      }
       
-      /* Bordures et Ombres */
-      --border-color: rgba(25, 118, 210, 0.10);
-      --border-focus: #1976d2;
-      --shadow-soft: 0 2px 10px rgba(0, 0, 0, 0.08);
-      --shadow-primary: 0 2px 15px rgba(25, 118, 210, 0.10);
+      html {
+        scroll-behavior: smooth;
+      }
       
-      /* Transitions */
-      --trans-speed: 0.2s;
-    }
-
-    body.theme-dark {
-      --bg-body: #0a0c10;
-      --bg-navbar: rgba(30, 30, 35, 0.95); /* Ajusté pour le dark mode */
-      --bg-card: rgba(30, 35, 45, 0.92);
-      --bg-input: rgba(40, 45, 55, 0.85);
-      --bg-switch: rgba(40, 45, 55, 0.85);
-      --bg-top-section: #23272f;
-      --bg-like-container: rgba(17, 19, 23, 0.8);
-      --bg-creator-item: rgba(25, 118, 210, 0.15); /* Plus visible en dark */
+      body {
+        background: var(--bg-body);
+        color: var(--text-main);
+        min-height: 100vh;
+        font-weight: 400;
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        transition: background 0.4s, color 0.4s;
+      }
       
-      --text-main: #e6e9ef;
-      --text-muted: #a0a0a0;
+      .navbar {
+        width: 100%;
+        padding: 1rem 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: var(--bg-navbar);
+        border-bottom: 2px solid var(--primary);
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 10;
+        backdrop-filter: blur(8px);
+        box-shadow: var(--shadow-primary);
+        transition: box-shadow 0.3s;
+      }
       
-      --primary-light: rgba(25, 118, 210, 0.3); /* Ajusté pour dark mode */
-      --border-color: rgba(255, 255, 255, 0.10);
-      --shadow-soft: 0 2px 10px rgba(0, 0, 0, 0.3);
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
-
-    html {
-      scroll-behavior: smooth;
-    }
-
-    body {
-      background: var(--bg-body);
-      color: var(--text-main);
-      min-height: 100vh;
-      font-weight: 400;
-      line-height: 1.6;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-      transition: background 0.4s, color 0.4s;
-    }
-
-    .navbar {
-      width: 100%;
-      padding: 1rem 2rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: var(--bg-navbar);
-      border-bottom: 2px solid var(--primary);
-      position: fixed;
-      top: 0;
-      left: 0;
-      z-index: 10;
-      backdrop-filter: blur(8px);
-      box-shadow: var(--shadow-primary);
-      transition: box-shadow 0.3s;
-    }
-
-    .navbar a {
-      text-decoration: none;
-      color: var(--primary);
-      font-size: 1.5rem;
-      font-weight: bold;
-      transition: color var(--trans-speed);
-    }
-    .navbar a:focus, .navbar a:hover {
-      color: var(--primary-hover);
-      outline: none;
-    }
-
-    .navbar img {
-      height: 36px;
-      width: 36px;
-      margin-right: 0.7rem;
-      vertical-align: middle;
-    }
-
-    .main-content {
-      margin-top: 100px;
-      padding: 2rem;
-      width: 100%;
-      max-width: 1400px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    .search-container {
-      max-width: 900px;
-      margin: 0 auto 2rem auto;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 1rem;
-      width: 100%;
-    }
-
-    .search-wrapper {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      width: 100%;
-    }
-
-    .search-input {
-      width: 100%;
-      padding: 12px 20px;
-      font-size: 1.1rem;
-      border: 1.5px solid rgba(var(--primary-rgb), 0.25);
-      border-radius: 8px;
-      background: var(--bg-input);
-      color: var(--text-main);
-      transition: border var(--trans-speed), box-shadow var(--trans-speed);
-      backdrop-filter: blur(4px);
-      box-shadow: var(--shadow-soft);
-    }
-    .search-input:focus {
-      outline: none;
-      border-color: var(--primary);
-      box-shadow: 0 0 8px var(--primary);
-      background: var(--bg-input);
-    }
-    .search-input::placeholder {
-      color: var(--text-muted);
-      opacity: 1;
-      font-style: italic;
-    }
-
-    .search-switch {
-      background: var(--bg-switch);
-      border: 1.5px solid rgba(var(--primary-rgb), 0.18);
-      border-radius: 25px;
-      padding: 4px;
-      width: 320px;
-      height: 40px;
-      position: relative;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      transition: border var(--trans-speed), box-shadow var(--trans-speed);
-      backdrop-filter: blur(4px);
-      box-shadow: var(--shadow-soft);
-      user-select: none;
-    }
-    .search-switch:focus {
-      outline: 2px solid var(--primary);
-    }
-
-    .switch-option {
-      width: 50%;
-      text-align: center;
-      font-size: 1rem;
-      color: var(--text-main);
-      z-index: 1;
-      transition: color 0.3s;
-      padding: 5px 0;
-      font-weight: 600;
-      letter-spacing: 0.5px;
-      cursor: pointer;
-      border-radius: 20px;
-    }
-
-    .switch-slider {
-      position: absolute;
-      left: 4px;
-      top: 4px;
-      width: calc(50% - 4px);
-      height: calc(100% - 8px);
-      background: linear-gradient(90deg, var(--primary) 60%, var(--primary-hover) 100%);
-      border-radius: 20px;
-      transition: transform 0.3s;
-      box-shadow: 0 2px 8px rgba(var(--primary-rgb), 0.10);
-    }
-
-    .search-switch[data-mode="author"] .switch-slider {
-      transform: translateX(calc(100% + 4px));
-    }
-    .search-switch[data-mode="author"] .switch-option:last-child {
-      color: var(--text-inverse);
-      background: rgba(var(--primary-rgb), 0.13);
-    }
-    .search-switch[data-mode="content"] .switch-option:first-child {
-      color: var(--text-inverse);
-      background: rgba(var(--primary-rgb), 0.13);
-    }
-
-    .view-switch {
-      background: var(--bg-switch);
-      border: 1.5px solid rgba(var(--primary-rgb), 0.18);
-      border-radius: 25px;
-      padding: 4px;
-      width: 140px;
-      height: 40px;
-      position: relative;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      transition: border var(--trans-speed), box-shadow var(--trans-speed);
-      backdrop-filter: blur(4px);
-      box-shadow: var(--shadow-soft);
-      user-select: none;
-      margin-left: 0.5rem;
-    }
-    .view-switch-option {
-      width: 50%;
-      text-align: center;
-      font-size: 1rem;
-      color: var(--text-main);
-      z-index: 1;
-      transition: color 0.3s;
-      padding: 5px 0;
-      font-weight: 600;
-      letter-spacing: 0.5px;
-      cursor: pointer;
-      border-radius: 20px;
-    }
-    .view-switch-slider {
-      position: absolute;
-      left: 4px;
-      top: 4px;
-      width: calc(50% - 4px);
-      height: calc(100% - 8px);
-      background: linear-gradient(90deg, var(--primary) 60%, var(--primary-hover) 100%);
-      border-radius: 20px;
-      transition: transform 0.3s;
-      box-shadow: 0 2px 8px rgba(var(--primary-rgb), 0.10);
-    }
-
-    .view-switch[data-view="list"] .view-switch-slider {
-      transform: translateX(calc(100% + 4px));
-    }
-    .view-switch[data-view="list"] .view-switch-option:last-child {
-      color: var(--text-inverse);
-      background: rgba(var(--primary-rgb), 0.13);
-    }
-    .view-switch[data-view="grid"] .view-switch-option:first-child {
-      color: var(--text-inverse);
-      background: rgba(var(--primary-rgb), 0.13);
-    }
-
-    .decks-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: 2rem;
-      max-width: 1200px;
-      margin: 0 auto;
-      width: 100%;
-      transition: gap 0.2s;
-    }
-
-    .deck-card {
-      background: var(--bg-card);
-      backdrop-filter: blur(4px);
-      border: 1.5px solid var(--border-color);
-      box-shadow: 0 4px 20px rgba(var(--primary-rgb), 0.08); /* Adapting to primary */
-      border-radius: 12px;
-      padding: 1.5rem;
-      transition: transform 0.2s, box-shadow 0.2s, border 0.2s;
-      cursor: pointer;
-      min-width: 0;
-      word-break: break-word;
-      position: relative;
-    }
-
-    .like-container {
-      position: absolute;
-      bottom: 1rem;
-      right: 1rem;
-      display: flex;
-      align-items: center;
-      gap: 0.3rem;
-      background: var(--bg-like-container);
-      padding: 0.3rem 0.5rem;
-      border-radius: 20px;
-      backdrop-filter: blur(4px);
-      pointer-events: auto;
-      z-index: 2;
-    }
-
-    .like-btn {
-      background: none;
-      border: none;
-      cursor: pointer;
-      font-size: 1.3rem;
-      padding: 0.3rem 0.5rem;
-      display: flex;
-      align-items: center;
-      gap: 0.3rem;
-      transition: transform 0.2s;
-    }
-
-    .like-btn span {
-      transition: color 0.3s;
-      color: var(--text-main);
-    }
-
-    .like-btn:hover {
-      transform: scale(1.1);
-    }
-
-    .like-btn .heart-emoji {
-      color: inherit;
-    }
-
-    .like-count {
-      font-size: 1rem;
-      color: var(--primary);
-      min-width: 1.5rem;
-      text-align: center;
-    }
-
-    .deck-title {
-      color: var(--primary);
-      font-size: 1.5rem;
-      letter-spacing: 0.5px;
-      margin-bottom: 1rem;
-      font-weight: bold;
-      overflow-wrap: anywhere;
-    }
-
-    .deck-description {
-      color: var(--text-main);
-      margin-bottom: 1rem;
-      line-height: 1.4;
-      font-size: 1.05rem;
-      min-height: 2.2em;
-      opacity: 0.95;
-    }
-
-    .deck-info {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      color: var(--text-muted);
-      font-size: 0.95rem;
-      margin-top: 0.5rem;
-    }
-
-    .deck-author {
-      color: var(--primary);
-      text-decoration: underline;
-      font-weight: 500;
-      transition: color var(--trans-speed);
-    }
-    .deck-author:hover, .deck-author:focus {
-      color: var(--primary-hover);
-      outline: none;
-    }
-
-    .no-decks {
-      text-align: center;
-      color: var(--text-muted);
-      font-size: 1.2rem;
-      margin-top: 2rem;
-      letter-spacing: 0.5px;
-    }
-
-    .dropdown {
-      position: relative;
-      display: inline-block;
-    }
-    .dropdown-toggle {
-      background: var(--primary);
-      color: var(--text-inverse);
-      border: none;
-      padding: 0.7rem 1.2rem;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 1rem;
-      transition: background var(--trans-speed);
-      font-weight: 600;
-    }
-    .dropdown-toggle:focus, .dropdown-toggle:hover {
-      background: var(--primary-hover);
-      outline: none;
-    }
-    .dropdown-menu {
-      display: none;
-      position: absolute;
-      right: 0;
-      background: var(--bg-card); /* was #fff */
-      min-width: 180px;
-      box-shadow: 0 2px 10px rgba(var(--primary-rgb), 0.10);
-      border: 1px solid var(--primary);
-      border-radius: 8px;
-      z-index: 100;
-      margin-top: 0.5rem;
-    }
-    .dropdown.open .dropdown-menu {
-      display: block;
-    }
-
-    .add-deck-btn {
-      position: fixed;
-      bottom: 2rem;
-      right: 2rem;
-      background: linear-gradient(135deg, var(--primary), var(--primary-hover));
-      color: var(--text-inverse);
-      border: none;
-      border-radius: 50%;
-      width: 60px;
-      height: 60px;
-      font-size: 2rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      box-shadow: 0 4px 15px rgba(var(--primary-rgb), 0.18);
-      transition: background var(--trans-speed), box-shadow var(--trans-speed), transform var(--trans-speed);
-      z-index: 100;
-      text-decoration: none;
-    }
-    .add-deck-btn:focus, .add-deck-btn:hover {
-      background: linear-gradient(135deg, var(--primary-hover), var(--primary));
-      box-shadow: 0 6px 24px rgba(var(--primary-rgb), 0.25);
-      transform: scale(1.08);
-      outline: none;
-    }
-    .add-deck-btn span {
-      margin-top: -2px;
-    }
-
-    #decksListContainer table {
-      width: 100%;
-      max-width: 1200px;
-      margin: 0 auto;
-      border-collapse: collapse;
-      background: var(--bg-card);
-      border-radius: 10px;
-      overflow: hidden;
-      font-size: 1.05rem;
-      box-shadow: 0 2px 10px rgba(var(--primary-rgb), 0.10);
-    }
-    #decksListContainer th, #decksListContainer td {
-      padding: 14px 10px;
-      border-bottom: 1px solid var(--primary);
-      text-align: left;
-    }
-    #decksListContainer th {
-      background: var(--primary-light);
-      color: var(--primary);
-      font-size: 1.1rem;
-      font-weight: bold;
-      cursor: pointer;
-      user-select: none;
-      transition: background var(--trans-speed);
-    }
-    #decksListContainer th:focus, #decksListContainer th:hover {
-      filter: brightness(0.95);
-      outline: none;
-    }
-    #decksListContainer th .sort-arrow {
-      margin-left: 4px;
-      font-size: 0.95em;
-    }
-    #decksListContainer tr:hover {
-      background: var(--primary-light);
-    }
-    #decksListContainer a.deck-author {
-      color: var(--primary);
-      text-decoration: underline;
-      font-weight: 500;
-      transition: color var(--trans-speed);
-    }
-    #decksListContainer a.deck-author:hover, #decksListContainer a.deck-author:focus {
-      color: var(--primary-hover);
-      outline: none;
-    }
-
-    #toggleViewBtn {
-      display: none;
-    }
-
-    .home-layout {
-      display: flex;
-      flex-direction: row;
-      gap: 2.5rem;
-      max-width: 1500px;
-      margin: 0 auto;
-      width: 100%;
-    }
-    .sidebar {
-      flex: 0 0 340px;
-      min-width: 260px;
-      max-width: 380px;
-      display: flex;
-      flex-direction: column;
-      gap: 2.5rem;
-    }
-    .main-section {
-      flex: 1 1 0;
-      min-width: 0;
-      display: flex;
-      flex-direction: column;
-      gap: 2.5rem;
-    }
-    
-    .top-creators-section {
-      display: flex;
-      flex-direction: column;
-      gap: 2rem;
-    }
-    .top-creators-title {
-      color: var(--primary);
-      font-size: 1.3rem;
-      margin-bottom: 1rem;
-      text-align: left;
-      font-weight: bold;
-      letter-spacing: 0.5px;
-    }
-    .top-creators-list {
-      display: flex;
-      flex-direction: column;
-      gap: 0.7rem;
-    }
-    .creator-item {
-      background: var(--bg-creator-item);
-      border-radius: 8px;
-      padding: 0.8rem 1rem;
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      border: 1px solid var(--border-color);
-      cursor: pointer;
-      transition: background var(--trans-speed);
-      position: relative;
-    }
-    .creator-item:hover {
-      background: var(--primary-light);
-    }
-    .creator-info {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 0.2rem;
-    }
-    .creator-username {
-      color: var(--primary);
-      font-weight: 600;
-      font-size: 1.08rem;
-      text-decoration: none;
-      transition: color var(--trans-speed);
-    }
-    .creator-username:hover, .creator-username:focus {
-      color: var(--primary-hover);
-      outline: none;
-    }
-    .creator-stat {
-      color: var(--primary);
-      font-weight: bold;
-      font-size: 0.97rem;
-    }
-    .top-liked-title {
-      color: var(--primary);
-      font-size: 1.8rem;
-      margin-bottom: 1.5rem;
-      text-align: left;
-      font-weight: bold;
-    }
-    .top-liked-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-      gap: 1.5rem;
-    }
-    
-    /* Media Queries */
-    @media (max-width: 1100px) {
-      .home-layout {
+      .navbar a {
+        text-decoration: none;
+        color: var(--primary);
+        font-size: 1.5rem;
+        font-weight: bold;
+        transition: color var(--trans-speed);
+      }
+      
+      .navbar a:focus,
+      .navbar a:hover {
+        color: var(--primary-hover);
+        outline: none;
+      }
+      
+      .navbar img {
+        height: 36px;
+        width: 36px;
+        margin-right: 0.7rem;
+        vertical-align: middle;
+      }
+      
+      .main-content {
+        margin-top: 100px;
+        padding: 2rem;
+        width: 100%;
+        max-width: 1400px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+      
+      .search-container {
+        max-width: 900px;
+        margin: 0 auto 2rem auto;
+        display: flex;
         flex-direction: column;
-        gap: 1.5rem;
-      }
-      .sidebar {
-        flex-direction: row;
-        gap: 1.5rem;
-        max-width: 100%;
+        align-items: center;
+        gap: 1rem;
         width: 100%;
       }
-      .main-section {
-        gap: 1.5rem;
-      }
-    }
-    @media (max-width: 900px) {
-      .sidebar {
-        flex-direction: column;
-        gap: 1.2rem;
-        min-width: 0;
-        max-width: 100%;
-      }
-      .main-section {
-        gap: 1.2rem;
-      }
-      .top-liked-grid {
-        grid-template-columns: 1fr;
+      
+      .search-wrapper {
+        display: flex;
+        align-items: center;
         gap: 1rem;
+        width: 100%;
       }
-    }
-    @media (max-width: 600px) {
-      .home-layout {
-        flex-direction: column;
-        gap: 0.7rem;
-      }
-      .sidebar {
-        flex-direction: column;
-        gap: 0.7rem;
-        min-width: 0;
-        max-width: 100%;
-      }
-      .main-section {
-        gap: 0.7rem;
-      }
-      .top-liked-title {
-        font-size: 1.2rem;
-        margin-bottom: 0.7rem;
-      }
-    }
-    @media (max-width: 900px) {
-      .main-content {
-        padding: 1rem;
-      }
-      .search-container {
-        max-width: 100%;
-      }
-      .decks-grid {
-        gap: 1rem;
-      }
-      #decksListContainer table {
-        font-size: 0.98rem;
-      }
-    }
-    @media (max-width: 600px) {
-      .main-content {
-        margin-top: 80px;
-        padding: 0.5rem;
-      }
-      .search-container {
-        gap: 0.5rem;
-      }
-      .search-switch {
-        width: 180px;
-        font-size: 0.9rem;
-        min-width: 0;
-      }
+      
       .search-input {
-        font-size: 1rem;
-        padding: 10px 12px;
+        width: 100%;
+        padding: 12px 20px;
+        font-size: 1.1rem;
+        border: 1.5px solid rgba(var(--primary-rgb), 0.25);
+        border-radius: 8px;
+        background: var(--bg-input);
+        color: var(--text-main);
+        transition: border var(--trans-speed), box-shadow var(--trans-speed);
+        backdrop-filter: blur(4px);
+        box-shadow: var(--shadow-soft);
       }
+      
+      .search-input:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 8px var(--primary);
+        background: var(--bg-input);
+      }
+      
+      .search-input::placeholder {
+        color: var(--text-muted);
+        opacity: 1;
+        font-style: italic;
+      }
+      
+      .search-switch {
+        background: var(--bg-switch);
+        border: 1.5px solid rgba(var(--primary-rgb), 0.18);
+        border-radius: 25px;
+        padding: 4px;
+        width: 320px;
+        height: 40px;
+        position: relative;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        transition: border var(--trans-speed), box-shadow var(--trans-speed);
+        backdrop-filter: blur(4px);
+        box-shadow: var(--shadow-soft);
+        user-select: none;
+      }
+      
+      .search-switch:focus {
+        outline: 2px solid var(--primary);
+      }
+      
+      .switch-option {
+        width: 50%;
+        text-align: center;
+        font-size: 1rem;
+        color: var(--text-main);
+        z-index: 1;
+        transition: color 0.3s;
+        padding: 5px 0;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        cursor: pointer;
+        border-radius: 20px;
+      }
+      
+      .switch-slider {
+        position: absolute;
+        left: 4px;
+        top: 4px;
+        width: calc(50% - 4px);
+        height: calc(100% - 8px);
+        background: linear-gradient(90deg, var(--primary) 60%, var(--primary-hover) 100%);
+        border-radius: 20px;
+        transition: transform 0.3s;
+        box-shadow: 0 2px 8px rgba(var(--primary-rgb), 0.10);
+      }
+      
+      .search-switch[data-mode="author"] .switch-slider {
+        transform: translateX(calc(100% + 4px));
+      }
+      
+      .search-switch[data-mode="author"] .switch-option:last-child {
+        color: var(--text-inverse);
+        background: rgba(var(--primary-rgb), 0.13);
+      }
+      
+      .search-switch[data-mode="content"] .switch-option:first-child {
+        color: var(--text-inverse);
+        background: rgba(var(--primary-rgb), 0.13);
+      }
+      
+      .view-switch {
+        background: var(--bg-switch);
+        border: 1.5px solid rgba(var(--primary-rgb), 0.18);
+        border-radius: 25px;
+        padding: 4px;
+        width: 140px;
+        height: 40px;
+        position: relative;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        transition: border var(--trans-speed), box-shadow var(--trans-speed);
+        backdrop-filter: blur(4px);
+        box-shadow: var(--shadow-soft);
+        user-select: none;
+        margin-left: 0.5rem;
+      }
+      
+      .view-switch-option {
+        width: 50%;
+        text-align: center;
+        font-size: 1rem;
+        color: var(--text-main);
+        z-index: 1;
+        transition: color 0.3s;
+        padding: 5px 0;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        cursor: pointer;
+        border-radius: 20px;
+      }
+      
+      .view-switch-slider {
+        position: absolute;
+        left: 4px;
+        top: 4px;
+        width: calc(50% - 4px);
+        height: calc(100% - 8px);
+        background: linear-gradient(90deg, var(--primary) 60%, var(--primary-hover) 100%);
+        border-radius: 20px;
+        transition: transform 0.3s;
+        box-shadow: 0 2px 8px rgba(var(--primary-rgb), 0.10);
+      }
+      
+      .view-switch[data-view="list"] .view-switch-slider {
+        transform: translateX(calc(100% + 4px));
+      }
+      
+      .view-switch[data-view="list"] .view-switch-option:last-child {
+        color: var(--text-inverse);
+        background: rgba(var(--primary-rgb), 0.13);
+      }
+      
+      .view-switch[data-view="grid"] .view-switch-option:first-child {
+        color: var(--text-inverse);
+        background: rgba(var(--primary-rgb), 0.13);
+      }
+      
       .decks-grid {
-        grid-template-columns: 1fr;
-        gap: 0.7rem;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 2rem;
+        max-width: 1200px;
+        margin: 0 auto;
+        width: 100%;
+        transition: gap 0.2s;
       }
+      
       .deck-card {
-        padding: 1rem;
-        font-size: 0.98rem;
+        background: var(--bg-card);
+        backdrop-filter: blur(4px);
+        border: 1.5px solid var(--border-color);
+        box-shadow: 0 4px 20px rgba(var(--primary-rgb), 0.08);
+        /* Adapting to primary */
+        border-radius: 12px;
+        padding: 1.5rem;
+        transition: transform 0.2s, box-shadow 0.2s, border 0.2s;
+        cursor: pointer;
+        min-width: 0;
+        word-break: break-word;
+        position: relative;
       }
-      #decksListContainer th, #decksListContainer td {
-        padding: 8px 5px;
-      }
-      #toggleViewBtn {
-        padding: 0.5rem 0.8rem;
-        font-size: 1rem;
-      }
-      .add-deck-btn {
-        width: 48px;
-        height: 48px;
-        font-size: 1.5rem;
+      
+      .like-container {
+        position: absolute;
         bottom: 1rem;
         right: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.3rem;
+        background: var(--bg-like-container);
+        padding: 0.3rem 0.5rem;
+        border-radius: 20px;
+        backdrop-filter: blur(4px);
+        pointer-events: auto;
+        z-index: 2;
       }
-    }
-    @media (max-width: 400px) {
-      .search-switch {
-        width: 120px;
-        font-size: 0.8rem;
+      
+      .like-btn {
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 1.3rem;
+        padding: 0.3rem 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.3rem;
+        transition: transform 0.2s;
       }
+      
+      .like-btn span {
+        transition: color 0.3s;
+        color: var(--text-main);
+      }
+      
+      .like-btn:hover {
+        transform: scale(1.1);
+      }
+      
+      .like-btn .heart-emoji {
+        color: inherit;
+      }
+      
+      .like-count {
+        font-size: 1rem;
+        color: var(--primary);
+        min-width: 1.5rem;
+        text-align: center;
+      }
+      
       .deck-title {
+        color: var(--primary);
+        font-size: 1.5rem;
+        letter-spacing: 0.5px;
+        margin-bottom: 1rem;
+        font-weight: bold;
+        overflow-wrap: anywhere;
+      }
+      
+      .deck-description {
+        color: var(--text-main);
+        margin-bottom: 1rem;
+        line-height: 1.4;
+        font-size: 1.05rem;
+        min-height: 2.2em;
+        opacity: 0.95;
+      }
+      
+      .deck-info {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        color: var(--text-muted);
+        font-size: 0.95rem;
+        margin-top: 0.5rem;
+      }
+      
+      .deck-author {
+        color: var(--primary);
+        text-decoration: underline;
+        font-weight: 500;
+        transition: color var(--trans-speed);
+      }
+      
+      .deck-author:hover,
+      .deck-author:focus {
+        color: var(--primary-hover);
+        outline: none;
+      }
+      
+      .no-decks {
+        text-align: center;
+        color: var(--text-muted);
+        font-size: 1.2rem;
+        margin-top: 2rem;
+        letter-spacing: 0.5px;
+      }
+      
+      .dropdown {
+        position: relative;
+        display: inline-block;
+      }
+      
+      .dropdown-toggle {
+        background: var(--primary);
+        color: var(--text-inverse);
+        border: none;
+        padding: 0.7rem 1.2rem;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 1rem;
+        transition: background var(--trans-speed);
+        font-weight: 600;
+      }
+      
+      .dropdown-toggle:focus,
+      .dropdown-toggle:hover {
+        background: var(--primary-hover);
+        outline: none;
+      }
+      
+      .dropdown-menu {
+        display: none;
+        position: absolute;
+        right: 0;
+        background: var(--bg-card);
+        /* was #fff */
+        min-width: 180px;
+        box-shadow: 0 2px 10px rgba(var(--primary-rgb), 0.10);
+        border: 1px solid var(--primary);
+        border-radius: 8px;
+        z-index: 100;
+        margin-top: 0.5rem;
+      }
+      
+      .dropdown.open .dropdown-menu {
+        display: block;
+      }
+      
+      .add-deck-btn {
+        position: fixed;
+        bottom: 2rem;
+        right: 2rem;
+        background: linear-gradient(135deg, var(--primary), var(--primary-hover));
+        color: var(--text-inverse);
+        border: none;
+        border-radius: 50%;
+        width: 60px;
+        height: 60px;
+        font-size: 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        box-shadow: 0 4px 15px rgba(var(--primary-rgb), 0.18);
+        transition: background var(--trans-speed), box-shadow var(--trans-speed), transform var(--trans-speed);
+        z-index: 100;
+        text-decoration: none;
+      }
+      
+      .add-deck-btn:focus,
+      .add-deck-btn:hover {
+        background: linear-gradient(135deg, var(--primary-hover), var(--primary));
+        box-shadow: 0 6px 24px rgba(var(--primary-rgb), 0.25);
+        transform: scale(1.08);
+        outline: none;
+      }
+      
+      .add-deck-btn span {
+        margin-top: -2px;
+      }
+      
+      #decksListContainer table {
+        width: 100%;
+        max-width: 1200px;
+        margin: 0 auto;
+        border-collapse: collapse;
+        background: var(--bg-card);
+        border-radius: 10px;
+        overflow: hidden;
+        font-size: 1.05rem;
+        box-shadow: 0 2px 10px rgba(var(--primary-rgb), 0.10);
+      }
+      
+      #decksListContainer th,
+      #decksListContainer td {
+        padding: 14px 10px;
+        border-bottom: 1px solid var(--primary);
+        text-align: left;
+      }
+      
+      #decksListContainer th {
+        background: var(--primary-light);
+        color: var(--primary);
         font-size: 1.1rem;
+        font-weight: bold;
+        cursor: pointer;
+        user-select: none;
+        transition: background var(--trans-speed);
       }
-    }
+      
+      #decksListContainer th:focus,
+      #decksListContainer th:hover {
+        filter: brightness(0.95);
+        outline: none;
+      }
+      
+      #decksListContainer th .sort-arrow {
+        margin-left: 4px;
+        font-size: 0.95em;
+      }
+      
+      #decksListContainer tr:hover {
+        background: var(--primary-light);
+      }
+      
+      #decksListContainer a.deck-author {
+        color: var(--primary);
+        text-decoration: underline;
+        font-weight: 500;
+        transition: color var(--trans-speed);
+      }
+      
+      #decksListContainer a.deck-author:hover,
+      #decksListContainer a.deck-author:focus {
+        color: var(--primary-hover);
+        outline: none;
+      }
+      
+      #toggleViewBtn {
+        display: none;
+      }
+      
+      .home-layout {
+        display: flex;
+        flex-direction: row;
+        gap: 2.5rem;
+        max-width: 1500px;
+        margin: 0 auto;
+        width: 100%;
+      }
+      
+      .sidebar {
+        flex: 0 0 340px;
+        min-width: 260px;
+        max-width: 380px;
+        display: flex;
+        flex-direction: column;
+        gap: 2.5rem;
+      }
+      
+      .main-section {
+        flex: 1 1 0;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 2.5rem;
+      }
+      
+      .top-creators-section {
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+      }
+      
+      .top-creators-title {
+        color: var(--primary);
+        font-size: 1.3rem;
+        margin-bottom: 1rem;
+        text-align: left;
+        font-weight: bold;
+        letter-spacing: 0.5px;
+      }
+      
+      .top-creators-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0.7rem;
+      }
+      
+      .creator-item {
+        background: var(--bg-creator-item);
+        border-radius: 8px;
+        padding: 0.8rem 1rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        border: 1px solid var(--border-color);
+        cursor: pointer;
+        transition: background var(--trans-speed);
+        position: relative;
+      }
+      
+      .creator-item:hover {
+        background: var(--primary-light);
+      }
+      
+      .creator-info {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 0.2rem;
+      }
+      
+      .creator-username {
+        color: var(--primary);
+        font-weight: 600;
+        font-size: 1.08rem;
+        text-decoration: none;
+        transition: color var(--trans-speed);
+      }
+      
+      .creator-username:hover,
+      .creator-username:focus {
+        color: var(--primary-hover);
+        outline: none;
+      }
+      
+      .creator-stat {
+        color: var(--primary);
+        font-weight: bold;
+        font-size: 0.97rem;
+      }
+      
+      .top-liked-title {
+        color: var(--primary);
+        font-size: 1.8rem;
+        margin-bottom: 1.5rem;
+        text-align: left;
+        font-weight: bold;
+      }
+      
+      .top-liked-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 1.5rem;
+      }
+      
+      /* Media Queries */
+      
+      @media (max-width: 1100px) {
+        .home-layout {
+          flex-direction: column;
+          gap: 1.5rem;
+        }
+      
+        .sidebar {
+          flex-direction: row;
+          gap: 1.5rem;
+          max-width: 100%;
+          width: 100%;
+        }
+      
+        .main-section {
+          gap: 1.5rem;
+        }
+      }
+      
+      @media (max-width: 900px) {
+        .sidebar {
+          flex-direction: column;
+          gap: 1.2rem;
+          min-width: 0;
+          max-width: 100%;
+        }
+      
+        .main-section {
+          gap: 1.2rem;
+        }
+      
+        .top-liked-grid {
+          grid-template-columns: 1fr;
+          gap: 1rem;
+        }
+      }
+      
+      @media (max-width: 600px) {
+        .home-layout {
+          flex-direction: column;
+          gap: 0.7rem;
+        }
+      
+        .sidebar {
+          flex-direction: column;
+          gap: 0.7rem;
+          min-width: 0;
+          max-width: 100%;
+        }
+      
+        .main-section {
+          gap: 0.7rem;
+        }
+      
+        .top-liked-title {
+          font-size: 1.2rem;
+          margin-bottom: 0.7rem;
+        }
+      }
+      
+      @media (max-width: 900px) {
+        .main-content {
+          padding: 1rem;
+        }
+      
+        .search-container {
+          max-width: 100%;
+        }
+      
+        .decks-grid {
+          gap: 1rem;
+        }
+      
+        #decksListContainer table {
+          font-size: 0.98rem;
+        }
+      }
+      
+      @media (max-width: 600px) {
+        .main-content {
+          margin-top: 80px;
+          padding: 0.5rem;
+        }
+      
+        .search-container {
+          gap: 0.5rem;
+        }
+      
+        .search-switch {
+          width: 180px;
+          font-size: 0.9rem;
+          min-width: 0;
+        }
+      
+        .search-input {
+          font-size: 1rem;
+          padding: 10px 12px;
+        }
+      
+        .decks-grid {
+          grid-template-columns: 1fr;
+          gap: 0.7rem;
+        }
+      
+        .deck-card {
+          padding: 1rem;
+          font-size: 0.98rem;
+        }
+      
+        #decksListContainer th,
+        #decksListContainer td {
+          padding: 8px 5px;
+        }
+      
+        #toggleViewBtn {
+          padding: 0.5rem 0.8rem;
+          font-size: 1rem;
+        }
+      
+        .add-deck-btn {
+          width: 48px;
+          height: 48px;
+          font-size: 1.5rem;
+          bottom: 1rem;
+          right: 1rem;
+        }
+      }
+      
+      @media (max-width: 400px) {
+        .search-switch {
+          width: 120px;
+          font-size: 0.8rem;
+        }
+      
+        .deck-title {
+          font-size: 1.1rem;
+        }
+      }
+      
+      .top-section {
+        margin-bottom: 3rem;
+        background: var(--bg-top-section);
+        border-radius: 12px;
+        padding: 2rem;
+        border: 1px solid var(--border-color);
+      }
+      
+      .section-title {
+        color: var(--primary);
+        font-size: 1.8rem;
+        margin-bottom: 1.5rem;
+        text-align: center;
+      }
+      
+      .top-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 1.5rem;
+      }
+      
+      .top-item {
+        background: var(--bg-creator-item);
+        padding: 1rem;
+        border-radius: 8px;
+        border: 1px solid var(--border-color);
+        transition: transform 0.2s;
+        position: relative;
+        overflow: visible;
+        z-index: 1;
+      }
+      
+      .top-item:hover {
+        transform: translateY(-2px);
+      }
+    </style>
+  </head>
+  <body>
+    @include('components/header')
 
-    .top-section {
-      margin-bottom: 3rem;
-      background: var(--bg-top-section);
-      border-radius: 12px;
-      padding: 2rem;
-      border: 1px solid var(--border-color);
-    }
-
-    .section-title {
-      color: var(--primary);
-      font-size: 1.8rem;
-      margin-bottom: 1.5rem;
-      text-align: center;
-    }
-
-    .top-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-      gap: 1.5rem;
-    }
-
-    .top-item {
-      background: var(--bg-creator-item);
-      padding: 1rem;
-      border-radius: 8px;
-      border: 1px solid var(--border-color);
-      transition: transform 0.2s;
-      position: relative;
-      overflow: visible;
-      z-index: 1;
-    }
-
-    .top-item:hover {
-      transform: translateY(-2px);
-    }
-  </style>
-</head>
-<body>
-  @include('components/header')
-
-  <div class="main-content" style="margin-top: 60px;">
-    <div class="home-layout">
-      <!-- Sidebar: Top Créateurs -->
-      <aside class="sidebar">
-        <div class="top-section top-creators-section">
-          <div>
-            <div class="top-creators-title">Top créateurs (abonnés)</div>
-            <div class="top-creators-list">
-              @each(creator in topCreatorsByFollowers)
-                <div class="creator-item" onclick="window.location.href='/public-account/{{ creator.id }}'" title="Voir le profil de {{ creator.username }}">
-                  <!-- Avatar supprimé -->
-                  <div class="creator-info">
-                    <a href="/public-account/{{ creator.id }}" class="creator-username" onclick="event.stopPropagation();">{{ creator.username }}</a>
-                    <div class="creator-stat" title="Nombre total d'abonnés">👥 {{ creator.$extras.followers_count }} abonnés</div>
-                  </div>
-                </div>
-              @end
-            </div>
-          </div>
-          <div>
-            <div class="top-creators-title">Top créateurs (decks)</div>
-            <div class="top-creators-list">
-              @each(creator in topCreatorsByDecks)
-                <div class="creator-item" onclick="window.location.href='/public-account/{{ creator.id }}'" title="Voir le profil de {{ creator.username }}">
-                  <!-- Avatar supprimé -->
-                  <div class="creator-info">
-                    <a href="/public-account/{{ creator.id }}" class="creator-username" onclick="event.stopPropagation();">{{ creator.username }}</a>
-                    <div class="creator-stat" title="Nombre total de decks publics">📚 {{ creator.$extras.decks_count }} decks</div>
-                  </div>
-                </div>
-              @end
-            </div>
-          </div>
-        </div>
-      </aside>
-
-      <!-- Main: Decks les plus likés -->
-      <main class="main-section">
-        <!-- Deck du jour -->
-        @if(deckOfTheDay)
-          <div class="top-section">
-            <h2 class="top-liked-title">Deck du jour</h2>
-            <div class="deck-of-the-day">
-              <div class="top-item" onclick="window.location.href='/deck/{{ deckOfTheDay.id }}'">
-                <div class="deck-title">{{ deckOfTheDay.title }}</div>
-                <div class="deck-description">{{ deckOfTheDay.description }}</div>
-                <div class="deck-info">
-                  <a href="/public-account/{{ deckOfTheDay.user.id }}" class="deck-author" onclick="event.stopPropagation();">{{ deckOfTheDay.user.username }}</a>
-                </div>
-                <div class="like-container" onclick="event.stopPropagation();">
-                  <button 
-                    class="like-btn {{ deckOfTheDay.likes?.some(like => like.user_id === user?.id) ? 'liked' : '' }}" 
-                    style="font-size:1.3rem; border:none; background:none; cursor:pointer;"
-                    onclick="toggleLike({{ deckOfTheDay.id }}, this, 'daily')"
-                    title="{{ deckOfTheDay.likes?.some(like => like.user_id === user?.id) ? 'Retirer le like' : 'Liker ce deck' }}"
+    <div class="main-content" style="margin-top: 60px;">
+      <div class="home-layout">
+        <!-- Sidebar: Top Créateurs -->
+        <aside class="sidebar">
+          <div class="top-section top-creators-section">
+            <div>
+              <div class="top-creators-title">
+                Top créateurs (abonnés)
+              </div>
+              <div class="top-creators-list">
+                @each(creator in topCreatorsByFollowers)
+                  <div
+                    class="creator-item"
+                    onclick="window.location.href='/public-account/{{ creator.id }}'"
+                    title="Voir le profil de {{ creator.username }}"
                   >
-                    <span class="heart-emoji">{{ deckOfTheDay.likes?.some(like => like.user_id === user?.id) ? '❤️' : '🤍' }}</span>
-                    <span class="like-count">{{ deckOfTheDay.likes?.length }}</span>
-                  </button>
-                </div>
+                    <!-- Avatar supprimé -->
+                    <div class="creator-info">
+                      <a
+                        href="/public-account/{{ creator.id }}"
+                        class="creator-username"
+                        onclick="event.stopPropagation();"
+                      >{{ creator.username }}</a>
+                      <div class="creator-stat" title="Nombre total d'abonnés">
+                        👥 {{ creator.$extras.followers_count }} abonnés
+                      </div>
+                    </div>
+                  </div>
+                @end
+              </div>
+            </div>
+            <div>
+              <div class="top-creators-title">
+                Top créateurs (decks)
+              </div>
+              <div class="top-creators-list">
+                @each(creator in topCreatorsByDecks)
+                  <div
+                    class="creator-item"
+                    onclick="window.location.href='/public-account/{{ creator.id }}'"
+                    title="Voir le profil de {{ creator.username }}"
+                  >
+                    <!-- Avatar supprimé -->
+                    <div class="creator-info">
+                      <a
+                        href="/public-account/{{ creator.id }}"
+                        class="creator-username"
+                        onclick="event.stopPropagation();"
+                      >{{ creator.username }}</a>
+                      <div class="creator-stat" title="Nombre total de decks publics">
+                        📚 {{ creator.$extras.decks_count }} decks
+                      </div>
+                    </div>
+                  </div>
+                @end
               </div>
             </div>
           </div>
-        @end
+        </aside>
 
-        <div class="top-section">
-          <h2 class="top-liked-title">Decks les plus likés</h2>
-          <div class="top-liked-grid">
-            @each(deck in topLikedDecks)
-              <div class="top-item" onclick="window.location.href='/deck/{{ deck.id }}'">
-                <div class="deck-title">{{ deck.title }}</div>
-                <div class="deck-info">
-                  <a href="/public-account/{{ deck.user.id }}" class="deck-author" onclick="event.stopPropagation();">{{ deck.user.username }}</a>
-                </div>
-                <div class="like-container" onclick="event.stopPropagation();">
-                  <button 
-                    class="like-btn {{ deck.likes?.some(like => like.user_id === user?.id) ? 'liked' : '' }}" 
-                    style="font-size:1.3rem; border:none; background:none; cursor:pointer;"
-                    onclick="toggleLike({{ deck.id }}, this, 'top')"
-                    title="{{ deck.likes?.some(like => like.user_id === user?.id) ? 'Retirer le like' : 'Liker ce deck' }}"
+        <!-- Main: Decks les plus likés -->
+        <main class="main-section">
+          <!-- Deck du jour -->
+          @if(deckOfTheDay)
+            <div class="top-section">
+              <h2 class="top-liked-title">
+                Deck du jour
+              </h2>
+              <div class="deck-of-the-day">
+                <div class="top-item" onclick="window.location.href='/deck/{{ deckOfTheDay.id }}'">
+                  <div class="deck-title">
+                    {{ deckOfTheDay.title }}
+                  </div>
+                  <div class="deck-description">
+                    {{ deckOfTheDay.description }}
+                  </div>
+                  <div class="deck-info">
+                    <a
+                      href="/public-account/{{ deckOfTheDay.user.id }}"
+                      class="deck-author"
+                      onclick="event.stopPropagation();"
+                    >{{ deckOfTheDay.user.username }}</a>
+                  </div>
+                  <div class="like-container" onclick="event.stopPropagation();">
+                    <button
+                      class="like-btn {{ deckOfTheDay.likes?.some(like => like.user_id === user?.id) ? 'liked' : '' }}"
+                      style="font-size:1.3rem; border:none; background:none; cursor:pointer;"
+                      onclick="toggleLike({{ deckOfTheDay.id }}, this, 'daily')"
+                      title="{{ deckOfTheDay.likes?.some(like => like.user_id === user?.id) ? 'Retirer le like' : 'Liker ce deck' }}"
                     >
-                    <span class="heart-emoji">{{ deck.likes?.some(like => like.user_id === user?.id) ? '❤️' : '🤍' }}</span>
-                    <span class="like-count">{{ deck.$extras.likes_count }}</span>
-                  </button>
+                      <span class="heart-emoji">{{ deckOfTheDay.likes?.some(like => like.user_id === user?.id) ? '❤️' : '🤍' }}</span>
+                      <span class="like-count">{{ deckOfTheDay.likes?.length }}</span>
+                    </button>
+                  </div>
                 </div>
               </div>
-            @end
+            </div>
+          @end
+          
+          <div class="top-section">
+            <h2 class="top-liked-title">
+              Decks les plus likés
+            </h2>
+            <div class="top-liked-grid">
+              @each(deck in topLikedDecks)
+                <div class="top-item" onclick="window.location.href='/deck/{{ deck.id }}'">
+                  <div class="deck-title">
+                    {{ deck.title }}
+                  </div>
+                  <div class="deck-info">
+                    <a href="/public-account/{{ deck.user.id }}" class="deck-author" onclick="event.stopPropagation();">{{ deck.user.username }}</a>
+                  </div>
+                  <div class="like-container" onclick="event.stopPropagation();">
+                    <button
+                      class="like-btn {{ deck.likes?.some(like => like.user_id === user?.id) ? 'liked' : '' }}"
+                      style="font-size:1.3rem; border:none; background:none; cursor:pointer;"
+                      onclick="toggleLike({{ deck.id }}, this, 'top')"
+                      title="{{ deck.likes?.some(like => like.user_id === user?.id) ? 'Retirer le like' : 'Liker ce deck' }}"
+                    >
+                      <span class="heart-emoji">{{ deck.likes?.some(like => like.user_id === user?.id) ? '❤️' : '🤍' }}</span>
+                      <span class="like-count">{{ deck.$extras.likes_count }}</span>
+                    </button>
+                  </div>
+                </div>
+              @end
+            </div>
           </div>
-        </div>
-      </main>
+        </main>
+      </div>
     </div>
-  </div>
 
-  <!-- Campo CSRF escondido para uso no JS -->
-  <input type="hidden" id="csrfToken" value="{{ csrfField() | safe }}" style="display:none;" />
+    <!-- Campo CSRF escondido para uso no JS -->
+    <input type="hidden" id="csrfToken" value="{{ csrfField() | safe }}" style="display:none;" />
 
-  <a href="{{ route('decks.create') }}" class="add-deck-btn" title="Créer un nouveau deck">
-    <span>+</span>
-  </a>
+    <a href="{{ route('decks.create') }}" class="add-deck-btn" title="Créer un nouveau deck">
+      <span>+</span>
+    </a>
 
-  <script>
-    async function toggleLike(deckId, button, context) {
-      try {
-        const isLiked = button.classList.contains('liked');
-        const endpoint = `/api/decks/${deckId}/${isLiked ? 'unlike' : 'like'}`;
-        // Extrai o token CSRF do campo hidden
-        let csrfTokenInput = document.querySelector('input[name="_csrf"]');
-        if (!csrfTokenInput) {
-          // fallback para o campo escondido criado acima
-          const temp = document.getElementById('csrfToken');
-          if (temp) {
-            // O csrfField() retorna um input, precisamos extrair o valor do atributo value
-            // Exemplo: <input type="hidden" name="_csrf" value="TOKEN">
-            const match = temp.outerHTML.match(/value="([^"]+)"/);
-            if (match) csrfTokenInput = { value: match[1] };
+    <script>
+      async function toggleLike(deckId, button, context) {
+        try {
+          const isLiked = button.classList.contains("liked");
+          const endpoint = `/api/decks/${deckId}/${isLiked ? "unlike" : "like"}`;
+          // Extrai o token CSRF do campo hidden
+          let csrfTokenInput = document.querySelector('input[name="_csrf"]');
+          if (!csrfTokenInput) {
+            // fallback para o campo escondido criado acima
+            const temp = document.getElementById("csrfToken");
+            if (temp) {
+              // O csrfField() retorna um input, precisamos extrair o valor do atributo value
+              // Exemplo: <input type="hidden" name="_csrf" value="TOKEN">
+              const match = temp.outerHTML.match(/value="([^"]+)"/);
+              if (match) csrfTokenInput = {
+                value: match[1]
+              };
+            }
           }
-        }
-        const csrfToken = csrfTokenInput ? csrfTokenInput.value : '';
-
-        const response = await fetch(endpoint, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-Token': csrfToken
+          const csrfToken = csrfTokenInput ? csrfTokenInput.value : "";
+          const response = await fetch(endpoint, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "X-CSRF-Token": csrfToken
+            }
+          });
+          if (response.ok) {
+            const data = await response.json();
+            button.classList.toggle("liked");
+            // Atualiza o emoji do coração
+            const heartEmoji = button.querySelector(".heart-emoji");
+            heartEmoji.textContent = button.classList.contains("liked") ? "❤️" : "🤍";
+            // Atualiza o contador
+            const countElement = button.querySelector(".like-count");
+            countElement.textContent = data.likesCount;
           }
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-          button.classList.toggle('liked');
-          // Atualiza o emoji do coração
-          const heartEmoji = button.querySelector('.heart-emoji');
-          heartEmoji.textContent = button.classList.contains('liked') ? '❤️' : '🤍';
-          // Atualiza o contador
-          const countElement = button.querySelector('.like-count');
-          countElement.textContent = data.likesCount;
+        } catch (error) {
+          console.error("Erreur lors du like:", error);
         }
-      } catch (error) {
-        console.error('Erreur lors du like:', error);
       }
-    }
-  </script>
+    </script>
 
-</body>
+  </body>
 </html>

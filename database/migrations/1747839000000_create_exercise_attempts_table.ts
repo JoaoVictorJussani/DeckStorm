@@ -1,22 +1,22 @@
 import { BaseSchema } from '@adonisjs/lucid/schema'
 
 export default class extends BaseSchema {
-    protected tableName = 'exercise_attempts'
+  protected tableName = 'exercise_attempts'
 
-    async up() {
-        this.schema.createTableIfNotExists(this.tableName, (table) => {
-            table.increments('id')
-            table.integer('user_id').unsigned().references('id').inTable('t_user').onDelete('CASCADE')
-            table.integer('deck_id').unsigned().references('id').inTable('t_deck').onDelete('CASCADE')
-            table.integer('card_id').unsigned().references('id').inTable('t_card').onDelete('CASCADE')
-            table.boolean('is_correct').notNullable()
+  async up() {
+    this.schema.createTableIfNotExists(this.tableName, (table) => {
+      table.increments('id')
+      table.integer('user_id').unsigned().references('id').inTable('t_user').onDelete('CASCADE')
+      table.integer('deck_id').unsigned().references('id').inTable('t_deck').onDelete('CASCADE')
+      table.integer('card_id').unsigned().references('id').inTable('t_card').onDelete('CASCADE')
+      table.boolean('is_correct').notNullable()
 
-            table.timestamp('created_at')
-            table.timestamp('updated_at')
-        })
-    }
+      table.timestamp('created_at')
+      table.timestamp('updated_at')
+    })
+  }
 
-    async down() {
-        this.schema.dropTable(this.tableName)
-    }
+  async down() {
+    this.schema.dropTable(this.tableName)
+  }
 }

@@ -49,12 +49,15 @@ export default class HttpExceptionHandler extends ExceptionHandler {
 
     if ((error as any).code === 'E_AUTHORIZATION_FAILURE' || (error as any).status === 403) {
       const user = ctx.auth?.user
-      logger.warn({
-        user_id: user?.id || 'guest',
-        ip: ctx.request.ip(),
-        url: ctx.request.url(),
-        method: ctx.request.method()
-      }, 'Unauthorized access attempt (403)')
+      logger.warn(
+        {
+          user_id: user?.id || 'guest',
+          ip: ctx.request.ip(),
+          url: ctx.request.url(),
+          method: ctx.request.method(),
+        },
+        'Unauthorized access attempt (403)'
+      )
 
       const html = await ctx.view.render('pages/errors/forbidden')
       return ctx.response.status(403).send(html)

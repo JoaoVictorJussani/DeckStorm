@@ -1,390 +1,451 @@
 <!DOCTYPE html>
 <html lang="fr">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Résultats - DeckStorm</title>
-  <link rel="shortcut icon" href="/images/icone.ico" type="image/x-icon">
-  <script>
-    (function() {
-      let theme = localStorage.getItem('theme');
-      if (!theme) theme = 'theme-light';
-      document.documentElement.className = theme;
-      document.addEventListener('DOMContentLoaded', function() {
-        document.body.className = theme;
-      });
-    })();
-  </script>
-  <style>
-    :root {
-      /* Palette Clean (Slate/Zinc) */
-      --primary: #3b82f6; 
-      --primary-dark: #2563eb;
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      Résultats - DeckStorm
+    </title>
+    <link rel="shortcut icon" href="/images/icone.ico" type="image/x-icon" />
+    <script>
+      (function() {
+        let theme = localStorage.getItem("theme");
+        if (!theme) theme = "theme-light";
+        document.documentElement.className = theme;
+        document.addEventListener("DOMContentLoaded", function() {
+          document.body.className = theme;
+        });
+      })();
+    </script>
+    <style>
+      :root {
+        /* Palette Clean (Slate/Zinc) */
+        --primary: #3b82f6;
+        --primary-dark: #2563eb;
+        --bg-body: #f8fafc;
+        --bg-card: #ffffff;
+        --text-main: #0f172a;
+        --text-muted: #64748b;
+        --border: #e2e8f0;
+        --success: #22c55e;
+        --danger: #ef4444;
+        --warning: #f59e0b;
+      }
       
-      --bg-body: #f8fafc;
-      --bg-card: #ffffff;
+      .theme-dark {
+        --primary: #60a5fa;
+        --primary-dark: #3b82f6;
+        --bg-body: #0f172a;
+        --bg-card: #1e293b;
+        --text-main: #f8fafc;
+        --text-muted: #94a3b8;
+        --border: #334155;
+      }
       
-      --text-main: #0f172a;
-      --text-muted: #64748b;
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
       
-      --border: #e2e8f0;
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        background-color: var(--bg-body);
+        color: var(--text-main);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-height: 100vh;
+        padding: 2rem 1rem;
+      }
       
-      --success: #22c55e;
-      --danger: #ef4444;
-      --warning: #f59e0b;
-    }
-
-    .theme-dark {
-      --primary: #60a5fa;
-      --primary-dark: #3b82f6;
+      .container {
+        width: 100%;
+        max-width: 1000px;
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+        margin-top: 4rem;
+      }
       
-      --bg-body: #0f172a;
-      --bg-card: #1e293b;
+      /* Top Summary Section */
       
-      --text-main: #f8fafc;
-      --text-muted: #94a3b8;
+      .summary-grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 1.5rem;
+      }
       
-      --border: #334155;
-    }
+      @media (max-width: 768px) {
+        .summary-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+      
+      .card {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 2rem;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+      }
+      
+      .info-card {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+      }
+      
+      .deck-label {
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        font-size: 0.85rem;
+        color: var(--text-muted);
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+      }
+      
+      h1 {
+        font-size: 1.8rem;
+        margin-bottom: 2rem;
+      }
+      
+      /* Circular Progress */
+      
+      .progress-circle {
+        position: relative;
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        background: conic-gradient(var(--primary) var(--progress), transparent 0);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 1.5rem;
+      }
+      
+      .progress-circle::before {
+        content: "";
+        position: absolute;
+        width: 130px;
+        height: 130px;
+        border-radius: 50%;
+        background: var(--bg-card);
+      }
+      
+      .progress-circle.bg-track {
+        /* Fallback background ring */
+        background: conic-gradient(var(--primary) var(--progress), var(--border) 0);
+      }
+      
+      .score-text {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      
+      .score-percent {
+        font-size: 2.5rem;
+        font-weight: 800;
+        line-height: 1;
+      }
+      
+      .score-label {
+        font-size: 0.85rem;
+        color: var(--text-muted);
+        margin-top: 5px;
+      }
+      
+      /* Stat Badges */
+      
+      .stat-row {
+        display: flex;
+        gap: 2rem;
+        width: 100%;
+        justify-content: center;
+        margin-top: 1rem;
+        border-top: 1px solid var(--border);
+        padding-top: 1.5rem;
+      }
+      
+      .mini-stat {
+        text-align: center;
+      }
+      
+      .mini-stat-val {
+        font-size: 1.25rem;
+        font-weight: 700;
+      }
+      
+      .mini-stat-label {
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        color: var(--text-muted);
+      }
+      
+      /* Actions Panel */
+      
+      .actions-panel {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        height: 100%;
+        justify-content: center;
+      }
+      
+      .btn {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 1rem;
+        border-radius: 8px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.2s;
+        border: 1px solid var(--border);
+        background: var(--bg-card);
+        color: var(--text-main);
+        cursor: pointer;
+      }
+      
+      .btn-primary {
+        background: var(--primary);
+        color: white;
+        border-color: var(--primary);
+      }
+      
+      .btn-primary:hover {
+        background: var(--primary-dark);
+      }
+      
+      .btn-outline:hover {
+        background: rgba(0,0,0,0.02);
+        border-color: var(--text-muted);
+      }
+      
+      .theme-dark .btn-outline:hover {
+        background: rgba(255,255,255,0.05);
+      }
+      
+      /* Detailed List */
+      
+      .details-card {
+        padding: 0;
+        overflow: hidden;
+      }
+      
+      .details-header {
+        padding: 1.5rem 2rem;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      
+      .details-header h2 {
+        font-size: 1.2rem;
+        margin: 0;
+      }
+      
+      .questions-list {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      
+      .questions-list th {
+        text-align: left;
+        padding: 1rem 2rem;
+        background: rgba(0,0,0,0.02);
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        color: var(--text-muted);
+        border-bottom: 1px solid var(--border);
+      }
+      
+      .questions-list td {
+        padding: 1.2rem 2rem;
+        border-bottom: 1px solid var(--border);
+      }
+      
+      .questions-list tr:last-child td {
+        border-bottom: none;
+      }
+      
+      .status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        padding: 0.4rem 0.8rem;
+        border-radius: 99px;
+        font-size: 0.85rem;
+        font-weight: 600;
+      }
+      
+      .status-correct {
+        background: rgba(34, 197, 94, 0.1);
+        color: var(--success);
+      }
+      
+      .status-wrong {
+        background: rgba(239, 68, 68, 0.1);
+        color: var(--danger);
+      }
+    </style>
+  </head>
+  <body>
+    @include('components/header')
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    <div class="container">
 
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      background-color: var(--bg-body);
-      color: var(--text-main);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      min-height: 100vh;
-      padding: 2rem 1rem;
-    }
+      <div class="summary-grid">
+        <!-- Main Score Card -->
+        <div class="card info-card">
+          <div class="deck-label">
+            {{ deck.title }}
+          </div>
+          <h1>
+            @if(mode === 'jusquaubout' && incorrectCards.length > 0)
+              Session Incomplète
+            @else
+              Session Terminée
+            @endif
+          </h1>
 
-    .container {
-      width: 100%;
-      max-width: 1000px;
-      display: flex;
-      flex-direction: column;
-      gap: 1.5rem;
-      margin-top: 4rem;
-    }
+          <!-- Calc Percentage -->
+          @let(total = deck.cards ? deck.cards.length : 0)
+          @let(score = results ? results.length : 0)
+          @let(percent = total > 0 ? Math.round((score / total) * 100) : 0)
 
-    /* Top Summary Section */
-    .summary-grid {
-      display: grid;
-      grid-template-columns: 2fr 1fr;
-      gap: 1.5rem;
-    }
+          <div class="progress-circle bg-track" style="--progress: {{ percent }}deg">
+            <div class="score-text">
+              <span class="score-percent">{{ percent }}%</span>
+              <span class="score-label">Réussite</span>
+            </div>
+          </div>
 
-    @media (max-width: 768px) {
-      .summary-grid { grid-template-columns: 1fr; }
-    }
+          <div class="stat-row">
+            <div class="mini-stat">
+              <div class="mini-stat-val" style="color: var(--success)">
+                {{ score }}
+              </div>
+              <div class="mini-stat-label">
+                Correctes
+              </div>
+            </div>
+            <div class="mini-stat">
+              <div class="mini-stat-val" style="color: var(--danger)">
+                {{ incorrectCards.length }}
+              </div>
+              <div class="mini-stat-label">
+                Erreurs
+              </div>
+            </div>
+            @if(mode === 'chronometre')
+              <div class="mini-stat">
+                <div class="mini-stat-val">
+                  {{ (elapsedTime / 60) | 0 }}m{{ elapsedTime % 60 }}
+                </div>
+                <div class="mini-stat-label">
+                  Temps
+                </div>
+              </div>
+            @endif
+          </div>
+        </div>
 
-    .card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 2rem;
-      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-    }
-
-    .info-card {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-    }
-
-    .deck-label {
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      font-size: 0.85rem;
-      color: var(--text-muted);
-      font-weight: 600;
-      margin-bottom: 0.5rem;
-    }
-
-    h1 {
-      font-size: 1.8rem;
-      margin-bottom: 2rem;
-    }
-
-    /* Circular Progress */
-    .progress-circle {
-      position: relative;
-      width: 150px;
-      height: 150px;
-      border-radius: 50%;
-      background: conic-gradient(var(--primary) var(--progress), transparent 0);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 1.5rem;
-    }
-
-    .progress-circle::before {
-      content: "";
-      position: absolute;
-      width: 130px;
-      height: 130px;
-      border-radius: 50%;
-      background: var(--bg-card);
-    }
-    
-    .progress-circle.bg-track { /* Fallback background ring */
-      background: conic-gradient(var(--primary) var(--progress), var(--border) 0);
-    }
-
-    .score-text {
-      position: relative;
-      z-index: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-    
-    .score-percent {
-      font-size: 2.5rem;
-      font-weight: 800;
-      line-height: 1;
-    }
-    .score-label {
-      font-size: 0.85rem;
-      color: var(--text-muted);
-      margin-top: 5px;
-    }
-
-    /* Stat Badges */
-    .stat-row {
-      display: flex;
-      gap: 2rem;
-      width: 100%;
-      justify-content: center;
-      margin-top: 1rem;
-      border-top: 1px solid var(--border);
-      padding-top: 1.5rem;
-    }
-    
-    .mini-stat {
-      text-align: center;
-    }
-    .mini-stat-val {
-      font-size: 1.25rem;
-      font-weight: 700;
-    }
-    .mini-stat-label {
-      font-size: 0.75rem;
-      text-transform: uppercase;
-      color: var(--text-muted);
-    }
-
-    /* Actions Panel */
-    .actions-panel {
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-      height: 100%;
-      justify-content: center;
-    }
-
-    .btn {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 1rem;
-      border-radius: 8px;
-      font-weight: 600;
-      text-decoration: none;
-      transition: all 0.2s;
-      border: 1px solid var(--border);
-      background: var(--bg-card);
-      color: var(--text-main);
-      cursor: pointer;
-    }
-    
-    .btn-primary {
-      background: var(--primary);
-      color: white;
-      border-color: var(--primary);
-    }
-    .btn-primary:hover { background: var(--primary-dark); }
-    
-    .btn-outline:hover { background: rgba(0,0,0,0.02); border-color: var(--text-muted); }
-    .theme-dark .btn-outline:hover { background: rgba(255,255,255,0.05); }
-
-    /* Detailed List */
-    .details-card {
-      padding: 0;
-      overflow: hidden;
-    }
-    
-    .details-header {
-      padding: 1.5rem 2rem;
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .details-header h2 { font-size: 1.2rem; margin: 0; }
-
-    .questions-list {
-      width: 100%;
-      border-collapse: collapse;
-    }
-    
-    .questions-list th {
-      text-align: left;
-      padding: 1rem 2rem;
-      background: rgba(0,0,0,0.02);
-      font-size: 0.8rem;
-      text-transform: uppercase;
-      color: var(--text-muted);
-      border-bottom: 1px solid var(--border);
-    }
-    
-    .questions-list td {
-      padding: 1.2rem 2rem;
-      border-bottom: 1px solid var(--border);
-    }
-    
-    .questions-list tr:last-child td { border-bottom: none; }
-    
-    .status-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.4rem;
-      padding: 0.4rem 0.8rem;
-      border-radius: 99px;
-      font-size: 0.85rem;
-      font-weight: 600;
-    }
-    .status-correct { background: rgba(34, 197, 94, 0.1); color: var(--success); }
-    .status-wrong { background: rgba(239, 68, 68, 0.1); color: var(--danger); }
-
-  </style>
-</head>
-<body>
-  @include('components/header')
-
-  <div class="container">
-    
-    <div class="summary-grid">
-      <!-- Main Score Card -->
-      <div class="card info-card">
-        <div class="deck-label">{{ deck.title }}</div>
-        <h1>
-          @if(mode === 'jusquaubout' && incorrectCards.length > 0)
-            Session Incomplète
+        <!-- Side Actions -->
+        <div class="card actions-panel">
+          @if (mode === 'jusquaubout' && incorrectCards && incorrectCards.length)
+            <div
+              style="text-align:center; margin-bottom:1rem; padding:1rem; background:rgba(239, 68, 68, 0.1); border-radius:8px; color:var(--danger); font-weight:600;"
+            >
+              Il reste {{ incorrectCards.length }} cartes à revoir pour valider le deck.
+            </div>
+            <form
+              action="{{ route('exercise.presentQuestion', { deckId: deck.id, questionIndex: 0 }) }}"
+              method="GET"
+              style="width:100%;"
+            >
+              <input type="hidden" name="mode" value="jusquaubout" />
+              <input type="hidden" name="direction" value="{{ direction }}" />
+              @each(card in incorrectCards)
+                <input type="hidden" name="retryCardIds" value="{{ card.id }}" />
+              @endeach
+              <input type="hidden" name="startTime" value="{{ Date.now() }}" />
+              <input type="hidden" name="results" value="[]" />
+              <input type="hidden" name="attempts" value="{{ attempts || 1 }}" />
+              <button class="btn btn-primary" style="width:100%; margin-bottom:1rem;">⚡ Continuer la série</button>
+            </form>
+            <a href="{{ route('home') }}" class="btn btn-outline">Abandonner</a>
           @else
-            Session Terminée
-          @endif
-        </h1>
-
-        <!-- Calc Percentage -->
-        @let(total = deck.cards ? deck.cards.length : 0)
-        @let(score = results ? results.length : 0)
-        @let(percent = total > 0 ? Math.round((score / total) * 100) : 0)
-        
-        <div class="progress-circle bg-track" style="--progress: {{ percent }}deg">
-          <div class="score-text">
-            <span class="score-percent">{{ percent }}%</span>
-            <span class="score-label">Réussite</span>
-          </div>
-        </div>
-
-        <div class="stat-row">
-          <div class="mini-stat">
-            <div class="mini-stat-val" style="color: var(--success)">{{ score }}</div>
-            <div class="mini-stat-label">Correctes</div>
-          </div>
-          <div class="mini-stat">
-            <div class="mini-stat-val" style="color: var(--danger)">{{ incorrectCards.length }}</div>
-            <div class="mini-stat-label">Erreurs</div>
-          </div>
-          @if(mode === 'chronometre')
-          <div class="mini-stat">
-            <div class="mini-stat-val">{{ (elapsedTime / 60) | 0 }}m{{ elapsedTime % 60 }}</div>
-            <div class="mini-stat-label">Temps</div>
-          </div>
+            <div style="text-align:center; margin-bottom:1rem; color:var(--text-muted); font-size:0.9rem;">
+              Beau travail ! Vous avez terminé cette session. Que voulez-vous faire ensuite ?
+            </div>
+            <a href="{{ route('decks.show', { id: deck.id }) }}" class="btn btn-primary">Retour au Deck</a>
+            <a href="{{ route('home') }}" class="btn btn-outline" style="margin-top:10px;">Tableau de bord</a>
           @endif
         </div>
       </div>
 
-      <!-- Side Actions -->
-      <div class="card actions-panel">
-        @if (mode === 'jusquaubout' && incorrectCards && incorrectCards.length)
-             <div style="text-align:center; margin-bottom:1rem; padding:1rem; background:rgba(239, 68, 68, 0.1); border-radius:8px; color:var(--danger); font-weight:600;">
-               Il reste {{ incorrectCards.length }} cartes à revoir pour valider le deck.
-             </div>
-             <form action="{{ route('exercise.presentQuestion', { deckId: deck.id, questionIndex: 0 }) }}" method="GET" style="width:100%;">
-                <input type="hidden" name="mode" value="jusquaubout" />
-                <input type="hidden" name="direction" value="{{ direction }}" />
-                @each(card in incorrectCards)
-                  <input type="hidden" name="retryCardIds" value="{{ card.id }}" />
-                @endeach
-                <input type="hidden" name="startTime" value="{{ Date.now() }}" />
-                <input type="hidden" name="results" value="[]" />
-                <input type="hidden" name="attempts" value="{{ attempts || 1 }}" />
-                <button class="btn btn-primary" style="width:100%; margin-bottom:1rem;">⚡ Continuer la série</button>
-             </form>
-             <a href="{{ route('home') }}" class="btn btn-outline">Abandonner</a>
-        @else
-          <div style="text-align:center; margin-bottom:1rem; color:var(--text-muted); font-size:0.9rem;">
-            Beau travail ! Vous avez terminé cette session. Que voulez-vous faire ensuite ?
-          </div>
-          <a href="{{ route('decks.show', { id: deck.id }) }}" class="btn btn-primary">Retour au Deck</a>
-          <a href="{{ route('home') }}" class="btn btn-outline" style="margin-top:10px;">Tableau de bord</a>
-        @endif
-      </div>
-    </div>
-
-    <!-- Detailed List -->
-    <div class="card details-card">
-      <div class="details-header">
-        <h2>Détail de la session</h2>
-      </div>
-      <table class="questions-list">
-        <thead>
-          <tr>
-            <th>Question</th>
-            <th>Réponse</th>
-            <th>Statut</th>
-          </tr>
-        </thead>
-        <tbody>
-          <!-- We iterate over ALL cards passed to the view to show full history -->
-          @each(card in cards)
+      <!-- Detailed List -->
+      <div class="card details-card">
+        <div class="details-header">
+          <h2>
+            Détail de la session
+          </h2>
+        </div>
+        <table class="questions-list">
+          <thead>
             <tr>
-              <td style="font-weight:500;">{{ card.question }}</td>
-              <td style="color:var(--text-muted);">{{ card.answer }}</td>
-              <td>
-                <!-- Check if card ID is in results array (which contains correct IDs) -->
-                @if(results && results.includes(card.id))
-                  <span class="status-badge status-correct">Correct</span>
-                @else
-                  <span class="status-badge status-wrong">Incorrect</span>
-                @endif
-              </td>
+              <th>
+                Question
+              </th>
+              <th>
+                Réponse
+              </th>
+              <th>
+                Statut
+              </th>
             </tr>
-          @endeach
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            <!-- We iterate over ALL cards passed to the view to show full history -->
+            @each(card in cards)
+              <tr>
+                <td style="font-weight:500;">
+                  {{ card.question }}
+                </td>
+                <td style="color:var(--text-muted);">
+                  {{ card.answer }}
+                </td>
+                <td>
+                  <!-- Check if card ID is in results array (which contains correct IDs) -->
+                  @if(results && results.includes(card.id))
+                    <span class="status-badge status-correct">Correct</span>
+                  @else
+                    <span class="status-badge status-wrong">Incorrect</span>
+                  @endif
+                </td>
+              </tr>
+            @endeach
+          </tbody>
+        </table>
+      </div>
+
     </div>
 
-  </div>
-  
-  <script>
-    // Simple helper to set CSS variable for conic gradient percentage (0-100 mapped to degrees sort of, actually using deg directly in style)
-    // In CSS conic-gradient(red 80%, blue 0) means 80% red.
-    // The inline style uses degrees: 360 * percent / 100
-    // Fix: percent is 0-100.
-    const percent = {{ percent }};
-    document.querySelector('.progress-circle').style.setProperty('--progress', (percent * 3.6) + 'deg');
-  </script>
-</body>
+    <script>
+      // Simple helper to set CSS variable for conic gradient percentage (0-100 mapped to degrees sort of, actually using deg directly in style)
+      // In CSS conic-gradient(red 80%, blue 0) means 80% red.
+      // The inline style uses degrees: 360 * percent / 100
+      // Fix: percent is 0-100.
+      const percent = {{ percent }};
+      
+      document.querySelector(".progress-circle").style.setProperty("--progress", percent * 3.6 + "deg");
+    </script>
+  </body>
 </html>

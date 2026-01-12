@@ -1,509 +1,626 @@
 <!DOCTYPE html>
 <html lang="fr">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Question - DeckStorm</title>
-  <link rel="shortcut icon" href="/images/icone.ico" type="image/x-icon">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
-  <script>
-    (function() {
-      let theme = localStorage.getItem('theme');
-      if (!theme) theme = 'theme-light';
-      document.documentElement.className = theme;
-      // Sync to body once loaded for compatibility with header scripts
-      document.addEventListener('DOMContentLoaded', function() {
-        document.body.className = theme;
-      });
-    })();
-  </script>
-  <style>
-    :root {
-      --primary: #4f46e5;
-      --primary-hover: #4338ca;
-      --success: #10b981;
-      --danger: #ef4444;
-      --bg-gradient-light: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
-      --bg-gradient-dark: linear-gradient(135deg, #111827 0%, #1f2937 100%);
-      --card-bg-light: #ffffff;
-      --card-bg-dark: #1f2937;
-      --text-light: #1f2937;
-      --text-dark: #f3f4f6;
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      font-family: 'Outfit', sans-serif;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      transition: background 0.3s ease;
-      overflow-x: hidden;
-    }
-
-    /* Universal Theme Selectors (Works on HTML or BODY) */
-    .theme-light body, body.theme-light { background: var(--bg-gradient-light); color: var(--text-light); }
-    .theme-dark body, body.theme-dark { background: var(--bg-gradient-dark); color: var(--text-dark); }
-
-    /* Layout */
-    .top-bar {
-      width: 100%;
-      padding: 1.5rem 2rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      max-width: 1200px;
-    }
-
-    .progress-container {
-      flex: 1;
-      max-width: 300px;
-      margin: 0 2rem;
-    }
-
-    .progress-label {
-      text-align: center;
-      font-size: 0.9rem;
-      font-weight: 600;
-      margin-bottom: 0.5rem;
-      opacity: 0.8;
-      letter-spacing: 0.05em;
-    }
-
-    .progress-track {
-      height: 8px;
-      background: rgba(0,0,0,0.1);
-      border-radius: 4px;
-      overflow: hidden;
-    }
-    .theme-dark .progress-track { background: rgba(255,255,255,0.1); }
-
-    .progress-fill {
-      height: 100%;
-      background: var(--primary);
-      width: 0%; /* JS will set this */
-      transition: width 0.5s ease;
-    }
-
-    .timer-badge {
-      font-variant-numeric: tabular-nums;
-      font-weight: 600;
-      background: rgba(var(--primary), 0.1);
-      color: var(--primary);
-      padding: 0.5rem 1rem;
-      border-radius: 20px;
-      font-size: 0.9rem;
-    }
-
-    /* Main Content */
-    .study-container {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      width: 100%;
-      padding: 2rem;
-      perspective: 1500px; /* Depth for 3D flip */
-    }
-
-    /* Flashcard */
-    .card-scene {
-      width: 100%;
-      max-width: 700px;
-      aspect-ratio: 16/9;
-      position: relative;
-      cursor: pointer;
-    }
-
-    .card {
-      width: 100%;
-      height: 100%;
-      position: relative;
-      transform-style: preserve-3d;
-      transition: transform 0.6s cubic-bezier(0.4, 0.0, 0.2, 1);
-      border-radius: 24px;
-      box-shadow: 0 20px 50px rgba(0,0,0,0.1);
-    }
-    
-    .card.is-flipped {
-      transform: rotateY(180deg);
-    }
-
-    .card-face {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      backface-visibility: hidden;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      border-radius: 24px;
-      padding: 3rem;
-      text-align: center;
-      background: var(--card-bg-light);
-      border: 1px solid rgba(0,0,0,0.05);
-    }
-    
-    body.theme-dark .card-face {
-      background: var(--card-bg-dark);
-      border-color: rgba(255,255,255,0.05);
-      box-shadow: 0 20px 50px rgba(0,0,0,0.3);
-    }
-
-    .card-face.front {
-      /* Front specific styles */
-    }
-
-    .card-face.back {
-      transform: rotateY(180deg);
-      background: #f8fafc; /* Slightly different for back */
-    }
-    body.theme-dark .card-face.back { background: #1a202c; }
-
-    .card-label {
-      font-size: 0.85rem;
-      text-transform: uppercase;
-      letter-spacing: 0.15em;
-      color: #9ca3af;
-      margin-bottom: 1.5rem;
-      font-weight: 800;
-    }
-
-    .card-content {
-      font-size: 2rem;
-      font-weight: 600;
-      line-height: 1.4;
-      color: var(--text-light);
-    }
-    body.theme-dark .card-content { color: var(--text-dark); }
-
-    .hint-text {
-      position: absolute;
-      bottom: 1.5rem;
-      font-size: 0.85rem;
-      color: #9ca3af;
-      opacity: 0.6;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-    
-    /* Controls area (below card) */
-    .controls-area {
-      margin-top: 3rem;
-      height: 80px; /* reserve space */
-      display: flex;
-      gap: 2rem;
-      width: 100%;
-      max-width: 500px;
-      justify-content: center;
-      opacity: 0;
-      transform: translateY(10px);
-      transition: all 0.3s ease;
-      pointer-events: none;
-    }
-
-    .controls-area.visible {
-      opacity: 1;
-      transform: translateY(0);
-      pointer-events: auto;
-    }
-
-    .action-btn {
-      flex: 1;
-      border: none;
-      padding: 1rem 2rem;
-      border-radius: 16px;
-      font-size: 1.1rem;
-      font-weight: 700;
-      cursor: pointer;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 0.3rem;
-      transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s;
-      color: white;
-    }
-
-    .action-btn:active { transform: scale(0.95); }
-    .action-btn:hover { transform: translateY(-4px); box-shadow: 0 10px 20px rgba(0,0,0,0.15); }
-
-    .btn-wrong { background: var(--danger); box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3); }
-    .btn-correct { background: var(--success); box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3); }
-
-    .btn-sub { font-size: 0.8rem; font-weight: 400; opacity: 0.9; }
-
-    /* Quiz Mode Styles */
-    .quiz-container {
-      width: 100%;
-      max-width: 700px;
-    }
-    
-    .quiz-question-card {
-      background: var(--card-bg-light);
-      padding: 3rem;
-      border-radius: 24px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-      text-align: center;
-      margin-bottom: 2rem;
-      font-size: 1.8rem;
-      font-weight: 600;
-    }
-    body.theme-dark .quiz-question-card { background: var(--card-bg-dark); }
-
-    .quiz-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1.5rem;
-    }
-
-    .quiz-option {
-      background: transparent;
-      border: 2px solid rgba(0,0,0,0.1);
-      padding: 1.5rem;
-      border-radius: 16px;
-      font-size: 1.1rem;
-      font-weight: 600;
-      color: var(--text-light);
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-    body.theme-dark .quiz-option { border-color: rgba(255,255,255,0.1); color: var(--text-dark); }
-
-    .quiz-option:hover {
-      background: rgba(79, 70, 229, 0.05);
-      border-color: var(--primary);
-      color: var(--primary);
-    }
-
-    .quiz-option.correct {
-      background: var(--success) !important;
-      border-color: var(--success) !important;
-      color: white !important;
-    }
-    
-    .quiz-option.wrong {
-      background: var(--danger) !important;
-      border-color: var(--danger) !important;
-      color: white !important;
-      opacity: 0.5;
-    }
-    
-    .quiz-option.disabled { pointer-events: none; }
-
-    @media (max-width: 640px) {
-      .card-scene { aspect-ratio: 4/5; max-height: 60vh; }
-      .quiz-grid { grid-template-columns: 1fr; }
-      .controls-area { flex-direction: row; gap: 1rem; }
-      .top-bar { padding: 1rem; }
-      .progress-container { margin: 0 1rem; }
-    }
-  </style>
-</head>
-<body>
-  
-  <div class="top-bar">
-    <a href="{{ route('home') }}" style="text-decoration: none; color: inherit; font-weight: 600; opacity: 0.6; transition: opacity 0.2s;">
-      ✕ Quitter
-    </a>
-    
-    <div class="progress-container">
-      <div class="progress-label">Question {{ questionIndex + 1 }} sur {{ (typeof cards !== 'undefined' && cards ? cards.length : deck.cards.length) }}</div>
-      <div class="progress-track">
-        <div class="progress-fill" style="width: {{ ((questionIndex) / (typeof cards !== 'undefined' && cards ? cards.length : deck.cards.length)) * 100 }}%"></div>
-      </div>
-    </div>
-
-    @if(mode === 'chronometre')
-      <div class="timer-badge" id="elapsed-time">0m 0s</div>
-    @else
-      <div style="width: 60px;"></div> <!-- Spacer for balance -->
-    @endif
-  </div>
-
-  <div class="study-container">
-    @if(mode === 'quiz')
-      <div class="quiz-container">
-        <div class="quiz-question-card">
-          @if(direction === 'question')
-            {{ card.question }}
-          @else
-            {{ card.answer }}
-          @endif
-        </div>
-        <div class="quiz-grid">
-          @if(quizOptions)
-            @each(option in quizOptions)
-              <button class="quiz-option" onclick="checkQuizAnswer(this, {{ option.isCorrect }})">
-                {{ option.text }}
-              </button>
-            @endeach
-          @endif
-        </div>
-      </div>
-    @else
-      <!-- Flashcard Mode -->
-      <div class="card-scene" onclick="flipCard()">
-        <div class="card" id="flashcard">
-          <div class="card-face front">
-            <div class="card-label">Question</div>
-            <div class="card-content">
-              @if(direction === 'question')
-                {{ card.question }}
-              @else
-                {{ card.answer }}
-              @endif
-            </div>
-            <div class="hint-text">
-              <span>Clic pour retourner</span> ⟳
-            </div>
-          </div>
-          <div class="card-face back">
-            <div class="card-label">Réponse</div>
-            <div class="card-content">
-              @if(direction === 'question')
-                {{ card.answer }}
-              @else
-                {{ card.question }}
-              @endif
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="controls-area" id="controls">
-        <button class="action-btn btn-wrong" onclick="markCard(event, false)">
-          <span>✘ Incorrect</span>
-          <span class="btn-sub">À revoir</span>
-        </button>
-        <button class="action-btn btn-correct" onclick="markCard(event, true)">
-          <span>✔ Correct</span>
-          <span class="btn-sub">Bien joué</span>
-        </button>
-      </div>
-    @endif
-  </div>
-
-  <!-- Hidden Form for submission -->
-  <form 
-    action="{{ questionIndex + 1 < (typeof cards !== 'undefined' && cards ? cards.length : deck.cards.length) 
-      ? route('exercise.presentQuestion', { deckId: deck.id, questionIndex: questionIndex + 1 }) 
-      : route('exercise.finish', { deckId: deck.id }) }}" 
-    method="{{ questionIndex + 1 < (typeof cards !== 'undefined' && cards ? cards.length : deck.cards.length) ? 'GET' : 'POST' }}" id="next-form" style="display: none;">
-    {{ csrfField() }}
-    <input type="hidden" name="startTime" value="{{ startTime }}" />
-    <input type="hidden" name="elapsedTime" value="0" />
-    <input type="hidden" name="results" id="results" value="{{ results }}" />
-    <input type="hidden" name="mode" value="{{ mode }}" />
-    <input type="hidden" name="direction" value="{{ direction }}" />
-    @if (retryCardIds)
-      @each(id in retryCardIds)
-        <input type="hidden" name="retryCardIds" value="{{ id }}" />
-      @endeach
-    @endif
-    <input type="hidden" name="attempts" value="{{ attempts || 1 }}" />
-    <input type="hidden" name="exerciseToken" value="{{ exerciseToken || '' }}" />
-    <button type="submit" id="submitBtn">Suivant</button>
-  </form>
-
-  <script>
-    const startTime = parseInt('{{ startTime }}', 10);
-    const mode = '{{ mode }}';
-    const results = JSON.parse('{{ results || "[]" }}');
-    const cardId = parseInt('{{ card.id }}', 10);
-    let isFlipped = false;
-
-    // Timer logic
-    if (mode === 'chronometre') {
-      setInterval(() => {
-        const elapsed = Math.floor((Date.now() - startTime) / 1000);
-        document.getElementById('elapsed-time').textContent = `${Math.floor(elapsed / 60)}m ${elapsed % 60}s`;
-        const elapsedInput = document.querySelector('input[name="elapsedTime"]');
-        if(elapsedInput) elapsedInput.value = elapsed;
-      }, 1000);
-    }
-
-    // Flashcard Logic
-    function flipCard() {
-      if (mode !== 'quiz') {
-        const card = document.getElementById('flashcard');
-        const controls = document.getElementById('controls');
-        
-        isFlipped = !isFlipped;
-        card.classList.toggle('is-flipped');
-        
-        if (isFlipped) {
-          controls.classList.add('visible');
-        } else {
-          controls.classList.remove('visible');
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      Question - DeckStorm
+    </title>
+    <link rel="shortcut icon" href="/images/icone.ico" type="image/x-icon" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&display=swap"
+      rel="stylesheet"
+    />
+    <script>
+      (function() {
+        let theme = localStorage.getItem("theme");
+        if (!theme) theme = "theme-light";
+        document.documentElement.className = theme;
+        // Sync to body once loaded for compatibility with header scripts
+        document.addEventListener("DOMContentLoaded", function() {
+          document.body.className = theme;
+        });
+      })();
+    </script>
+    <style>
+      :root {
+        --primary: #4f46e5;
+        --primary-hover: #4338ca;
+        --success: #10b981;
+        --danger: #ef4444;
+        --bg-gradient-light: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+        --bg-gradient-dark: linear-gradient(135deg, #111827 0%, #1f2937 100%);
+        --card-bg-light: #ffffff;
+        --card-bg-dark: #1f2937;
+        --text-light: #1f2937;
+        --text-dark: #f3f4f6;
+      }
+      
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      
+      body {
+        font-family: 'Outfit', sans-serif;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        transition: background 0.3s ease;
+        overflow-x: hidden;
+      }
+      
+      /* Universal Theme Selectors (Works on HTML or BODY) */
+      
+      .theme-light body,
+      body.theme-light {
+        background: var(--bg-gradient-light);
+        color: var(--text-light);
+      }
+      
+      .theme-dark body,
+      body.theme-dark {
+        background: var(--bg-gradient-dark);
+        color: var(--text-dark);
+      }
+      
+      /* Layout */
+      
+      .top-bar {
+        width: 100%;
+        padding: 1.5rem 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        max-width: 1200px;
+      }
+      
+      .progress-container {
+        flex: 1;
+        max-width: 300px;
+        margin: 0 2rem;
+      }
+      
+      .progress-label {
+        text-align: center;
+        font-size: 0.9rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        opacity: 0.8;
+        letter-spacing: 0.05em;
+      }
+      
+      .progress-track {
+        height: 8px;
+        background: rgba(0,0,0,0.1);
+        border-radius: 4px;
+        overflow: hidden;
+      }
+      
+      .theme-dark .progress-track {
+        background: rgba(255,255,255,0.1);
+      }
+      
+      .progress-fill {
+        height: 100%;
+        background: var(--primary);
+        width: 0%;
+        /* JS will set this */
+        transition: width 0.5s ease;
+      }
+      
+      .timer-badge {
+        font-variant-numeric: tabular-nums;
+        font-weight: 600;
+        background: rgba(var(--primary), 0.1);
+        color: var(--primary);
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-size: 0.9rem;
+      }
+      
+      /* Main Content */
+      
+      .study-container {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        padding: 2rem;
+        perspective: 1500px;
+        /* Depth for 3D flip */
+      }
+      
+      /* Flashcard */
+      
+      .card-scene {
+        width: 100%;
+        max-width: 700px;
+        aspect-ratio: 16/9;
+        position: relative;
+        cursor: pointer;
+      }
+      
+      .card {
+        width: 100%;
+        height: 100%;
+        position: relative;
+        transform-style: preserve-3d;
+        transition: transform 0.6s cubic-bezier(0.4, 0.0, 0.2, 1);
+        border-radius: 24px;
+        box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+      }
+      
+      .card.is-flipped {
+        transform: rotateY(180deg);
+      }
+      
+      .card-face {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        backface-visibility: hidden;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        border-radius: 24px;
+        padding: 3rem;
+        text-align: center;
+        background: var(--card-bg-light);
+        border: 1px solid rgba(0,0,0,0.05);
+      }
+      
+      body.theme-dark .card-face {
+        background: var(--card-bg-dark);
+        border-color: rgba(255,255,255,0.05);
+        box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+      }
+      
+      .card-face.front {
+        /* Front specific styles */
+      }
+      
+      .card-face.back {
+        transform: rotateY(180deg);
+        background: #f8fafc;
+        /* Slightly different for back */
+      }
+      
+      body.theme-dark .card-face.back {
+        background: #1a202c;
+      }
+      
+      .card-label {
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.15em;
+        color: #9ca3af;
+        margin-bottom: 1.5rem;
+        font-weight: 800;
+      }
+      
+      .card-content {
+        font-size: 2rem;
+        font-weight: 600;
+        line-height: 1.4;
+        color: var(--text-light);
+      }
+      
+      body.theme-dark .card-content {
+        color: var(--text-dark);
+      }
+      
+      .hint-text {
+        position: absolute;
+        bottom: 1.5rem;
+        font-size: 0.85rem;
+        color: #9ca3af;
+        opacity: 0.6;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      
+      /* Controls area (below card) */
+      
+      .controls-area {
+        margin-top: 3rem;
+        height: 80px;
+        /* reserve space */
+        display: flex;
+        gap: 2rem;
+        width: 100%;
+        max-width: 500px;
+        justify-content: center;
+        opacity: 0;
+        transform: translateY(10px);
+        transition: all 0.3s ease;
+        pointer-events: none;
+      }
+      
+      .controls-area.visible {
+        opacity: 1;
+        transform: translateY(0);
+        pointer-events: auto;
+      }
+      
+      .action-btn {
+        flex: 1;
+        border: none;
+        padding: 1rem 2rem;
+        border-radius: 16px;
+        font-size: 1.1rem;
+        font-weight: 700;
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 0.3rem;
+        transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s;
+        color: white;
+      }
+      
+      .action-btn:active {
+        transform: scale(0.95);
+      }
+      
+      .action-btn:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+      }
+      
+      .btn-wrong {
+        background: var(--danger);
+        box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+      }
+      
+      .btn-correct {
+        background: var(--success);
+        box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+      }
+      
+      .btn-sub {
+        font-size: 0.8rem;
+        font-weight: 400;
+        opacity: 0.9;
+      }
+      
+      /* Quiz Mode Styles */
+      
+      .quiz-container {
+        width: 100%;
+        max-width: 700px;
+      }
+      
+      .quiz-question-card {
+        background: var(--card-bg-light);
+        padding: 3rem;
+        border-radius: 24px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        text-align: center;
+        margin-bottom: 2rem;
+        font-size: 1.8rem;
+        font-weight: 600;
+      }
+      
+      body.theme-dark .quiz-question-card {
+        background: var(--card-bg-dark);
+      }
+      
+      .quiz-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+      }
+      
+      .quiz-option {
+        background: transparent;
+        border: 2px solid rgba(0,0,0,0.1);
+        padding: 1.5rem;
+        border-radius: 16px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: var(--text-light);
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+      
+      body.theme-dark .quiz-option {
+        border-color: rgba(255,255,255,0.1);
+        color: var(--text-dark);
+      }
+      
+      .quiz-option:hover {
+        background: rgba(79, 70, 229, 0.05);
+        border-color: var(--primary);
+        color: var(--primary);
+      }
+      
+      .quiz-option.correct {
+        background: var(--success) !important;
+        border-color: var(--success) !important;
+        color: white !important;
+      }
+      
+      .quiz-option.wrong {
+        background: var(--danger) !important;
+        border-color: var(--danger) !important;
+        color: white !important;
+        opacity: 0.5;
+      }
+      
+      .quiz-option.disabled {
+        pointer-events: none;
+      }
+      
+      @media (max-width: 640px) {
+        .card-scene {
+          aspect-ratio: 4/5;
+          max-height: 60vh;
+        }
+      
+        .quiz-grid {
+          grid-template-columns: 1fr;
+        }
+      
+        .controls-area {
+          flex-direction: row;
+          gap: 1rem;
+        }
+      
+        .top-bar {
+          padding: 1rem;
+        }
+      
+        .progress-container {
+          margin: 0 1rem;
         }
       }
-    }
+    </style>
+  </head>
+  <body>
 
-    function markCard(event, isCorrect) {
-      if(event) event.stopPropagation();
+    <div class="top-bar">
+      <a
+        href="{{ route('home') }}"
+        style="text-decoration: none; color: inherit; font-weight: 600; opacity: 0.6; transition: opacity 0.2s;"
+      >
+        ✕ Quitter
+    </a>
+
+      <div class="progress-container">
+        <div class="progress-label">
+          Question {{ questionIndex + 1 }} sur {{ (typeof cards !== 'undefined' && cards ? cards.length : deck.cards.length) }}
+        </div>
+        <div class="progress-track">
+          <div
+            class="progress-fill"
+            style="width: {{ ((questionIndex) / (typeof cards !== 'undefined' && cards ? cards.length : deck.cards.length)) * 100 }}%"
+          >
+          </div>
+        </div>
+      </div>
+
+      @if(mode === 'chronometre')
+        <div class="timer-badge" id="elapsed-time">
+          0m 0s
+        </div>
+      @else
+        <div style="width: 60px;">
+        </div>
+        <!-- Spacer for balance -->
+      @endif
+    </div>
+
+    <div class="study-container">
+      @if(mode === 'quiz')
+        <div class="quiz-container">
+          <div class="quiz-question-card">
+            @if(direction === 'question')
+              {{ card.question }}
+            @else
+              {{ card.answer }}
+            @endif
+          </div>
+          <div class="quiz-grid">
+            @if(quizOptions)
+              @each(option in quizOptions)
+                <button class="quiz-option" onclick="checkQuizAnswer(this, {{ option.isCorrect }})">
+                  {{ option.text }}
+              </button>
+              @endeach
+            @endif
+          </div>
+        </div>
+      @else
+        <!-- Flashcard Mode -->
+        <div class="card-scene" onclick="flipCard()">
+          <div class="card" id="flashcard">
+            <div class="card-face front">
+              <div class="card-label">
+                Question
+              </div>
+              <div class="card-content">
+                @if(direction === 'question')
+                  {{ card.question }}
+                @else
+                  {{ card.answer }}
+                @endif
+              </div>
+              <div class="hint-text">
+                <span>Clic pour retourner</span>⟳
+              </div>
+            </div>
+            <div class="card-face back">
+              <div class="card-label">
+                Réponse
+              </div>
+              <div class="card-content">
+                @if(direction === 'question')
+                  {{ card.answer }}
+                @else
+                  {{ card.question }}
+                @endif
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="controls-area" id="controls">
+          <button class="action-btn btn-wrong" onclick="markCard(event, false)">
+            <span>✘ Incorrect</span>
+            <span class="btn-sub">À revoir</span>
+          </button>
+          <button class="action-btn btn-correct" onclick="markCard(event, true)">
+            <span>✔ Correct</span>
+            <span class="btn-sub">Bien joué</span>
+          </button>
+        </div>
+      @endif
+    </div>
+
+    <!-- Hidden Form for submission -->
+    <form
+      action=questionIndex
+      typeof
+      cards==
+      undefined
+      cards
+      cards.length
+      :
+      deck.cards.length
+      route
+      exercise.presentQuestion
+      deckId:
+      deck.id
+      questionIndex:
+      questionIndex
+      :
+      route
+      exercise.finish
+      deckId:
+      deck.id
+      method=questionIndex
+      typeof
+      cards==
+      undefined
+      cards
+      cards.length
+      :
+      deck.cards.length
+      GET
+      :
+      POST
+      id="next-form"
+      style="display: none;"
+    >
+      {{ csrfField() }}
+    <input type="hidden" name="startTime" value="{{ startTime }}" />
+      <input type="hidden" name="elapsedTime" value="0" />
+      <input type="hidden" name="results" id="results" value="{{ results }}" />
+      <input type="hidden" name="mode" value="{{ mode }}" />
+      <input type="hidden" name="direction" value="{{ direction }}" />
+      @if (retryCardIds)
+        @each(id in retryCardIds)
+          <input type="hidden" name="retryCardIds" value="{{ id }}" />
+        @endeach
+      @endif
+      <input type="hidden" name="attempts" value="{{ attempts || 1 }}" />
+      <input type="hidden" name="exerciseToken" value="{{ exerciseToken || '' }}" />
+      <button type="submit" id="submitBtn">Suivant</button>
+    </form>
+
+    <script>
+      const startTime = parseInt("{{ startTime }}", 10);
       
-      if (isCorrect) {
-        results.push(cardId);
+      const mode = "{{ mode }}";
+      
+      const results = JSON.parse("{{ results || "[]" }}");
+      
+      const cardId = parseInt("{{ card.id }}", 10);
+      
+      let isFlipped = false;
+      // Timer logic
+      
+      if (mode === "chronometre") {
+        setInterval(() => {
+          const elapsed = Math.floor((Date.now() - startTime) / 1e3);
+          document.getElementById("elapsed-time").textContent = `${Math.floor(elapsed / 60)}m ${elapsed % 60}s`;
+          const elapsedInput = document.querySelector('input[name="elapsedTime"]');
+          if (elapsedInput) elapsedInput.value = elapsed;
+        }, 1e3);
       }
-      document.getElementById('results').value = JSON.stringify(results);
+      // Flashcard Logic
       
-      // Submit immediately
-      document.getElementById('next-form').submit();
-    }
-
-    // Quiz Logic
-    function checkQuizAnswer(btn, isCorrect) {
-      if (btn.classList.contains('disabled')) return;
-      
-      const allBtns = document.querySelectorAll('.quiz-option');
-      allBtns.forEach(b => {
-        b.classList.add('disabled');
-      });
-
-      if (isCorrect) {
-        btn.classList.add('correct');
-        results.push(cardId);
-      } else {
-        btn.classList.add('wrong');
-        // Highlight correct one
-        allBtns.forEach(b => {
-          const onclickStr = b.getAttribute('onclick');
-          if (onclickStr && onclickStr.includes(', true)')) {
-            b.classList.add('correct');
+      function flipCard() {
+        if (mode !== "quiz") {
+          const card = document.getElementById("flashcard");
+          const controls = document.getElementById("controls");
+          isFlipped = !isFlipped;
+          card.classList.toggle("is-flipped");
+          if (isFlipped) {
+            controls.classList.add("visible");
+          } else {
+            controls.classList.remove("visible");
           }
-        });
+        }
       }
-
-      document.getElementById('results').value = JSON.stringify(results);
       
-      // Slight delay before next question
-      setTimeout(() => {
-        document.getElementById('next-form').submit();
-      }, 1200);
-    }
-    
-    // Progress Bar Animation
-    document.addEventListener('DOMContentLoaded', () => {
-      // Small delay to trigger CSS transition
-      setTimeout(() => {
-         const fill = document.querySelector('.progress-fill');
-         // We might need to recalculate width if it relies on server side render
-         // It is already inline style, so it should animate on load if we wanted. 
-         // But for smooth entry, we can zero it first? 
-         // Actually current implementation sets width in HTML so it will just be there.
-      }, 100);
-    });
-  </script>
-</body>
+      function markCard(event, isCorrect) {
+        if (event) event.stopPropagation();
+        if (isCorrect) {
+          results.push(cardId);
+        }
+        document.getElementById("results").value = JSON.stringify(results);
+        // Submit immediately
+        document.getElementById("next-form").submit();
+      }
+      // Quiz Logic
+      
+      function checkQuizAnswer(btn, isCorrect) {
+        if (btn.classList.contains("disabled")) return;
+        const allBtns = document.querySelectorAll(".quiz-option");
+        allBtns.forEach(b => {
+          b.classList.add("disabled");
+        });
+        if (isCorrect) {
+          btn.classList.add("correct");
+          results.push(cardId);
+        } else {
+          btn.classList.add("wrong");
+          // Highlight correct one
+          allBtns.forEach(b => {
+            const onclickStr = b.getAttribute("onclick");
+            if (onclickStr && onclickStr.includes(", true)")) {
+              b.classList.add("correct");
+            }
+          });
+        }
+        document.getElementById("results").value = JSON.stringify(results);
+        // Slight delay before next question
+        setTimeout(() => {
+          document.getElementById("next-form").submit();
+        }, 1200);
+      }
+      // Progress Bar Animation
+      
+      document.addEventListener("DOMContentLoaded", () => {
+        // Small delay to trigger CSS transition
+        setTimeout(() => {
+          const fill = document.querySelector(".progress-fill");
+          // We might need to recalculate width if it relies on server side render
+          // It is already inline style, so it should animate on load if we wanted. 
+          // But for smooth entry, we can zero it first? 
+          // Actually current implementation sets width in HTML so it will just be there.
+        }, 100);
+      });
+    </script>
+  </body>
 </html>

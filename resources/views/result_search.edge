@@ -1,688 +1,715 @@
 <!DOCTYPE html>
 <html lang="fr">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Résultats de recherche - DeckStorm</title>
-  <link rel="shortcut icon" href="/images/icone.ico" type="image/x-icon">
-  <script>
-    (function() {
-      let theme = localStorage.getItem('theme');
-      if (!theme) theme = 'theme-light';
-      document.documentElement.className = theme;
-      document.addEventListener('DOMContentLoaded', function() {
-        document.body.className = theme;
-      });
-    })();
-  </script>
-  <style>
-    :root {
-      --primary: #3b82f6; 
-      --primary-dark: #2563eb;
-      --bg-body: #f0f2f4;
-      --bg-card: #ffffff;
-      --text-main: #0f172a;
-      --text-muted: #64748b;
-      --border: #e2e8f0;
-      --success: #22c55e;
-      --danger: #ef4444;
-    }
-
-    .theme-dark {
-      --primary: #60a5fa;
-      --primary-dark: #3b82f6;
-      --bg-body: #0f172a;
-      --bg-card: #1e293b;
-      --text-main: #f8fafc;
-      --text-muted: #94a3b8;
-      --border: #334155;
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      background-color: var(--bg-body);
-      color: var(--text-main);
-      min-height: 100vh;
-      padding-top: 70px;
-      transition: background-color 0.2s, color 0.2s;
-    }
-
-    .container {
-      width: 100%;
-      max-width: 1200px;
-      padding: 2rem 1.5rem;
-      margin: 0 auto;
-    }
-
-    /* Search Header */
-    .search-header {
-      text-align: center;
-      margin-bottom: 2rem;
-    }
-
-    .search-title {
-      font-size: 2rem;
-      font-weight: 800;
-      margin-bottom: 1.5rem;
-      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    /* Tab Navigation */
-    .search-tabs {
-      display: flex;
-      justify-content: center;
-      gap: 0.5rem;
-      margin-bottom: 2rem;
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 0.5rem;
-      max-width: 400px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    .tab-btn {
-      flex: 1;
-      padding: 0.75rem 1.5rem;
-      background: transparent;
-      border: none;
-      border-radius: 8px;
-      font-weight: 600;
-      font-size: 1rem;
-      cursor: pointer;
-      transition: all 0.2s;
-      color: var(--text-muted);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-    }
-
-    .tab-btn.active {
-      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-      color: white;
-      box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
-    }
-
-    .tab-btn:hover:not(.active) {
-      background: var(--bg-body);
-      color: var(--text-main);
-    }
-
-    .search-query {
-      font-size: 1.2rem;
-      color: var(--text-muted);
-      font-weight: 600;
-      margin-bottom: 1rem;
-    }
-
-    .search-count {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 0.5rem 1.5rem;
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      font-weight: 600;
-      color: var(--primary);
-    }
-
-    /* Deck Grid */
-    .deck-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: 1.5rem;
-      margin-top: 2rem;
-    }
-
-    .deck-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 1.5rem;
-      cursor: pointer;
-      transition: all 0.2s;
-      display: flex;
-      flex-direction: column;
-      gap: 0.75rem;
-      position: relative;
-    }
-
-    .deck-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 8px 16px rgba(0,0,0,0.1);
-      border-color: var(--primary);
-    }
-
-    .deck-title {
-      font-size: 1.25rem;
-      font-weight: 700;
-      color: var(--primary);
-      line-height: 1.3;
-    }
-
-    .deck-description {
-      font-size: 0.95rem;
-      color: var(--text-muted);
-      line-height: 1.5;
-      flex: 1;
-      min-height: 2.5em;
-    }
-
-    .deck-meta {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding-top: 0.75rem;
-      border-top: 1px solid var(--border);
-      font-size: 0.85rem;
-    }
-
-    .deck-cards-count {
-      color: var(--text-muted);
-      font-weight: 500;
-    }
-
-    .deck-author {
-      color: var(--primary);
-      text-decoration: none;
-      font-weight: 600;
-      transition: all 0.2s;
-    }
-    .deck-author:hover {
-      text-decoration: underline;
-    }
-
-    /* User Cards */
-    .user-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 1.5rem;
-      cursor: pointer;
-      transition: all 0.2s;
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-    }
-
-    .user-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 8px 16px rgba(0,0,0,0.1);
-      border-color: var(--primary);
-    }
-
-    .user-avatar {
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-      color: white;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.5rem;
-      font-weight: 700;
-      flex-shrink: 0;
-    }
-
-    .user-info {
-      flex: 1;
-    }
-
-    .user-name {
-      font-size: 1.2rem;
-      font-weight: 700;
-      color: var(--text-main);
-      margin-bottom: 0.25rem;
-    }
-
-    .user-stats {
-      font-size: 0.9rem;
-      color: var(--text-muted);
-      display: flex;
-      gap: 1rem;
-    }
-
-    /* Like Button */
-    .like-container {
-      position: absolute;
-      top: 1rem;
-      right: 1rem;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      background: var(--bg-body);
-      padding: 0.5rem 0.75rem;
-      border-radius: 20px;
-      border: 1px solid var(--border);
-      opacity: 0;
-      transition: opacity 0.2s;
-    }
-
-    .deck-card:hover .like-container {
-      opacity: 1;
-    }
-
-    .like-btn {
-      background: none;
-      border: none;
-      cursor: pointer;
-      font-size: 1.2rem;
-      padding: 0;
-      display: flex;
-      align-items: center;
-      gap: 0.3rem;
-      transition: transform 0.2s;
-    }
-
-    .like-btn:hover {
-      transform: scale(1.1);
-    }
-
-    .like-btn.liked {
-      animation: likeAnimation 0.3s ease;
-    }
-
-    @keyframes likeAnimation {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.3); }
-    }
-
-    .like-count {
-      font-size: 0.9rem;
-      font-weight: 600;
-      color: var(--text-main);
-    }
-
-    /* Empty State */
-    .empty-state {
-      text-align: center;
-      padding: 4rem 2rem;
-      color: var(--text-muted);
-    }
-
-    .empty-icon {
-      font-size: 4rem;
-      margin-bottom: 1rem;
-    }
-
-    .empty-title {
-      font-size: 1.5rem;
-      font-weight: 700;
-      margin-bottom: 0.5rem;
-      color: var(--text-main);
-    }
-
-    .empty-text {
-      font-size: 1rem;
-    }
-
-    /* FAB */
-    .fab {
-      position: fixed;
-      bottom: 2rem;
-      right: 2rem;
-      width: 60px;
-      height: 60px;
-      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-      color: white;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 2rem;
-      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
-      cursor: pointer;
-      transition: all 0.2s;
-      text-decoration: none;
-      z-index: 100;
-    }
-
-    .fab:hover {
-      transform: scale(1.1) rotate(90deg);
-      box-shadow: 0 6px 16px rgba(59, 130, 246, 0.4);
-    }
-
-    /* Pagination */
-    .pagination {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 1rem;
-      margin-top: 3rem;
-      padding: 2rem 0;
-    }
-
-    .pagination-btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-      padding: 0.75rem 1.5rem;
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      color: var(--text-main);
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s;
-      text-decoration: none;
-    }
-
-    .pagination-btn:hover:not(:disabled) {
-      background: var(--primary);
-      color: white;
-      border-color: var(--primary);
-      transform: translateY(-2px);
-    }
-
-    .pagination-btn:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
-
-    .pagination-info {
-      font-size: 0.95rem;
-      color: var(--text-muted);
-      font-weight: 500;
-    }
-
-    @media (max-width: 768px) {
-      .deck-grid {
-        grid-template-columns: 1fr;
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      Résultats de recherche - DeckStorm
+    </title>
+    <link rel="shortcut icon" href="/images/icone.ico" type="image/x-icon" />
+    <script>
+      (function() {
+        let theme = localStorage.getItem("theme");
+        if (!theme) theme = "theme-light";
+        document.documentElement.className = theme;
+        document.addEventListener("DOMContentLoaded", function() {
+          document.body.className = theme;
+        });
+      })();
+    </script>
+    <style>
+      :root {
+        --primary: #3b82f6;
+        --primary-dark: #2563eb;
+        --bg-body: #f0f2f4;
+        --bg-card: #ffffff;
+        --text-main: #0f172a;
+        --text-muted: #64748b;
+        --border: #e2e8f0;
+        --success: #22c55e;
+        --danger: #ef4444;
       }
+      
+      .theme-dark {
+        --primary: #60a5fa;
+        --primary-dark: #3b82f6;
+        --bg-body: #0f172a;
+        --bg-card: #1e293b;
+        --text-main: #f8fafc;
+        --text-muted: #94a3b8;
+        --border: #334155;
+      }
+      
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        background-color: var(--bg-body);
+        color: var(--text-main);
+        min-height: 100vh;
+        padding-top: 70px;
+        transition: background-color 0.2s, color 0.2s;
+      }
+      
+      .container {
+        width: 100%;
+        max-width: 1200px;
+        padding: 2rem 1.5rem;
+        margin: 0 auto;
+      }
+      
+      /* Search Header */
+      
+      .search-header {
+        text-align: center;
+        margin-bottom: 2rem;
+      }
+      
       .search-title {
-        font-size: 1.5rem;
+        font-size: 2rem;
+        font-weight: 800;
+        margin-bottom: 1.5rem;
+        background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
       }
+      
+      /* Tab Navigation */
+      
+      .search-tabs {
+        display: flex;
+        justify-content: center;
+        gap: 0.5rem;
+        margin-bottom: 2rem;
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 0.5rem;
+        max-width: 400px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+      
+      .tab-btn {
+        flex: 1;
+        padding: 0.75rem 1.5rem;
+        background: transparent;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all 0.2s;
+        color: var(--text-muted);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+      }
+      
+      .tab-btn.active {
+        background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+        color: white;
+        box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+      }
+      
+      .tab-btn:hover:not(.active) {
+        background: var(--bg-body);
+        color: var(--text-main);
+      }
+      
       .search-query {
         font-size: 1.2rem;
+        color: var(--text-muted);
+        font-weight: 600;
+        margin-bottom: 1rem;
       }
-    }
-  </style>
-</head>
-<body>
-  @include('components/header')
-
-  <div class="container">
-    <div class="search-header">
-      <h1 class="search-title">Résultats de recherche</h1>
-      <div class="search-query">"{{ query }}"</div>
       
-      <!-- Tab Navigation -->
-      <div class="search-tabs">
-        <button class="tab-btn active" id="decksTab" onclick="switchTab('decks')">
-          <span>📚</span>
-          <span>Decks</span>
-        </button>
-        <button class="tab-btn" id="usersTab" onclick="switchTab('users')">
-          <span>👤</span>
-          <span>Utilisateurs</span>
-        </button>
+      .search-count {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1.5rem;
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        font-weight: 600;
+        color: var(--primary);
+      }
+      
+      /* Deck Grid */
+      
+      .deck-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 1.5rem;
+        margin-top: 2rem;
+      }
+      
+      .deck-card {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 1.5rem;
+        cursor: pointer;
+        transition: all 0.2s;
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        position: relative;
+      }
+      
+      .deck-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+        border-color: var(--primary);
+      }
+      
+      .deck-title {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--primary);
+        line-height: 1.3;
+      }
+      
+      .deck-description {
+        font-size: 0.95rem;
+        color: var(--text-muted);
+        line-height: 1.5;
+        flex: 1;
+        min-height: 2.5em;
+      }
+      
+      .deck-meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-top: 0.75rem;
+        border-top: 1px solid var(--border);
+        font-size: 0.85rem;
+      }
+      
+      .deck-cards-count {
+        color: var(--text-muted);
+        font-weight: 500;
+      }
+      
+      .deck-author {
+        color: var(--primary);
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.2s;
+      }
+      
+      .deck-author:hover {
+        text-decoration: underline;
+      }
+      
+      /* User Cards */
+      
+      .user-card {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 1.5rem;
+        cursor: pointer;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
+      
+      .user-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+        border-color: var(--primary);
+      }
+      
+      .user-avatar {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        font-weight: 700;
+        flex-shrink: 0;
+      }
+      
+      .user-info {
+        flex: 1;
+      }
+      
+      .user-name {
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: var(--text-main);
+        margin-bottom: 0.25rem;
+      }
+      
+      .user-stats {
+        font-size: 0.9rem;
+        color: var(--text-muted);
+        display: flex;
+        gap: 1rem;
+      }
+      
+      /* Like Button */
+      
+      .like-container {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: var(--bg-body);
+        padding: 0.5rem 0.75rem;
+        border-radius: 20px;
+        border: 1px solid var(--border);
+        opacity: 0;
+        transition: opacity 0.2s;
+      }
+      
+      .deck-card:hover .like-container {
+        opacity: 1;
+      }
+      
+      .like-btn {
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 1.2rem;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        gap: 0.3rem;
+        transition: transform 0.2s;
+      }
+      
+      .like-btn:hover {
+        transform: scale(1.1);
+      }
+      
+      .like-btn.liked {
+        animation: likeAnimation 0.3s ease;
+      }
+      
+      @keyframes likeAnimation {
+        0%, 100% {
+          transform: scale(1);
+        }
+      
+        50% {
+          transform: scale(1.3);
+        }
+      }
+      
+      .like-count {
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: var(--text-main);
+      }
+      
+      /* Empty State */
+      
+      .empty-state {
+        text-align: center;
+        padding: 4rem 2rem;
+        color: var(--text-muted);
+      }
+      
+      .empty-icon {
+        font-size: 4rem;
+        margin-bottom: 1rem;
+      }
+      
+      .empty-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        color: var(--text-main);
+      }
+      
+      .empty-text {
+        font-size: 1rem;
+      }
+      
+      /* FAB */
+      
+      .fab {
+        position: fixed;
+        bottom: 2rem;
+        right: 2rem;
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        cursor: pointer;
+        transition: all 0.2s;
+        text-decoration: none;
+        z-index: 100;
+      }
+      
+      .fab:hover {
+        transform: scale(1.1) rotate(90deg);
+        box-shadow: 0 6px 16px rgba(59, 130, 246, 0.4);
+      }
+      
+      /* Pagination */
+      
+      .pagination {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 1rem;
+        margin-top: 3rem;
+        padding: 2rem 0;
+      }
+      
+      .pagination-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        padding: 0.75rem 1.5rem;
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        color: var(--text-main);
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+        text-decoration: none;
+      }
+      
+      .pagination-btn:hover:not(:disabled) {
+        background: var(--primary);
+        color: white;
+        border-color: var(--primary);
+        transform: translateY(-2px);
+      }
+      
+      .pagination-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+      
+      .pagination-info {
+        font-size: 0.95rem;
+        color: var(--text-muted);
+        font-weight: 500;
+      }
+      
+      @media (max-width: 768px) {
+        .deck-grid {
+          grid-template-columns: 1fr;
+        }
+      
+        .search-title {
+          font-size: 1.5rem;
+        }
+      
+        .search-query {
+          font-size: 1.2rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    @include('components/header')
+
+    <div class="container">
+      <div class="search-header">
+        <h1 class="search-title">
+          Résultats de recherche
+        </h1>
+        <div class="search-query">
+          "{{ query }}"
+        </div>
+
+        <!-- Tab Navigation -->
+        <div class="search-tabs">
+          <button class="tab-btn active" id="decksTab" onclick="switchTab('decks')">
+            <span>📚</span>
+            <span>Decks</span>
+          </button>
+          <button class="tab-btn" id="usersTab" onclick="switchTab('users')">
+            <span>👤</span>
+            <span>Utilisateurs</span>
+          </button>
+        </div>
+
+        <div class="search-count" id="searchCount">
+          <span id="countIcon">📚</span>
+          <span id="countValue">{{ publicDecks.length }}</span>
+          <span id="countLabel">deck(s) trouvé(s)</span>
+        </div>
       </div>
 
-      <div class="search-count" id="searchCount">
-        <span id="countIcon">📚</span>
-        <span id="countValue">{{ publicDecks.length }}</span>
-        <span id="countLabel">deck(s) trouvé(s)</span>
-      </div>
-    </div>
+      <!-- Decks Section -->
+      <div id="decksSection">
+        @if(publicDecks.length)
+          <div class="deck-grid" id="deckGrid">
+            @each(deck in publicDecks)
+              <div class="deck-card deck-item" onclick="window.location.href='/deck/{{ deck.id }}'">
+                <div class="like-container">
+                  <button
+                    onclick="event.preventDefault(); event.stopPropagation(); toggleLike({{ deck.id }}, this)"
+                    class="like-btn {{ deck.hasLiked ? 'liked' : '' }}"
+                    title="{{ deck.hasLiked ? 'Je n\'aime plus' : 'J\'aime' }}"
+                  >
+                    <span class="heart-emoji">{{ deck.hasLiked ? '❤️' : '🤍' }}</span>
+                    <span class="like-count">{{ deck.likes.length }}</span>
+                  </button>
+                </div>
 
-    <!-- Decks Section -->
-    <div id="decksSection">
-      @if(publicDecks.length)
-        <div class="deck-grid" id="deckGrid">
-          @each(deck in publicDecks)
-            <div class="deck-card deck-item" onclick="window.location.href='/deck/{{ deck.id }}'">
-              <div class="like-container">
-                <button 
-                  onclick="event.preventDefault(); event.stopPropagation(); toggleLike({{ deck.id }}, this)"
-                  class="like-btn {{ deck.hasLiked ? 'liked' : '' }}"
-                  title="{{ deck.hasLiked ? 'Je n\'aime plus' : 'J\'aime' }}"
-                >
-                  <span class="heart-emoji">{{ deck.hasLiked ? '❤️' : '🤍' }}</span>
-                  <span class="like-count">{{ deck.likes.length }}</span>
-                </button>
-              </div>
-              
-              <div class="deck-title">{{ deck.title }}</div>
-              <div class="deck-description">{{ deck.description || 'Aucune description' }}</div>
-              
-              <div class="deck-meta">
-                <span class="deck-cards-count">{{ deck.cards.length }} carte(s)</span>
-                <a href="/public-account/{{ deck.user.id }}" class="deck-author" onclick="event.stopPropagation();">
-                  {{ deck.user.username }}
+                <div class="deck-title">
+                  {{ deck.title }}
+                </div>
+                <div class="deck-description">
+                  {{ deck.description || 'Aucune description' }}
+                </div>
+
+                <div class="deck-meta">
+                  <span class="deck-cards-count">{{ deck.cards.length }} carte(s)</span>
+                  <a href="/public-account/{{ deck.user.id }}" class="deck-author" onclick="event.stopPropagation();">
+                    {{ deck.user.username }}
                 </a>
-              </div>
-            </div>
-          @end
-        </div>
-
-        <!-- Pagination Controls -->
-        <div class="pagination" id="pagination" style="display: none;">
-          <button class="pagination-btn" id="prevBtn" onclick="changePage(-1)">
-            ← Précédent
-          </button>
-          <span class="pagination-info">
-            Page <span id="currentPage">1</span> sur <span id="totalPages">1</span>
-          </span>
-          <button class="pagination-btn" id="nextBtn" onclick="changePage(1)">
-            Suivant →
-          </button>
-        </div>
-      @else
-        <div class="empty-state">
-          <div class="empty-icon">🔍</div>
-          <h2 class="empty-title">Aucun deck trouvé</h2>
-          <p class="empty-text">Essayez avec d'autres mots-clés</p>
-        </div>
-      @endif
-    </div>
-
-    <!-- Users Section (Hidden by default) -->
-    <div id="usersSection" style="display: none;">
-      <div class="deck-grid" id="userGrid">
-        <!-- Users will be loaded dynamically -->
-      </div>
-      <div class="empty-state" id="usersEmpty" style="display: none;">
-        <div class="empty-icon">👤</div>
-        <h2 class="empty-title">Aucun utilisateur trouvé</h2>
-        <p class="empty-text">Essayez avec d'autres mots-clés</p>
-      </div>
-    </div>
-  </div>
-
-  <a href="{{ route('decks.create') }}" class="fab" title="Créer un nouveau deck">
-    <span>+</span>
-  </a>
-
-  <script>
-    async function toggleLike(deckId, button) {
-      try {
-        const isLiked = button.classList.contains('liked');
-        const endpoint = `/api/decks/${deckId}/${isLiked ? 'unlike' : 'like'}`;
-        
-        const response = await fetch(endpoint, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]')?.content || ''
-          }
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-          button.classList.toggle('liked');
-          
-          const heartEmoji = button.querySelector('.heart-emoji');
-          heartEmoji.textContent = button.classList.contains('liked') ? '❤️' : '🤍';
-          
-          const countElement = button.querySelector('.like-count');
-          countElement.textContent = data.likesCount;
-        }
-      } catch (error) {
-        console.error('Error toggling like:', error);
-      }
-    }
-
-    // Tab Switching
-    let currentTab = 'decks';
-    let usersData = [];
-    let usersLoaded = false;
-
-    async function switchTab(tab) {
-      if (tab === currentTab) return;
-      
-      currentTab = tab;
-      
-      // Update tab buttons
-      document.getElementById('decksTab').classList.toggle('active', tab === 'decks');
-      document.getElementById('usersTab').classList.toggle('active', tab === 'users');
-      
-      // Update sections
-      document.getElementById('decksSection').style.display = tab === 'decks' ? '' : 'none';
-      document.getElementById('usersSection').style.display = tab === 'users' ? '' : 'none';
-      
-      // Update count
-      if (tab === 'decks') {
-        const deckCount = document.querySelectorAll('.deck-item').length;
-        document.getElementById('countIcon').textContent = '📚';
-        document.getElementById('countValue').textContent = deckCount;
-        document.getElementById('countLabel').textContent = 'deck(s) trouvé(s)';
-      } else {
-        // Load users if not already loaded
-        if (!usersLoaded) {
-          await loadUsers();
-        }
-        document.getElementById('countIcon').textContent = '�';
-        document.getElementById('countValue').textContent = usersData.length;
-        document.getElementById('countLabel').textContent = 'utilisateur(s) trouvé(s)';
-      }
-    }
-
-    async function loadUsers() {
-      try {
-        const query = "{{ query }}";
-        const response = await fetch(`/api/user-suggestions?query=${encodeURIComponent(query)}`);
-        
-        if (response.ok) {
-          const usernames = await response.json();
-          usersData = usernames;
-          usersLoaded = true;
-          
-          const userGrid = document.getElementById('userGrid');
-          const usersEmpty = document.getElementById('usersEmpty');
-          
-          if (usernames.length > 0) {
-            userGrid.innerHTML = usernames.map(username => `
-              <div class="user-card" onclick="window.location.href='/public-account/${username}'">
-                <div class="user-avatar">${username.charAt(0).toUpperCase()}</div>
-                <div class="user-info">
-                  <div class="user-name">${username}</div>
-                  <div class="user-stats">
-                    <span>Voir le profil →</span>
-                  </div>
                 </div>
               </div>
-            `).join('');
-            usersEmpty.style.display = 'none';
-          } else {
-            userGrid.innerHTML = '';
-            usersEmpty.style.display = 'block';
+            @end
+          </div>
+
+          <!-- Pagination Controls -->
+          <div class="pagination" id="pagination" style="display: none;">
+            <button class="pagination-btn" id="prevBtn" onclick="changePage(-1)">
+              ← Précédent
+          </button>
+            <span class="pagination-info">
+              Page <span id="currentPage">1</span>sur <span id="totalPages">1</span>
+            </span>
+            <button class="pagination-btn" id="nextBtn" onclick="changePage(1)">
+              Suivant →
+          </button>
+          </div>
+        @else
+          <div class="empty-state">
+            <div class="empty-icon">
+              🔍
+            </div>
+            <h2 class="empty-title">
+              Aucun deck trouvé
+            </h2>
+            <p class="empty-text">
+              Essayez avec d'autres mots-clés
+            </p>
+          </div>
+        @endif
+      </div>
+
+      <!-- Users Section (Hidden by default) -->
+      <div id="usersSection" style="display: none;">
+        <div class="deck-grid" id="userGrid">
+          <!-- Users will be loaded dynamically -->
+        </div>
+        <div class="empty-state" id="usersEmpty" style="display: none;">
+          <div class="empty-icon">
+            👤
+          </div>
+          <h2 class="empty-title">
+            Aucun utilisateur trouvé
+          </h2>
+          <p class="empty-text">
+            Essayez avec d'autres mots-clés
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <a href="{{ route('decks.create') }}" class="fab" title="Créer un nouveau deck">
+      <span>+</span>
+    </a>
+
+    <script>
+      async function toggleLike(deckId, button) {
+        try {
+          const isLiked = button.classList.contains("liked");
+          const endpoint = `/api/decks/${deckId}/${isLiked ? "unlike" : "like"}`;
+          const response = await fetch(endpoint, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "X-CSRF-Token": document.querySelector('meta[name="csrf-token"]')?.content || ""
+            }
+          });
+          if (response.ok) {
+            const data = await response.json();
+            button.classList.toggle("liked");
+            const heartEmoji = button.querySelector(".heart-emoji");
+            heartEmoji.textContent = button.classList.contains("liked") ? "❤️" : "🤍";
+            const countElement = button.querySelector(".like-count");
+            countElement.textContent = data.likesCount;
           }
+        } catch (error) {
+          console.error("Error toggling like:", error);
         }
-      } catch (error) {
-        console.error('Error loading users:', error);
-        document.getElementById('usersEmpty').style.display = 'block';
       }
-    }
-
-    // Auto-detect if we should show users tab by default
-    async function autoDetectTab() {
-      const query = "{{ query }}".toLowerCase();
-      const deckCount = document.querySelectorAll('.deck-item').length;
+      // Tab Switching
       
-      // If no decks found, try loading users
-      if (deckCount === 0) {
-        await loadUsers();
-        if (usersData.length > 0) {
-          // Switch to users tab automatically
-          switchTab('users');
-        }
-      } else {
-        // Load users in background for faster switching
-        loadUsers();
-      }
-    }
-
-    // Pagination Logic
-    const ITEMS_PER_PAGE = 51;
-    let currentPage = 1;
-    let totalPages = 1;
-
-    function initPagination() {
-      const deckItems = document.querySelectorAll('.deck-item');
-      const totalItems = deckItems.length;
+      let currentTab = "decks";
       
-      if (totalItems <= ITEMS_PER_PAGE) {
-        // No need for pagination
-        return;
-      }
-
-      totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
-      document.getElementById('pagination').style.display = 'flex';
-      updatePagination();
-    }
-
-    function updatePagination() {
-      const deckItems = document.querySelectorAll('.deck-item');
-      const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-      const endIndex = startIndex + ITEMS_PER_PAGE;
-
-      // Hide all items
-      deckItems.forEach((item, index) => {
-        if (index >= startIndex && index < endIndex) {
-          item.style.display = '';
+      let usersData = [];
+      
+      let usersLoaded = false;
+      
+      async function switchTab(tab) {
+        if (tab === currentTab) return;
+        currentTab = tab;
+        // Update tab buttons
+        document.getElementById("decksTab").classList.toggle("active", tab === "decks");
+        document.getElementById("usersTab").classList.toggle("active", tab === "users");
+        // Update sections
+        document.getElementById("decksSection").style.display = tab === "decks" ? "" : "none";
+        document.getElementById("usersSection").style.display = tab === "users" ? "" : "none";
+        // Update count
+        if (tab === "decks") {
+          const deckCount = document.querySelectorAll(".deck-item").length;
+          document.getElementById("countIcon").textContent = "📚";
+          document.getElementById("countValue").textContent = deckCount;
+          document.getElementById("countLabel").textContent = "deck(s) trouvé(s)";
         } else {
-          item.style.display = 'none';
+          // Load users if not already loaded
+          if (!usersLoaded) {
+            await loadUsers();
+          }
+          document.getElementById("countIcon").textContent = "�";
+          document.getElementById("countValue").textContent = usersData.length;
+          document.getElementById("countLabel").textContent = "utilisateur(s) trouvé(s)";
         }
-      });
-
-      // Update pagination UI
-      document.getElementById('currentPage').textContent = currentPage;
-      document.getElementById('totalPages').textContent = totalPages;
+      }
       
-      // Update button states
-      document.getElementById('prevBtn').disabled = currentPage === 1;
-      document.getElementById('nextBtn').disabled = currentPage === totalPages;
-
-      // Scroll to top
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    function changePage(direction) {
-      const newPage = currentPage + direction;
-      if (newPage >= 1 && newPage <= totalPages) {
-        currentPage = newPage;
+      async function loadUsers() {
+        try {
+          const query = "{{ query }}";
+          const response = await fetch(`/api/user-suggestions?query=${encodeURIComponent(query)}`);
+          if (response.ok) {
+            const usernames = await response.json();
+            usersData = usernames;
+            usersLoaded = true;
+            const userGrid = document.getElementById("userGrid");
+            const usersEmpty = document.getElementById("usersEmpty");
+            if (usernames.length > 0) {
+              userGrid.innerHTML = usernames.map(username => `
+                          <div class="user-card" onclick="window.location.href='/public-account/${username}'">
+                            <div class="user-avatar">${username.charAt(0).toUpperCase()}</div>
+                            <div class="user-info">
+                              <div class="user-name">${username}</div>
+                              <div class="user-stats">
+                                <span>Voir le profil →</span>
+                              </div>
+                            </div>
+                          </div>
+                        `).join("");
+              usersEmpty.style.display = "none";
+            } else {
+              userGrid.innerHTML = "";
+              usersEmpty.style.display = "block";
+            }
+          }
+        } catch (error) {
+          console.error("Error loading users:", error);
+          document.getElementById("usersEmpty").style.display = "block";
+        }
+      }
+      // Auto-detect if we should show users tab by default
+      
+      async function autoDetectTab() {
+        const query = "{{ query }}".toLowerCase();
+        const deckCount = document.querySelectorAll(".deck-item").length;
+        // If no decks found, try loading users
+        if (deckCount === 0) {
+          await loadUsers();
+          if (usersData.length > 0) {
+            // Switch to users tab automatically
+            switchTab("users");
+          }
+        } else {
+          // Load users in background for faster switching
+          loadUsers();
+        }
+      }
+      // Pagination Logic
+      
+      const ITEMS_PER_PAGE = 51;
+      
+      let currentPage = 1;
+      
+      let totalPages = 1;
+      
+      function initPagination() {
+        const deckItems = document.querySelectorAll(".deck-item");
+        const totalItems = deckItems.length;
+        if (totalItems <= ITEMS_PER_PAGE) {
+          // No need for pagination
+          return;
+        }
+        totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
+        document.getElementById("pagination").style.display = "flex";
         updatePagination();
       }
-    }
-
-    // Initialize pagination on page load
-    document.addEventListener('DOMContentLoaded', function() {
-      initPagination();
-      autoDetectTab();
-    });
-  </script>
-</body>
+      
+      function updatePagination() {
+        const deckItems = document.querySelectorAll(".deck-item");
+        const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+        const endIndex = startIndex + ITEMS_PER_PAGE;
+        // Hide all items
+        deckItems.forEach((item, index) => {
+          if (index >= startIndex && index < endIndex) {
+            item.style.display = "";
+          } else {
+            item.style.display = "none";
+          }
+        });
+        // Update pagination UI
+        document.getElementById("currentPage").textContent = currentPage;
+        document.getElementById("totalPages").textContent = totalPages;
+        // Update button states
+        document.getElementById("prevBtn").disabled = currentPage === 1;
+        document.getElementById("nextBtn").disabled = currentPage === totalPages;
+        // Scroll to top
+        window.scrollTo({
+          top: 0,
+          behavior: "smooth"
+        });
+      }
+      
+      function changePage(direction) {
+        const newPage = currentPage + direction;
+        if (newPage >= 1 && newPage <= totalPages) {
+          currentPage = newPage;
+          updatePagination();
+        }
+      }
+      // Initialize pagination on page load
+      
+      document.addEventListener("DOMContentLoaded", function() {
+        initPagination();
+        autoDetectTab();
+      });
+    </script>
+  </body>
 </html>

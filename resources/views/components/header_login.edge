@@ -1,13 +1,15 @@
 <style>
   /* Styles globaux */
+  
   * {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   }
-
+  
   /* Barre de navigation */
+  
   .header-navbar {
     backdrop-filter: blur(10px);
     background: var(--header-bg, rgba(255,255,255,0.8));
@@ -25,23 +27,27 @@
     z-index: 100;
     transition: background 0.3s, border 0.3s;
   }
-
+  
   /* Logo / Title */
+  
   .header-brand {
     display: flex;
     align-items: center;
     gap: 0.5rem;
     transition: opacity 0.3s;
   }
+  
   .header-brand:hover {
     opacity: 0.8;
   }
+  
   .header-brand img {
     height: 45px;
     width: auto;
   }
-
+  
   /* Theme switch styles */
+  
   .theme-switch {
     display: flex;
     align-items: center;
@@ -52,9 +58,11 @@
     border-radius: 20px;
     transition: background 0.3s;
   }
+  
   .theme-switch:hover {
     background: var(--switch-bg-hover, rgba(0,0,0,0.06));
   }
+  
   .theme-switch-slider {
     width: 40px;
     height: 22px;
@@ -65,6 +73,7 @@
     transition: background 0.3s;
     display: inline-block;
   }
+  
   .theme-switch-slider:before {
     content: '';
     position: absolute;
@@ -77,24 +86,29 @@
     transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     box-shadow: 0 2px 4px rgba(0,0,0,0.2);
   }
+  
   .theme-switch-input:checked + .theme-switch-slider {
     background: #1976d2;
   }
+  
   .theme-switch-input:checked + .theme-switch-slider:before {
     transform: translateX(18px);
     background: #fff;
   }
+  
   .theme-switch-input {
     display: none;
   }
-
+  
   /* Dark theme overrides */
+  
   body.theme-dark .header-navbar {
     --header-bg: rgba(10, 12, 16, 0.85);
     --border-color: rgba(255,255,255,0.05);
     --switch-bg: rgba(255,255,255,0.05);
     --switch-bg-hover: rgba(255,255,255,0.1);
   }
+  
   body.theme-dark .theme-switch-slider {
     background: #475569;
   }
@@ -120,27 +134,27 @@
 <script>
   // Theme switch logic
   function setTheme(theme) {
-    document.body.classList.remove('theme-light', 'theme-dark');
+    document.body.classList.remove("theme-light", "theme-dark");
     document.body.classList.add(theme);
-    localStorage.setItem('theme', theme);
-    var input = document.getElementById('themeSwitch');
+    localStorage.setItem("theme", theme);
+    var input = document.getElementById("themeSwitch");
     if (input) {
-      input.checked = theme === 'theme-dark';
+      input.checked = theme === "theme-dark";
     }
   }
+  
   function toggleTheme() {
-    var isDark = document.getElementById('themeSwitch').checked;
-    setTheme(isDark ? 'theme-dark' : 'theme-light');
+    var isDark = document.getElementById("themeSwitch").checked;
+    setTheme(isDark ? "theme-dark" : "theme-light");
   }
-
   // Init theme at DOM Content Loaded (script at start of page handles initial flash)
-  document.addEventListener('DOMContentLoaded', function() {
-    let theme = localStorage.getItem('theme') || 'theme-light';
+  
+  document.addEventListener("DOMContentLoaded", function() {
+    let theme = localStorage.getItem("theme") || "theme-light";
     setTheme(theme);
-    
-    var input = document.getElementById('themeSwitch');
+    var input = document.getElementById("themeSwitch");
     if (input) {
-      input.addEventListener('change', toggleTheme);
+      input.addEventListener("change", toggleTheme);
     }
   });
 </script>

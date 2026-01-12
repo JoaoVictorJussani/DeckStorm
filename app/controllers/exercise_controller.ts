@@ -6,7 +6,11 @@ import { v4 as uuidv4 } from 'uuid'
 
 export default class ExerciseController {
   async start({ params, view, request, auth, session }: HttpContext) {
-    const deck = await Deck.query().where('id', params.deckId).preload('cards').preload('user').first()
+    const deck = await Deck.query()
+      .where('id', params.deckId)
+      .preload('cards')
+      .preload('user')
+      .first()
     if (!deck) {
       return view.render('./pages/errors/not_found')
     }
@@ -20,13 +24,14 @@ export default class ExerciseController {
     if (retryCardIds && retryCardIds.length > 0) {
       cards = cards.filter((card: Card) => retryCardIds!.includes(card.id))
     }
-    let attempts = parseInt(request.input('attempts', '1'), 10) || 1
+    let attempts = Number.parseInt(request.input('attempts', '1'), 10) || 1
     const direction = request.input('direction', 'question')
     const user = auth?.user // Ajout de l'utilisateur authentifié
 
     // Vérifier la limite de tentatives si elle existe
     if (user && deck.attempt_limit !== null) {
-      const ExerciseAttempt = (await import('#models/exercise_attempt')).default
+      const exerciseAttemptModule = await import('#models/exercise_attempt')
+      const ExerciseAttempt = exerciseAttemptModule.default
 
       const attemptsDates = await ExerciseAttempt.query()
         .where('user_id', user.id)
@@ -41,7 +46,8 @@ export default class ExerciseController {
           const prev = attemptsDates[i - 1].createdAt
           const curr = attemptsDates[i].createdAt
           const diff = curr.diff(prev, 'minutes').minutes
-          if (diff >= 1) { // Même seuil que le rapport (1 minute)
+          if (diff >= 1) {
+            // Même seuil que le rapport (1 minute)
             sessionCount++
           }
         }
@@ -58,28 +64,36 @@ export default class ExerciseController {
       session.put(`exercise_token_${Number(deck.id)}`, exerciseToken)
     }
 
-    return view.render('start', { deck, cards, retryCardIds, attempts, direction, user, exerciseToken })
+    return view.render('start', {
+      deck,
+      cards,
+      retryCardIds,
+      attempts,
+      direction,
+      user,
+      exerciseToken,
+    })
   }
 
   async presentQuestion({ params, request, view }: HttpContext) {
-    const deck = await Deck.query().where('id', params.deckId).preload('cards').first();
+    const deck = await Deck.query().where('id', params.deckId).preload('cards').first()
     if (!deck) {
-      return view.render('./pages/errors/not_found');
+      return view.render('./pages/errors/not_found')
     }
     let retryCardIds = request.input('retryCardIds', null)
     if (retryCardIds && !Array.isArray(retryCardIds)) {
       retryCardIds = [retryCardIds]
     }
     retryCardIds = retryCardIds ? retryCardIds.map(Number).filter(Boolean) : null
-    let cards = deck.cards as unknown as Card[];
+    let cards = deck.cards as unknown as Card[]
     if (retryCardIds && retryCardIds.length > 0) {
-      cards = (cards as Card[]).filter((card: Card) => retryCardIds!.includes(card.id));
+      cards = (cards as Card[]).filter((card: Card) => retryCardIds!.includes(card.id))
     }
-    const questionIndex = parseInt(params.questionIndex, 10);
-    const startTime = request.input('startTime');
-    const results = request.input('results', '[]');
-    const mode = request.input('mode', 'chronometre');
-    let attempts = parseInt(request.input('attempts', '1'), 10) || 1
+    const questionIndex = Number.parseInt(params.questionIndex, 10)
+    const startTime = request.input('startTime')
+    const results = request.input('results', '[]')
+    const mode = request.input('mode', 'chronometre')
+    let attempts = Number.parseInt(request.input('attempts', '1'), 10) || 1
     const direction = request.input('direction', 'question')
     const exerciseToken = request.input('exerciseToken')
 
@@ -94,8 +108,8 @@ export default class ExerciseController {
         incorrectCards: [],
         showRetry: false,
         retryCardIds: [],
-        exerciseToken
-      });
+        exerciseToken,
+      })
     }
 
     if (questionIndex >= cards.length) {
@@ -109,50 +123,63 @@ export default class ExerciseController {
         incorrectCards: [],
         showRetry: false,
         retryCardIds: [],
-        exerciseToken
-      });
+        exerciseToken,
+      })
     }
 
-    const card = cards[questionIndex];
+    const card = cards[questionIndex]
 
     let quizOptions: any[] = []
     if (request.input('mode') === 'quiz') {
       const correctText = direction === 'question' ? card.answer : card.question
       quizOptions.push({ text: correctText, isCorrect: true })
 
-      const distractors = (deck.cards as unknown as Card[]).filter(c => c.id !== card.id)
+      const distractors = (deck.cards as unknown as Card[]).filter((c) => c.id !== card.id)
 
       for (let i = distractors.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [distractors[i], distractors[j]] = [distractors[j], distractors[i]];
+        const j = Math.floor(Math.random() * (i + 1))
+        ;[distractors[i], distractors[j]] = [distractors[j], distractors[i]]
       }
 
       const wrong = distractors.slice(0, 3)
-      wrong.forEach(w => {
+      wrong.forEach((w) => {
         const wrongText = direction === 'question' ? w.answer : w.question
-        if (!quizOptions.find(o => o.text === wrongText)) {
+        if (!quizOptions.find((o) => o.text === wrongText)) {
           quizOptions.push({ text: wrongText, isCorrect: false })
         }
       })
 
       for (let i = quizOptions.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [quizOptions[i], quizOptions[j]] = [quizOptions[j], quizOptions[i]];
+        const j = Math.floor(Math.random() * (i + 1))
+        ;[quizOptions[i], quizOptions[j]] = [quizOptions[j], quizOptions[i]]
       }
     }
 
-    return view.render('present_question_with_time', { deck, cards, card, questionIndex, startTime, results, mode, retryCardIds, attempts, direction, quizOptions, exerciseToken });
+    return view.render('present_question_with_time', {
+      deck,
+      cards,
+      card,
+      questionIndex,
+      startTime,
+      results,
+      mode,
+      retryCardIds,
+      attempts,
+      direction,
+      quizOptions,
+      exerciseToken,
+    })
   }
 
   async finish({ params, request, view, auth, session, response }: HttpContext) {
-    const deck = await Deck.query().where('id', params.deckId).preload('cards').first();
+    const deck = await Deck.query().where('id', params.deckId).preload('cards').first()
     if (!deck) {
-      return view.render('./pages/errors/not_found');
+      return view.render('./pages/errors/not_found')
     }
 
-    const mode = request.input('mode', 'chronometre');
-    const elapsedTime = parseInt(request.input('elapsedTime', '0'), 10);
-    const results = JSON.parse(request.input('results', '[]'));
+    const mode = request.input('mode', 'chronometre')
+    const elapsedTime = Number.parseInt(request.input('elapsedTime', '0'), 10)
+    const results = JSON.parse(request.input('results', '[]'))
     let retryCardIds = request.input('retryCardIds', null)
     if (retryCardIds && !Array.isArray(retryCardIds)) {
       retryCardIds = [retryCardIds]
@@ -162,8 +189,8 @@ export default class ExerciseController {
     if (retryCardIds && retryCardIds.length > 0) {
       cards = cards.filter((card: Card) => retryCardIds!.includes(card.id))
     }
-    const incorrectCards = cards.filter((card: Card) => !results.includes(card.id));
-    let attempts = parseInt(request.input('attempts', '1'), 10) || 1
+    const incorrectCards = cards.filter((card: Card) => !results.includes(card.id))
+    let attempts = Number.parseInt(request.input('attempts', '1'), 10) || 1
     const direction = request.input('direction', 'question')
     const exerciseToken = request.input('exerciseToken')
 
@@ -184,32 +211,33 @@ export default class ExerciseController {
         session.forget(`exercise_token_${Number(deck.id)}`)
       }
 
-      const userId = auth.user.id;
-      let userStats = await UserStats.findBy('user_id', userId);
+      const userId = auth.user.id
+      let userStats = await UserStats.findBy('user_id', userId)
       if (!userStats) {
-        userStats = new UserStats();
-        userStats.user_id = userId;
-        userStats.decks_studied = 0;
-        userStats.correct_answers = 0;
-        userStats.wrong_answers = 0;
-        userStats.total_study_time = 0;
+        userStats = new UserStats()
+        userStats.user_id = userId
+        userStats.decks_studied = 0
+        userStats.correct_answers = 0
+        userStats.wrong_answers = 0
+        userStats.total_study_time = 0
       }
 
       // On met à jour les stats cumulatives
-      userStats.correct_answers += results.length;
-      userStats.wrong_answers += incorrectCards.length;
-      userStats.total_study_time += isNaN(elapsedTime) ? 0 : elapsedTime;
+      userStats.correct_answers += results.length
+      userStats.wrong_answers += incorrectCards.length
+      userStats.total_study_time += Number.isNaN(elapsedTime) ? 0 : elapsedTime
 
       // On incrémente decks_studied seulement si l'exercice est terminé (pas de retry ou hors mode jusquaubout)
       if (mode !== 'jusquaubout' || incorrectCards.length === 0) {
-        userStats.decks_studied += 1;
+        userStats.decks_studied += 1
       }
 
-      await userStats.save();
+      await userStats.save()
 
       // --- SAVE EXERCISE ATTEMPTS (For Reports) ---
-      const attemptsToCreate: any[] = [];
-      const ExerciseAttempt = (await import('#models/exercise_attempt')).default;
+      const attemptsToCreate: any[] = []
+      const exerciseAttemptModule2 = await import('#models/exercise_attempt')
+      const ExerciseAttempt = exerciseAttemptModule2.default
 
       // Correct answers
       for (const cardId of results) {
@@ -218,7 +246,7 @@ export default class ExerciseController {
           deckId: deck.id,
           cardId: Number(cardId),
           isCorrect: true,
-        });
+        })
       }
 
       // Incorrect answers
@@ -228,11 +256,11 @@ export default class ExerciseController {
           deckId: deck.id,
           cardId: card.id,
           isCorrect: false,
-        });
+        })
       }
 
       if (attemptsToCreate.length > 0) {
-        await ExerciseAttempt.createMany(attemptsToCreate);
+        await ExerciseAttempt.createMany(attemptsToCreate)
       }
       // ---------------------------------------------
     }
@@ -251,8 +279,8 @@ export default class ExerciseController {
         retryCardIds: incorrectCards.map((card: Card) => card.id),
         attempts: (attempts as number) + 1,
         direction,
-        exerciseToken
-      });
+        exerciseToken,
+      })
     }
 
     return view.render('finish_with_time', {
@@ -266,7 +294,7 @@ export default class ExerciseController {
       retryCardIds: [],
       attempts,
       direction,
-      user: auth.user  // Ajout de l'utilisateur authentifié
-    });
+      user: auth.user, // Ajout de l'utilisateur authentifié
+    })
   }
 }

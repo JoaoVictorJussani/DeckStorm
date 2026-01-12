@@ -2,19 +2,19 @@ name: CI Tests
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [main, develop]
   pull_request:
-    branches: [ main, develop ]
+    branches: [main, develop]
 
 jobs:
   test:
     name: Test on Node ${{ matrix.node-version }}
     runs-on: ubuntu-latest
-    
+
     strategy:
       matrix:
         node-version: [18.x, 20.x]
-    
+
     services:
       mysql:
         image: mysql:8.0
@@ -87,7 +87,7 @@ jobs:
     name: Build Application
     runs-on: ubuntu-latest
     needs: test
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4

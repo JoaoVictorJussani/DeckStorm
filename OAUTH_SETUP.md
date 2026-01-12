@@ -12,7 +12,7 @@ Vous devez créer des applications OAuth sur chaque plateforme que vous souhaite
 
 1. Allez sur [Google Cloud Console](https://console.cloud.google.com/apis/credentials)
 2. Créez un nouveau projet ou sélectionnez un projet existant
-3. Activez l'API Google+ 
+3. Activez l'API Google+
 4. Créez des identifiants OAuth 2.0 :
    - Type d'application : Application Web
    - URI de redirection autorisés : `http://localhost:3333/auth/google/callback`
@@ -44,6 +44,7 @@ Vous devez créer des applications OAuth sur chaque plateforme que vous souhaite
 ## 🚀 Utilisation
 
 Une fois configuré, les utilisateurs peuvent se connecter via :
+
 - **Google** : `/auth/google`
 - **GitHub** : `/auth/github`
 - **Discord** : `/auth/discord`

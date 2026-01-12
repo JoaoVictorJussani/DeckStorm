@@ -72,7 +72,7 @@ services:
       context: .
       dockerfile: Dockerfile.prod
     ports:
-      - "3333:3333"
+      - '3333:3333'
     environment:
       - NODE_ENV=production
     env_file:
@@ -98,8 +98,8 @@ services:
   nginx:
     image: nginx:alpine
     ports:
-      - "80:80"
-      - "443:443"
+      - '80:80'
+      - '443:443'
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
       - ./ssl:/etc/nginx/ssl:ro

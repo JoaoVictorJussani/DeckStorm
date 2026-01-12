@@ -17,5 +17,5 @@ const allyConfig = defineConfig({
 export default allyConfig
 
 declare module '@adonisjs/ally/types' {
-  interface SocialProviders extends InferSocialProviders<typeof allyConfig> { }
+  interface SocialProviders extends InferSocialProviders<typeof allyConfig> {}
 }

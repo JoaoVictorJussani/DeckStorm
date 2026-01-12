@@ -13,5 +13,5 @@
 */
 
 export const policies = {
-  DeckPolicy: () => import('#policies/deck_policy')
+  DeckPolicy: () => import('#policies/deck_policy'),
 }

@@ -1,13 +1,15 @@
 <style>
   /* Styles globaux */
+  
   * {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   }
-
+  
   /* Style du corps */
+  
   body {
     background: #fff;
     color: #222;
@@ -17,17 +19,19 @@
     min-height: 100vh;
     font-size: 1rem;
   }
-
+  
   body.theme-light {
     background: #fff;
     color: #222;
   }
+  
   body.theme-dark {
     background: #0a0c10;
     color: #e6e9ef;
   }
-
+  
   /* Barre de navigation */
+  
   .header-navbar {
     backdrop-filter: blur(8px);
     background: var(--header-bg, rgba(255,255,255,0.95));
@@ -45,12 +49,12 @@
     left: 0;
     z-index: 10;
   }
-
+  
   .header-navbar h2 {
     font-size: 1.8rem;
     font-weight: 700;
   }
-
+  
   .header-navbar button {
     background: var(--primary, #1976d2);
     color: white;
@@ -61,30 +65,32 @@
     font-size: 1rem;
     transition: background 0.3s ease;
   }
-
+  
   .header-navbar button:hover {
     background: var(--primary-hover, #1565c0);
   }
-
+  
   .header-navbar a {
     text-decoration: none;
     color: var(--primary, #1976d2);
     font-size: 1.5rem;
     font-weight: bold;
   }
-
+  
   .header-navbar img {
     height: 36px;
     width: 36px;
     margin-right: 0.7rem;
     vertical-align: middle;
   }
-
+  
   /* Dropdown styles */
+  
   .header-dropdown {
     position: relative;
     display: inline-block;
   }
+  
   .header-dropdown-toggle {
     background: linear-gradient(135deg, #1976d2, #1565c0);
     color: white;
@@ -100,11 +106,13 @@
     align-items: center;
     gap: 0.5rem;
   }
-  .header-dropdown-toggle:hover, 
+  
+  .header-dropdown-toggle:hover,
   .header-dropdown-toggle:focus {
     background: #1565c0;
     color: #fff;
   }
+  
   .header-dropdown-menu {
     display: none;
     position: absolute;
@@ -118,10 +126,12 @@
     margin-top: 0.5rem;
     padding: 0.5rem 0;
   }
+  
   .header-dropdown.open .header-dropdown-menu {
     display: block;
   }
-  .header-dropdown-menu a, 
+  
+  .header-dropdown-menu a,
   .header-dropdown-menu button {
     display: block;
     width: 100%;
@@ -137,25 +147,29 @@
     transition: background 0.2s, color 0.2s;
     text-decoration: none;
   }
-  .header-dropdown-menu a:hover, 
+  
+  .header-dropdown-menu a:hover,
   .header-dropdown-menu button:hover {
     background: var(--primary, #1976d2);
     color: #fff;
   }
+  
   .header-logout-btn {
     color: #ff4d4d;
   }
+  
   .header-logout-btn:hover {
     background: #ff4d4d !important;
     color: #fff;
   }
-
+  
   /* Box survolante d'aide */
+  
   #idea-box {
-    display:none;
-    position:fixed;
-    top:90px;
-    right:30px;
+    display: none;
+    position: fixed;
+    top: 90px;
+    right: 30px;
     backdrop-filter: blur(10px);
     background: var(--dropdown-bg, rgba(255,255,255,0.98));
     color: var(--primary, #1976d2);
@@ -168,26 +182,28 @@
     transform: translateY(10px);
     animation: slideIn 0.3s ease forwards;
   }
-
+  
   @keyframes slideIn {
     from {
       opacity: 0;
       transform: translateY(20px);
     }
+  
     to {
       opacity: 1;
       transform: translateY(0);
     }
   }
-
+  
   /* Search bar styles */
+  
   .header-search {
     flex: 1;
     max-width: 500px;
     margin: 0 2rem;
     position: relative;
   }
-
+  
   .header-search input {
     width: 100%;
     padding: 0.6rem 1rem;
@@ -199,19 +215,20 @@
     transition: border 0.2s, box-shadow 0.2s;
     backdrop-filter: blur(4px);
   }
-
+  
   .header-search input:focus {
     outline: none;
     border-color: var(--primary, #1976d2);
     box-shadow: 0 0 8px var(--primary, #1976d2);
   }
-
+  
   .header-search input::placeholder {
     color: #888;
     opacity: 1;
   }
-
+  
   /* Theme switch styles */
+  
   .theme-switch {
     display: flex;
     align-items: center;
@@ -219,12 +236,14 @@
     margin-right: 1rem;
     user-select: none;
   }
+  
   .theme-switch-label {
     font-size: 1.1rem;
     color: var(--primary, #1976d2);
     cursor: pointer;
     font-weight: 500;
   }
+  
   .theme-switch-slider {
     width: 44px;
     height: 24px;
@@ -235,6 +254,7 @@
     transition: background 0.2s;
     display: inline-block;
   }
+  
   .theme-switch-slider:before {
     content: '';
     position: absolute;
@@ -247,18 +267,22 @@
     transition: transform 0.2s;
     box-shadow: 0 1px 4px rgba(0,0,0,0.10);
   }
+  
   .theme-switch-input:checked + .theme-switch-slider {
     background: #222;
   }
+  
   .theme-switch-input:checked + .theme-switch-slider:before {
     transform: translateX(20px);
     background: #ffe600;
   }
+  
   .theme-switch-input {
     display: none;
   }
-
+  
   /* Dark theme overrides */
+  
   body.theme-dark .header-navbar {
     --header-bg: rgba(10,12,16,0.95);
     --header-color: #e6e9ef;
@@ -271,34 +295,39 @@
     --search-border: rgba(25, 118, 210, 0.25);
     --input-color: #e0e0e0;
   }
+  
   body.theme-dark .header-dropdown-menu,
   body.theme-dark #idea-box {
     --dropdown-bg: rgba(34,34,34,0.95);
     --dropdown-border: rgba(25, 118, 210, 0.18);
     --shadow: rgba(25, 118, 210, 0.10);
   }
+  
   body.theme-dark .header-search input {
     --search-bg: rgba(17,19,23,0.85);
     --input-color: #e0e0e0;
     --search-border: rgba(25, 118, 210, 0.25);
   }
-
+  
   @media (max-width: 768px) {
     .header-search {
       display: none;
     }
   }
-
+  
   @media (max-width: 1200px) {
-    .search-switch, .view-switch {
+    .search-switch,
+    .view-switch {
       display: none;
     }
+  
     .header-search {
       margin: 0 1rem;
     }
   }
-
+  
   /* Botão de convite */
+  
   .invite-btn {
     background: linear-gradient(90deg, #1976d2 60%, #1565c0 100%);
     color: #fff;
@@ -312,38 +341,46 @@
     box-shadow: 0 2px 8px rgba(25, 118, 210, 0.10);
     transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
   }
+  
   .invite-btn:hover {
     background: #1565c0;
     transform: translateY(-2px) scale(1.05);
     box-shadow: 0 4px 16px rgba(25, 118, 210, 0.18);
   }
+  
   .invite-btn.refuse {
     background: #fff;
     color: #ff4d4d;
     border: 2px solid #ff4d4d;
     box-shadow: 0 2px 8px rgba(255,77,77,0.08);
   }
+  
   .invite-btn.refuse:hover {
     background: #ff4d4d;
     color: #fff;
     border-color: #ff4d4d;
   }
-
+  
   /* Modal de convite */
+  
   .invite-modal {
     display: none;
     position: fixed;
     z-index: 9999;
-    left: 0; top: 0;
-    width: 100vw; height: 100vh;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
     background: rgba(25, 118, 210, 0.18);
     backdrop-filter: blur(4px);
     align-items: center;
     justify-content: center;
   }
+  
   .invite-modal.active {
     display: flex;
   }
+  
   .invite-modal-content {
     background: #fff;
     color: #1976d2;
@@ -356,43 +393,58 @@
     text-align: center;
     animation: slideIn 0.3s ease;
   }
+  
   body.theme-dark .invite-modal-content {
     background: #181c23;
     color: #e6e9ef;
   }
+  
   .invite-modal-close {
     position: absolute;
-    top: 12px; right: 18px;
+    top: 12px;
+    right: 18px;
     background: #e3f2fd;
     color: #1976d2;
     border: none;
     border-radius: 50%;
     font-size: 1.3rem;
-    width: 36px; height: 36px;
+    width: 36px;
+    height: 36px;
     cursor: pointer;
     transition: background 0.2s, color 0.2s;
   }
+  
   .invite-modal-close:hover {
     background: #1976d2;
     color: #fff;
   }
+  
   @keyframes slideIn {
-    from { opacity: 0; transform: translateY(20px);}
-    to { opacity: 1; transform: translateY(0);}
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+  
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 </style>
 
 <div class="header-navbar">
   <a href="{{ route('home') }}" title="Retourner à l'accueil">
-    <img src="/images/icone.ico" alt="Logo DeckStorm" title="Logo DeckStorm">DeckStorm
+    <img src="/images/icone.ico" alt="Logo DeckStorm" title="Logo DeckStorm" />DeckStorm
   </a>
-  
-  <div style="display: flex; align-items: center; gap: 1rem; flex: 1; justify-content: center; max-width: 800px;">
+
+  <div
+    style="display: flex; align-items: center; gap: 1rem; flex: 1; justify-content: center; max-width: 800px;"
+  >
     <div class="header-search">
-      <input 
-        type="text" 
+      <input
+        type="text"
         id="headerSearch"
-        placeholder="Rechercher des decks..." 
+        placeholder="Rechercher des decks..."
         title="Rechercher des decks par titre, description ou auteur"
         onkeyup="headerSearchDecks(event)"
       />
@@ -407,32 +459,44 @@
       <span class="theme-switch-slider" onclick="document.getElementById('themeSwitch').click()"></span>
       <span style="font-size:1.2rem;user-select:none;">🌙</span>
     </div>
-    <button id="idea-btn" 
-            style="color: #1976d2; background: none; border: none; cursor: pointer; font-size: 1.8rem; padding: 0;"
-            title="Afficher les astuces d'utilisation">
+    <button
+      id="idea-btn"
+      style="color: #1976d2; background: none; border: none; cursor: pointer; font-size: 1.8rem; padding: 0;"
+      title="Afficher les astuces d'utilisation"
+    >
       💡
     </button>
     <!-- Notificações -->
     <div style="position:relative;">
-      <button id="notif-bell" 
-              style="color: #1976d2; background: none; border: none; cursor: pointer; font-size: 1.8rem; padding: 0; position:relative;"
-              onclick="toggleNotifDropdown()" 
-              title="Notifications">
+      <button
+        id="notif-bell"
+        style="color: #1976d2; background: none; border: none; cursor: pointer; font-size: 1.8rem; padding: 0; position:relative;"
+        onclick="toggleNotifDropdown()"
+        title="Notifications"
+      >
         🔔
-        <span id="notif-dot" style="display:none;position:absolute;top:0;right:0;width:12px;height:12px;background:#ff4d4d;border-radius:50%;"></span>
+        <span
+          id="notif-dot"
+          style="display:none;position:absolute;top:0;right:0;width:12px;height:12px;background:#ff4d4d;border-radius:50%;"
+        ></span>
       </button>
-      <div id="notif-dropdown" style="display:none;position:absolute;right:0;top:40px;min-width:300px;max-width:400px;background:#fff;border:1px solid #1976d2;border-radius:10px;box-shadow:0 4px 20px rgba(25,118,210,0.10);z-index:999;">
+      <div
+        id="notif-dropdown"
+        style="display:none;position:absolute;right:0;top:40px;min-width:300px;max-width:400px;background:#fff;border:1px solid #1976d2;border-radius:10px;box-shadow:0 4px 20px rgba(25,118,210,0.10);z-index:999;"
+      >
         <div style="padding:1rem;">
           <b>Notifications</b>
           <ul style="list-style:none;padding:0;margin:0;max-height:350px;overflow-y:auto;">
             @if(notifications?.length)
               @each(n in notifications)
-                <li 
+                <li
                   id="notif-li-{{ n.id }}"
                   data-notif-id="{{ n.id }}"
                   style="padding:0.5rem 0;border-bottom:1px solid #eee; background:#fff;"
                 >
-                  <div>{{ n.message }}</div>
+                  <div>
+                    {{ n.message }}
+                  </div>
                   <div style="font-size:0.85em;color:#888;margin-top:2px;">
                     {{ n.created_at?.toRelative ? n.created_at.toRelative() : n.created_at }}
                   </div>
@@ -449,7 +513,9 @@
                 </li>
               @endeach
             @else
-              <li style="color:#888;">Aucune notifications.</li>
+              <li style="color:#888;">
+                Aucune notifications.
+              </li>
             @endif
           </ul>
         </div>
@@ -460,16 +526,18 @@
       Bienvenue {{ auth.user.username }}
     @endif
     <div class="header-dropdown" id="header-userDropdown">
-      <button class="header-dropdown-toggle" 
-              onclick="headerToggleDropdown()" 
-              aria-haspopup="true" 
-              aria-expanded="false" 
-              title="Ouvrir le menu utilisateur">
+      <button
+        class="header-dropdown-toggle"
+        onclick="headerToggleDropdown()"
+        aria-haspopup="true"
+        aria-expanded="false"
+        title="Ouvrir le menu utilisateur"
+      >
         <span>▼</span>
       </button>
       <div class="header-dropdown-menu" id="header-dropdownMenu">
         @if(auth?.user)
-        <a href="/account/{{ auth.user.id }}" title="Gérer votre profil et vos decks">Profil</a>
+          <a href="/account/{{ auth.user.id }}" title="Gérer votre profil et vos decks">Profil</a>
         @endif
         <form action="/logout" method="POST" style="margin:0;">
           {{ csrfField() }}
@@ -481,16 +549,35 @@
 </div>
 
 <!-- Box survolante d'aide -->
-<div id="idea-box" style="display:none; position:fixed; top:90px; right:30px; background:#fff; color:#1976d2; border:2px solid #1976d2; border-radius:12px; box-shadow: 0 8px 32px rgba(25,118,210,0.10); padding:1.5rem 2rem 1.5rem 1.5rem; max-width:350px; z-index:9999;">
-  <button onclick="closeIdeaBox()" style="position:absolute; top:8px; right:10px; background:none; border:none; color:#1976d2; font-size:1.3rem; cursor:pointer;" aria-label="Fermer">✖</button>
-  <div style="font-size:1.2rem; margin-bottom:0.7rem;"><b>Astuce DeckStorm</b></div>
+<div
+  id="idea-box"
+  style="display:none; position:fixed; top:90px; right:30px; background:#fff; color:#1976d2; border:2px solid #1976d2; border-radius:12px; box-shadow: 0 8px 32px rgba(25,118,210,0.10); padding:1.5rem 2rem 1.5rem 1.5rem; max-width:350px; z-index:9999;"
+>
+  <button
+    onclick="closeIdeaBox()"
+    style="position:absolute; top:8px; right:10px; background:none; border:none; color:#1976d2; font-size:1.3rem; cursor:pointer;"
+    aria-label="Fermer"
+  >✖</button>
+  <div style="font-size:1.2rem; margin-bottom:0.7rem;">
+    <b>Astuce DeckStorm</b>
+  </div>
   <div style="color:#222; font-size:1rem;">
     <ul style="margin:0 0 0 1.2rem; padding:0;">
-      <li>Créez, modifiez et partagez vos decks facilement.</li>
-      <li>Utilisez <b>Exercer</b> pour réviser vos cartes.</li>
-      <li>Ajoutez des cartes avec des questions claires.</li>
-      <li>Partagez vos decks publics avec le QR code ou le lien.</li>
-      <li>Survolez les boutons pour plus d'infos.</li>
+      <li>
+        Créez, modifiez et partagez vos decks facilement.
+      </li>
+      <li>
+        Utilisez <b>Exercer</b>pour réviser vos cartes.
+      </li>
+      <li>
+        Ajoutez des cartes avec des questions claires.
+      </li>
+      <li>
+        Partagez vos decks publics avec le QR code ou le lien.
+      </li>
+      <li>
+        Survolez les boutons pour plus d'infos.
+      </li>
     </ul>
   </div>
 </div>
@@ -498,8 +585,13 @@
 <!-- Modal de convite (exemplo, pode ser ativado via JS) -->
 <div id="invite-modal" class="invite-modal">
   <div class="invite-modal-content">
-    <button class="invite-modal-close" onclick="document.getElementById('invite-modal').classList.remove('active')">×</button>
-    <div id="invite-modal-message">Você foi convidado para um deck restrito!</div>
+    <button
+      class="invite-modal-close"
+      onclick="document.getElementById('invite-modal').classList.remove('active')"
+    >×</button>
+    <div id="invite-modal-message">
+      Você foi convidado para um deck restrito!
+    </div>
     <form id="invite-accept-form" method="POST" style="margin-top:1.5rem;">
       {{ csrfField() }}
       <button type="submit" class="invite-btn">Accepter</button>
@@ -513,138 +605,134 @@
 
 <script>
   function headerToggleDropdown() {
-    document.getElementById('header-userDropdown').classList.toggle('open');
+    document.getElementById("header-userDropdown").classList.toggle("open");
   }
-  document.addEventListener('click', function(event) {
-    const dropdown = document.getElementById('header-userDropdown');
+  
+  document.addEventListener("click", function(event) {
+    const dropdown = document.getElementById("header-userDropdown");
     if (dropdown && !dropdown.contains(event.target)) {
-      dropdown.classList.remove('open');
+      dropdown.classList.remove("open");
     }
     // Fermer la box idée si clic en dehors
-    const ideaBox = document.getElementById('idea-box');
-    const ideaBtn = document.getElementById('idea-btn');
-    if (ideaBox && ideaBox.style.display === 'block' && !ideaBox.contains(event.target) && event.target !== ideaBtn) {
-      ideaBox.style.display = 'none';
+    const ideaBox = document.getElementById("idea-box");
+    const ideaBtn = document.getElementById("idea-btn");
+    if (ideaBox && ideaBox.style.display === "block" && !ideaBox.contains(event.target) && event.target !== ideaBtn) {
+      ideaBox.style.display = "none";
     }
     // Fermer dropdown de notifications si clic en dehors (mais PAS si clic sur la cloche ou le menu)
-    const notifDropdown = document.getElementById('notif-dropdown');
-    const notifBell = document.getElementById('notif-bell');
-    if (
-      notifDropdown &&
-      notifDropdown.style.display === 'block' &&
-      !notifDropdown.contains(event.target) &&
-      event.target !== notifBell
-    ) {
-      notifDropdown.style.display = 'none';
+    const notifDropdown = document.getElementById("notif-dropdown");
+    const notifBell = document.getElementById("notif-bell");
+    if (notifDropdown && notifDropdown.style.display === "block" && !notifDropdown.contains(event.target) && event.target !== notifBell) {
+      notifDropdown.style.display = "none";
     }
   });
-
   // Afficher/masquer la box idée
-  document.getElementById('idea-btn').onclick = function(e) {
+  
+  document.getElementById("idea-btn").onclick = function(e) {
     e.stopPropagation();
-    const box = document.getElementById('idea-box');
-    box.style.display = box.style.display === 'block' ? 'none' : 'block';
+    const box = document.getElementById("idea-box");
+    box.style.display = box.style.display === "block" ? "none" : "block";
   };
+  
   function closeIdeaBox() {
-    document.getElementById('idea-box').style.display = 'none';
+    document.getElementById("idea-box").style.display = "none";
   }
-
   // Fonction de recherche dynamique
+  
   function headerSearchDecks(event) {
-    const input = document.getElementById('headerSearch');
+    const input = document.getElementById("headerSearch");
     const query = input.value.trim();
-
-    if(event.key === 'Enter' && query.length > 0) {
-      window.location.href = '/deck/search?q=' + encodeURIComponent(query);
+    if (event.key === "Enter" && query.length > 0) {
+      window.location.href = "/deck/search?q=" + encodeURIComponent(query);
     }
   }
-
   // Theme switch logic
+  
   function setTheme(theme) {
-    document.body.classList.remove('theme-light', 'theme-dark');
+    document.body.classList.remove("theme-light", "theme-dark");
     document.body.classList.add(theme);
-    localStorage.setItem('theme', theme);
-    var input = document.getElementById('themeSwitch');
+    localStorage.setItem("theme", theme);
+    var input = document.getElementById("themeSwitch");
     if (input) {
-      input.checked = theme === 'theme-dark';
+      input.checked = theme === "theme-dark";
     }
   }
+  
   function toggleTheme() {
-    var isDark = document.getElementById('themeSwitch').checked;
-    setTheme(isDark ? 'theme-dark' : 'theme-light');
+    var isDark = document.getElementById("themeSwitch").checked;
+    setTheme(isDark ? "theme-dark" : "theme-light");
   }
-
   // Inicialização do tema ao carregar
-  document.addEventListener('DOMContentLoaded', function() {
-    let theme = localStorage.getItem('theme');
+  
+  document.addEventListener("DOMContentLoaded", function() {
+    let theme = localStorage.getItem("theme");
     if (!theme) {
-      theme = 'theme-light';
+      theme = "theme-light";
     }
     setTheme(theme);
     // Corrige o estado do switch se o usuário navegar entre páginas
-    var input = document.getElementById('themeSwitch');
+    var input = document.getElementById("themeSwitch");
     if (input) {
       input.onchange = toggleTheme;
       // Garante que o switch está correto conforme o fundo
-      input.checked = document.body.classList.contains('theme-dark');
+      input.checked = document.body.classList.contains("theme-dark");
     }
-
     // Affichage du dot selon notifications et sessionStorage
-    const dot = document.getElementById('notif-dot');
+    const dot = document.getElementById("notif-dot");
     const notificationsCount = {{ notifications?.length || 0 }};
     if (dot) {
-      if (notificationsCount > 0 && !sessionStorage.getItem('notifDotHidden')) {
-        dot.style.display = 'block';
+      if (notificationsCount > 0 && !sessionStorage.getItem("notifDotHidden")) {
+        dot.style.display = "block";
       } else {
-        dot.style.display = 'none';
+        dot.style.display = "none";
       }
       if (notificationsCount === 0) {
-        sessionStorage.removeItem('notifDotHidden');
+        sessionStorage.removeItem("notifDotHidden");
       }
     }
   });
-
+  
   function colorNotifLis() {
     // Coloration des notifications jamais vues en bleu clair
     let seenIds = [];
     try {
-      seenIds = JSON.parse(localStorage.getItem('seenNotifIds') || '[]');
+      seenIds = JSON.parse(localStorage.getItem("seenNotifIds") || "[]");
     } catch {}
-    const notifLis = document.querySelectorAll('#notif-dropdown li[data-notif-id]');
+    const notifLis = document.querySelectorAll("#notif-dropdown li[data-notif-id]");
     notifLis.forEach(li => {
-      const id = parseInt(li.getAttribute('data-notif-id'));
+      const id = parseInt(li.getAttribute("data-notif-id"));
       if (!seenIds.includes(id)) {
-        li.style.background = '#e3f2fd';
+        li.style.background = "#e3f2fd";
       } else {
-        li.style.background = '#fff';
+        li.style.background = "#fff";
       }
     });
   }
-
+  
   function toggleNotifDropdown() {
-    const dd = document.getElementById('notif-dropdown');
-    const isOpen = dd.style.display === 'block';
-    dd.style.display = isOpen ? 'none' : 'block';
+    const dd = document.getElementById("notif-dropdown");
+    const isOpen = dd.style.display === "block";
+    dd.style.display = isOpen ? "none" : "block";
     if (!isOpen) {
       // Affiche le menu, applique la coloration
       colorNotifLis();
       // Retire le point rouge après ouverture et marque comme "vu" dans sessionStorage
-      const dot = document.getElementById('notif-dot');
+      const dot = document.getElementById("notif-dot");
       if (dot) {
-        dot.style.display = 'none';
-        sessionStorage.setItem('notifDotHidden', '1');
+        dot.style.display = "none";
+        sessionStorage.setItem("notifDotHidden", "1");
       }
       // Marquer toutes les notifications affichées comme "vues" dans localStorage
-      const notifLis = dd.querySelectorAll('li[data-notif-id]');
-      let seenIds = JSON.parse(localStorage.getItem('seenNotifIds') || '[]');
+      const notifLis = dd.querySelectorAll("li[data-notif-id]");
+      let seenIds = JSON.parse(localStorage.getItem("seenNotifIds") || "[]");
       notifLis.forEach(li => {
-        const id = parseInt(li.getAttribute('data-notif-id'));
+        const id = parseInt(li.getAttribute("data-notif-id"));
         if (!seenIds.includes(id)) seenIds.push(id);
       });
-      localStorage.setItem('seenNotifIds', JSON.stringify(seenIds));
+      localStorage.setItem("seenNotifIds", JSON.stringify(seenIds));
       // Mettre à jour le fond des notifications
       notifLis.forEach(li => {
-        li.style.background = '#fff';
+        li.style.background = "#fff";
       });
     }
   }

@@ -172,6 +172,7 @@ Dans votre repository GitHub, allez dans **Settings > Secrets and variables > Ac
 ### Déploiement automatique
 
 Le workflow GitHub Actions se déclenche automatiquement sur :
+
 - Push sur la branche `main`
 - Création d'un tag `v*`
 - Déclenchement manuel
@@ -294,6 +295,7 @@ sudo ufw enable
 ## Support
 
 Pour plus d'informations, consultez :
+
 - [Workflow de déploiement](.agent/workflows/deploy-production.md)
 - [Configuration OAuth](OAUTH_SETUP.md)
 - [Documentation AdonisJS](https://docs.adonisjs.com)

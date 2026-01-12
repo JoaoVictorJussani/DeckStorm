@@ -5,6 +5,7 @@ Bienvenue sur le projet Flashcards ! Ce guide regroupe toutes les informations n
 ---
 
 ## Table des matières
+
 1. [Introduction](#introduction)
 2. [Prérequis](#prérequis)
 3. [Installation et utilisation locale](#installation-et-utilisation-locale)
@@ -39,6 +40,7 @@ Voici les étapes détaillées pour installer et lancer le projet en local :
 
 1. **Cloner le repository**  
    Cette commande télécharge le code source du projet depuis GitHub et vous place dans le dossier du projet.
+
    ```bash
    git clone https://github.com/JoaoVictor2023/Flashcards.git
    cd Flashcards
@@ -46,11 +48,13 @@ Voici les étapes détaillées pour installer et lancer le projet en local :
 
 2. **Installer les dépendances**  
    Installe toutes les bibliothèques et modules nécessaires au fonctionnement du projet, listés dans le fichier `package.json`.
+
    ```bash
    npm install
    ```
 
-3. **Configurer l'environnement**  
+3. **Configurer l'environnement**
+
    - Copier `.env.example` en `.env` : crée un fichier de configuration local à partir d'un modèle.
    - Modifier les variables d'environnement dans `.env` : renseignez les informations de connexion à la base de données, le port, etc., pour adapter l'application à votre environnement local.
      ```properties
@@ -66,9 +70,10 @@ Voici les étapes détaillées pour installer et lancer le projet en local :
      SESSION_DRIVER = cookie
      ```
 
-4. **Créer la base de données**  
+4. **Créer la base de données**
+
    - Avec Docker :  
-     Lance les conteneurs définis dans `docker-compose.yml` (notamment MySQL).  
+     Lance les conteneurs définis dans `docker-compose.yml` (notamment MySQL).
      ```bash
      docker-compose up -d
      ```
@@ -76,6 +81,7 @@ Voici les étapes détaillées pour installer et lancer le projet en local :
 
 5. **Exécuter les migrations**  
    Crée les tables nécessaires dans la base de données à partir des fichiers de migration du projet.
+
    ```bash
    node ace migration:run
    ```
@@ -147,18 +153,21 @@ Railway est une plateforme cloud qui simplifie le déploiement d'applications we
 
 ### Étapes détaillées de déploiement
 
-1. **Créer un projet Railway et connecter le repo GitHub**  
+1. **Créer un projet Railway et connecter le repo GitHub**
+
    - Rendez-vous sur [Railway](https://railway.app/), créez un compte si besoin.
    - Cliquez sur "New Project" puis "Deploy from GitHub repo".
    - Autorisez Railway à accéder à votre compte GitHub et sélectionnez le dépôt du projet Flashcards.
    - Railway détecte automatiquement le type d'application (Node.js) et prépare le build.
 
-2. **Ajouter une base de données MySQL via "Add Plugin"**  
+2. **Ajouter une base de données MySQL via "Add Plugin"**
+
    - Dans l'interface Railway, cliquez sur "Add Plugin" puis choisissez "MySQL".
    - Railway crée une instance MySQL dédiée à votre projet, accessible uniquement par votre application.
    - Les informations de connexion (host, user, password, port, database) sont générées automatiquement et visibles dans l'onglet "Variables".
 
-3. **Configurer les variables d'environnement**  
+3. **Configurer les variables d'environnement**
+
    - Dans l'onglet "Variables" de Railway, ajoutez ou vérifiez les variables suivantes (ou copiez-les dans votre `.env` local pour les tests) :
      ```properties
      MYSQL_DATABASE = railway
@@ -171,11 +180,12 @@ Railway est une plateforme cloud qui simplifie le déploiement d'applications we
      ```
    - Ces variables permettent à l'application de se connecter à la base de données Railway, que ce soit en production ou en local.
 
-4. **Déploiement automatique à chaque push**  
+4. **Déploiement automatique à chaque push**
+
    - À chaque fois que vous poussez du code sur la branche principale de votre dépôt GitHub, Railway déclenche automatiquement un nouveau build et redéploie l'application.
    - Vous pouvez suivre l'avancement du build et consulter les logs en temps réel depuis l'interface Railway.
 
-5. **Accès à l'application déployée**  
+5. **Accès à l'application déployée**
    - Une fois le déploiement terminé, Railway fournit une URL publique (ex : https://deckstorm.up.railway.app) pour accéder à votre application en ligne.
    - Cette URL est accessible depuis n'importe quel navigateur, ce qui permet de partager facilement votre projet.
 
@@ -204,7 +214,7 @@ Railway est une plateforme cloud qui simplifie le déploiement d'applications we
   L'application affiche des messages d'erreur clairs et adaptés à chaque situation (ex : erreur de connexion, saisie invalide, accès non autorisé). Cela permet à l'utilisateur de comprendre rapidement la cause du problème et de savoir comment le corriger, améliorant ainsi l'expérience globale et la fiabilité de l'application.
 
 - **Mode chronométré**  
-  Lors des sessions de révision, un mode chronométré peut être activé. Ce mode impose une timer  pour répondre à chaque carte, rendant la révision plus dynamique et stimulante. Cela aide à travailler la rapidité de mémorisation et à simuler des conditions d'examen ou de test.
+  Lors des sessions de révision, un mode chronométré peut être activé. Ce mode impose une timer pour répondre à chaque carte, rendant la révision plus dynamique et stimulante. Cela aide à travailler la rapidité de mémorisation et à simuler des conditions d'examen ou de test.
 
 - **Messages Flash**  
   Les messages flash sont des notifications temporaires qui apparaissent à l'écran pour informer l'utilisateur d'une action réussie ou d'une erreur (ex : "Deck créé avec succès", "Carte supprimée", "Erreur lors de la sauvegarde"). Ils disparaissent automatiquement après quelques secondes, rendant l'interface plus interactive et réactive.
@@ -220,6 +230,7 @@ Railway est une plateforme cloud qui simplifie le déploiement d'applications we
 ## Problèmes courants
 
 1. **Erreur de connexion à la base de données**
+
    - Vérifier les identifiants dans `.env`
    - S'assurer que MySQL est en cours d'exécution
 

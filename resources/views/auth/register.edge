@@ -3,11 +3,13 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Inscription - FlashCards</title>
-    <link rel="shortcut icon" href="/images/icone.ico" type="image/x-icon">
+    <title>
+      Inscription - FlashCards
+    </title>
+    <link rel="shortcut icon" href="/images/icone.ico" type="image/x-icon" />
     <script>
       (function() {
-        let theme = localStorage.getItem('theme') || 'theme-light';
+        let theme = localStorage.getItem("theme") || "theme-light";
         document.documentElement.className = theme;
       })();
     </script>
@@ -18,6 +20,7 @@
         padding: 0;
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       }
+      
       body {
         background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
         color: #333;
@@ -28,11 +31,12 @@
         font-size: 1rem;
         transition: background 0.5s;
       }
+      
       body.theme-dark {
         background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
         color: #e2e8f0;
       }
-
+      
       .main-content {
         flex: 1;
         display: flex;
@@ -42,7 +46,7 @@
         padding-top: 70px;
         padding-bottom: 2rem;
       }
-
+      
       .register-card {
         width: 95%;
         max-width: 480px;
@@ -55,17 +59,25 @@
         text-align: center;
         animation: fadeIn 0.5s ease-out;
       }
+      
       body.theme-dark .register-card {
         background: rgba(30, 41, 59, 0.7);
         border-color: rgba(255, 255, 255, 0.1);
         box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
       }
-
+      
       @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(20px); }
-        to { opacity: 1; transform: translateY(0); }
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+      
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
       }
-
+      
       h2 {
         font-size: 2.2rem;
         margin-bottom: 2rem;
@@ -74,12 +86,12 @@
         -webkit-text-fill-color: transparent;
         font-weight: 800;
       }
-
+      
       .form-group {
         margin-bottom: 1.5rem;
         text-align: left;
       }
-
+      
       label {
         display: block;
         margin-bottom: 0.5rem;
@@ -87,10 +99,11 @@
         color: #64748b;
         margin-left: 4px;
       }
+      
       body.theme-dark label {
         color: #94a3b8;
       }
-
+      
       input {
         width: 100%;
         padding: 1rem 1.2rem;
@@ -102,20 +115,22 @@
         transition: all 0.3s ease;
         outline: none;
       }
+      
       body.theme-dark input {
         background: #0f172a;
         color: #fff;
       }
-
+      
       input:focus {
         background: #fff;
         border-color: #1976d2;
         box-shadow: 0 0 0 4px rgba(25, 118, 210, 0.1);
       }
+      
       body.theme-dark input:focus {
         background: #1e293b;
       }
-
+      
       .validation-msg {
         font-size: 0.85rem;
         margin-top: 0.5rem;
@@ -125,13 +140,20 @@
         align-items: center;
         gap: 6px;
       }
+      
       .validation-msg::before {
         content: '•';
         font-size: 1.2em;
       }
-      .valid { color: #22c55e; }
-      .invalid { color: #ef4444; }
-
+      
+      .valid {
+        color: #22c55e;
+      }
+      
+      .invalid {
+        color: #ef4444;
+      }
+      
       button {
         width: 100%;
         background: linear-gradient(135deg, #1976d2, #1565c0);
@@ -146,13 +168,13 @@
         transition: all 0.3s;
         box-shadow: 0 4px 12px rgba(25, 118, 210, 0.3);
       }
-
+      
       button:hover {
         transform: translateY(-2px);
         box-shadow: 0 6px 16px rgba(25, 118, 210, 0.4);
         background: linear-gradient(135deg, #1e88e5, #1976d2);
       }
-
+      
       button:disabled {
         background: #94a3b8;
         cursor: not-allowed;
@@ -169,22 +191,24 @@
         font-size: 0.95rem;
         border: 1px solid rgba(239, 68, 68, 0.2);
       }
-
+      
       .footer-text {
         margin-top: 2rem;
         color: #64748b;
         font-size: 0.95rem;
       }
+      
       body.theme-dark .footer-text {
         color: #94a3b8;
       }
-
+      
       a {
         color: #1976d2;
         text-decoration: none;
         font-weight: 700;
         transition: color 0.2s;
       }
+      
       a:hover {
         color: #42a5f5;
         text-decoration: underline;
@@ -193,20 +217,21 @@
   </head>
   <body>
     @include('components/header_login')
-    
+
     <div class="main-content">
       <div class="register-card">
-        <h2>Créer un compte</h2>
-        
+        <h2>
+          Créer un compte
+        </h2>
+
         @if(flashMessages.has('error'))
           <div class="error-msg">
             {{ flashMessages.get('error') }}
           </div>
         @endif
-
+        
         <form action="/register" method="POST">
           {{ csrfField() }}
-          
           <div class="form-group">
             <label for="username">Nom d'utilisateur</label>
             <input type="text" id="username" name="username" required placeholder="Votre pseudo" />
@@ -216,17 +241,33 @@
             <label for="password">Mot de passe</label>
             <input type="password" id="password" name="password" required placeholder="• • • • • • • •" />
             <div style="margin-top: 5px;">
-              <p id="rule-length" class="validation-msg invalid">8 caractères minimum</p>
-              <p id="rule-upper" class="validation-msg invalid">Une majuscule</p>
-              <p id="rule-lower" class="validation-msg invalid">Une minuscule</p>
-              <p id="rule-digit" class="validation-msg invalid">Un chiffre</p>
-              <p id="rule-special" class="validation-msg invalid">Un caractère spécial (@$!%*?&)</p>
+              <p id="rule-length" class="validation-msg invalid">
+                8 caractères minimum
+              </p>
+              <p id="rule-upper" class="validation-msg invalid">
+                Une majuscule
+              </p>
+              <p id="rule-lower" class="validation-msg invalid">
+                Une minuscule
+              </p>
+              <p id="rule-digit" class="validation-msg invalid">
+                Un chiffre
+              </p>
+              <p id="rule-special" class="validation-msg invalid">
+                Un caractère spécial (                $!%*?&)
+              </p>
             </div>
           </div>
 
           <div class="form-group">
             <label for="confirm_password">Confirmation</label>
-            <input type="password" id="confirm_password" name="confirm_password" required placeholder="Répétez le mot de passe" />
+            <input
+              type="password"
+              id="confirm_password"
+              name="confirm_password"
+              required
+              placeholder="Répétez le mot de passe"
+            />
             <p id="password-match-msg" class="validation-msg invalid">
               Les mots de passe correspondent
             </p>
@@ -234,7 +275,7 @@
 
           <button type="submit" id="submit-button" disabled>S'inscrire</button>
         </form>
-        
+
         <p class="footer-text">
           Déjà un compte ? <a href="/login">Se connecter</a>
         </p>
@@ -253,46 +294,39 @@
         const ruleDigit = document.getElementById("rule-digit");
         const ruleSpecial = document.getElementById("rule-special");
         const passwordMatchMsg = document.getElementById("password-match-msg");
-
         function updateRule(element, isValid) {
           if (isValid) {
-            element.classList.remove('invalid');
-            element.classList.add('valid');
+            element.classList.remove("invalid");
+            element.classList.add("valid");
           } else {
-            element.classList.remove('valid');
-            element.classList.add('invalid');
+            element.classList.remove("valid");
+            element.classList.add("invalid");
           }
         }
-
         function validateForm() {
           const usernameValid = usernameInput.value.trim().length >= 3;
           const val = passwordInput.value;
-          
           const hasLength = val.length >= 8;
           const hasUpper = /[A-Z]/.test(val);
           const hasLower = /[a-z]/.test(val);
           const hasDigit = /\d/.test(val);
           const hasSpecial = /[@$!%*?&]/.test(val);
-
           updateRule(ruleLength, hasLength);
           updateRule(ruleUpper, hasUpper);
           updateRule(ruleLower, hasLower);
           updateRule(ruleDigit, hasDigit);
           updateRule(ruleSpecial, hasSpecial);
-
           const passwordValid = hasLength && hasUpper && hasLower && hasDigit && hasSpecial;
           const passwordsMatch = val === confirmPasswordInput.value && val.length > 0;
-
           if (passwordsMatch) {
-            passwordMatchMsg.classList.remove('invalid');
-            passwordMatchMsg.classList.add('valid');
+            passwordMatchMsg.classList.remove("invalid");
+            passwordMatchMsg.classList.add("valid");
             passwordMatchMsg.innerHTML = "Les mots de passe correspondent";
           } else {
-            passwordMatchMsg.classList.remove('valid');
-            passwordMatchMsg.classList.add('invalid');
+            passwordMatchMsg.classList.remove("valid");
+            passwordMatchMsg.classList.add("invalid");
             passwordMatchMsg.innerHTML = "Les mots de passe ne correspondent pas";
           }
-
           if (usernameValid && passwordValid && passwordsMatch) {
             submitButton.disabled = false;
             submitButton.style.opacity = "1";
@@ -301,7 +335,6 @@
             submitButton.style.opacity = "0.7";
           }
         }
-
         [ usernameInput, passwordInput, confirmPasswordInput ].forEach(input => {
           input.addEventListener("input", validateForm);
         });

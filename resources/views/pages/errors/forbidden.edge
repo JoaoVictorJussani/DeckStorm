@@ -1,87 +1,101 @@
 <!DOCTYPE html>
 <html lang="fr">
-<head>
-  <meta charset="UTF-8" />
-  <title>403 - Accès refusé</title>
-  <link rel="shortcut icon" href="/images/icone.ico" type="image/x-icon">
-  <script>
-    (function() {
-      let theme = localStorage.getItem('theme');
-      if (!theme) {
-        theme = 'theme-light';
+  <head>
+    <meta charset="UTF-8" />
+    <title>
+      403 - Accès refusé
+    </title>
+    <link rel="shortcut icon" href="/images/icone.ico" type="image/x-icon" />
+    <script>
+      (function() {
+        let theme = localStorage.getItem("theme");
+        if (!theme) {
+          theme = "theme-light";
+        }
+        document.addEventListener("DOMContentLoaded", function() {
+          document.body.classList.remove("theme-light", "theme-dark");
+          document.body.classList.add(theme);
+        });
+        if (document.body) {
+          document.body.classList.remove("theme-light", "theme-dark");
+          document.body.classList.add(theme);
+        }
+      })();
+    </script>
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       }
-      document.addEventListener('DOMContentLoaded', function() {
-        document.body.classList.remove('theme-light', 'theme-dark');
-        document.body.classList.add(theme);
-      });
-      if (document.body) {
-        document.body.classList.remove('theme-light', 'theme-dark');
-        document.body.classList.add(theme);
+      
+      body {
+        background: #fff;
+        color: #222;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-height: 100vh;
+        font-size: 1rem;
       }
-    })();
-  </script>
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
-    body {
-      background: #fff;
-      color: #222;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      min-height: 100vh;
-      font-size: 1rem;
-    }
-    body.theme-light {
-      background: #fff;
-      color: #222;
-    }
-    body.theme-dark {
-      background: #0a0c10;
-      color: #e0e0e0;
-    }
-    .spacer {
-      height: 80px;
-    }
-    .back-btn {
-      margin-top: 2rem;
-      display: inline-block;
-      background: #1976d2;
-      color: #fff;
-      border-radius: 8px;
-      padding: 0.8rem 1.5rem;
-      text-decoration: none;
-      font-weight: 600;
-      border: 2px solid #1976d2;
-      transition: all 0.3s ease;
-    }
-    .back-btn:hover {
-      background: #1565c0;
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(25, 118, 210, 0.2);
-    }
-    .container {
-      margin-top: 3rem; 
-      text-align: center;
-      max-width: 600px;
-      padding: 0 20px;
-    }
-  </style>
-</head>
-<body>
-  @include('components/simple_header')
-  <div class="spacer"></div>
-  <div class="container">
-    <h1 style="color:#ff4d4d; font-size:2.5rem; margin-bottom:1rem;">403 - Accès refusé</h1>
-    <p style="font-size:1.2rem; margin-bottom: 1rem;">Vous n'avez pas la permission d'accéder à cette ressource.</p>
-    <p style="color: #666; font-size: 1rem;">
-       Il est probable que ce deck soit privé ou que vous ne fassiez pas partie des utilisateurs autorisés.
-    </p>
-    <a href="{{ route('home') }}" class="back-btn">Retour à l'accueil</a>
-  </div>
-</body>
+      
+      body.theme-light {
+        background: #fff;
+        color: #222;
+      }
+      
+      body.theme-dark {
+        background: #0a0c10;
+        color: #e0e0e0;
+      }
+      
+      .spacer {
+        height: 80px;
+      }
+      
+      .back-btn {
+        margin-top: 2rem;
+        display: inline-block;
+        background: #1976d2;
+        color: #fff;
+        border-radius: 8px;
+        padding: 0.8rem 1.5rem;
+        text-decoration: none;
+        font-weight: 600;
+        border: 2px solid #1976d2;
+        transition: all 0.3s ease;
+      }
+      
+      .back-btn:hover {
+        background: #1565c0;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(25, 118, 210, 0.2);
+      }
+      
+      .container {
+        margin-top: 3rem;
+        text-align: center;
+        max-width: 600px;
+        padding: 0 20px;
+      }
+    </style>
+  </head>
+  <body>
+    @include('components/simple_header')
+    <div class="spacer">
+    </div>
+    <div class="container">
+      <h1 style="color:#ff4d4d; font-size:2.5rem; margin-bottom:1rem;">
+        403 - Accès refusé
+      </h1>
+      <p style="font-size:1.2rem; margin-bottom: 1rem;">
+        Vous n'avez pas la permission d'accéder à cette ressource.
+      </p>
+      <p style="color: #666; font-size: 1rem;">
+        Il est probable que ce deck soit privé ou que vous ne fassiez pas partie des utilisateurs autorisés.
+      </p>
+      <a href="{{ route('home') }}" class="back-btn">Retour à l'accueil</a>
+    </div>
+  </body>
 </html>

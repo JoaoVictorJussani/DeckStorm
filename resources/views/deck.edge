@@ -1,437 +1,521 @@
 <!DOCTYPE html>
 <html lang="fr">
-<head>
-  <meta charset="UTF-8" />
-  <title>Créer un deck</title>
-  <link rel="shortcut icon" href="/images/icone.ico" type="image/x-icon">
-  <script>
-    // Aplica o tema o mais cedo possível para evitar flash
-    (function() {
-      let theme = localStorage.getItem('theme');
-      if (!theme) {
-        theme = 'theme-light';
-      }
-      document.addEventListener('DOMContentLoaded', function() {
-        document.body.classList.remove('theme-light', 'theme-dark');
-        document.body.classList.add(theme);
-      });
-      if (document.body) {
-        document.body.classList.remove('theme-light', 'theme-dark');
-        document.body.classList.add(theme);
-      }
-    })();
-  </script>
-  <style>
-    /* --- Styles globaux --- */
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
-    body {
-      background: #f7faff;
-      color: #222;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      min-height: 100vh;
-      font-size: 1rem;
-      transition: background 0.4s, color 0.4s;
-    }
-    body.theme-light {
-      background: #f7faff;
-      color: #222;
-    }
-    body.theme-dark {
-      background: #0a0c10;
-      color: #e0e0e0;
-    }
-
-    /* --- Titres harmonisés pour toutes les pages --- */
-    .main-title, h1 {
-      font-size: 2.5rem;
-      margin-bottom: 1.5rem;
-      color: #1976d2;
-      font-weight: 700;
-      text-align: center;
-      letter-spacing: -1px;
-      line-height: 1.2;
-      text-shadow: 0 2px 12px #1976d222;
-    }
-    h2 {
-      font-size: 2rem;
-      margin-bottom: 1rem;
-      color: #1976d2;
-      font-weight: 600;
-      text-align: center;
-      margin-top: 1.5rem;
-    }
-    h3 {
-      font-size: 1.4rem;
-      margin-bottom: 0.7rem;
-      color: #1976d2;
-      font-weight: 500;
-      text-align: center;
-      margin-top: 1rem;
-    }
-
-    /* --- Formulaire et messages --- */
-    .main-content {
-      margin-top: 100px;
-      text-align: center;
-      padding: 2.5rem 1rem;
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-    .form-container {
-      width: 100%;
-      max-width: 520px;
-      margin: auto;
-      background: #fff;
-      padding: 2.2rem 2rem 2rem 2rem;
-      border-radius: 18px;
-      border: 2px solid #1976d2;
-      box-shadow: 0 8px 32px rgba(25, 118, 210, 0.13), 0 1.5px 8px rgba(25, 118, 210, 0.06);
-      display: flex;
-      flex-direction: column;
-      align-items: stretch;
-      transition: background 0.4s, box-shadow 0.4s;
-    }
-    body.theme-dark .form-container {
-      background: #181c23;
-      border-color: #1976d2;
-      box-shadow: 0 8px 32px rgba(25, 118, 210, 0.18);
-    }
-    label {
-      font-size: 1.13rem;
-      display: block;
-      margin-top: 18px;
-      color: #1976d2;
-      text-align: left;
-      font-weight: 600;
-      letter-spacing: 0.1px;
-      margin-bottom: 0.3rem;
-      transition: color 0.3s;
-    }
-    body.theme-dark label {
-      color: #90caf9;
-    }
-    input, textarea, select {
-      width: 100%;
-      padding: 0.9rem 1.1rem;
-      border-radius: 10px;
-      border: 2px solid #1976d2;
-      font-size: 1.07rem;
-      background: #f2f6fc;
-      color: #1976d2;
-      margin-top: 0.2rem;
-      margin-bottom: 1.2rem;
-      transition: background 0.2s, color 0.2s, border 0.2s, box-shadow 0.2s;
-      outline: none;
-      box-shadow: 0 2px 8px rgba(25, 118, 210, 0.07);
-    }
-    input:focus, textarea:focus, select:focus {
-      border-color: #1565c0;
-      background: #e3f2fd;
-      box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.13);
-    }
-    body.theme-dark input,
-    body.theme-dark textarea,
-    body.theme-dark select {
-      background: #23272f;
-      color: #90caf9;
-      border-color: #1976d2;
-      box-shadow: 0 2px 8px rgba(25, 118, 210, 0.13);
-    }
-    body.theme-dark input:focus,
-    body.theme-dark textarea:focus,
-    body.theme-dark select:focus {
-      background: #181c23;
-      border-color: #90caf9;
-      box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.18);
-    }
-    select {
-      appearance: none;
-      -webkit-appearance: none;
-      -moz-appearance: none;
-      background-image: url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M5 8L10 13L15 8' stroke='%231976d2' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-      background-repeat: no-repeat;
-      background-position: right 1.2rem center;
-      background-size: 1.2em;
-      cursor: pointer;
-    }
-    body.theme-dark select {
-      /* Setinha de volta, mas menos chamativa */
-      background-image: url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M5 8L10 13L15 8' stroke='%235c6a7a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-      background-repeat: no-repeat;
-      background-position: right 1.2rem center;
-      background-size: 1.2em;
-      background-color: #23272f;
-      color: #90caf9;
-      border-color: #1976d2;
-      box-shadow: 0 2px 8px rgba(25, 118, 210, 0.13);
-    }
-    .submit-button {
-      background: linear-gradient(90deg, #1976d2 60%, #1565c0 100%);
-      color: #fff;
-      border: 2px solid #1976d2;
-      padding: 1rem 2.2rem;
-      border-radius: 10px;
-      cursor: pointer;
-      font-size: 1.15rem;
-      font-weight: 700;
-      margin-top: 10px;
-      margin-bottom: 0.5rem;
-      box-shadow: 0 2px 8px rgba(25, 118, 210, 0.08);
-      transition: background 0.2s, color 0.2s, box-shadow 0.2s;
-      outline: none;
-    }
-    .submit-button:hover {
-      background: #1565c0;
-      color: #fff;
-      box-shadow: 0 4px 16px rgba(25, 118, 210, 0.18);
-    }
-    .abandon-button {
-      background: #fff;
-      color: #ff4d4d;
-      border: 2px solid #ff4d4d;
-      padding: 1rem 2.2rem;
-      border-radius: 10px;
-      cursor: pointer;
-      font-size: 1.15rem;
-      font-weight: 700;
-      margin-top: 10px;
-      margin-bottom: 0.5rem;
-      box-shadow: 0 2px 8px rgba(25, 118, 210, 0.08);
-      transition: background 0.2s, color 0.2s, box-shadow 0.2s;
-      outline: none;
-    }
-    .abandon-button:hover {
-      background: #ff4d4d;
-      color: #fff;
-      border-color: #ff4d4d;
-    }
-    body.theme-dark .submit-button {
-      background: linear-gradient(90deg, #1976d2 60%, #1565c0 100%);
-      color: #fff;
-      border-color: #1976d2;
-    }
-    body.theme-dark .submit-button:hover {
-      background: #1565c0;
-      color: #fff;
-    }
-    body.theme-dark .abandon-button {
-      background: #23272f;
-      color: #ff4d4d;
-      border-color: #ff4d4d;
-    }
-    body.theme-dark .abandon-button:hover {
-      background: #ff4d4d;
-      color: #fff;
-    }
-    .error,
-    .message.error {
-      margin-bottom: 1rem;
-      padding: 1rem;
-      border-radius: 8px;
-      text-align: center;
-      background-color: #ff4d4d;
-      color: #fff;
-      font-size: 1.05rem;
-      font-weight: 500;
-      box-shadow: 0 2px 8px rgba(255,77,77,0.08);
-    }
-    .message.success {
-      margin-bottom: 1rem;
-      padding: 1rem;
-      border-radius: 8px;
-      text-align: center;
-      background-color: #4caf50;
-      color: #fff;
-      font-size: 1.05rem;
-      font-weight: 500;
-      box-shadow: 0 2px 8px rgba(76,175,80,0.08);
-    }
-    .description-container {
-      position: relative;
-      width: 100%;
-    }
-    .counter {
-      position: absolute;
-      bottom: 8px;
-      right: 16px;
-      font-size: 0.93rem;
-      color: #1976d2;
-      background: transparent;
-      pointer-events: none;
-      font-weight: 600;
-      letter-spacing: 0.2px;
-    }
-    body.theme-dark .counter {
-      color: #90caf9;
-    }
-    a {
-      color: #1976d2;
-      text-decoration: none;
-      transition: color 0.2s, opacity 0.2s;
-    }
-    a:hover {
-      color: #1565c0;
-      opacity: 0.8;
-    }
-    @media (max-width: 700px) {
-      .main-content {
-        padding: 1.2rem 0.2rem;
-      }
-      .form-container {
-        padding: 1.2rem 0.5rem 1.2rem 0.5rem;
-        max-width: 98vw;
-      }
-      .main-title, h1 {
-        font-size: 1.5rem;
-      }
-      label {
-        font-size: 1rem;
-      }
-      .submit-button, .abandon-button {
-        font-size: 1rem;
-        padding: 0.7rem 1.2rem;
-      }
-      .counter {
-        font-size: 0.85rem;
-        right: 8px;
-        bottom: 4px;
-      }
-      .counter {
-        font-size: 0.85rem;
-        right: 8px;
-        bottom: 4px;
-      }
-    }
-    
-    /* Styles Checkbox (Global) */
-    .checkbox-group {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      margin-bottom: 1.2rem;
-      width: 100%;
-    }
-    .checkbox-item {
-      display: flex;
-      align-items: center;
-      margin-bottom: 0.8rem;
-      width: 100%;
-    }
-    .checkbox-item input[type="checkbox"] {
-      width: auto;
-      margin: 0 12px 0 0; /* Marge droite pour séparer du texte, pas de marge bas */
-      box-shadow: none;
-      transform: scale(1.2); /* Légèrement plus grand */
-      cursor: pointer;
-    }
-    .checkbox-item label {
-      margin: 0;
-      font-weight: normal;
-      font-size: 1.05rem;
-      cursor: pointer;
-      padding-top: 2px; /* Ajustement fin */
-    }
-  </style>
-</head>
-<body>
-  @include('components/header')
-
-  <div class="main-content">
-    <h1>Créer un nouveau deck</h1>
-    <div class="form-container">
-      @if (flashMessages.has('error'))
-        <div class="message error">
-          {{ flashMessages.get('error') }}
-        </div>
-      @endif
-      @if (flashMessages.has('success'))
-        <div class="message success">
-          {{ flashMessages.get('success') }}
-        </div>
-      @endif
-      <form action="{{ route('decks.store') }}" method="POST">
-        {{ csrfField() }}
-        <label for="title">Titre du deck :</label>
-        <input type="text" id="title" name="title" value="{{ flashMessages.get('old.title', '') }}" required />
-
-        <label for="description">Description :</label>
-        <div class="description-container">
-          <textarea id="description" name="description" maxlength="125" onkeyup="updateCounter()" required>{{ flashMessages.get('old.description', '') }}</textarea>
-          <div class="counter" style="position: absolute; bottom: 5px; right: 10px; font-size: 0.8rem; color: #1976d2;">
-            <span id="charCount">0</span><span>/125</span>
-          </div>
-        </div>
-
-        <label for="visibility">Visibilité :</label>
-        <select id="visibility" name="visibility" required>
-          <option value="private" {{ flashMessages.get('old.visibility', 'private') === 'private' ? 'selected' : '' }}>Privé</option>
-          <option value="public" {{ flashMessages.get('old.visibility', 'private') === 'public' ? 'selected' : '' }}>Public</option>
-          <option value="restricted" {{ flashMessages.get('old.visibility', 'private') === 'restricted' ? 'selected' : '' }}>Restreint</option>
-        </select>
-
-        <label>Modes autorisés :</label>
-        <div class="checkbox-group">
-          <div class="checkbox-item">
-            <input type="checkbox" id="mode_chronometre" name="allowed_modes[]" value="chronometre" checked>
-            <label for="mode_chronometre">Chronomètre</label>
-          </div>
-          <div class="checkbox-item">
-            <input type="checkbox" id="mode_basique" name="allowed_modes[]" value="basique" checked>
-            <label for="mode_basique">Basique</label>
-          </div>
-          <div class="checkbox-item">
-            <input type="checkbox" id="mode_jusquaubout" name="allowed_modes[]" value="jusquaubout" checked>
-            <label for="mode_jusquaubout">Jusqu'au bout</label>
-          </div>
-          <div class="checkbox-item">
-            <input type="checkbox" id="mode_quiz" name="allowed_modes[]" value="quiz" checked>
-            <label for="mode_quiz">Quiz</label>
-          </div>
-        </div>
-
-        <label for="attempt_limit">Tentatives limitées (facultatif) :</label>
-        <div style="font-size: 0.9rem; color: #666; margin-bottom: 0.5rem; text-align: left;">
-          Laissez vide pour un nombre illimité de tentatives.
-        </div>
-        <input type="number" id="attempt_limit" name="attempt_limit" min="1" placeholder="Ex: 3" value="{{ flashMessages.get('old.attempt_limit', '') }}" />
-
-        <button type="submit" class="submit-button">Créer</button>
-        <button type="button" class="abandon-button" onclick="window.location.href='{{ route('home') }}'">Abandonner</button>
-      </form>
-    </div>
-  </div>
-
-  <script>
-    const textarea = document.getElementById('description');
-    const charCount = document.getElementById('charCount');
-
-    function updateCounter() {
-      const currentLength = textarea.value.length;
-      charCount.textContent = currentLength;
+  <head>
+    <meta charset="UTF-8" />
+    <title>
+      Créer un deck
+    </title>
+    <link rel="shortcut icon" href="/images/icone.ico" type="image/x-icon" />
+    <script>
+      // Aplica o tema o mais cedo possível para evitar flash
+      (function() {
+        let theme = localStorage.getItem("theme");
+        if (!theme) {
+          theme = "theme-light";
+        }
+        document.addEventListener("DOMContentLoaded", function() {
+          document.body.classList.remove("theme-light", "theme-dark");
+          document.body.classList.add(theme);
+        });
+        if (document.body) {
+          document.body.classList.remove("theme-light", "theme-dark");
+          document.body.classList.add(theme);
+        }
+      })();
+    </script>
+    <style>
+      /* --- Styles globaux --- */
       
-      // Change la couleur quand on approche de la limite
-      if (currentLength >= 100) {
-        charCount.style.color = '#ff4d4d'; // Rouge
-      } else if (currentLength >= 80) {
-        charCount.style.color = '#ffa500'; // Orange
-      } else {
-        charCount.style.color = '#1976d2'; // Couleur par défaut
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       }
-    }
+      
+      body {
+        background: #f7faff;
+        color: #222;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-height: 100vh;
+        font-size: 1rem;
+        transition: background 0.4s, color 0.4s;
+      }
+      
+      body.theme-light {
+        background: #f7faff;
+        color: #222;
+      }
+      
+      body.theme-dark {
+        background: #0a0c10;
+        color: #e0e0e0;
+      }
+      
+      /* --- Titres harmonisés pour toutes les pages --- */
+      
+      .main-title,
+      h1 {
+        font-size: 2.5rem;
+        margin-bottom: 1.5rem;
+        color: #1976d2;
+        font-weight: 700;
+        text-align: center;
+        letter-spacing: -1px;
+        line-height: 1.2;
+        text-shadow: 0 2px 12px #1976d222;
+      }
+      
+      h2 {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+        color: #1976d2;
+        font-weight: 600;
+        text-align: center;
+        margin-top: 1.5rem;
+      }
+      
+      h3 {
+        font-size: 1.4rem;
+        margin-bottom: 0.7rem;
+        color: #1976d2;
+        font-weight: 500;
+        text-align: center;
+        margin-top: 1rem;
+      }
+      
+      /* --- Formulaire et messages --- */
+      
+      .main-content {
+        margin-top: 100px;
+        text-align: center;
+        padding: 2.5rem 1rem;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      
+      .form-container {
+        width: 100%;
+        max-width: 520px;
+        margin: auto;
+        background: #fff;
+        padding: 2.2rem 2rem 2rem 2rem;
+        border-radius: 18px;
+        border: 2px solid #1976d2;
+        box-shadow: 0 8px 32px rgba(25, 118, 210, 0.13), 0 1.5px 8px rgba(25, 118, 210, 0.06);
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        transition: background 0.4s, box-shadow 0.4s;
+      }
+      
+      body.theme-dark .form-container {
+        background: #181c23;
+        border-color: #1976d2;
+        box-shadow: 0 8px 32px rgba(25, 118, 210, 0.18);
+      }
+      
+      label {
+        font-size: 1.13rem;
+        display: block;
+        margin-top: 18px;
+        color: #1976d2;
+        text-align: left;
+        font-weight: 600;
+        letter-spacing: 0.1px;
+        margin-bottom: 0.3rem;
+        transition: color 0.3s;
+      }
+      
+      body.theme-dark label {
+        color: #90caf9;
+      }
+      
+      input,
+      textarea,
+      select {
+        width: 100%;
+        padding: 0.9rem 1.1rem;
+        border-radius: 10px;
+        border: 2px solid #1976d2;
+        font-size: 1.07rem;
+        background: #f2f6fc;
+        color: #1976d2;
+        margin-top: 0.2rem;
+        margin-bottom: 1.2rem;
+        transition: background 0.2s, color 0.2s, border 0.2s, box-shadow 0.2s;
+        outline: none;
+        box-shadow: 0 2px 8px rgba(25, 118, 210, 0.07);
+      }
+      
+      input:focus,
+      textarea:focus,
+      select:focus {
+        border-color: #1565c0;
+        background: #e3f2fd;
+        box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.13);
+      }
+      
+      body.theme-dark input,
+      body.theme-dark textarea,
+      body.theme-dark select {
+        background: #23272f;
+        color: #90caf9;
+        border-color: #1976d2;
+        box-shadow: 0 2px 8px rgba(25, 118, 210, 0.13);
+      }
+      
+      body.theme-dark input:focus,
+      body.theme-dark textarea:focus,
+      body.theme-dark select:focus {
+        background: #181c23;
+        border-color: #90caf9;
+        box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.18);
+      }
+      
+      select {
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M5 8L10 13L15 8' stroke='%231976d2' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 1.2rem center;
+        background-size: 1.2em;
+        cursor: pointer;
+      }
+      
+      body.theme-dark select {
+        /* Setinha de volta, mas menos chamativa */
+        background-image: url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M5 8L10 13L15 8' stroke='%235c6a7a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 1.2rem center;
+        background-size: 1.2em;
+        background-color: #23272f;
+        color: #90caf9;
+        border-color: #1976d2;
+        box-shadow: 0 2px 8px rgba(25, 118, 210, 0.13);
+      }
+      
+      .submit-button {
+        background: linear-gradient(90deg, #1976d2 60%, #1565c0 100%);
+        color: #fff;
+        border: 2px solid #1976d2;
+        padding: 1rem 2.2rem;
+        border-radius: 10px;
+        cursor: pointer;
+        font-size: 1.15rem;
+        font-weight: 700;
+        margin-top: 10px;
+        margin-bottom: 0.5rem;
+        box-shadow: 0 2px 8px rgba(25, 118, 210, 0.08);
+        transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+        outline: none;
+      }
+      
+      .submit-button:hover {
+        background: #1565c0;
+        color: #fff;
+        box-shadow: 0 4px 16px rgba(25, 118, 210, 0.18);
+      }
+      
+      .abandon-button {
+        background: #fff;
+        color: #ff4d4d;
+        border: 2px solid #ff4d4d;
+        padding: 1rem 2.2rem;
+        border-radius: 10px;
+        cursor: pointer;
+        font-size: 1.15rem;
+        font-weight: 700;
+        margin-top: 10px;
+        margin-bottom: 0.5rem;
+        box-shadow: 0 2px 8px rgba(25, 118, 210, 0.08);
+        transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+        outline: none;
+      }
+      
+      .abandon-button:hover {
+        background: #ff4d4d;
+        color: #fff;
+        border-color: #ff4d4d;
+      }
+      
+      body.theme-dark .submit-button {
+        background: linear-gradient(90deg, #1976d2 60%, #1565c0 100%);
+        color: #fff;
+        border-color: #1976d2;
+      }
+      
+      body.theme-dark .submit-button:hover {
+        background: #1565c0;
+        color: #fff;
+      }
+      
+      body.theme-dark .abandon-button {
+        background: #23272f;
+        color: #ff4d4d;
+        border-color: #ff4d4d;
+      }
+      
+      body.theme-dark .abandon-button:hover {
+        background: #ff4d4d;
+        color: #fff;
+      }
+      
+      .error,
+      .message.error {
+        margin-bottom: 1rem;
+        padding: 1rem;
+        border-radius: 8px;
+        text-align: center;
+        background-color: #ff4d4d;
+        color: #fff;
+        font-size: 1.05rem;
+        font-weight: 500;
+        box-shadow: 0 2px 8px rgba(255,77,77,0.08);
+      }
+      
+      .message.success {
+        margin-bottom: 1rem;
+        padding: 1rem;
+        border-radius: 8px;
+        text-align: center;
+        background-color: #4caf50;
+        color: #fff;
+        font-size: 1.05rem;
+        font-weight: 500;
+        box-shadow: 0 2px 8px rgba(76,175,80,0.08);
+      }
+      
+      .description-container {
+        position: relative;
+        width: 100%;
+      }
+      
+      .counter {
+        position: absolute;
+        bottom: 8px;
+        right: 16px;
+        font-size: 0.93rem;
+        color: #1976d2;
+        background: transparent;
+        pointer-events: none;
+        font-weight: 600;
+        letter-spacing: 0.2px;
+      }
+      
+      body.theme-dark .counter {
+        color: #90caf9;
+      }
+      
+      a {
+        color: #1976d2;
+        text-decoration: none;
+        transition: color 0.2s, opacity 0.2s;
+      }
+      
+      a:hover {
+        color: #1565c0;
+        opacity: 0.8;
+      }
+      
+      @media (max-width: 700px) {
+        .main-content {
+          padding: 1.2rem 0.2rem;
+        }
+      
+        .form-container {
+          padding: 1.2rem 0.5rem 1.2rem 0.5rem;
+          max-width: 98vw;
+        }
+      
+        .main-title,
+        h1 {
+          font-size: 1.5rem;
+        }
+      
+        label {
+          font-size: 1rem;
+        }
+      
+        .submit-button,
+        .abandon-button {
+          font-size: 1rem;
+          padding: 0.7rem 1.2rem;
+        }
+      
+        .counter {
+          font-size: 0.85rem;
+          right: 8px;
+          bottom: 4px;
+        }
+      
+        .counter {
+          font-size: 0.85rem;
+          right: 8px;
+          bottom: 4px;
+        }
+      }
+      
+      /* Styles Checkbox (Global) */
+      
+      .checkbox-group {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        margin-bottom: 1.2rem;
+        width: 100%;
+      }
+      
+      .checkbox-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 0.8rem;
+        width: 100%;
+      }
+      
+      .checkbox-item input[type="checkbox"] {
+        width: auto;
+        margin: 0 12px 0 0;
+        /* Marge droite pour séparer du texte, pas de marge bas */
+        box-shadow: none;
+        transform: scale(1.2);
+        /* Légèrement plus grand */
+        cursor: pointer;
+      }
+      
+      .checkbox-item label {
+        margin: 0;
+        font-weight: normal;
+        font-size: 1.05rem;
+        cursor: pointer;
+        padding-top: 2px;
+        /* Ajustement fin */
+      }
+    </style>
+  </head>
+  <body>
+    @include('components/header')
 
-    // Initialisation au chargement
-    document.addEventListener('DOMContentLoaded', updateCounter);
-    // Mise à jour à chaque changement
-    textarea.addEventListener('input', updateCounter);
-  </script>
-</body>
+    <div class="main-content">
+      <h1>
+        Créer un nouveau deck
+      </h1>
+      <div class="form-container">
+        @if (flashMessages.has('error'))
+          <div class="message error">
+            {{ flashMessages.get('error') }}
+          </div>
+        @endif
+        @if (flashMessages.has('success'))
+          <div class="message success">
+            {{ flashMessages.get('success') }}
+          </div>
+        @endif
+        <form action="{{ route('decks.store') }}" method="POST">
+          {{ csrfField() }}
+        <label for="title">Titre du deck :</label>
+          <input type="text" id="title" name="title" value="{{ flashMessages.get('old.title', '') }}" required />
+
+          <label for="description">Description :</label>
+          <div class="description-container">
+            <textarea id="description" name="description" maxlength="125" onkeyup="updateCounter()" required>{{ flashMessages.get('old.description', '') }}</textarea>
+            <div
+              class="counter"
+              style="position: absolute; bottom: 5px; right: 10px; font-size: 0.8rem; color: #1976d2;"
+            >
+              <span id="charCount">0</span>              <span>/125</span>
+            </div>
+          </div>
+
+          <label for="visibility">Visibilité :</label>
+          <select id="visibility" name="visibility" required>
+            <option
+              value="private"
+              {{ flashMessages.get('old.visibility', 'private') === 'private' ? 'selected' : '' }}
+            >
+              Privé
+            </option>
+            <option
+              value="public"
+              {{ flashMessages.get('old.visibility', 'private') === 'public' ? 'selected' : '' }}
+            >
+              Public
+            </option>
+            <option
+              value="restricted"
+              {{ flashMessages.get('old.visibility', 'private') === 'restricted' ? 'selected' : '' }}
+            >
+              Restreint
+            </option>
+          </select>
+
+          <label>Modes autorisés :</label>
+          <div class="checkbox-group">
+            <div class="checkbox-item">
+              <input type="checkbox" id="mode_chronometre" name="allowed_modes[]" value="chronometre" checked />
+              <label for="mode_chronometre">Chronomètre</label>
+            </div>
+            <div class="checkbox-item">
+              <input type="checkbox" id="mode_basique" name="allowed_modes[]" value="basique" checked />
+              <label for="mode_basique">Basique</label>
+            </div>
+            <div class="checkbox-item">
+              <input type="checkbox" id="mode_jusquaubout" name="allowed_modes[]" value="jusquaubout" checked />
+              <label for="mode_jusquaubout">Jusqu'au bout</label>
+            </div>
+            <div class="checkbox-item">
+              <input type="checkbox" id="mode_quiz" name="allowed_modes[]" value="quiz" checked />
+              <label for="mode_quiz">Quiz</label>
+            </div>
+          </div>
+
+          <label for="attempt_limit">Tentatives limitées (facultatif) :</label>
+          <div style="font-size: 0.9rem; color: #666; margin-bottom: 0.5rem; text-align: left;">
+            Laissez vide pour un nombre illimité de tentatives.
+          </div>
+          <input
+            type="number"
+            id="attempt_limit"
+            name="attempt_limit"
+            min="1"
+            placeholder="Ex: 3"
+            value="{{ flashMessages.get('old.attempt_limit', '') }}"
+          />
+
+          <button type="submit" class="submit-button">Créer</button>
+          <button type="button" class="abandon-button" onclick="window.location.href='{{ route('home') }}'">Abandonner</button>
+        </form>
+      </div>
+    </div>
+
+    <script>
+      const textarea = document.getElementById("description");
+      
+      const charCount = document.getElementById("charCount");
+      
+      function updateCounter() {
+        const currentLength = textarea.value.length;
+        charCount.textContent = currentLength;
+        // Change la couleur quand on approche de la limite
+        if (currentLength >= 100) {
+          charCount.style.color = "#ff4d4d"; // Rouge
+        } else if (currentLength >= 80) {
+          charCount.style.color = "#ffa500"; // Orange
+        } else {
+          charCount.style.color = "#1976d2"; // Couleur par défaut
+        }
+      }
+      // Initialisation au chargement
+      
+      document.addEventListener("DOMContentLoaded", updateCounter);
+      // Mise à jour à chaque changement
+      
+      textarea.addEventListener("input", updateCounter);
+    </script>
+  </body>
 </html>

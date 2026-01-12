@@ -16,13 +16,13 @@ export default class extends BaseSeeder {
     const followData = []
 
     while (followData.length < 75000) {
-      const follower_id = userIds[Math.floor(Math.random() * userIds.length)]
-      const following_id = userIds[Math.floor(Math.random() * userIds.length)]
+      const followerId = userIds[Math.floor(Math.random() * userIds.length)]
+      const followingId = userIds[Math.floor(Math.random() * userIds.length)]
 
-      const followPair = `${follower_id}-${following_id}`
-      if (follower_id !== following_id && !follows.has(followPair)) {
+      const followPair = `${followerId}-${followingId}`
+      if (followerId !== followingId && !follows.has(followPair)) {
         follows.add(followPair)
-        followData.push({ follower_id, following_id })
+        followData.push({ follower_id: followerId, following_id: followingId })
       }
     }
 

@@ -1,58 +1,69 @@
 <!DOCTYPE html>
 <html lang="fr">
-<head>
-  <meta charset="UTF-8">
-  <title>Limite atteinte</title>
-  <link rel="shortcut icon" href="/images/icone.ico" type="image/x-icon">
-  <style>
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #f7faff;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
-      color: #333;
-    }
-    .container {
-      background: white;
-      padding: 2.5rem;
-      border-radius: 16px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-      text-align: center;
-      max-width: 500px;
-      border: 2px solid #ff4d4d;
-    }
-    h1 {
-      color: #ff4d4d;
-      margin-bottom: 1rem;
-    }
-    p {
-      font-size: 1.1rem;
-      margin-bottom: 2rem;
-      line-height: 1.5;
-    }
-    a {
-      display: inline-block;
-      background-color: #1976d2;
-      color: white;
-      padding: 0.8rem 1.5rem;
-      border-radius: 8px;
-      text-decoration: none;
-      font-weight: 600;
-      transition: background 0.3s;
-    }
-    a:hover {
-      background-color: #1565c0;
-    }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <h1>Limite de tentatives atteinte</h1>
-    <p>Vous avez atteint le nombre maximum de tentatives autorisées pour le deck <strong>{{ deck.title }}</strong>.</p>
-    <a href="{{ route('home') }}">Retour à l'accueil</a>
-  </div>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <title>
+      Limite atteinte
+    </title>
+    <link rel="shortcut icon" href="/images/icone.ico" type="image/x-icon" />
+    <style>
+      body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f7faff;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        color: #333;
+      }
+      
+      .container {
+        background: white;
+        padding: 2.5rem;
+        border-radius: 16px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        text-align: center;
+        max-width: 500px;
+        border: 2px solid #ff4d4d;
+      }
+      
+      h1 {
+        color: #ff4d4d;
+        margin-bottom: 1rem;
+      }
+      
+      p {
+        font-size: 1.1rem;
+        margin-bottom: 2rem;
+        line-height: 1.5;
+      }
+      
+      a {
+        display: inline-block;
+        background-color: #1976d2;
+        color: white;
+        padding: 0.8rem 1.5rem;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: background 0.3s;
+      }
+      
+      a:hover {
+        background-color: #1565c0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>
+        Limite de tentatives atteinte
+      </h1>
+      <p>
+        Vous avez atteint le nombre maximum de tentatives autorisées pour le deck <strong>{{ deck.title }}</strong>.
+      </p>
+      <a href="{{ route('home') }}">Retour à l'accueil</a>
+    </div>
+  </body>
 </html>

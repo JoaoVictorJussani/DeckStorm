@@ -1,506 +1,551 @@
 <!DOCTYPE html>
 <html lang="fr">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Profil de {{ user.username }} - DeckStorm</title>
-  <link rel="shortcut icon" href="/images/icone.ico" type="image/x-icon">
-  <script>
-    (function() {
-      let theme = localStorage.getItem('theme');
-      if (!theme) theme = 'theme-light';
-      document.documentElement.className = theme;
-      document.addEventListener('DOMContentLoaded', function() {
-        document.body.className = theme;
-      });
-    })();
-  </script>
-  <style>
-    :root {
-      /* Palette Clean (Slate/Zinc) */
-      --primary: #3b82f6; 
-      --primary-dark: #2563eb;
-      
-      --bg-body: #f8fafc;
-      --bg-card: #ffffff;
-      
-      --text-main: #0f172a;
-      --text-muted: #64748b;
-      
-      --border: #e2e8f0;
-      
-      --success: #22c55e;
-      --danger: #ef4444;
-    }
-
-    .theme-dark {
-      --primary: #60a5fa;
-      --primary-dark: #3b82f6;
-      
-      --bg-body: #0f172a;
-      --bg-card: #1e293b;
-      
-      --text-main: #f8fafc;
-      --text-muted: #94a3b8;
-      
-      --border: #334155;
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      background-color: var(--bg-body);
-      color: var(--text-main);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      min-height: 100vh;
-      padding-top: 70px;
-      transition: background-color 0.2s, color 0.2s;
-    }
-
-    .container {
-      width: 100%;
-      max-width: 1000px;
-      padding: 2rem 1.5rem;
-      display: flex;
-      flex-direction: column;
-      gap: 2rem;
-    }
-
-    /* Profile Header Card */
-    .profile-header {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 3rem 2rem;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 1.5rem;
-      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
-    }
-
-    .profile-avatar {
-      width: 100px;
-      height: 100px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 3rem;
-      color: white;
-      box-shadow: 0 8px 16px rgba(59, 130, 246, 0.2);
-    }
-
-    .profile-name {
-      font-size: 2rem;
-      font-weight: 800;
-      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    /* Stats Grid */
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 2rem;
-      width: 100%;
-      max-width: 500px;
-      margin: 1rem 0;
-    }
-
-    .stat-item {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0.5rem;
-      cursor: pointer;
-      padding: 1rem;
-      border-radius: 12px;
-      transition: all 0.2s;
-    }
-    .stat-item:hover {
-      background: var(--bg-body);
-    }
-
-    .stat-value {
-      font-size: 2rem;
-      font-weight: 800;
-      color: var(--primary);
-    }
-
-    .stat-label {
-      font-size: 0.85rem;
-      font-weight: 600;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-
-    /* Buttons */
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-      padding: 0.75rem 2rem;
-      border-radius: 10px;
-      font-weight: 600;
-      font-size: 1rem;
-      cursor: pointer;
-      border: none;
-      transition: all 0.2s;
-      text-decoration: none;
-    }
-
-    .btn-follow {
-      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-      color: white;
-      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
-    }
-    .btn-follow:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 16px rgba(59, 130, 246, 0.4);
-    }
-
-    .btn-unfollow {
-      background: transparent;
-      border: 2px solid var(--danger);
-      color: var(--danger);
-    }
-    .btn-unfollow:hover {
-      background: var(--danger);
-      color: white;
-      transform: translateY(-2px);
-    }
-
-    /* Decks Section */
-    .decks-section {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 2rem;
-      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
-    }
-
-    .section-title {
-      font-size: 1.5rem;
-      font-weight: 700;
-      margin-bottom: 1.5rem;
-      color: var(--text-main);
-    }
-
-    /* Deck Grid */
-    .deck-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 1.5rem;
-    }
-
-    .deck-card {
-      background: var(--bg-body);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 1.5rem;
-      cursor: pointer;
-      transition: all 0.2s;
-      display: flex;
-      flex-direction: column;
-      gap: 0.75rem;
-    }
-    .deck-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 8px 16px rgba(0,0,0,0.1);
-      border-color: var(--primary);
-    }
-
-    .deck-title {
-      font-size: 1.1rem;
-      font-weight: 700;
-      color: var(--primary);
-    }
-
-    .deck-description {
-      font-size: 0.9rem;
-      color: var(--text-muted);
-      line-height: 1.5;
-      flex: 1;
-    }
-
-    .deck-meta {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding-top: 0.75rem;
-      border-top: 1px solid var(--border);
-      font-size: 0.85rem;
-      color: var(--text-muted);
-    }
-
-    .deck-cards-count {
-      font-weight: 600;
-      color: var(--primary);
-    }
-
-    .empty-state {
-      text-align: center;
-      padding: 3rem 1rem;
-      color: var(--text-muted);
-      font-size: 1rem;
-    }
-
-    /* Modal */
-    .modal-overlay {
-      display: none;
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(0,0,0,0.5);
-      backdrop-filter: blur(4px);
-      z-index: 1000;
-      align-items: center;
-      justify-content: center;
-    }
-    .modal-overlay.active { display: flex; }
-
-    .modal-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 2rem;
-      width: 90%;
-      max-width: 450px;
-      max-height: 80vh;
-      display: flex;
-      flex-direction: column;
-      box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
-    }
-
-    .modal-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1.5rem;
-      padding-bottom: 1rem;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .modal-title {
-      font-size: 1.25rem;
-      font-weight: 700;
-      color: var(--text-main);
-    }
-
-    .modal-close {
-      background: none;
-      border: none;
-      font-size: 1.5rem;
-      color: var(--text-muted);
-      cursor: pointer;
-      padding: 0;
-      width: 32px;
-      height: 32px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 8px;
-      transition: all 0.2s;
-    }
-    .modal-close:hover {
-      background: var(--bg-body);
-      color: var(--text-main);
-    }
-
-    .modal-list {
-      list-style: none;
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-    }
-
-    .modal-item {
-      padding: 1rem;
-      border-radius: 10px;
-      background: var(--bg-body);
-      transition: all 0.2s;
-    }
-    .modal-item:hover {
-      background: rgba(59, 130, 246, 0.1);
-    }
-
-    .modal-link {
-      color: var(--text-main);
-      font-weight: 500;
-      text-decoration: none;
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-    }
-
-    .user-icon {
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-      color: white;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1rem;
-      font-weight: 600;
-    }
-
-    @media (max-width: 640px) {
-      .stats-grid {
-        grid-template-columns: repeat(3, 1fr);
-        gap: 1rem;
-      }
-      .profile-name {
-        font-size: 1.5rem;
-      }
-      .deck-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-  </style>
-</head>
-<body>
-  @include('components/header')
-
-  <div class="container">
-    
-    <!-- Profile Header -->
-    <div class="profile-header">
-      <div class="profile-avatar">
-        👤
-      </div>
-      <h1 class="profile-name">{{ user.username }}</h1>
-      
-      <div class="stats-grid">
-        <div class="stat-item" onclick="showModal('followers-modal')">
-          <span class="stat-value">{{ followersCount }}</span>
-          <span class="stat-label">Abonnés</span>
-        </div>
-        <div class="stat-item" onclick="showModal('following-modal')">
-          <span class="stat-value">{{ followingCount }}</span>
-          <span class="stat-label">Abonnements</span>
-        </div>
-        <div class="stat-item">
-          <span class="stat-value">{{ publicDecks.length }}</span>
-          <span class="stat-label">Decks</span>
-        </div>
-      </div>
-
-      @if(authUser && authUser.id !== user.id)
-        <form action="{{ isFollowing ? route('user.unfollow', { id: user.id }) : route('user.follow', { id: user.id }) }}" method="POST">
-          {{ csrfField() }}
-          <button type="submit" class="btn {{ isFollowing ? 'btn-unfollow' : 'btn-follow' }}">
-            {{ isFollowing ? '✓ Abonné' : '+ Suivre' }}
-          </button>
-        </form>
-      @endif
-    </div>
-
-    <!-- Decks Section -->
-    <div class="decks-section">
-      <h2 class="section-title">Decks publics de {{ user.username }}</h2>
-      
-      @if(publicDecks.length)
-        <div class="deck-grid">
-          @each(deck in publicDecks)
-            <div class="deck-card" onclick="window.location.href='/deck/{{ deck.id }}'">
-              <div class="deck-title">{{ deck.title }}</div>
-              <div class="deck-description">{{ deck.description || 'Aucune description' }}</div>
-              <div class="deck-meta">
-                <span>📚 Flashcards</span>
-                <span class="deck-cards-count">{{ deck.cards.length }} cartes</span>
-              </div>
-            </div>
-          @end
-        </div>
-      @else
-        <div class="empty-state">
-          Aucun deck public disponible pour le moment.
-        </div>
-      @endif
-    </div>
-
-  </div>
-
-  <!-- Followers Modal -->
-  <div id="followers-modal" class="modal-overlay" onclick="if(event.target === this) closeModal('followers-modal')">
-    <div class="modal-card">
-      <div class="modal-header">
-        <h3 class="modal-title">Abonnés ({{ followersCount }})</h3>
-        <button class="modal-close" onclick="closeModal('followers-modal')">&times;</button>
-      </div>
-      <ul class="modal-list">
-        @if(followersList && followersList.length)
-          @each(f in followersList)
-            <li class="modal-item">
-              <a href="/public-account/{{ f.id }}" class="modal-link">
-                <div class="user-icon">{{ f.username.charAt(0).toUpperCase() }}</div>
-                <span>{{ f.username }}</span>
-              </a>
-            </li>
-          @end
-        @else
-          <li style="text-align:center; color: var(--text-muted); padding: 2rem;">Aucun abonné</li>
-        @endif
-      </ul>
-    </div>
-  </div>
-
-  <!-- Following Modal -->
-  <div id="following-modal" class="modal-overlay" onclick="if(event.target === this) closeModal('following-modal')">
-    <div class="modal-card">
-      <div class="modal-header">
-        <h3 class="modal-title">Abonnements ({{ followingCount }})</h3>
-        <button class="modal-close" onclick="closeModal('following-modal')">&times;</button>
-      </div>
-      <ul class="modal-list">
-        @if(followingList && followingList.length)
-          @each(f in followingList)
-            <li class="modal-item">
-              <a href="/public-account/{{ f.id }}" class="modal-link">
-                <div class="user-icon">{{ f.username.charAt(0).toUpperCase() }}</div>
-                <span>{{ f.username }}</span>
-              </a>
-            </li>
-          @end
-        @else
-          <li style="text-align:center; color: var(--text-muted); padding: 2rem;">Aucun abonnement</li>
-        @endif
-      </ul>
-    </div>
-  </div>
-
-  <script>
-    function showModal(modalId) {
-      document.getElementById(modalId).classList.add('active');
-    }
-
-    function closeModal(modalId) {
-      document.getElementById(modalId).classList.remove('active');
-    }
-
-    // Close on escape key
-    document.addEventListener('keydown', function(event) {
-      if (event.key === "Escape") {
-        document.querySelectorAll('.modal-overlay').forEach(modal => {
-          modal.classList.remove('active');
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      Profil de {{ user.username }} - DeckStorm
+    </title>
+    <link rel="shortcut icon" href="/images/icone.ico" type="image/x-icon" />
+    <script>
+      (function() {
+        let theme = localStorage.getItem("theme");
+        if (!theme) theme = "theme-light";
+        document.documentElement.className = theme;
+        document.addEventListener("DOMContentLoaded", function() {
+          document.body.className = theme;
         });
+      })();
+    </script>
+    <style>
+      :root {
+        /* Palette Clean (Slate/Zinc) */
+        --primary: #3b82f6;
+        --primary-dark: #2563eb;
+        --bg-body: #f8fafc;
+        --bg-card: #ffffff;
+        --text-main: #0f172a;
+        --text-muted: #64748b;
+        --border: #e2e8f0;
+        --success: #22c55e;
+        --danger: #ef4444;
       }
-    });
-  </script>
-</body>
+      
+      .theme-dark {
+        --primary: #60a5fa;
+        --primary-dark: #3b82f6;
+        --bg-body: #0f172a;
+        --bg-card: #1e293b;
+        --text-main: #f8fafc;
+        --text-muted: #94a3b8;
+        --border: #334155;
+      }
+      
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        background-color: var(--bg-body);
+        color: var(--text-main);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-height: 100vh;
+        padding-top: 70px;
+        transition: background-color 0.2s, color 0.2s;
+      }
+      
+      .container {
+        width: 100%;
+        max-width: 1000px;
+        padding: 2rem 1.5rem;
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+      }
+      
+      /* Profile Header Card */
+      
+      .profile-header {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 3rem 2rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1.5rem;
+        box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+      }
+      
+      .profile-avatar {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 3rem;
+        color: white;
+        box-shadow: 0 8px 16px rgba(59, 130, 246, 0.2);
+      }
+      
+      .profile-name {
+        font-size: 2rem;
+        font-weight: 800;
+        background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+      
+      /* Stats Grid */
+      
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 2rem;
+        width: 100%;
+        max-width: 500px;
+        margin: 1rem 0;
+      }
+      
+      .stat-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5rem;
+        cursor: pointer;
+        padding: 1rem;
+        border-radius: 12px;
+        transition: all 0.2s;
+      }
+      
+      .stat-item:hover {
+        background: var(--bg-body);
+      }
+      
+      .stat-value {
+        font-size: 2rem;
+        font-weight: 800;
+        color: var(--primary);
+      }
+      
+      .stat-label {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+      
+      /* Buttons */
+      
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        padding: 0.75rem 2rem;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 1rem;
+        cursor: pointer;
+        border: none;
+        transition: all 0.2s;
+        text-decoration: none;
+      }
+      
+      .btn-follow {
+        background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+        color: white;
+        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+      }
+      
+      .btn-follow:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(59, 130, 246, 0.4);
+      }
+      
+      .btn-unfollow {
+        background: transparent;
+        border: 2px solid var(--danger);
+        color: var(--danger);
+      }
+      
+      .btn-unfollow:hover {
+        background: var(--danger);
+        color: white;
+        transform: translateY(-2px);
+      }
+      
+      /* Decks Section */
+      
+      .decks-section {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 2rem;
+        box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+      }
+      
+      .section-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        color: var(--text-main);
+      }
+      
+      /* Deck Grid */
+      
+      .deck-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 1.5rem;
+      }
+      
+      .deck-card {
+        background: var(--bg-body);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 1.5rem;
+        cursor: pointer;
+        transition: all 0.2s;
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+      }
+      
+      .deck-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+        border-color: var(--primary);
+      }
+      
+      .deck-title {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--primary);
+      }
+      
+      .deck-description {
+        font-size: 0.9rem;
+        color: var(--text-muted);
+        line-height: 1.5;
+        flex: 1;
+      }
+      
+      .deck-meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-top: 0.75rem;
+        border-top: 1px solid var(--border);
+        font-size: 0.85rem;
+        color: var(--text-muted);
+      }
+      
+      .deck-cards-count {
+        font-weight: 600;
+        color: var(--primary);
+      }
+      
+      .empty-state {
+        text-align: center;
+        padding: 3rem 1rem;
+        color: var(--text-muted);
+        font-size: 1rem;
+      }
+      
+      /* Modal */
+      
+      .modal-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.5);
+        backdrop-filter: blur(4px);
+        z-index: 1000;
+        align-items: center;
+        justify-content: center;
+      }
+      
+      .modal-overlay.active {
+        display: flex;
+      }
+      
+      .modal-card {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 2rem;
+        width: 90%;
+        max-width: 450px;
+        max-height: 80vh;
+        display: flex;
+        flex-direction: column;
+        box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
+      }
+      
+      .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid var(--border);
+      }
+      
+      .modal-title {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--text-main);
+      }
+      
+      .modal-close {
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        color: var(--text-muted);
+        cursor: pointer;
+        padding: 0;
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 8px;
+        transition: all 0.2s;
+      }
+      
+      .modal-close:hover {
+        background: var(--bg-body);
+        color: var(--text-main);
+      }
+      
+      .modal-list {
+        list-style: none;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+      
+      .modal-item {
+        padding: 1rem;
+        border-radius: 10px;
+        background: var(--bg-body);
+        transition: all 0.2s;
+      }
+      
+      .modal-item:hover {
+        background: rgba(59, 130, 246, 0.1);
+      }
+      
+      .modal-link {
+        color: var(--text-main);
+        font-weight: 500;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+      }
+      
+      .user-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1rem;
+        font-weight: 600;
+      }
+      
+      @media (max-width: 640px) {
+        .stats-grid {
+          grid-template-columns: repeat(3, 1fr);
+          gap: 1rem;
+        }
+      
+        .profile-name {
+          font-size: 1.5rem;
+        }
+      
+        .deck-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    @include('components/header')
+
+    <div class="container">
+
+      <!-- Profile Header -->
+      <div class="profile-header">
+        <div class="profile-avatar">
+          👤
+        </div>
+        <h1 class="profile-name">
+          {{ user.username }}
+        </h1>
+
+        <div class="stats-grid">
+          <div class="stat-item" onclick="showModal('followers-modal')">
+            <span class="stat-value">{{ followersCount }}</span>
+            <span class="stat-label">Abonnés</span>
+          </div>
+          <div class="stat-item" onclick="showModal('following-modal')">
+            <span class="stat-value">{{ followingCount }}</span>
+            <span class="stat-label">Abonnements</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-value">{{ publicDecks.length }}</span>
+            <span class="stat-label">Decks</span>
+          </div>
+        </div>
+
+        @if(authUser && authUser.id !== user.id)
+          <form
+            action="{{ isFollowing ? route('user.unfollow', { id: user.id }) : route('user.follow', { id: user.id }) }}"
+            method="POST"
+          >
+            {{ csrfField() }}
+          <button type="submit" class="btn {{ isFollowing ? 'btn-unfollow' : 'btn-follow' }}">
+              {{ isFollowing ? '✓ Abonné' : '+ Suivre' }}
+          </button>
+          </form>
+        @endif
+      </div>
+
+      <!-- Decks Section -->
+      <div class="decks-section">
+        <h2 class="section-title">
+          Decks publics de {{ user.username }}
+        </h2>
+
+        @if(publicDecks.length)
+          <div class="deck-grid">
+            @each(deck in publicDecks)
+              <div class="deck-card" onclick="window.location.href='/deck/{{ deck.id }}'">
+                <div class="deck-title">
+                  {{ deck.title }}
+                </div>
+                <div class="deck-description">
+                  {{ deck.description || 'Aucune description' }}
+                </div>
+                <div class="deck-meta">
+                  <span>📚 Flashcards</span>
+                  <span class="deck-cards-count">{{ deck.cards.length }} cartes</span>
+                </div>
+              </div>
+            @end
+          </div>
+        @else
+          <div class="empty-state">
+            Aucun deck public disponible pour le moment.
+          </div>
+        @endif
+      </div>
+
+    </div>
+
+    <!-- Followers Modal -->
+    <div
+      id="followers-modal"
+      class="modal-overlay"
+      onclick="if(event.target === this) closeModal('followers-modal')"
+    >
+      <div class="modal-card">
+        <div class="modal-header">
+          <h3 class="modal-title">
+            Abonnés ({{ followersCount }})
+          </h3>
+          <button class="modal-close" onclick="closeModal('followers-modal')">&times;</button>
+        </div>
+        <ul class="modal-list">
+          @if(followersList && followersList.length)
+            @each(f in followersList)
+              <li class="modal-item">
+                <a href="/public-account/{{ f.id }}" class="modal-link">
+                  <div class="user-icon">
+                    {{ f.username.charAt(0).toUpperCase() }}
+                  </div>
+                  <span>{{ f.username }}</span>
+                </a>
+              </li>
+            @end
+          @else
+            <li style="text-align:center; color: var(--text-muted); padding: 2rem;">
+              Aucun abonné
+            </li>
+          @endif
+        </ul>
+      </div>
+    </div>
+
+    <!-- Following Modal -->
+    <div
+      id="following-modal"
+      class="modal-overlay"
+      onclick="if(event.target === this) closeModal('following-modal')"
+    >
+      <div class="modal-card">
+        <div class="modal-header">
+          <h3 class="modal-title">
+            Abonnements ({{ followingCount }})
+          </h3>
+          <button class="modal-close" onclick="closeModal('following-modal')">&times;</button>
+        </div>
+        <ul class="modal-list">
+          @if(followingList && followingList.length)
+            @each(f in followingList)
+              <li class="modal-item">
+                <a href="/public-account/{{ f.id }}" class="modal-link">
+                  <div class="user-icon">
+                    {{ f.username.charAt(0).toUpperCase() }}
+                  </div>
+                  <span>{{ f.username }}</span>
+                </a>
+              </li>
+            @end
+          @else
+            <li style="text-align:center; color: var(--text-muted); padding: 2rem;">
+              Aucun abonnement
+            </li>
+          @endif
+        </ul>
+      </div>
+    </div>
+
+    <script>
+      function showModal(modalId) {
+        document.getElementById(modalId).classList.add("active");
+      }
+      
+      function closeModal(modalId) {
+        document.getElementById(modalId).classList.remove("active");
+      }
+      // Close on escape key
+      
+      document.addEventListener("keydown", function(event) {
+        if (event.key === "Escape") {
+          document.querySelectorAll(".modal-overlay").forEach(modal => {
+            modal.classList.remove("active");
+          });
+        }
+      });
+    </script>
+  </body>
 </html>
