@@ -1,6 +1,6 @@
 // Authentification
 import type { HttpContext } from '@adonisjs/core/http'
-import { loginUserValidator, registerUserValidator } from '#validators/auth'
+import { loginUserValidator } from '#validators/auth'
 import User from '#models/user'
 import hash from '@adonisjs/core/services/hash'
 import logger from '@adonisjs/core/services/logger'
@@ -24,7 +24,8 @@ export default class AuthController {
     if (!user) return response.redirect().toRoute('home') // Should not happen due to return in catch, but safe guard
 
     // Verifica se há convite não lido
-    const Notification = (await import('#models/notification')).default
+    const notificationModule = await import('#models/notification')
+    const Notification = notificationModule.default
     const inviteNotif = await Notification.query()
       .where('user_id', user.id)
       .where('type', 'invite')
@@ -60,15 +61,15 @@ export default class AuthController {
   // Inscription
   async handleRegister({ request, auth, session, response }: HttpContext) {
     // Use sempre request.all() para pegar dados do body (JSON ou form)
-    const all = await request.all();
-    const username = all.username;
-    const password = all.password;
+    const all = await request.all()
+    const username = all.username
+    const password = all.password
 
     // Fonction de validation de mot de passe
     const isPasswordStrong = (pwd: string) => {
-      const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-      return regex.test(pwd);
-    };
+      const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
+      return regex.test(pwd)
+    }
 
     // Validação du nom d'utilisateur et mot de passe
     if (!username) {
@@ -129,7 +130,7 @@ export default class AuthController {
     }
 
     // Redireciona para home (Edge) ou home.html (SPA)
-    return response.redirect().toRoute('home');
+    return response.redirect().toRoute('home')
   }
 
   // Changement de mot de passe
@@ -147,16 +148,16 @@ export default class AuthController {
     ])
 
     // Vérifie l'ancien mot de passe
-    if (!(await hash.verify(user.password, old_password))) {
+    if (!user.password || !(await hash.verify(user.password, old_password))) {
       session.flash('profile_error', "L'ancien mot de passe est incorrect.")
       return response.redirect().back()
     }
 
     // Vérifie la complexité du nouveau mot de passe
     const isPasswordStrong = (pwd: string) => {
-      const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-      return regex.test(pwd);
-    };
+      const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
+      return regex.test(pwd)
+    }
 
     if (!isPasswordStrong(new_password)) {
       session.flash('profile_error', "Le nouveau mot de passe doit contenir au moins 8 caractères, une majuscule, une minuscule, un chiffre et un caractère spécial.")

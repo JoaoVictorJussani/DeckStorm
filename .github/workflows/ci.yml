@@ -60,6 +60,7 @@ jobs:
           GOOGLE_CLIENT_SECRET=test
           GITHUB_CLIENT_ID=test
           GITHUB_CLIENT_SECRET=test
+          LIMITER_STORE=memory
           EOF
 
       - name: Run migrations
