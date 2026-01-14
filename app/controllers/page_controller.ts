@@ -30,7 +30,7 @@ export default class PageController {
       .preload('cards' as any)
       .preload('user' as any)
       .preload('likes' as any)
-      .orderByRaw('RAND(?)', [Number.parseInt(seed)])
+      .orderByRaw('RANDOM()')
       .first()
 
     // Get top 10 most liked decks
