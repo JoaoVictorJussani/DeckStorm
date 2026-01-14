@@ -2,7 +2,7 @@
 <html lang="fr">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <title>
       Inscription - FlashCards
     </title>
@@ -43,8 +43,10 @@
         align-items: center;
         justify-content: center;
         width: 100%;
-        padding-top: 70px;
-        padding-bottom: 2rem;
+        padding-top: calc(90px + env(safe-area-inset-top));
+        padding-bottom: max(2rem, env(safe-area-inset-bottom));
+        padding-left: max(1rem, env(safe-area-inset-left));
+        padding-right: max(1rem, env(safe-area-inset-right));
       }
       
       .register-card {
@@ -109,7 +111,7 @@
         padding: 1rem 1.2rem;
         border-radius: 12px;
         border: 2px solid transparent;
-        font-size: 1rem;
+        font-size: 16px; /* Prevents iOS zoom */
         background: #f1f5f9;
         color: #333;
         transition: all 0.3s ease;

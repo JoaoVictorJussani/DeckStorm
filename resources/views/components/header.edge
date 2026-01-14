@@ -36,9 +36,9 @@
     backdrop-filter: blur(8px);
     background: var(--header-bg, rgba(255,255,255,0.95));
     box-shadow: 0 2px 15px rgba(25, 118, 210, 0.10);
-    height: 70px;
+    height: calc(70px + env(safe-area-inset-top));
     width: 100%;
-    padding: 0 2rem;
+    padding: env(safe-area-inset-top) max(2rem, env(safe-area-inset-right)) 0 max(2rem, env(safe-area-inset-left));
     display: flex;
     justify-content: space-between;
     align-items: center;

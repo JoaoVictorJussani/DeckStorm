@@ -2,7 +2,7 @@
 <html lang="fr">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <title>
       Question - DeckStorm
     </title>
@@ -71,7 +71,10 @@
       
       .top-bar {
         width: 100%;
-        padding: 1.5rem 2rem;
+        padding-top: max(1.5rem, env(safe-area-inset-top));
+        padding-bottom: 1.5rem;
+        padding-left: max(2rem, env(safe-area-inset-left));
+        padding-right: max(2rem, env(safe-area-inset-right));
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -132,6 +135,9 @@
         align-items: center;
         width: 100%;
         padding: 2rem;
+        padding-bottom: max(2rem, env(safe-area-inset-bottom));
+        padding-left: max(2rem, env(safe-area-inset-left));
+        padding-right: max(2rem, env(safe-area-inset-right));
         perspective: 1500px;
         /* Depth for 3D flip */
       }
