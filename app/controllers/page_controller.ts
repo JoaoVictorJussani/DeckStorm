@@ -171,7 +171,15 @@ export default class PageController {
     if (!auth.user) {
       return view.render('./pages/errors/not_found')
     }
-    const user = await User.find(params.id)
+
+    let user
+    // Check if params.id is a number (ID) or string (username)
+    if (!isNaN(Number(params.id))) {
+      user = await User.find(params.id)
+    } else {
+      user = await User.findBy('username', params.id)
+    }
+
     if (!user) {
       return view.render('./pages/errors/not_found')
     }
