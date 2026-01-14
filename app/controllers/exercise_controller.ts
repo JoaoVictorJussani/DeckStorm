@@ -120,6 +120,56 @@ export default class ExerciseController {
       const incorrectCards = cards.filter((card: Card) => !resultsList.includes(card.id))
       const elapsedTime = Number.parseInt(request.input('elapsedTime', '0'), 10)
 
+      // --- LOGIQUE DE SAUVEGARDE (Dupliquée depuis finish pour garantir la persistence) ---
+      if (auth.user) {
+        // ... (Pas de vérification de token stricte ici pour éviter de bloquer la fin, mais on pourrait l'ajouter)
+
+        const userId = auth.user.id
+        let userStats = await UserStats.findBy('user_id', userId)
+        if (!userStats) {
+          userStats = new UserStats()
+          userStats.user_id = userId
+          userStats.decks_studied = 0
+          userStats.correct_answers = 0
+          userStats.wrong_answers = 0
+          userStats.total_study_time = 0
+        }
+
+        userStats.correct_answers += resultsList.length
+        userStats.wrong_answers += incorrectCards.length
+        userStats.total_study_time += Number.isNaN(elapsedTime) ? 0 : elapsedTime
+
+        if (mode !== 'jusquaubout' || incorrectCards.length === 0) {
+          userStats.decks_studied += 1
+        }
+        await userStats.save()
+
+        const attemptsToCreate: any[] = []
+        const exerciseAttemptModule = await import('#models/exercise_attempt')
+        const ExerciseAttemptModel = exerciseAttemptModule.default
+
+        for (const cardId of resultsList) {
+          attemptsToCreate.push({
+            userId: userId,
+            deckId: deck.id,
+            cardId: Number(cardId),
+            isCorrect: true,
+          })
+        }
+        for (const card of incorrectCards) {
+          attemptsToCreate.push({
+            userId: userId,
+            deckId: deck.id,
+            cardId: card.id,
+            isCorrect: false,
+          })
+        }
+        if (attemptsToCreate.length > 0) {
+          await ExerciseAttemptModel.createMany(attemptsToCreate)
+        }
+      }
+      // --- FIN LOGIQUE DE SAUVEGARDE ---
+
       // Correction : on termine l'exercice proprement avec les vrais résultats
       return view.render('finish_with_time', {
         deck,
