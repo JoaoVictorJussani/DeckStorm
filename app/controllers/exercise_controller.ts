@@ -76,7 +76,7 @@ export default class ExerciseController {
     })
   }
 
-  async presentQuestion({ params, request, view }: HttpContext) {
+  async presentQuestion({ params, request, view, auth }: HttpContext) {
     const deck = await Deck.query().where('id', params.deckId).preload('cards').first()
     if (!deck) {
       return view.render('./pages/errors/not_found')
@@ -113,18 +113,27 @@ export default class ExerciseController {
       })
     }
 
+    const resultsList = JSON.parse(request.input('results', '[]')).map(Number)
+
     if (questionIndex >= cards.length) {
-      // Correction : on termine l'exercice proprement au lieu de 404
+      // Calculer les mauvaises réponses
+      const incorrectCards = cards.filter((card: Card) => !resultsList.includes(card.id))
+      const elapsedTime = Number.parseInt(request.input('elapsedTime', '0'), 10)
+
+      // Correction : on termine l'exercice proprement avec les vrais résultats
       return view.render('finish_with_time', {
         deck,
         cards,
-        elapsedTime: 0,
-        results: [],
+        elapsedTime,
+        results: resultsList,
         mode,
-        incorrectCards: [],
+        incorrectCards,
         showRetry: false,
         retryCardIds: [],
         exerciseToken,
+        user: auth.user, // Passar usuário autenticado
+        attempts,
+        direction
       })
     }
 
