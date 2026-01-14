@@ -20,13 +20,27 @@ export default class PageController {
     }
 
     // Get deck of the day (using date as seed for consistent daily selection)
-    const deckOfTheDay = await Deck.query()
-      .where('visibility', 'public')
-      .preload('cards' as any)
-      .preload('user' as any)
-      .preload('likes' as any)
-      .orderByRaw('RANDOM()')
-      .first()
+    // Get deck of the day (deterministic based on date)
+    const publicDecksQuery = Deck.query().where('visibility', 'public')
+    const countResult = await publicDecksQuery.clone().count('* as total')
+    const totalDecks = Number(countResult[0].$extras.total)
+
+    let deckOfTheDay
+    if (totalDecks > 0) {
+      const today = new Date()
+      // Create a unique integer for today (YYYYMMDD)
+      const seed = today.getFullYear() * 10000 + (today.getMonth() + 1) * 100 + today.getDate()
+      // Calculate a stable offset for today
+      const offset = seed % totalDecks
+
+      deckOfTheDay = await publicDecksQuery
+        .clone()
+        .preload('cards' as any)
+        .preload('user' as any)
+        .preload('likes' as any)
+        .offset(offset)
+        .first()
+    }
 
     // Get top 10 most liked decks
     const topLikedDecks = await Deck.query()
