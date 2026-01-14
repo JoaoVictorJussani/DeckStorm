@@ -1,5 +1,4 @@
 import type { HttpContext } from '@adonisjs/core/http' // Type pour le contexte HTTP
-import { DateTime } from 'luxon'
 import Deck from '#models/deck' // Importation du modèle Deck
 import Follow from '#models/follow'
 import User from '#models/user'
@@ -19,10 +18,6 @@ export default class PageController {
         .orderBy('created_at', 'desc')
         .limit(10)
     }
-
-    // Get current date in UTC+2
-    const now = DateTime.now().setZone('UTC+2')
-    const seed = now.toFormat('yyyyLLdd') // Use date as seed for random selection
 
     // Get deck of the day (using date as seed for consistent daily selection)
     const deckOfTheDay = await Deck.query()

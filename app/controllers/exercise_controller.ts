@@ -138,7 +138,7 @@ export default class ExerciseController {
 
       for (let i = distractors.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1))
-        ;[distractors[i], distractors[j]] = [distractors[j], distractors[i]]
+          ;[distractors[i], distractors[j]] = [distractors[j], distractors[i]]
       }
 
       const wrong = distractors.slice(0, 3)
@@ -151,7 +151,7 @@ export default class ExerciseController {
 
       for (let i = quizOptions.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1))
-        ;[quizOptions[i], quizOptions[j]] = [quizOptions[j], quizOptions[i]]
+          ;[quizOptions[i], quizOptions[j]] = [quizOptions[j], quizOptions[i]]
       }
     }
 
@@ -179,7 +179,7 @@ export default class ExerciseController {
 
     const mode = request.input('mode', 'chronometre')
     const elapsedTime = Number.parseInt(request.input('elapsedTime', '0'), 10)
-    const results = JSON.parse(request.input('results', '[]'))
+    const results = JSON.parse(request.input('results', '[]')).map(Number)
     let retryCardIds = request.input('retryCardIds', null)
     if (retryCardIds && !Array.isArray(retryCardIds)) {
       retryCardIds = [retryCardIds]
