@@ -25,7 +25,7 @@ export default class HttpExceptionHandler extends ExceptionHandler {
    */
   protected statusPages: Record<StatusPageRange, StatusPageRenderer> = {
     '404': async (error, { view, auth }) => {
-      const user = await auth.user
+      const user = auth?.user
       return view.render('pages/errors/not_found', { error, user })
     },
     '500..599': (error, { view }) => {
