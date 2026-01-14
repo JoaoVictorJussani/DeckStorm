@@ -54,5 +54,5 @@ HEALTHCHECK --interval=30s --timeout=3s --start-period=40s --retries=3 \
 # Utiliser dumb-init pour gérer les signaux
 ENTRYPOINT ["dumb-init", "--"]
 
-# Démarrer l'application
-CMD ["node", "build/bin/server.js"]
+# Démarrer l'application (Executa migrações antes de iniciar)
+CMD ["sh", "-c", "node build/ace.js migration:run --force && node build/bin/server.js"]
