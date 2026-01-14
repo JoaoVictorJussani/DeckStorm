@@ -5,7 +5,7 @@ services:
     dockerContext: .
     dockerfilePath: Dockerfile.prod
     plan: free
-    region: frankfurt # Tu peux changer pour 'oregon' ou 'ohio'
+    region: frankfurt 
     envVars:
       - key: NODE_ENV
         value: production
