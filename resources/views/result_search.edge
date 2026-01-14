@@ -614,16 +614,16 @@
             const usersEmpty = document.getElementById("usersEmpty");
             if (usernames.length > 0) {
               userGrid.innerHTML = usernames.map(username => `
-                          <div class="user-card" onclick="window.location.href='/public-account/${username}'">
-                            <div class="user-avatar">${username.charAt(0).toUpperCase()}</div>
-                            <div class="user-info">
-                              <div class="user-name">${username}</div>
-                              <div class="user-stats">
-                                <span>Voir le profil →</span>
-                              </div>
-                            </div>
-                          </div>
-                        `).join("");
+                                <div class="user-card" onclick="window.location.href='/public-account/${username}'">
+                                  <div class="user-avatar">${username.charAt(0).toUpperCase()}</div>
+                                  <div class="user-info">
+                                    <div class="user-name">${username}</div>
+                                    <div class="user-stats">
+                                      <span>Voir le profil →</span>
+                                    </div>
+                                  </div>
+                                </div>
+                              `).join("");
               usersEmpty.style.display = "none";
             } else {
               userGrid.innerHTML = "";

@@ -4,7 +4,8 @@ import { defineConfig } from '@adonisjs/lucid'
 const dbConfig = defineConfig({
   connection: 'pg', // Mude de 'mysql' para 'pg'
   connections: {
-    pg: { // Cria a configuração 'pg'
+    pg: {
+      // Cria a configuração 'pg'
       client: 'pg',
       connection: {
         host: env.get('DB_HOST'),
