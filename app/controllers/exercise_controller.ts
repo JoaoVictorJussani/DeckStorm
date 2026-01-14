@@ -72,6 +72,7 @@ export default class ExerciseController {
       direction,
       user,
       exerciseToken,
+      startTime: Date.now(),
     })
   }
 

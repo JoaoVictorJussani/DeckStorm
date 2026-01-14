@@ -509,7 +509,14 @@
       
       const mode = "{{ mode }}";
       
-      const results = JSON.parse("{{ results || "[]" }}");
+      let results = [];
+      try {
+        const rawResults = "{{ results }}";
+        results = rawResults ? JSON.parse(rawResults.replace(/&quot;/g, '"')) : [];
+      } catch (e) {
+        console.error("Failed to parse results:", e);
+        results = [];
+      }
       
       const cardId = parseInt("{{ card.id }}", 10);
       
