@@ -40,8 +40,8 @@ APP_KEY=<générer-avec-node-ace-generate:key>
 LOG_LEVEL=info
 
 # Database
-DB_HOST=mysql
-DB_PORT=3306
+DB_HOST=postgres
+DB_PORT=5432
 DB_USER=deckstorm_user
 DB_PASSWORD=<mot-de-passe-sécurisé>
 DB_DATABASE=deckstorm_prod
@@ -84,15 +84,14 @@ services:
       - ./tmp:/app/tmp
       - ./uploads:/app/uploads
 
-  mysql:
-    image: mysql:8.0
+  postgres:
+    image: postgres:15
     environment:
-      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
-      MYSQL_DATABASE: ${DB_DATABASE}
-      MYSQL_USER: ${DB_USER}
-      MYSQL_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_DATABASE}
+      POSTGRES_USER: ${DB_USER}
     volumes:
-      - mysql_data:/var/lib/mysql
+      - postgres_data:/var/lib/postgresql/data
     restart: unless-stopped
 
   nginx:
@@ -108,7 +107,7 @@ services:
     restart: unless-stopped
 
 volumes:
-  mysql_data:
+  postgres_data:
 ```
 
 ### 4. Créer le Dockerfile de production
@@ -300,10 +299,10 @@ docker-compose -f docker-compose.prod.yml exec app node ace migration:run --forc
 
 ```bash
 # Créer une sauvegarde
-docker-compose -f docker-compose.prod.yml exec mysql mysqldump -u deckstorm_user -p deckstorm_prod > backup_$(date +%Y%m%d).sql
+docker-compose -f docker-compose.prod.yml exec postgres pg_dump -U deckstorm_user deckstorm_prod > backup_$(date +%Y%m%d).sql
 
 # Restaurer une sauvegarde
-docker-compose -f docker-compose.prod.yml exec -T mysql mysql -u deckstorm_user -p deckstorm_prod < backup_20260112.sql
+docker-compose -f docker-compose.prod.yml exec -T postgres psql -U deckstorm_user -d deckstorm_prod < backup_20260112.sql
 ```
 
 ## Rollback en cas de problème

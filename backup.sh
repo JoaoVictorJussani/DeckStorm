@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Script de backup automatique pour DeckStorm
-# Ce script crée une sauvegarde de la base de données MySQL
+# Ce script crée une sauvegarde de la base de données PostgreSQL
 
 set -e
 
@@ -16,15 +16,17 @@ mkdir -p ${BACKUP_DIR}
 
 echo "🔄 Démarrage du backup à $(date)"
 
+# Exporter le mot de passe pour pg_dump
+export PGPASSWORD=${DB_PASSWORD}
+
 # Créer le backup
-mysqldump -h ${MYSQL_HOST} \
-          -u ${MYSQL_USER} \
-          -p${MYSQL_PASSWORD} \
-          ${MYSQL_DATABASE} \
-          --single-transaction \
-          --quick \
-          --lock-tables=false \
-          > ${BACKUP_DIR}/${BACKUP_FILE}
+pg_dump -h ${DB_HOST} \
+        -U ${DB_USER} \
+        ${DB_DATABASE} \
+        > ${BACKUP_DIR}/${BACKUP_FILE}
+
+# Nettoyer la variable mot de passe
+unset PGPASSWORD
 
 # Compresser le backup
 gzip ${BACKUP_DIR}/${BACKUP_FILE}
