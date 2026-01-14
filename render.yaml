@@ -1,0 +1,35 @@
+services:
+  - type: web
+    name: deckstorm
+    runtime: docker
+    dockerContext: .
+    dockerfilePath: Dockerfile.prod
+    plan: free
+    region: frankfurt # Tu peux changer pour 'oregon' ou 'ohio'
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: HOST
+        value: 0.0.0.0
+      - key: PORT
+        value: 3333
+      - key: APP_KEY # Render te demandera de le remplir ou tu peux en générer un
+        sync: false
+      - key: DB_HOST
+        sync: false
+      - key: DB_PORT
+        value: 3306
+      - key: DB_USER
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
+      - key: DB_DATABASE
+        sync: false
+      - key: SESSION_DRIVER
+        value: cookie
+      - key: LOG_LEVEL
+        value: info
+      - key: LIMITER_STORE
+        value: memory
+      - key: CACHE_VIEWS
+        value: true
