@@ -865,13 +865,13 @@
                 @each(creator in topCreatorsByFollowers)
                   <div
                     class="creator-item"
-                    onclick="window.location.href='/public-account/{{ creator.id }}'"
+                    onclick="window.location.href='{{ auth.user && auth.user.id === creator.id ? '/account/' + auth.user.id : '/public-account/' + creator.id }}'"
                     title="Voir le profil de {{ creator.username }}"
                   >
                     <!-- Avatar supprimé -->
                     <div class="creator-info">
                       <a
-                        href="/public-account/{{ creator.id }}"
+                        href="{{ auth.user && auth.user.id === creator.id ? '/account/' + auth.user.id : '/public-account/' + creator.id }}"
                         class="creator-username"
                         onclick="event.stopPropagation();"
                       >{{ creator.username }}</a>
@@ -891,13 +891,13 @@
                 @each(creator in topCreatorsByDecks)
                   <div
                     class="creator-item"
-                    onclick="window.location.href='/public-account/{{ creator.id }}'"
+                    onclick="window.location.href='{{ auth.user && auth.user.id === creator.id ? '/account/' + auth.user.id : '/public-account/' + creator.id }}'"
                     title="Voir le profil de {{ creator.username }}"
                   >
                     <!-- Avatar supprimé -->
                     <div class="creator-info">
                       <a
-                        href="/public-account/{{ creator.id }}"
+                        href="{{ auth.user && auth.user.id === creator.id ? '/account/' + auth.user.id : '/public-account/' + creator.id }}"
                         class="creator-username"
                         onclick="event.stopPropagation();"
                       >{{ creator.username }}</a>
@@ -930,7 +930,7 @@
                   </div>
                   <div class="deck-info">
                     <a
-                      href="/public-account/{{ deckOfTheDay.user.id }}"
+                      href="{{ auth.user && auth.user.id === deckOfTheDay.user.id ? '/account' : '/public-account/' + deckOfTheDay.user.id }}"
                       class="deck-author"
                       onclick="event.stopPropagation();"
                     >{{ deckOfTheDay.user.username }}</a>
@@ -962,7 +962,7 @@
                     {{ deck.title }}
                   </div>
                   <div class="deck-info">
-                    <a href="/public-account/{{ deck.user.id }}" class="deck-author" onclick="event.stopPropagation();">{{ deck.user.username }}</a>
+                    <a href="{{ auth.user && auth.user.id === deck.user.id ? '/account' : '/public-account/' + deck.user.id }}" class="deck-author" onclick="event.stopPropagation();">{{ deck.user.username }}</a>
                   </div>
                   <div class="like-container" onclick="event.stopPropagation();">
                     <button

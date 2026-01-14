@@ -336,11 +336,12 @@ router
   .use(middleware.auth()) // Nécessite une authentification
 
 router
-  .get('/api/user-suggestions', async ({ request, response }) => {
+  .get('/api/user-suggestions', async ({ request, response, auth }: HttpContext) => {
     const query = request.input('query', '').trim()
     if (!query || query.length < 1) return response.json([])
     const users = await User.query()
       .where('username', 'like', `%${query}%`)
+      .andWhereNot('id', auth.user!.id)
       .limit(100)
       .select('username')
     return response.json(users.map((u) => u.username))
