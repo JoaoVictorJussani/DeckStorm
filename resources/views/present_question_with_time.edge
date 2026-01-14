@@ -487,9 +487,7 @@
     </div>
 
     <!-- Hidden Form for submission -->
-    <form
-      action=questionIndex typeof cards== undefined cards cards.length deck.cards.length route exercise.presentQuestion deckId deck.id questionIndex questionIndex route exercise.finish deckId deck.id method=questionIndex typeof cards== undefined cards cards.length deck.cards.length GET POST id="next-form" style="display: none;"
-    >
+    <form action="{{ route('exercise.presentQuestion', { deckId: deck.id, questionIndex: questionIndex + 1 }) }}" method="GET" id="next-form" style="display: none;">
       {{ csrfField() }}
     <input type="hidden" name="startTime" value="{{ startTime }}" />
       <input type="hidden" name="elapsedTime" value="0" />
