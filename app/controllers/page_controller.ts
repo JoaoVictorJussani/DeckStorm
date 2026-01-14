@@ -129,7 +129,7 @@ export default class PageController {
     // Decks restreints auxquels j'ai accès
     const restrictedDecks = await Deck.query()
       .where('visibility', 'restricted')
-      .andWhereRaw('JSON_CONTAINS(allowed_users_ids, ?)', [String(user.id)])
+      .andWhereRaw('allowed_users_ids::jsonb @> ?::jsonb', [JSON.stringify(user.id)])
       .preload('cards')
       .preload('user' as any)
 
