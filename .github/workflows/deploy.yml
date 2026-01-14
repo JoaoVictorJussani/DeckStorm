@@ -14,18 +14,20 @@ jobs:
     runs-on: ubuntu-latest
 
     services:
-      mysql:
-        image: mysql:8.0
+    services:
+      postgres:
+        image: postgres:15
         env:
-          MYSQL_ROOT_PASSWORD: root
-          MYSQL_DATABASE: deckstorm_test
+          POSTGRES_USER: root
+          POSTGRES_PASSWORD: root
+          POSTGRES_DB: deckstorm_test
         ports:
-          - 3306:3306
+          - 5432:5432
         options: >-
-          --health-cmd="mysqladmin ping"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=3
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
 
     steps:
       - name: Checkout code
@@ -50,7 +52,7 @@ jobs:
           LOG_LEVEL=silent
           SESSION_DRIVER=memory
           DB_HOST=127.0.0.1
-          DB_PORT=3306
+          DB_PORT=5432
           DB_USER=root
           DB_PASSWORD=root
           DB_DATABASE=deckstorm_test
@@ -116,7 +118,7 @@ jobs:
             
             # Exécuter les migrations à l'intérieur du conteneur
             # Utilise 'exec -T' pour le mode non-interactif
-            docker-compose -f docker-compose.prod.yml exec -T app node build/ace.js migration:run --force
+            docker-compose -f docker-compose.prod.yml exec -T app node ace migration:run --force
           EOF
 
       - name: Verify deployment
