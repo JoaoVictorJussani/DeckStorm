@@ -99,6 +99,73 @@
           grid-template-columns: 1fr;
         }
       }
+
+      @media (max-width: 640px) {
+        .container {
+           gap: 2rem;
+           align-items: center; /* Center main container content */
+        }
+        
+        .deck-header {
+           display: flex;
+           flex-direction: column;
+           align-items: center;
+           width: 100%;
+        }
+
+        .deck-info-card {
+           padding: 1.5rem 1rem;
+           display: flex; /* Flex layout to center content */
+           flex-direction: column;
+           align-items: center;
+           text-align: center;
+           width: 100%;
+        }
+        
+        .deck-title {
+           font-size: 1.75rem;
+           text-align: center;
+        }
+        
+        .deck-meta {
+           flex-wrap: wrap;
+           gap: 1rem;
+           justify-content: center;
+        }
+        
+        .deck-desc {
+           text-align: center;
+           max-width: 100%;
+        }
+
+        .deck-actions {
+           flex-direction: column;
+           gap: 0.75rem;
+           width: 100%;
+        }
+        
+        .btn {
+           width: 100%;
+        }
+
+        /* Center Share Card */
+        .deck-share-card {
+            width: 100%;
+            max-width: 350px; /* Prevent it from being too wide */
+        }
+        
+        .cards-header {
+           flex-direction: column;
+           gap: 1rem;
+           align-items: center; /* Center header items */
+           width: 100%;
+           text-align: center;
+        }
+        
+        .cards-title {
+            font-size: 1.5rem;
+        }
+      }
       
       .deck-info-card {
         background: var(--bg-card);
@@ -509,6 +576,32 @@
         color: var(--danger);
         border: 1px solid var(--danger);
       }
+
+      /* Danger Modal Override */
+      .danger-modal .invite-modal-content {
+        border-color: var(--danger);
+      }
+      .danger-modal h3 {
+        color: var(--danger);
+      }
+      .btn-cancel-modal {
+        background: transparent;
+        border: 1px solid var(--border);
+        color: var(--text-main);
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        width: 100%;
+      }
+      .btn-cancel-modal:hover {
+        background: rgba(0,0,0,0.05);
+      }
+      .modal-actions {
+        display: flex;
+        gap: 1rem;
+        margin-top: 1.5rem;
+      }
     </style>
   </head>
   <body>
@@ -692,6 +785,23 @@
         </div>
       </div>
     @endif
+
+    <!-- Delete Confirmation Modal -->
+    <div id="deleteModal" class="invite-modal danger-modal">
+        <div class="invite-modal-content">
+            <button class="close-modal" onclick="closeDeleteModal()">&times;</button>
+            <h3 style="margin-bottom: 0.5rem; font-size: 1.5rem;">
+                Supprimer ?
+            </h3>
+            <p style="color: var(--text-muted); margin-bottom: 1rem;">
+                Cette action est irréversible.
+            </p>
+            <div class="modal-actions">
+                <button onclick="closeDeleteModal()" class="btn-cancel-modal">Annuler</button>
+                <button id="confirmDeleteBtn" class="btn btn-danger" style="width: 100%;">Supprimer</button>
+            </div>
+        </div>
+    </div>
     
     <!-- Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js">
@@ -714,16 +824,38 @@
         navigator.clipboard.writeText(deckUrl).then(() => alert("Lien copié !"));
       }
       
+      let deleteTargetId = null;
+      let deleteType = null; // 'deck' or 'card'
+
+      const deleteModal = document.getElementById("deleteModal");
+      const confirmBtn = document.getElementById("confirmDeleteBtn");
+
+      function openDeleteModal(type, id = null) {
+          deleteType = type;
+          deleteTargetId = id;
+          deleteModal.classList.add("active");
+      }
+
+      function closeDeleteModal() {
+          deleteModal.classList.remove("active");
+          deleteTargetId = null;
+          deleteType = null;
+      }
+
+      confirmBtn.addEventListener("click", () => {
+          if (deleteType === 'deck') {
+              document.getElementById("delete-form").submit();
+          } else if (deleteType === 'card' && deleteTargetId) {
+              document.getElementById("delete-card-form-" + deleteTargetId).submit();
+          }
+      });
+      
       function confirmDelete() {
-        if (confirm("Supprimer ce deck ? Cette action est irréversible.")) {
-          document.getElementById("delete-form").submit();
-        }
+        openDeleteModal('deck');
       }
       
       function confirmDeleteCard(id) {
-        if (confirm("Supprimer cette carte ?")) {
-          document.getElementById("delete-card-form-" + id).submit();
-        }
+        openDeleteModal('card', id);
       }
       
       function openInviteModal() {

@@ -215,7 +215,18 @@
         color: #42a5f5;
         text-decoration: underline;
       }
-    </style>
+      @media (max-width: 600px) {
+        .register-card {
+           padding: 2rem 1.5rem;
+        }
+        h2 {
+           font-size: 1.8rem;
+        }
+        
+        button {
+            padding: 1rem 0.5rem;
+        }
+      }
   </head>
   <body>
     @include('components/header_login')

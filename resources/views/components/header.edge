@@ -310,17 +310,112 @@
   }
   
   @media (max-width: 768px) {
-    .header-search {
-      display: none;
+    /* .header-search {
+       display: none; <-- Removed as user wants it visible
+    } */
+    
+    .header-navbar {
+      padding-left: max(1rem, env(safe-area-inset-left));
+      padding-right: max(1rem, env(safe-area-inset-right));
+    }
+
+    .invite-btn {
+        padding: 0.5rem 0.8rem;
+        font-size: 0.9rem;
     }
   }
   
-  @media (max-width: 1200px) {
-    .search-switch,
-    .view-switch {
+  @media (max-width: 600px) {
+    .header-navbar {
+      padding-left: max(0.5rem, env(safe-area-inset-left));
+      padding-right: max(0.5rem, env(safe-area-inset-right));
+      gap: 0.5rem;
+    }
+    
+    /* Hide text 'DeckStorm' */
+    .header-navbar > a {
+      font-size: 0; 
+    }
+    .header-navbar > a img {
+      margin-right: 0;
+    }
+
+    /* Override inline style of the right container */
+    .header-navbar > div:last-child {
+      gap: 0.5rem !important;
+    }
+
+    /* Compact Theme Switch */
+    .theme-switch {
+      margin-right: 0;
+      gap: 0;
+      padding: 0;
+    }
+    .theme-switch span:not(.theme-switch-slider) {
       display: none;
     }
+    
+    /* Hide Welcome Text */
+    .header-welcome {
+      display: none;
+    }
+
+    /* Slightly smaller icons */
+    #idea-btn, #notif-bell {
+      font-size: 1.5rem !important;
+    }
+
+    .header-dropdown-toggle {
+        padding: 0.4rem 0.8rem;
+    }
+
+    /* Mobile specific adjustments for modals/popups */
+    #idea-box {
+      position: fixed;
+      top: 50% !important;
+      left: 50% !important;
+      transform: translate(-50%, -50%) !important;
+      width: 90%;
+      max-width: 320px;
+      right: auto;
+    }
+
+    .notif-dropdown {
+      position: fixed !important;
+      top: 70px !important;
+      left: 1rem !important;
+      right: 1rem !important;
+      width: auto !important;
+      max-width: none !important;
+    }
+  }
+
+  /* Desktop Notif Dropdown Styles */
+  .notif-dropdown {
+    position: absolute;
+    right: 0;
+    top: 40px;
+    min-width: 300px;
+    max-width: 400px;
+    background: #fff;
+    border: 1px solid #1976d2;
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(25,118,210,0.10);
+    z-index: 999;
+  }
   
+  body.theme-dark .notif-dropdown {
+      background: #1e293b;
+      border-color: rgba(255,255,255,0.1);
+      color: #e2e8f0;
+  }
+  
+  body.theme-dark .notif-dropdown li {
+      background: #1e293b !important;
+      border-color: rgba(255,255,255,0.05) !important;
+  }
+
+  @media (max-width: 1200px) {
     .header-search {
       margin: 0 1rem;
     }
@@ -482,7 +577,8 @@
       </button>
       <div
         id="notif-dropdown"
-        style="display:none;position:absolute;right:0;top:40px;min-width:300px;max-width:400px;background:#fff;border:1px solid #1976d2;border-radius:10px;box-shadow:0 4px 20px rgba(25,118,210,0.10);z-index:999;"
+        class="notif-dropdown"
+        style="display:none;"
       >
         <div style="padding:1rem;">
           <b>Notifications</b>
@@ -492,12 +588,12 @@
                 <li
                   id="notif-li-{{ n.id }}"
                   data-notif-id="{{ n.id }}"
-                  style="padding:0.5rem 0;border-bottom:1px solid #eee; background:#fff;"
+                  style="padding:0.75rem; border-bottom:1px solid #eee; background:#fff; border-radius: 8px; margin-bottom: 0.5rem;"
                 >
-                  <div>
+                  <div style="font-weight: 500;">
                     {{ n.message }}
                   </div>
-                  <div style="font-size:0.85em;color:#888;margin-top:2px;">
+                  <div style="font-size:0.85em;color:#888;margin-top:4px;">
                     {{ n.created_at?.toRelative ? n.created_at.toRelative() : n.created_at }}
                   </div>
                   @if(n.type === 'invite' && n.deck_id)
@@ -523,7 +619,7 @@
     </div>
     <!-- Remplacez l'affichage du nom par celui de l'utilisateur connecté -->
     @if(auth?.user)
-      Bienvenue {{ auth.user.username }}
+      <span class="header-welcome">Bienvenue {{ auth.user.username }}</span>
     @endif
     <div class="header-dropdown" id="header-userDropdown">
       <button

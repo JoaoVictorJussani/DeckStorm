@@ -14,9 +14,11 @@
     backdrop-filter: blur(10px);
     background: var(--header-bg, rgba(255,255,255,0.8));
     box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-    height: 70px;
+    height: calc(70px + env(safe-area-inset-top));
     width: 100%;
-    padding: 0 2rem;
+    padding-top: env(safe-area-inset-top);
+    padding-left: max(2rem, env(safe-area-inset-left));
+    padding-right: max(2rem, env(safe-area-inset-right));
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -28,6 +30,13 @@
     transition: background 0.3s, border 0.3s;
   }
   
+  @media (max-width: 600px) {
+    .header-navbar {
+        padding-left: max(1rem, env(safe-area-inset-left));
+        padding-right: max(1rem, env(safe-area-inset-right));
+    }
+  }
+
   /* Logo / Title */
   
   .header-brand {
@@ -92,6 +101,8 @@
   }
   
   .theme-switch-input:checked + .theme-switch-slider:before {
+    transform: translateX(18px);
+    background: #fff;
     transform: translateX(18px);
     background: #fff;
   }

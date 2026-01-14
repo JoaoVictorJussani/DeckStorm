@@ -2,7 +2,7 @@
 <html lang="fr">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <title>
       Rapport - {{ deck.title }}
     </title>
@@ -372,6 +372,55 @@
       .stat-val {
         font-weight: 700;
         font-size: 1.2rem;
+      }
+
+      @media (max-width: 640px) {
+        body {
+            padding-top: calc(85px + env(safe-area-inset-top));
+        }
+        .container {
+            padding: 1rem;
+            gap: 1.5rem;
+        }
+        .report-header {
+            flex-direction: column;
+            gap: 1rem;
+            align-items: center;
+            text-align: center;
+        }
+        .report-title h1 {
+            font-size: 1.5rem;
+        }
+        .report-title p {
+            font-size: 0.9rem;
+        }
+        .header-actions {
+            width: 100%;
+            justify-content: center;
+        }
+        .btn {
+            width: 100%;
+        }
+        .tool-bar {
+            flex-direction: column;
+            gap: 1rem;
+            align-items: stretch;
+        }
+        .report-main {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+        .user-block {
+            width: 100%;
+        }
+        .score-block {
+            width: 100%;
+            justify-content: space-between;
+        }
+        .summary-value {
+             font-size: 1.5rem;
+        }
       }
     </style>
   </head>

@@ -241,7 +241,22 @@
         border-color: #24292e;
         color: #fff;
       }
-    </style>
+      @media (max-width: 600px) {
+        .login-card {
+           padding: 2rem 1.5rem;
+        }
+        h2 {
+           font-size: 1.8rem;
+        }
+        
+        button {
+            padding: 1rem 0.5rem;
+        }
+        
+        .divider {
+            margin: 1.5rem 0;
+        }
+      }
   </head>
   <body>
     @include('components/header_login')

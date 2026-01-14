@@ -2,6 +2,7 @@
 <html lang="fr">
   <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <title>
       Limite atteinte
     </title>
@@ -13,9 +14,12 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        height: 100vh;
+        min-height: 100vh;
         margin: 0;
         color: #333;
+        padding: 1rem;
+        padding-top: env(safe-area-inset-top);
+        padding-bottom: env(safe-area-inset-bottom);
       }
       
       .container {
@@ -24,8 +28,19 @@
         border-radius: 16px;
         box-shadow: 0 4px 20px rgba(0,0,0,0.1);
         text-align: center;
+        width: 100%;
         max-width: 500px;
         border: 2px solid #ff4d4d;
+      }
+      
+      @media (max-width: 600px) {
+        .container {
+            padding: 1.5rem;
+            border-width: 1px;
+        }
+        h1 {
+            font-size: 1.5rem;
+        }
       }
       
       h1 {

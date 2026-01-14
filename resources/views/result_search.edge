@@ -500,7 +500,7 @@
               ← Précédent
           </button>
             <span class="pagination-info">
-              Page <span id="currentPage">1</span>sur <span id="totalPages">1</span>
+              Page <span id="currentPage">1</span> sur <span id="totalPages">1</span>
             </span>
             <button class="pagination-btn" id="nextBtn" onclick="changePage(1)">
               Suivant →
@@ -596,7 +596,7 @@
           if (!usersLoaded) {
             await loadUsers();
           }
-          document.getElementById("countIcon").textContent = "�";
+          document.getElementById("countIcon").textContent = "👤";
           document.getElementById("countValue").textContent = usersData.length;
           document.getElementById("countLabel").textContent = "utilisateur(s) trouvé(s)";
         }

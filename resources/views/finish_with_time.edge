@@ -297,7 +297,34 @@
         background: rgba(239, 68, 68, 0.1);
         color: var(--danger);
       }
-    </style>
+      @media (max-width: 600px) {
+        .card {
+            padding: 1.5rem;
+        }
+        
+        .questions-list th, 
+        .questions-list td {
+            padding: 0.8rem 1rem;
+            font-size: 0.9rem;
+        }
+        
+        .details-header {
+            padding: 1rem 1.5rem;
+        }
+        
+        .progress-circle {
+            width: 120px;
+            height: 120px;
+        }
+        
+        .score-percent {
+            font-size: 2rem;
+        }
+        
+        .stat-row {
+            gap: 1rem;
+        }
+      }
   </head>
   <body>
     @include('components/header')
