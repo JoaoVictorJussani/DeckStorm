@@ -729,35 +729,10 @@
     </div>
   </div>
 
-  <!-- Desktop Actions -->
-  <div class="header-actions-container desktop-only" style="display: flex; align-items: center; gap: 1rem;">
-
-    <!-- Language Switch -->
-    <div class="header-dropdown" id="header-langDropdown">
-      <button
-        class="header-dropdown-toggle"
-        onclick="toggleLangDropdown()"
-        title="Changer la langue / Change language / Mudar idioma"
-      >
-        <span id="current-lang-flag" style="font-weight:bold;">{{ t('language.current') }}</span>
-        <span style="font-size: 0.8em;">▼</span>
-      </button>
-      <div class="header-dropdown-menu" id="lang-dropdownMenu" style="min-width:140px;">
-         <a href="#" onclick="return changeLang('fr')"><span style="font-weight:bold; width:25px; display:inline-block;">FR</span> {{ t('language.fr') }}</a>
-         <a href="#" onclick="return changeLang('pt-br')"><span style="font-weight:bold; width:25px; display:inline-block;">PT</span> {{ t('language.pt_br') }}</a>
-         <a href="#" onclick="return changeLang('en')"><span style="font-weight:bold; width:25px; display:inline-block;">EN</span> {{ t('language.en') }}</a>
-      </div>
-    </div>
-    <!-- Theme switch -->
-    <div class="theme-switch" title="{{ t('messages.toggle_theme') }}">
-      <span style="font-size:1.2rem;user-select:none;">🌞</span>
-      <input type="checkbox" id="themeSwitch" class="theme-switch-input" style="display:none;" />
-      <span class="theme-switch-slider" onclick="document.getElementById('themeSwitch').click()"></span>
-      <span style="font-size:1.2rem;user-select:none;">🌙</span>
-    </div>
-
-    <!-- Notificações -->
-    <div style="position:relative; display: flex; align-items: center;">
+  <!-- Navbar Actions (Right) -->
+  <div style="display: flex; align-items: center; gap: 1rem;">
+    <!-- Notificações (Always visible) -->
+    <div id="notif-container" style="position:relative; display: flex; align-items: center;">
       <button
         id="notif-bell"
         style="color: #1976d2; background: none; border: none; cursor: pointer; font-size: 1.8rem; padding: 0; position:relative;"
@@ -812,6 +787,34 @@
         </div>
       </div>
     </div>
+
+    <!-- Desktop Actions (Hidden on mobile) -->
+    <div class="header-actions-container desktop-only" style="display: flex; align-items: center; gap: 1rem;">
+
+    <!-- Language Switch -->
+    <div class="header-dropdown" id="header-langDropdown">
+      <button
+        class="header-dropdown-toggle"
+        onclick="toggleLangDropdown()"
+        title="Changer la langue / Change language / Mudar idioma"
+      >
+        <span id="current-lang-flag" style="font-weight:bold;">{{ t('language.current') }}</span>
+        <span style="font-size: 0.8em;">▼</span>
+      </button>
+      <div class="header-dropdown-menu" id="lang-dropdownMenu" style="min-width:140px;">
+         <a href="#" onclick="return changeLang('fr')"><span style="font-weight:bold; width:25px; display:inline-block;">FR</span> {{ t('language.fr') }}</a>
+         <a href="#" onclick="return changeLang('pt-br')"><span style="font-weight:bold; width:25px; display:inline-block;">PT</span> {{ t('language.pt_br') }}</a>
+         <a href="#" onclick="return changeLang('en')"><span style="font-weight:bold; width:25px; display:inline-block;">EN</span> {{ t('language.en') }}</a>
+      </div>
+    </div>
+    <!-- Theme switch -->
+    <div class="theme-switch" title="{{ t('messages.toggle_theme') }}">
+      <span style="font-size:1.2rem;user-select:none;">🌞</span>
+      <input type="checkbox" id="themeSwitch" class="theme-switch-input" style="display:none;" />
+      <span class="theme-switch-slider" onclick="document.getElementById('themeSwitch').click()"></span>
+      <span style="font-size:1.2rem;user-select:none;">🌙</span>
+    </div>
+
     <div class="header-dropdown" id="header-userDropdown">
       <button
         class="header-dropdown-toggle"
@@ -836,6 +839,7 @@
       </div>
     </div>
   </div>
+</div>
 </div>
 
 <!-- Mobile Menu Markup -->
@@ -885,20 +889,6 @@
     </div>
   </div>
 
-  <!-- 5. Notifications -->
-  <div class="mobile-section">
-    <button class="mobile-item-btn" onclick="toggleNotifDropdown(); closeMobileMenu();">
-      <div style="display:flex;align-items:center;gap:0.5rem;">
-         <span style="font-size:1.5rem;">🔔</span>
-         <span>{{ t('messages.notifications') }}</span>
-      </div>
-      @if(notifications?.length > 0)
-        <span style="background:#ff4d4d;color:white;padding:2px 8px;border-radius:10px;font-size:0.8rem;">
-          {{ notifications.length }}
-        </span>
-      @endif
-    </button>
-  </div>
 
   <!-- 6. Account -->
   <div class="mobile-section">
