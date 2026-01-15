@@ -126,8 +126,20 @@
         background: var(--bg-body);
         color: var(--text-main);
         font-size: 1rem;
-        transition: all 0.2s;
         font-family: inherit;
+      }
+      
+      input[type="checkbox"],
+      input[type="radio"] {
+        width: auto !important;
+        height: auto !important;
+        display: inline-block !important;
+        appearance: auto !important;
+        -webkit-appearance: checkbox !important;
+      }
+      
+      input[type="radio"] {
+        -webkit-appearance: radio !important;
       }
       
       .form-textarea {
@@ -364,7 +376,7 @@
               <div class="visibility-content">
                 <span class="visibility-icon">🔒</span>
                 <span class="visibility-label">{{ t('deck.private') }}</span>
-                <span class="visibility-desc">{{ t('deck.private_desc') || "Uniquement pour vous" }}</span>
+                <span class="visibility-desc">{{ t('deck.private_desc', {}, i18n.locale === 'fr' ? 'Uniquement pour vous' : (i18n.locale === 'pt-br' ? 'Apenas para você' : 'Only for you')) }}</span>
               </div>
             </label>
             <label class="visibility-card">
@@ -372,7 +384,7 @@
               <div class="visibility-content">
                 <span class="visibility-icon">🌍</span>
                 <span class="visibility-label">{{ t('deck.public') }}</span>
-                <span class="visibility-desc">{{ t('deck.public_desc') || "Visible par tous" }}</span>
+                <span class="visibility-desc">{{ t('deck.public_desc', {}, i18n.locale === 'fr' ? 'Visible par tous' : (i18n.locale === 'pt-br' ? 'Visível para todos' : 'Visible to everyone')) }}</span>
               </div>
             </label>
             <label class="visibility-card">
@@ -380,7 +392,7 @@
               <div class="visibility-content">
                 <span class="visibility-icon">🔐</span>
                 <span class="visibility-label">{{ t('deck.restricted') }}</span>
-                <span class="visibility-desc">{{ t('deck.restricted_desc') || "Accès par invitation" }}</span>
+                <span class="visibility-desc">{{ t('deck.restricted_desc', {}, i18n.locale === 'fr' ? 'Accès par invitation' : (i18n.locale === 'pt-br' ? 'Acesso por convite' : 'Access by invitation')) }}</span>
               </div>
             </label>
           </div>

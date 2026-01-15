@@ -139,14 +139,17 @@
         color: #90caf9;
       }
       
-      input:not([type="checkbox"]):not([type="radio"]),
+      input[type="text"],
+      input[type="number"],
+      input[type="email"],
+      input[type="password"],
       textarea,
       select {
         width: 100%;
         padding: 0.9rem 1.1rem;
         border-radius: 10px;
         border: 2px solid #1976d2;
-        font-size: 16px; /* Prevents iOS zoom */
+        font-size: 16px; 
         background: #f2f6fc;
         color: #1976d2;
         margin-top: 0.2rem;
@@ -154,6 +157,21 @@
         transition: background 0.2s, color 0.2s, border 0.2s, box-shadow 0.2s;
         outline: none;
         box-shadow: 0 2px 8px rgba(25, 118, 210, 0.07);
+        display: block;
+      }
+
+      input[type="checkbox"],
+      input[type="radio"] {
+        width: auto !important;
+        height: auto !important;
+        margin: 0;
+        display: inline-block;
+        appearance: auto;
+        -webkit-appearance: checkbox;
+      }
+
+      input[type="radio"] {
+        -webkit-appearance: radio;
       }
       
       input:focus,
@@ -530,7 +548,7 @@
               <div class="visibility-content">
                 <span class="visibility-icon">🔒</span>
                 <span class="visibility-label">{{ t('deck.private') }}</span>
-                <span class="visibility-desc">{{ t('deck.private_desc') || "Uniquement pour vous" }}</span>
+                <span class="visibility-desc">{{ t('deck.private_desc', {}, i18n.locale === 'fr' ? 'Uniquement pour vous' : (i18n.locale === 'pt-br' ? 'Apenas para você' : 'Only for you')) }}</span>
               </div>
             </label>
             <label class="visibility-card">
@@ -538,7 +556,7 @@
               <div class="visibility-content">
                 <span class="visibility-icon">🌍</span>
                 <span class="visibility-label">{{ t('deck.public') }}</span>
-                <span class="visibility-desc">{{ t('deck.public_desc') || "Visible par tous" }}</span>
+                <span class="visibility-desc">{{ t('deck.public_desc', {}, i18n.locale === 'fr' ? 'Visible par tous' : (i18n.locale === 'pt-br' ? 'Visível para todos' : 'Visible to everyone')) }}</span>
               </div>
             </label>
             <label class="visibility-card">
@@ -546,7 +564,7 @@
               <div class="visibility-content">
                 <span class="visibility-icon">🔐</span>
                 <span class="visibility-label">{{ t('deck.restricted') }}</span>
-                <span class="visibility-desc">{{ t('deck.restricted_desc') || "Accès par invitation" }}</span>
+                <span class="visibility-desc">{{ t('deck.restricted_desc', {}, i18n.locale === 'fr' ? 'Accès par invitation' : (i18n.locale === 'pt-br' ? 'Acesso por convite' : 'Access by invitation')) }}</span>
               </div>
             </label>
           </div>
