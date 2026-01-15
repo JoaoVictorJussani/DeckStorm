@@ -282,7 +282,34 @@
   body.theme-dark .theme-switch-slider {
     border-color: #fff;
   }
+
+  /* Streak Badge */
+  .streak-badge {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 12px;
+    border-radius: 20px;
+    background: rgba(245, 158, 11, 0.1);
+    border: 1px solid rgba(245, 158, 11, 0.3);
+    cursor: help;
+    transition: transform 0.2s;
+    user-select: none;
+    margin-right: 0.5rem;
+  }
+  .streak-badge:hover {
+    transform: scale(1.05);
+    background: rgba(245, 158, 11, 0.2);
+  }
+  .streak-badge span {
+    line-height: 1;
+  }
   
+  body.theme-dark .streak-badge {
+    background: rgba(245, 158, 11, 0.15);
+    border-color: rgba(245, 158, 11, 0.3);
+  }
+
   @media (max-width: 768px) {
     /* .header-search {
        display: none; <-- Removed as user wants it visible
@@ -731,6 +758,17 @@
 
   <!-- Navbar Actions (Right) -->
   <div style="display: flex; align-items: center; gap: 1rem;">
+    <!-- Streak (Fire) -->
+    @if(auth.user)
+      @let(userStats = await auth.user.related('stats').query().first())
+      @if(userStats && userStats.current_streak > 0)
+        <div class="streak-badge" title="{{ t('messages.streak_tooltip', { count: userStats.current_streak }) }}">
+          <span style="font-size: 1.2rem;">🔥</span>
+          <span style="font-weight: 700; color: #f59e0b; font-size: 1rem;">{{ userStats.current_streak }}</span>
+        </div>
+      @endif
+    @endif
+
     <!-- Notificações (Always visible) -->
     <div id="notif-container" style="position:relative; display: flex; align-items: center;">
       <button

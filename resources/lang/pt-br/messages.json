@@ -73,5 +73,15 @@
     "notepad": "Bloco de notas",
     "save_notes": "Salvar Notas",
     "notes_placeholder": "Adicione notas, lembretes ou documentos aqui...",
-    "notes_label": "Bloco de notas"
+    "notes_label": "Bloco de notas",
+    "type_your_answer": "Digite sua resposta...",
+    "check_answer": "Verificar",
+    "show_answer": "Mostrar resposta",
+    "your_answer": "Sua resposta",
+    "correct_answer": "Resposta correta",
+    "answer_correct": "Correto!",
+    "answer_incorrect": "Incorreto",
+    "close_match": "Quase! (erro de digitação)",
+    "continue": "Continuar",
+    "streak_tooltip": "Sequência atual: {count} dia(s)"
 }

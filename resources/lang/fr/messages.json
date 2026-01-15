@@ -82,5 +82,6 @@
     "answer_correct": "Correct !",
     "answer_incorrect": "Incorrect",
     "close_match": "Presque ! (faute de frappe)",
-    "continue": "Continuer"
+    "continue": "Continuer",
+    "streak_tooltip": "Série en cours : {count} jour(s)"
 }

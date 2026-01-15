@@ -3,6 +3,7 @@ import Deck from '#models/deck'
 import type Card from '#models/card'
 import UserStats from '#models/user_stats'
 import { v4 as uuidv4 } from 'uuid'
+import { DateTime } from 'luxon'
 
 export default class ExerciseController {
   async start({ params, view, request, auth, session }: HttpContext) {
@@ -139,6 +140,29 @@ export default class ExerciseController {
           userStats.correct_answers = 0
           userStats.wrong_answers = 0
           userStats.total_study_time = 0
+          userStats.current_streak = 0
+          userStats.longest_streak = 0
+        }
+
+        const today = DateTime.now().startOf('day')
+        const lastDate = userStats.last_study_date ? userStats.last_study_date.startOf('day') : null
+
+        if (!lastDate) {
+          userStats.current_streak = 1
+          userStats.longest_streak = 1
+          userStats.last_study_date = today
+        } else {
+          const diff = today.diff(lastDate, 'days').days
+          if (diff === 1) {
+            userStats.current_streak = (userStats.current_streak || 0) + 1
+            userStats.last_study_date = today
+            if (userStats.current_streak > (userStats.longest_streak || 0)) {
+              userStats.longest_streak = userStats.current_streak
+            }
+          } else if (diff > 1) {
+            userStats.current_streak = 1
+            userStats.last_study_date = today
+          }
         }
 
         userStats.correct_answers += resultsList.length
@@ -294,6 +318,29 @@ export default class ExerciseController {
         userStats.correct_answers = 0
         userStats.wrong_answers = 0
         userStats.total_study_time = 0
+        userStats.current_streak = 0
+        userStats.longest_streak = 0
+      }
+
+      const today = DateTime.now().startOf('day')
+      const lastDate = userStats.last_study_date ? userStats.last_study_date.startOf('day') : null
+
+      if (!lastDate) {
+        userStats.current_streak = 1
+        userStats.longest_streak = 1
+        userStats.last_study_date = today
+      } else {
+        const diff = today.diff(lastDate, 'days').days
+        if (diff === 1) {
+          userStats.current_streak = (userStats.current_streak || 0) + 1
+          userStats.last_study_date = today
+          if (userStats.current_streak > (userStats.longest_streak || 0)) {
+            userStats.longest_streak = userStats.current_streak
+          }
+        } else if (diff > 1) {
+          userStats.current_streak = 1
+          userStats.last_study_date = today
+        }
       }
 
       // On met à jour les stats cumulatives

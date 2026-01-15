@@ -73,5 +73,15 @@
     "notepad": "Notepad",
     "save_notes": "Save Notes",
     "notes_placeholder": "Add notes, reminders or documents here...",
-    "notes_label": "Notepad"
+    "notes_label": "Notepad",
+    "type_your_answer": "Type your answer...",
+    "check_answer": "Check",
+    "show_answer": "Show answer",
+    "your_answer": "Your answer",
+    "correct_answer": "Correct answer",
+    "answer_correct": "Correct!",
+    "answer_incorrect": "Incorrect",
+    "close_match": "Close match! (typo)",
+    "continue": "Continue",
+    "streak_tooltip": "Current streak: {count} day(s)"
 }
