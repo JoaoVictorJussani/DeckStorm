@@ -56,18 +56,12 @@
   }
   
   .header-navbar button {
-    background: var(--primary, #1976d2);
-    color: white;
-    border: 2px solid var(--primary, #1976d2);
+    color: black;
     padding: 0.7rem 1.2rem;
     border-radius: 8px;
     cursor: pointer;
     font-size: 1rem;
     transition: background 0.3s ease;
-  }
-  
-  .header-navbar button:hover {
-    background: var(--primary-hover, #1565c0);
   }
   
   .header-navbar a {
@@ -92,15 +86,15 @@
   }
   
   .header-dropdown-toggle {
-    background: linear-gradient(135deg, #1976d2, #1565c0);
-    color: white;
+    background: transparent;
+    color: var(--header-color, #222);
     border: none;
-    box-shadow: 0 2px 8px rgba(25, 118, 210, 0.18);
-    padding: 0.7rem 1.2rem;
+    box-shadow: none;
+    padding: 0.5rem;
     border-radius: 8px;
     cursor: pointer;
     font-size: 1rem;
-    transition: background 0.3s ease;
+    transition: background 0.2s, color 0.2s;
     font-weight: 600;
     display: flex;
     align-items: center;
@@ -109,7 +103,13 @@
   
   .header-dropdown-toggle:hover,
   .header-dropdown-toggle:focus {
-    background: #1565c0;
+    color: var(--primary, #1976d2);
+    outline: none;
+  }
+  
+  body.theme-dark .header-dropdown-toggle:hover,
+  body.theme-dark .header-dropdown-toggle:focus {
+    background: rgba(255, 255, 255, 0.1);
     color: #fff;
   }
   
@@ -163,37 +163,7 @@
     color: #fff;
   }
   
-  /* Box survolante d'aide */
-  
-  #idea-box {
-    display: none;
-    position: fixed;
-    top: 90px;
-    right: 30px;
-    backdrop-filter: blur(10px);
-    background: var(--dropdown-bg, rgba(255,255,255,0.98));
-    color: var(--primary, #1976d2);
-    border: 2px solid var(--primary, #1976d2);
-    box-shadow: 0 8px 32px var(--shadow, rgba(25, 118, 210, 0.10));
-    border-radius: 12px;
-    padding: 1.5rem 2rem 1.5rem 1.5rem;
-    max-width: 350px;
-    z-index: 9999;
-    transform: translateY(10px);
-    animation: slideIn 0.3s ease forwards;
-  }
-  
-  @keyframes slideIn {
-    from {
-      opacity: 0;
-      transform: translateY(20px);
-    }
-  
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
+
   
   /* Search bar styles */
   
@@ -296,8 +266,7 @@
     --input-color: #e0e0e0;
   }
   
-  body.theme-dark .header-dropdown-menu,
-  body.theme-dark #idea-box {
+  body.theme-dark .header-dropdown-menu {
     --dropdown-bg: rgba(34,34,34,0.95);
     --dropdown-border: rgba(25, 118, 210, 0.18);
     --shadow: rgba(25, 118, 210, 0.10);
@@ -360,8 +329,7 @@
       display: none;
     }
 
-    /* Slightly smaller icons */
-    #idea-btn, #notif-bell {
+    #notif-bell {
       font-size: 1.5rem !important;
     }
 
@@ -370,15 +338,7 @@
     }
 
     /* Mobile specific adjustments for modals/popups */
-    #idea-box {
-      position: fixed;
-      top: 50% !important;
-      left: 50% !important;
-      transform: translate(-50%, -50%) !important;
-      width: 90%;
-      max-width: 320px;
-      right: auto;
-    }
+
 
     .notif-dropdown {
       position: fixed !important;
@@ -554,13 +514,7 @@
       <span class="theme-switch-slider" onclick="document.getElementById('themeSwitch').click()"></span>
       <span style="font-size:1.2rem;user-select:none;">🌙</span>
     </div>
-    <button
-      id="idea-btn"
-      style="color: #1976d2; background: none; border: none; cursor: pointer; font-size: 1.8rem; padding: 0;"
-      title="Afficher les astuces d'utilisation"
-    >
-      💡
-    </button>
+
     <!-- Notificações -->
     <div style="position:relative;">
       <button
@@ -617,10 +571,6 @@
         </div>
       </div>
     </div>
-    <!-- Remplacez l'affichage du nom par celui de l'utilisateur connecté -->
-    @if(auth?.user)
-      <span class="header-welcome">Bienvenue {{ auth.user.username }}</span>
-    @endif
     <div class="header-dropdown" id="header-userDropdown">
       <button
         class="header-dropdown-toggle"
@@ -629,6 +579,9 @@
         aria-expanded="false"
         title="Ouvrir le menu utilisateur"
       >
+        @if(auth?.user)
+          <span>{{ auth.user.username }}</span>
+        @endif
         <span>▼</span>
       </button>
       <div class="header-dropdown-menu" id="header-dropdownMenu">
@@ -644,39 +597,7 @@
   </div>
 </div>
 
-<!-- Box survolante d'aide -->
-<div
-  id="idea-box"
-  style="display:none; position:fixed; top:90px; right:30px; background:#fff; color:#1976d2; border:2px solid #1976d2; border-radius:12px; box-shadow: 0 8px 32px rgba(25,118,210,0.10); padding:1.5rem 2rem 1.5rem 1.5rem; max-width:350px; z-index:9999;"
->
-  <button
-    onclick="closeIdeaBox()"
-    style="position:absolute; top:8px; right:10px; background:none; border:none; color:#1976d2; font-size:1.3rem; cursor:pointer;"
-    aria-label="Fermer"
-  >✖</button>
-  <div style="font-size:1.2rem; margin-bottom:0.7rem;">
-    <b>Astuce DeckStorm</b>
-  </div>
-  <div style="color:#222; font-size:1rem;">
-    <ul style="margin:0 0 0 1.2rem; padding:0;">
-      <li>
-        Créez, modifiez et partagez vos decks facilement.
-      </li>
-      <li>
-        Utilisez <b>Exercer</b>pour réviser vos cartes.
-      </li>
-      <li>
-        Ajoutez des cartes avec des questions claires.
-      </li>
-      <li>
-        Partagez vos decks publics avec le QR code ou le lien.
-      </li>
-      <li>
-        Survolez les boutons pour plus d'infos.
-      </li>
-    </ul>
-  </div>
-</div>
+
 
 <!-- Modal de convite (exemplo, pode ser ativado via JS) -->
 <div id="invite-modal" class="invite-modal">
@@ -709,12 +630,7 @@
     if (dropdown && !dropdown.contains(event.target)) {
       dropdown.classList.remove("open");
     }
-    // Fermer la box idée si clic en dehors
-    const ideaBox = document.getElementById("idea-box");
-    const ideaBtn = document.getElementById("idea-btn");
-    if (ideaBox && ideaBox.style.display === "block" && !ideaBox.contains(event.target) && event.target !== ideaBtn) {
-      ideaBox.style.display = "none";
-    }
+
     // Fermer dropdown de notifications si clic en dehors (mais PAS si clic sur la cloche ou le menu)
     const notifDropdown = document.getElementById("notif-dropdown");
     const notifBell = document.getElementById("notif-bell");
@@ -722,17 +638,7 @@
       notifDropdown.style.display = "none";
     }
   });
-  // Afficher/masquer la box idée
-  
-  document.getElementById("idea-btn").onclick = function(e) {
-    e.stopPropagation();
-    const box = document.getElementById("idea-box");
-    box.style.display = box.style.display === "block" ? "none" : "block";
-  };
-  
-  function closeIdeaBox() {
-    document.getElementById("idea-box").style.display = "none";
-  }
+
   // Fonction de recherche dynamique
   
   function headerSearchDecks(event) {
