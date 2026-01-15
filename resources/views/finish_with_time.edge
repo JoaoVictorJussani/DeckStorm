@@ -437,6 +437,11 @@
               <th>
                 {{ t('card.back_label').replace('Verso (Réponse)', 'Réponse').replace('Back (Answer)', 'Answer') }}
               </th>
+              @if(mode === 'typed')
+                <th>
+                  {{ t('messages.your_answer') }}
+                </th>
+              @endif
               <th>
                 {{ t('study.status') }}
               </th>
@@ -452,6 +457,19 @@
                 <td style="color:var(--text-muted);">
                   {{ card.answer }}
                 </td>
+                @if(mode === 'typed')
+                  <td>
+                    @if(typedAnswers && typedAnswers[card.id])
+                      @if(results && results.includes(card.id))
+                        <span style="color: var(--success); font-weight: 500;">{{ typedAnswers[card.id] }}</span>
+                      @else
+                        <span style="color: var(--danger); font-weight: 500;">{{ typedAnswers[card.id] }}</span>
+                      @endif
+                    @else
+                      <span style="color: var(--text-muted)">-</span>
+                    @endif
+                  </td>
+                @endif
                 <td>
                   <!-- Check if card ID is in results array (which contains correct IDs) -->
                   @if(results && results.includes(card.id))

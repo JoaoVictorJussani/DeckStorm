@@ -17,6 +17,8 @@
     "mode_until_done_desc": "Repeat errors until 100% success.",
     "mode_quiz": "Quiz",
     "mode_quiz_desc": "Choose the correct answer from 4 options.",
+    "mode_typed": "Typed Answer",
+    "mode_typed_desc": "Write the answer to improve memorization.",
     "create_btn": "Create",
     "create_deck": "Create a new deck",
     "save_btn": "Save",

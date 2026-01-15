@@ -364,6 +364,23 @@
             </div>
           @endif
           
+          @if(!deck.allowed_modes || deck.allowed_modes.includes('typed'))
+            <div class="radio-card">
+              <input type="radio" id="mode_typed" name="mode" value="typed" />
+              <label for="mode_typed" class="radio-card-label">
+                <div class="mode-icon">
+                  ⌨️
+                </div>
+                <div class="mode-title">
+                  {{ t('deck.mode_typed') }}
+                </div>
+                <div class="mode-desc">
+                  {{ t('deck.mode_typed_desc') }}
+                </div>
+              </label>
+            </div>
+          @endif
+          
         </div>
 
         <!-- Direction -->

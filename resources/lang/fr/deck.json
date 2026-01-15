@@ -17,6 +17,8 @@
     "mode_until_done_desc": "Répéter les erreurs jusqu'à 100% de réussite.",
     "mode_quiz": "Quiz",
     "mode_quiz_desc": "Choisir la bonne réponse parmi 4 options.",
+    "mode_typed": "Réponse Tapée",
+    "mode_typed_desc": "Écrire la réponse pour améliorer la mémorisation.",
     "create_btn": "Créer",
     "create_deck": "Créer un nouveau deck",
     "save_btn": "Enregistrer",

@@ -97,6 +97,11 @@ export default class ExerciseController {
     let attempts = Number.parseInt(request.input('attempts', '1'), 10) || 1
     const direction = request.input('direction', 'question')
     const exerciseToken = request.input('exerciseToken')
+    const typedAnswersStr = request.input('typedAnswers', '{}')
+    let typedAnswers = {}
+    try {
+      typedAnswers = JSON.parse(typedAnswersStr)
+    } catch (e) { }
 
     // Correction : si plus de cartes à réviser, on termine l'exercice
     if (cards.length === 0) {
@@ -110,6 +115,7 @@ export default class ExerciseController {
         showRetry: false,
         retryCardIds: [],
         exerciseToken,
+        typedAnswers,
       })
     }
 
@@ -181,9 +187,11 @@ export default class ExerciseController {
         showRetry: false,
         retryCardIds: [],
         exerciseToken,
-        user: auth.user, // Passar usuário autenticado
+        user: auth.user,
         attempts,
-        direction
+        direction,
+        typedAnswers,
+        typedAnswersJson: typedAnswersStr, // Pass raw for form submission
       })
     }
 
@@ -228,6 +236,7 @@ export default class ExerciseController {
       direction,
       quizOptions,
       exerciseToken,
+      typedAnswers: typedAnswersStr, // Pass raw string to view logic
     })
   }
 
@@ -253,6 +262,11 @@ export default class ExerciseController {
     let attempts = Number.parseInt(request.input('attempts', '1'), 10) || 1
     const direction = request.input('direction', 'question')
     const exerciseToken = request.input('exerciseToken')
+    const typedAnswersStr = request.input('typedAnswers', '{}')
+    let typedAnswers = {}
+    try {
+      typedAnswers = JSON.parse(typedAnswersStr)
+    } catch (e) { }
 
     // --- MISE À JOUR DES STATISTIQUES UTILISATEUR ET SAUVEGARDE DES TENTATIVES ---
     if (auth.user) {
@@ -340,6 +354,7 @@ export default class ExerciseController {
         attempts: (attempts as number) + 1,
         direction,
         exerciseToken,
+        typedAnswers,
       })
     }
 
@@ -355,6 +370,7 @@ export default class ExerciseController {
       attempts,
       direction,
       user: auth.user, // Ajout de l'utilisateur authentifié
+      typedAnswers,
     })
   }
 }

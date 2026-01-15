@@ -17,6 +17,8 @@
     "mode_until_done_desc": "Repita erros até 100% de sucesso.",
     "mode_quiz": "Quiz",
     "mode_quiz_desc": "Escolha a resposta correta entre 4 opções.",
+    "mode_typed": "Resposta Digitada",
+    "mode_typed_desc": "Escreva a resposta para melhorar a memorização.",
     "create_btn": "Criar",
     "create_deck": "Criar um novo baralho",
     "save_btn": "Salvar",

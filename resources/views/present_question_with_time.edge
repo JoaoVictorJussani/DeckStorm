@@ -405,6 +405,134 @@
           margin: 0 0.5rem;
         }
       }
+
+      /* Typed Mode Styles */
+      .typed-container {
+        width: 100%;
+        max-width: 700px;
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+        align-items: center;
+      }
+      
+      .typed-question-card {
+        background: var(--card-bg-light);
+        padding: 2.5rem;
+        border-radius: 24px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        text-align: center;
+        font-size: 1.5rem;
+        font-weight: 600;
+        width: 100%;
+        min-height: 200px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+      
+      body.theme-dark .typed-question-card {
+        background: var(--card-bg-dark);
+      }
+      
+      .typed-input-area {
+        width: 100%;
+        display: flex;
+        gap: 1rem;
+      }
+      
+      .typed-input {
+        flex: 1;
+        padding: 1.2rem;
+        font-size: 1.2rem;
+        border: 2px solid rgba(0,0,0,0.1);
+        border-radius: 16px;
+        background: var(--card-bg-light);
+        color: var(--text-light);
+        font-family: inherit;
+        outline: none;
+        transition: all 0.2s;
+      }
+      
+      body.theme-dark .typed-input {
+        background: var(--card-bg-dark);
+        color: var(--text-dark);
+        border-color: rgba(255,255,255,0.1);
+      }
+      
+      .typed-input:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+      }
+      
+      .typed-check-btn {
+        padding: 0 2.5rem;
+        background: var(--primary);
+        color: white;
+        border: none;
+        border-radius: 16px;
+        font-weight: 700;
+        font-size: 1.1rem;
+        cursor: pointer;
+        transition: background 0.2s;
+      }
+      
+      .typed-check-btn:hover {
+        background: var(--primary-hover);
+      }
+      
+      .typed-feedback {
+        width: 100%;
+        padding: 2rem;
+        border-radius: 20px;
+        text-align: center;
+        display: none;
+        animation: slideUp 0.3s ease;
+      }
+      
+      @keyframes slideUp {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      
+      .typed-feedback.correct {
+        background: rgba(16, 185, 129, 0.1);
+        border: 2px solid var(--success);
+      }
+      
+      .typed-feedback.wrong {
+        background: rgba(239, 68, 68, 0.1);
+        border: 2px solid var(--danger);
+      }
+      
+      .typed-result-title {
+        font-weight: 800;
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+      }
+      
+      .correct .typed-result-title { color: var(--success); }
+      .wrong .typed-result-title { color: var(--danger); }
+      
+      .typed-answer-display {
+        margin: 1.5rem 0;
+        font-size: 1.2rem;
+        background: rgba(0,0,0,0.05);
+        padding: 1rem;
+        border-radius: 12px;
+      }
+      
+      body.theme-dark .typed-answer-display {
+        background: rgba(255,255,255,0.05);
+      }
+      
+      .typed-actions {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        margin-top: 1.5rem;
+      }
     </style>
   </head>
   <body>
@@ -459,6 +587,70 @@
               </button>
               @endeach
             @endif
+          </div>
+        </div>
+      @elseif(mode === 'typed')
+        <div class="typed-container" id="typed-container">
+          <div class="typed-question-card">
+            @if(card.cardType === 'image_occlusion')
+              <div style="width: 100%; height: 300px; display: flex; align-items: center; justify-content: center; position: relative;">
+                <canvas id="occlusionCanvas" style="max-width: 100%; max-height: 100%; border-radius: 8px;"></canvas>
+              </div>
+              <div style="font-size: 1rem; margin-top: 1rem; color: var(--text-muted);">
+                {{ direction === 'question' ? 'Quel est le contenu caché ?' : 'Quelle est la question ?' }}
+              </div>
+            @else
+              @if(direction === 'question')
+                {{ card.question }}
+              @else
+                {{ card.answer }}
+              @endif
+            @endif
+          </div>
+          
+          <input type="hidden" id="hidden-correct-val" value="{{ direction === 'question' ? card.answer : card.question }}" />
+          
+          <div class="typed-input-area" id="typed-input-area">
+            <input 
+              type="text" 
+              class="typed-input" 
+              id="user-typed-answer" 
+              placeholder="{{ t('messages.type_your_answer') }}" 
+              autocomplete="off"
+              onkeydown="if(event.key === 'Enter') checkTypedAnswer()"
+              autofocus
+            >
+            <button class="typed-check-btn" onclick="checkTypedAnswer()">{{ t('messages.check_answer') }}</button>
+          </div>
+          
+          <div class="typed-feedback" id="typed-feedback">
+            <div class="typed-result-title" id="feedback-title"></div>
+            
+            <div class="typed-answer-display">
+              <div style="font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.5rem; opacity: 0.7;">{{ t('messages.your_answer') }}</div>
+              <div id="feedback-your-answer" style="font-weight: 600;"></div>
+            </div>
+            
+            <div class="typed-answer-display">
+              <div style="font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.5rem; opacity: 0.7;">{{ t('messages.correct_answer') }}</div>
+              <div id="feedback-correct-answer" style="font-weight: 600; color: var(--success);"></div>
+              
+              <!-- For image occlusion in review mode -->
+              @if(card.cardType === 'image_occlusion')
+                 <div style="width: 100%; height: 200px; display: flex; align-items: center; justify-content: center; position: relative; margin-top: 1rem;">
+                   <canvas id="occlusionCanvasRevealed" style="max-width: 100%; max-height: 100%; border-radius: 8px;"></canvas>
+                 </div>
+              @endif
+            </div>
+            
+            <div class="typed-actions">
+              <button class="action-btn btn-wrong" onclick="markCard(event, false)" style="padding: 0.8rem 1.5rem; font-size: 1rem;">
+                {{ t('study.incorrect') }} (Override)
+              </button>
+              <button class="action-btn btn-correct" onclick="markCard(event, true)" style="padding: 0.8rem 1.5rem; font-size: 1rem;">
+                {{ t('messages.continue') }}
+              </button>
+            </div>
           </div>
         </div>
       @else
@@ -533,6 +725,7 @@
     <input type="hidden" name="startTime" value="{{ startTime }}" />
       <input type="hidden" name="elapsedTime" value="0" />
       <input type="hidden" name="results" id="results" value="{{ results }}" />
+      <input type="hidden" name="typedAnswers" id="typedAnswers" value="{{ typedAnswers || '{}' }}" />
       <input type="hidden" name="mode" value="{{ mode }}" />
       <input type="hidden" name="direction" value="{{ direction }}" />
       @if (retryCardIds)
@@ -551,12 +744,17 @@
       const mode = "{{ mode }}";
       
       let results = [];
+      let typedAnswers = {};
       try {
         const rawResults = "{{ results }}";
         results = rawResults ? JSON.parse(rawResults.replace(/&quot;/g, '"')) : [];
+        
+        const rawTyped = `{{ typedAnswers || '{}' }}`.replace(/&quot;/g, '"');
+        typedAnswers = JSON.parse(rawTyped);
       } catch (e) {
-        console.error("Failed to parse results:", e);
+        console.error("Failed to parse results or typedAnswers:", e);
         results = [];
+        typedAnswers = {};
       }
       
       const cardId = parseInt("{{ card.id }}", 10);
@@ -594,6 +792,7 @@
           results.push(cardId);
         }
         document.getElementById("results").value = JSON.stringify(results);
+        document.getElementById("typedAnswers").value = JSON.stringify(typedAnswers);
         // Submit immediately
         document.getElementById("next-form").submit();
       }
@@ -623,6 +822,66 @@
         setTimeout(() => {
           document.getElementById("next-form").submit();
         }, 1200);
+      }
+      
+      // Typed Mode Logic
+      function checkTypedAnswer() {
+        if (mode !== 'typed') return;
+        
+        const input = document.getElementById('user-typed-answer');
+        const feedback = document.getElementById('typed-feedback');
+        const inputArea = document.getElementById('typed-input-area');
+        const title = document.getElementById('feedback-title');
+        const yourAns = document.getElementById('feedback-your-answer');
+        const correctAns = document.getElementById('feedback-correct-answer');
+        
+        const userValue = input.value.trim();
+        // Read from hidden input to handle special chars/newlines safely
+        const correctValInput = document.getElementById('hidden-correct-val');
+        const correctValue = correctValInput ? correctValInput.value : "";
+        
+        // Store user answer
+        typedAnswers[cardId] = userValue;
+        
+        // Simple normalization for comparison (lowercase, trim)
+        const normalize = (s) => s.toLowerCase().trim().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"");
+        const isMatch = normalize(userValue) === normalize(correctValue);
+        
+        // Show feedback UI
+        inputArea.style.display = 'none';
+        feedback.style.display = 'block';
+        yourAns.textContent = userValue;
+        correctAns.textContent = correctValue;
+        
+        const continueBtn = feedback.querySelector('.btn-correct');
+        const overrideBtn = feedback.querySelector('.btn-wrong');
+        
+        if (isMatch) {
+          feedback.className = 'typed-feedback correct';
+          title.textContent = "{{ t('messages.answer_correct') }}";
+          continueBtn.textContent = "{{ t('messages.continue') }}"; // It was correct, so continue adds points
+          
+          // Auto-focus the continue button
+          setTimeout(() => continueBtn.focus(), 50);
+        } else {
+          feedback.className = 'typed-feedback wrong';
+          title.textContent = "{{ t('messages.answer_incorrect') }}";
+          continueBtn.textContent = "{{ t('messages.continue') }} (Mark as IDK)"; 
+          // Actually if wrong, the primary action should be "Mark Incorrect" usually, 
+          // or user can "Override I was right".
+          // Let's swap buttons logic for wrong answer?
+          // If wrong: 
+          //   Green button -> "I was right" (Override TRUE)
+          //   Red button -> "I was wrong" (Standard FALSE)
+          
+          overrideBtn.textContent = "{{ t('study.incorrect') }}";
+          overrideBtn.onclick = (e) => markCard(e, false);
+          
+          continueBtn.textContent = "Je l'avais ! (Forcer Correct)";
+          continueBtn.style.background = '#f59e0b'; // Orange/Yellow for override
+          continueBtn.style.fontSize = '0.9rem';
+          continueBtn.onclick = (e) => markCard(e, true);
+        }
       }
       // Progress Bar Animation
       

@@ -73,5 +73,14 @@
     "notepad": "Bloc-notes",
     "save_notes": "Enregistrer les notes",
     "notes_placeholder": "Ajoutez des notes, des rappels ou des documents ici...",
-    "notes_label": "Bloc-notes"
+    "notes_label": "Bloc-notes",
+    "type_your_answer": "Tapez votre réponse...",
+    "check_answer": "Vérifier",
+    "show_answer": "Voir la réponse",
+    "your_answer": "Votre réponse",
+    "correct_answer": "Réponse correcte",
+    "answer_correct": "Correct !",
+    "answer_incorrect": "Incorrect",
+    "close_match": "Presque ! (faute de frappe)",
+    "continue": "Continuer"
 }

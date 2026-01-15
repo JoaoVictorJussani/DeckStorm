@@ -631,6 +631,19 @@
                 </div>
               </div>
             </label>
+            <label class="mode-card">
+              <input type="checkbox" name="allowed_modes[]" value="typed" {{ !deck.allowed_modes || deck.allowed_modes.includes('typed') ? 'checked' : '' }} />
+              <div class="mode-content">
+                <span class="mode-icon">⌨️</span>
+                <div class="mode-info">
+                  <span class="mode-title">{{ t('deck.mode_typed') }}</span>
+                  <span class="mode-desc">{{ t('deck.mode_typed_desc') }}</span>
+                </div>
+                <div class="mode-check">
+                  <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+                </div>
+              </div>
+            </label>
           </div>
 
           <label for="attempt_limit">{{ t('deck.attempt_limit_label') }}</label>
