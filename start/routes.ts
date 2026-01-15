@@ -237,7 +237,7 @@ router
     // Recherche des decks de l'utilisateur correspondant à la requête
     const userDecks = await Deck.query()
       .where('user_id', user ? user.id : 0)
-      .andWhere('title', 'like', `%${userQuery}%`)
+      .andWhere('title', 'ilike', `%${userQuery}%`)
       .preload('cards') // Précharge les cartes
       .preload('user') // Précharge la relation utilisateur
 
@@ -279,7 +279,7 @@ router
     const publicDecks = await Deck.query()
       .where('visibility', 'public')
       .andWhereNot('user_id', user?.id ?? 0)
-      .andWhere('title', 'like', `%${publicQuery}%`)
+      .andWhere('title', 'ilike', `%${publicQuery}%`)
       .preload('cards') // Précharge les cartes
       .preload('user') // Précharge la relation utilisateur
 
@@ -340,7 +340,7 @@ router
     const query = request.input('query', '').trim()
     if (!query || query.length < 1) return response.json([])
     const users = await User.query()
-      .where('username', 'like', `%${query}%`)
+      .where('username', 'ilike', `%${query}%`)
       .andWhereNot('id', auth.user!.id)
       .limit(100)
       .select('username')

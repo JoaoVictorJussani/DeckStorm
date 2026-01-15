@@ -100,7 +100,7 @@ export default class PageController {
     const publicDecks = await Deck.query()
       .where('visibility', 'public')
       .andWhere((builder) => {
-        builder.where('title', 'like', `%${query}%`).orWhere('description', 'like', `%${query}%`)
+        builder.where('title', 'ilike', `%${query}%`).orWhere('description', 'ilike', `%${query}%`)
       })
       .preload('cards')
       .preload('user' as any)
