@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="{{ i18n.locale }}">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <title>
-      Modifier le deck - DeckStorm
+      {{ t('deck.edit_title') }} - DeckStorm
     </title>
     <link rel="shortcut icon" href="/images/icone.ico" type="image/x-icon" />
     <script>
@@ -255,10 +255,10 @@
           ⚙️
         </div>
         <h1 class="page-title">
-          Configuration du Deck
+          {{ t('deck.edit_title') }}
         </h1>
         <p class="page-subtitle">
-          Modifiez les paramètres de votre deck
+          {{ t('deck.config_subtitle') }}
         </p>
       </div>
 
@@ -266,7 +266,7 @@
         {{ csrfField() }}
         <!-- Titre -->
         <div class="form-group">
-          <label class="form-label" for="title">Titre</label>
+          <label class="form-label" for="title">{{ t('deck.title_label') }}</label>
           <input
             class="form-input"
             type="text"
@@ -280,7 +280,7 @@
 
         <!-- Description -->
         <div class="form-group">
-          <label class="form-label" for="description">Description</label>
+          <label class="form-label" for="description">{{ t('deck.description_label') }}</label>
           <textarea
             class="form-textarea"
             id="description"
@@ -296,26 +296,26 @@
 
         <!-- Visibilité -->
         <div class="form-group">
-          <label class="form-label" for="visibility">Visibilité</label>
+          <label class="form-label" for="visibility">{{ t('deck.visibility_label') }}</label>
           <select class="form-select" id="visibility" name="visibility" required>
             <option value="private" {{ deck.visibility === 'private' ? 'selected' : '' }}>
-              🔒 Privé(e)
+              🔒 {{ t('deck.private') }}
             </option>
             <option value="public" {{ deck.visibility === 'public' ? 'selected' : '' }}>
-              🌍 Public
+              🌍 {{ t('deck.public') }}
             </option>
             <option value="restricted" {{ deck.visibility === 'restricted' ? 'selected' : '' }}>
-              🔐 Restreint (Invitation uniquement)
+              🔐 {{ t('deck.restricted') }}
             </option>
           </select>
           <div class="form-helper">
-            Qui peut voir et utiliser ce deck ?
+            {{ t('deck.visibility_help') }}
           </div>
         </div>
 
         <!-- Modes -->
         <div class="form-group">
-          <label class="form-label">Modes d'exercice autorisés</label>
+          <label class="form-label">{{ t('deck.allowed_modes_label') }}</label>
           <div class="checkbox-grid">
             <label class="checkbox-card">
               <input
@@ -324,7 +324,7 @@
                 value="chronometre"
                 {{ !deck.allowed_modes || deck.allowed_modes.includes('chronometre') ? 'checked' : '' }}
               />
-              Chronométré ⏱
+              {{ t('deck.mode_chrono') }} ⏱
           </label>
             <label class="checkbox-card">
               <input
@@ -333,7 +333,7 @@
                 value="basique"
                 {{ !deck.allowed_modes || deck.allowed_modes.includes('basique') ? 'checked' : '' }}
               />
-              Basique 📝
+              {{ t('deck.mode_basic') }} 📝
           </label>
             <label class="checkbox-card">
               <input
@@ -342,7 +342,7 @@
                 value="jusquaubout"
                 {{ !deck.allowed_modes || deck.allowed_modes.includes('jusquaubout') ? 'checked' : '' }}
               />
-              Jusqu'au bout 🔥
+              {{ t('deck.mode_until_done') }} 🔥
           </label>
             <label class="checkbox-card">
               <input
@@ -351,25 +351,25 @@
                 value="quiz"
                 {{ !deck.allowed_modes || deck.allowed_modes.includes('quiz') ? 'checked' : '' }}
               />
-              Quiz ❓
+              {{ t('deck.mode_quiz') }} ❓
           </label>
           </div>
         </div>
 
         <!-- Tentatives -->
         <div class="form-group">
-          <label class="form-label" for="attempt_limit">Limite de tentatives</label>
+          <label class="form-label" for="attempt_limit">{{ t('deck.attempt_limit_label') }}</label>
           <input
             class="form-input"
             type="number"
             id="attempt_limit"
             name="attempt_limit"
             min="1"
-            placeholder="Illimité"
+            placeholder="{{ t('deck.attempt_limit_placeholder') }}"
             value="{{ deck.attempt_limit !== null ? deck.attempt_limit : '' }}"
           />
           <div class="form-helper">
-            Laissez vide pour un nombre illimité de tentatives.
+            {{ t('deck.attempt_limit_help') }}
           </div>
         </div>
 
@@ -380,10 +380,10 @@
             class="btn btn-secondary"
             onclick="window.location.href='{{ route('decks.show', { id: deck.id }) }}'"
           >
-            Annuler
+            {{ t('deck.cancel_btn') }}
         </button>
           <button type="submit" class="btn btn-primary">
-            Sauvegarder
+            {{ t('deck.save_btn') }}
         </button>
         </div>
       </form>

@@ -8,51 +8,183 @@
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   }
   
+  /* Style du corps */
+  
+  body {
+    background: #fff;
+    color: #222;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    font-size: 1rem;
+  }
+  
+  body.theme-light {
+    background: #fff;
+    color: #222;
+  }
+  
+  body.theme-dark {
+    background: #0a0c10;
+    color: #e6e9ef;
+  }
+  
   /* Barre de navigation */
   
   .header-navbar {
-    backdrop-filter: blur(10px);
-    background: var(--header-bg, rgba(255,255,255,0.8));
-    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    backdrop-filter: blur(8px);
+    background: var(--header-bg, rgba(255,255,255,0.95));
+    box-shadow: 0 2px 15px rgba(25, 118, 210, 0.10);
     height: calc(70px + env(safe-area-inset-top));
     width: 100%;
-    padding-top: env(safe-area-inset-top);
-    padding-left: max(2rem, env(safe-area-inset-left));
-    padding-right: max(2rem, env(safe-area-inset-right));
+    padding: env(safe-area-inset-top) max(2rem, env(safe-area-inset-right)) 0 max(2rem, env(safe-area-inset-left));
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 1px solid var(--border-color, rgba(25, 118, 210, 0.1));
+    border-bottom: 2px solid var(--primary, #1976d2);
+    color: var(--header-color, #222);
     position: fixed;
     top: 0;
     left: 0;
-    z-index: 100;
-    transition: background 0.3s, border 0.3s;
+    z-index: 10;
   }
   
-  @media (max-width: 600px) {
-    .header-navbar {
-        padding-left: max(1rem, env(safe-area-inset-left));
-        padding-right: max(1rem, env(safe-area-inset-right));
-    }
+  .header-navbar h2 {
+    font-size: 1.8rem;
+    font-weight: 700;
   }
-
-  /* Logo / Title */
   
-  .header-brand {
+  .header-navbar button {
+    color: black;
+    padding: 0.7rem 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background 0.3s ease;
+  }
+  
+  .header-navbar a {
+    text-decoration: none;
+    color: var(--primary, #1976d2);
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+  
+  .header-navbar img {
+    height: 36px;
+    width: 36px;
+    margin-right: 0.7rem;
+    vertical-align: middle;
+  }
+  
+  /* Dropdown styles */
+  
+  .header-dropdown {
+    position: relative;
+    display: inline-block;
+  }
+  
+  .header-dropdown-toggle {
+    background: transparent;
+    color: var(--header-color, #222);
+    border: none;
+    box-shadow: none;
+    padding: 0.5rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background 0.2s, color 0.2s;
+    font-weight: 600;
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    transition: opacity 0.3s;
   }
   
-  .header-brand:hover {
-    opacity: 0.8;
+  .header-dropdown-menu {
+    display: none;
+    position: absolute;
+    right: 0;
+    backdrop-filter: blur(10px);
+    background: var(--dropdown-bg, rgba(255,255,255,0.98));
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    border: 1px solid var(--dropdown-border, rgba(25, 118, 210, 0.18));
+    border-radius: 8px;
+    z-index: 100;
+    margin-top: 0.5rem;
+    padding: 0.5rem 0;
   }
   
-  .header-brand img {
-    height: 45px;
-    width: auto;
+  .header-dropdown.open .header-dropdown-menu {
+    display: block;
+  }
+  
+  .header-dropdown-menu a,
+  .header-dropdown-menu button {
+    display: block;
+    width: 100%;
+    background: none;
+    border: none;
+    color: var(--primary, #1976d2);
+    text-align: left;
+    padding: 0.7rem 1.2rem;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: background 0.2s, color 0.2s;
+    text-decoration: none;
+  }
+  
+  .header-dropdown-menu a:hover,
+  .header-dropdown-menu button:hover {
+    background: var(--primary, #1976d2);
+    color: #fff;
+  }
+  
+  .header-logout-btn {
+    color: #ff4d4d;
+  }
+  
+  .header-logout-btn:hover {
+    background: #ff4d4d !important;
+    color: #fff;
+  }
+  
+
+  
+  /* Search bar styles */
+  
+  .header-search {
+    flex: 1;
+    max-width: 500px;
+    margin: 0 2rem;
+    position: relative;
+    /* Hide search on login page if desired, or keep as consistent */
+    display: none; 
+  }
+  
+  .header-search input {
+    width: 100%;
+    padding: 0.6rem 1rem;
+    font-size: 1rem;
+    border: 1.5px solid var(--search-border, rgba(25, 118, 210, 0.25));
+    border-radius: 8px;
+    background: var(--search-bg, rgba(245, 245, 245, 0.85));
+    color: var(--input-color, #222);
+    transition: border 0.2s, box-shadow 0.2s;
+    backdrop-filter: blur(4px);
+  }
+  
+  .header-search input:focus {
+    outline: none;
+    border-color: var(--primary, #1976d2);
+    box-shadow: 0 0 8px var(--primary, #1976d2);
+  }
+  
+  .header-search input::placeholder {
+    color: #888;
+    opacity: 1;
   }
   
   /* Theme switch styles */
@@ -61,50 +193,48 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    margin-right: 1rem;
     user-select: none;
-    background: var(--switch-bg, rgba(0,0,0,0.03));
-    padding: 4px 12px;
-    border-radius: 20px;
-    transition: background 0.3s;
   }
   
-  .theme-switch:hover {
-    background: var(--switch-bg-hover, rgba(0,0,0,0.06));
+  .theme-switch-label {
+    font-size: 1.1rem;
+    color: var(--primary, #1976d2);
+    cursor: pointer;
+    font-weight: 500;
   }
   
   .theme-switch-slider {
-    width: 40px;
-    height: 22px;
-    background: #cbd5e1;
+    width: 44px;
+    height: 24px;
+    background: var(--primary, #1976d2);
     border-radius: 12px;
     position: relative;
     cursor: pointer;
-    transition: background 0.3s;
+    transition: background 0.2s;
     display: inline-block;
   }
   
   .theme-switch-slider:before {
     content: '';
     position: absolute;
-    left: 2px;
-    top: 2px;
+    left: 3px;
+    top: 3px;
     width: 18px;
     height: 18px;
     background: #fff;
     border-radius: 50%;
-    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    transition: transform 0.2s;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.10);
   }
   
   .theme-switch-input:checked + .theme-switch-slider {
-    background: #1976d2;
+    background: #222;
   }
   
   .theme-switch-input:checked + .theme-switch-slider:before {
-    transform: translateX(18px);
-    background: #fff;
-    transform: translateX(18px);
-    background: #fff;
+    transform: translateX(20px);
+    background: #ffe600;
   }
   
   .theme-switch-input {
@@ -114,36 +244,154 @@
   /* Dark theme overrides */
   
   body.theme-dark .header-navbar {
-    --header-bg: rgba(10, 12, 16, 0.85);
-    --border-color: rgba(255,255,255,0.05);
-    --switch-bg: rgba(255,255,255,0.05);
-    --switch-bg-hover: rgba(255,255,255,0.1);
+    --header-bg: rgba(10,12,16,0.95);
+    --header-color: #e6e9ef;
+    --primary: #1976d2;
+    --primary-hover: #1565c0;
+    --dropdown-bg: rgba(34,34,34,0.95);
+    --dropdown-border: rgba(25, 118, 210, 0.18);
+    --shadow: rgba(25, 118, 210, 0.10);
+    --search-bg: rgba(17,19,23,0.85);
+    --search-border: rgba(25, 118, 210, 0.25);
+    --input-color: #e0e0e0;
   }
   
-  body.theme-dark .theme-switch-slider {
-    background: #475569;
+  body.theme-dark .header-dropdown-menu {
+    --dropdown-bg: rgba(34,34,34,0.95);
+    --dropdown-border: rgba(25, 118, 210, 0.18);
+    --shadow: rgba(25, 118, 210, 0.10);
   }
+  
+  body.theme-dark .header-search input {
+    --search-bg: rgba(17,19,23,0.85);
+    --input-color: #e0e0e0;
+    --search-border: rgba(25, 118, 210, 0.25);
+  }
+  
+  @media (max-width: 768px) {
+    
+    .header-navbar {
+      padding-left: max(1rem, env(safe-area-inset-left));
+      padding-right: max(1rem, env(safe-area-inset-right));
+    }
+
+    .invite-btn {
+        padding: 0.5rem 0.8rem;
+        font-size: 0.9rem;
+    }
+  }
+  
+  @media (max-width: 600px) {
+    .header-navbar {
+      padding-left: max(0.5rem, env(safe-area-inset-left));
+      padding-right: max(0.5rem, env(safe-area-inset-right));
+      gap: 0.5rem;
+    }
+    
+    /* Hide text 'DeckStorm' */
+    .header-navbar > a {
+      font-size: 0; 
+    }
+    .header-navbar > a img {
+      margin-right: 0;
+    }
+
+    /* Override inline style of the right container */
+    .header-navbar > div:last-child {
+      gap: 0.5rem !important;
+    }
+
+    /* Compact Theme Switch */
+    .theme-switch {
+      margin-right: 0;
+      gap: 0;
+      padding: 0;
+    }
+    .theme-switch span:not(.theme-switch-slider) {
+      display: none;
+    }
+
+    .header-dropdown-toggle {
+        padding: 0.4rem 0.8rem;
+    }
+
+  }
+
 </style>
 
 <div class="header-navbar">
-  <!-- Logo -->
-  <a href="/" class="header-brand">
-    <img src="/images/icone.ico" alt="Logo" />
+  <a href="{{ route('home') }}" title="{{ t('messages.back_home') }}">
+    <img src="/images/icone.ico" alt="Logo DeckStorm" title="Logo DeckStorm" />DeckStorm
   </a>
 
-  <!-- Theme switch -->
-  <div class="theme-switch" title="Changer le thème">
-    <span style="font-size:1.1rem;">🌞</span>
-    <label style="display:flex; align-items:center; cursor:pointer; margin:0;">
-      <input type="checkbox" id="themeSwitch" class="theme-switch-input" />
-      <span class="theme-switch-slider"></span>
-    </label>
-    <span style="font-size:1.1rem;">🌙</span>
+  <!-- Spacer to push content to right -->
+  <div style="flex: 1;"></div>
+
+  <div style="display: flex; align-items: center; gap: 1rem;">
+
+    <!-- Language Switch -->
+    <div class="header-dropdown" id="header-langDropdown">
+      <button
+        class="header-dropdown-toggle"
+        onclick="toggleLangDropdown()"
+        title="Changer la langue / Change language / Mudar idioma"
+      >
+        <span id="current-lang-flag" style="font-weight:bold;">{{ t('language.current') }}</span>
+        <span style="font-size: 0.8em;">▼</span>
+      </button>
+      <div class="header-dropdown-menu" id="lang-dropdownMenu" style="min-width:140px;">
+         <a href="#" onclick="return changeLang('fr')"><span style="font-weight:bold; width:25px; display:inline-block;">FR</span> {{ t('language.fr') }}</a>
+         <a href="#" onclick="return changeLang('pt-br')"><span style="font-weight:bold; width:25px; display:inline-block;">PT</span> {{ t('language.pt_br') }}</a>
+         <a href="#" onclick="return changeLang('en')"><span style="font-weight:bold; width:25px; display:inline-block;">EN</span> {{ t('language.en') }}</a>
+      </div>
+    </div>
+    <!-- Theme switch -->
+    <div class="theme-switch" title="{{ t('messages.toggle_theme') }}">
+      <span style="font-size:1.2rem;user-select:none;">🌞</span>
+      <input type="checkbox" id="themeSwitch" class="theme-switch-input" style="display:none;" />
+      <span class="theme-switch-slider" onclick="document.getElementById('themeSwitch').click()"></span>
+      <span style="font-size:1.2rem;user-select:none;">🌙</span>
+    </div>
+
   </div>
 </div>
 
 <script>
+  function headerToggleDropdown() {
+    document.getElementById("header-userDropdown").classList.toggle("open");
+  }
+
+  function toggleLangDropdown() {
+    document.getElementById("header-langDropdown").classList.toggle("open");
+  }
+
+  function changeLang(lang) {
+      localStorage.setItem('deckstorm_lang', lang);
+      const url = new URL(window.location.href);
+      url.searchParams.set('lang', lang);
+      window.location.href = url.toString();
+      return false;
+  }
+
+  // Update flag on load based on localStorage (visual only, real change requires backend)
+  document.addEventListener("DOMContentLoaded", () => {
+      // Logic handled by server-side translation of 'language.current'
+  });
+  
+  document.addEventListener("click", function(event) {
+    const dropdown = document.getElementById("header-userDropdown");
+    if (dropdown && !dropdown.contains(event.target)) {
+      dropdown.classList.remove("open");
+    }
+
+    const langDropdown = document.getElementById("header-langDropdown");
+    if (langDropdown && !langDropdown.contains(event.target)) {
+      langDropdown.classList.remove("open");
+    }
+  });
+
   // Theme switch logic
+  
   function setTheme(theme) {
     document.body.classList.remove("theme-light", "theme-dark");
     document.body.classList.add(theme);
@@ -158,14 +406,20 @@
     var isDark = document.getElementById("themeSwitch").checked;
     setTheme(isDark ? "theme-dark" : "theme-light");
   }
-  // Init theme at DOM Content Loaded (script at start of page handles initial flash)
+  // Inicialização do tema ao carregar
   
   document.addEventListener("DOMContentLoaded", function() {
-    let theme = localStorage.getItem("theme") || "theme-light";
+    let theme = localStorage.getItem("theme");
+    if (!theme) {
+      theme = "theme-light";
+    }
     setTheme(theme);
+    // Corrige o estado do switch se o usuário navegar entre páginas
     var input = document.getElementById("themeSwitch");
     if (input) {
-      input.addEventListener("change", toggleTheme);
+      input.onchange = toggleTheme;
+      // Garante que o switch está correto conforme o fundo
+      input.checked = document.body.classList.contains("theme-dark");
     }
   });
 </script>

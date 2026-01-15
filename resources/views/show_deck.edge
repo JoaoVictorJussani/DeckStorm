@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="{{ i18n.locale }}">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
@@ -632,15 +632,15 @@
               <span>👤</span>{{ deck.user ? deck.user.username : 'Inconnu' }}
             </div>
             <div class="deck-meta-item">
-              <span>🎴</span>{{ deck.cards ? deck.cards.length : 0 }} cartes
+              <span>🎴</span>{{ deck.cards ? deck.cards.length : 0 }} {{ deck.cards && deck.cards.length <= 1 ? t('deck.card') : t('deck.cards') }}
             </div>
             <div class="deck-meta-item">
               @if(deck.visibility === 'public')
-                <span>🔓</span>Public
+                <span>🔓</span>{{ t('deck.public') }}
               @elseif(deck.visibility === 'restricted')
-                <span>🔐</span>Restreint
+                <span>🔐</span>{{ t('deck.restricted') }}
               @else
-                <span>🔒</span>Privé
+                <span>🔒</span>{{ t('deck.private') }}
               @endif
             </div>
           </div>
@@ -652,18 +652,18 @@
           <div class="deck-actions">
             @if(deck.cards.length > 0)
               <a href="{{ route('exercise.start', { deckId: deck.id }) }}" class="btn btn-primary btn-lg">
-                ▶ S'exercer
+                {{ t('deck.start_practice') }}
             </a>
             @endif
             
             @if(deck.user_id === user.id)
-              <a href="{{ route('decks.edit', { id: deck.id }) }}" class="btn btn-outline">✏ Modifier</a>
-              <button onclick="confirmDelete()" class="btn btn-danger">🗑 Supprimer</button>
+              <a href="{{ route('decks.edit', { id: deck.id }) }}" class="btn btn-outline">✏ {{ t('deck.edit_title').replace('Configuration du Deck', 'Modifier').replace('Deck Configuration', 'Edit') }}</a>
+              <button onclick="confirmDelete()" class="btn btn-danger">🗑 {{ t('deck.delete_btn') }}</button>
             @endif
             
             @if(deck.visibility === 'restricted' && user && deck.user_id === user.id)
-              <button onclick="openInviteModal()" class="btn btn-outline">✉ Inviter</button>
-              <a href="{{ route('decks.report', { id: deck.id }) }}" class="btn btn-outline">📊 Rapport</a>
+              <button onclick="openInviteModal()" class="btn btn-outline">✉ {{ t('deck.invite_btn') }}</button>
+              <a href="{{ route('decks.report', { id: deck.id }) }}" class="btn btn-outline">{{ t('deck.report_btn') }}</a>
             @endif
           </div>
         </div>
@@ -684,7 +684,7 @@
             </button>
           </div>
           <button onclick="copyDeckLink()" class="btn btn-outline" style="margin-top: 1rem; width: 100%;">
-            🔗 Copier le lien
+            {{ t('deck.copy_link') }}
         </button>
         </div>
       </div>
@@ -693,11 +693,11 @@
       <div>
         <div class="cards-header">
           <h2 class="cards-title">
-            Cartes du Deck
+            {{ t('deck.manage_cards') }}
           </h2>
           @if(deck.user_id === user.id)
             <a href="{{ route('cards.create', { deckId: deck.id }) }}" class="btn btn-primary">
-              + Ajouter une carte
+              {{ t('deck.add_card') }}
           </a>
           @endif
         </div>
@@ -732,7 +732,7 @@
             <div
               style="grid-column: 1 / -1; text-align: center; padding: 4rem; color: var(--text-muted); background: var(--bg-card); border-radius: 12px; border: 1px solid var(--border);"
             >
-              Ce deck ne contient pas encore de cartes.
+              {{ t('deck.no_cards') }}
             </div>
           @endif
         </div>
@@ -765,12 +765,12 @@
         <div class="invite-modal-content">
           <button class="close-modal" onclick="document.getElementById('inviteModal').classList.remove('active')">&times;</button>
           <h3 style="margin-bottom: 1rem; font-size: 1.5rem;">
-            Inviter un utilisateur
+            {{ t('deck.invite_user') }}
           </h3>
           <form action="/deck/{{ deck.id }}/invite-user" method="POST">
             {{ csrfField() }}
             <p style="margin-bottom: 0.5rem; color: var(--text-muted);">
-              Nom d'utilisateur
+              {{ t('auth.username_placeholder') }}
             </p>
             <input
               type="text"
@@ -780,7 +780,7 @@
               placeholder="Ex: JohnDoe"
               autocomplete="off"
             />
-            <button type="submit" class="btn btn-primary" style="width: 100%;">Envoyer</button>
+            <button type="submit" class="btn btn-primary" style="width: 100%;">{{ t('deck.invite_btn') }}</button>
           </form>
         </div>
       </div>
@@ -791,14 +791,14 @@
         <div class="invite-modal-content">
             <button class="close-modal" onclick="closeDeleteModal()">&times;</button>
             <h3 style="margin-bottom: 0.5rem; font-size: 1.5rem;">
-                Supprimer ?
+                {{ t('deck.confirm_delete_title') }}
             </h3>
             <p style="color: var(--text-muted); margin-bottom: 1rem;">
-                Cette action est irréversible.
+                {{ t('deck.confirm_delete_msg') }}
             </p>
             <div class="modal-actions">
-                <button onclick="closeDeleteModal()" class="btn-cancel-modal">Annuler</button>
-                <button id="confirmDeleteBtn" class="btn btn-danger" style="width: 100%;">Supprimer</button>
+                <button onclick="closeDeleteModal()" class="btn-cancel-modal">{{ t('deck.cancel_btn') }}</button>
+                <button id="confirmDeleteBtn" class="btn btn-danger" style="width: 100%;">{{ t('deck.delete_btn') }}</button>
             </div>
         </div>
     </div>
@@ -821,7 +821,7 @@
       });
       
       function copyDeckLink() {
-        navigator.clipboard.writeText(deckUrl).then(() => alert("Lien copié !"));
+        navigator.clipboard.writeText(deckUrl).then(() => alert("{{ t('deck.copy_link').replace('🔗 ', '') }} !"));
       }
       
       let deleteTargetId = null;

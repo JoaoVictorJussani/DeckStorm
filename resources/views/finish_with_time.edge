@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="{{ i18n.locale }}">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <title>
-      Résultats - DeckStorm
+      {{ t('study.session_complete') }} - DeckStorm
     </title>
     <link rel="shortcut icon" href="/images/icone.ico" type="image/x-icon" />
     <script>
@@ -339,9 +339,9 @@
           </div>
           <h1>
             @if(mode === 'jusquaubout' && incorrectCards.length > 0)
-              Session Incomplète
+              {{ t('study.session_incomplete') }}
             @else
-              Session Terminée
+              {{ t('study.session_complete') }}
             @endif
           </h1>
 
@@ -353,7 +353,7 @@
           <div class="progress-circle bg-track" style="--progress: {{ percent }}deg">
             <div class="score-text">
               <span class="score-percent">{{ percent }}%</span>
-              <span class="score-label">Réussite</span>
+              <span class="score-label">{{ t('study.success_rate') }}</span>
             </div>
           </div>
 
@@ -363,7 +363,7 @@
                 {{ score }}
               </div>
               <div class="mini-stat-label">
-                Correctes
+                {{ t('study.stats_correct') }}
               </div>
             </div>
             <div class="mini-stat">
@@ -371,7 +371,7 @@
                 {{ incorrectCards.length }}
               </div>
               <div class="mini-stat-label">
-                Erreurs
+                {{ t('study.stats_errors') }}
               </div>
             </div>
             @if(mode === 'chronometre')
@@ -380,7 +380,7 @@
                   {{ (elapsedTime / 60) | 0 }}m{{ elapsedTime % 60 }}
                 </div>
                 <div class="mini-stat-label">
-                  Temps
+                  {{ t('study.stats_time') }}
                 </div>
               </div>
             @endif
@@ -393,7 +393,7 @@
             <div
               style="text-align:center; margin-bottom:1rem; padding:1rem; background:rgba(239, 68, 68, 0.1); border-radius:8px; color:var(--danger); font-weight:600;"
             >
-              Il reste {{ incorrectCards.length }} cartes à revoir pour valider le deck.
+              {{ t('study.remaining_cards', { count: incorrectCards.length }) }}
             </div>
             <form
               action="{{ route('exercise.presentQuestion', { deckId: deck.id, questionIndex: 0 }) }}"
@@ -408,15 +408,15 @@
               <input type="hidden" name="startTime" value="{{ Date.now() }}" />
               <input type="hidden" name="results" value="[]" />
               <input type="hidden" name="attempts" value="{{ attempts || 1 }}" />
-              <button class="btn btn-primary" style="width:100%; margin-bottom:1rem;">⚡ Continuer la série</button>
+              <button class="btn btn-primary" style="width:100%; margin-bottom:1rem;">{{ t('study.continue_series') }}</button>
             </form>
-            <a href="{{ route('home') }}" class="btn btn-outline">Abandonner</a>
+            <a href="{{ route('home') }}" class="btn btn-outline">{{ t('deck.abandon_btn') }}</a>
           @else
             <div style="text-align:center; margin-bottom:1rem; color:var(--text-muted); font-size:0.9rem;">
-              Beau travail ! Vous avez terminé cette session. Que voulez-vous faire ensuite ?
+              {{ t('study.finished_msg') }}
             </div>
-            <a href="{{ route('decks.show', { id: deck.id }) }}" class="btn btn-primary">Retour au Deck</a>
-            <a href="{{ route('home') }}" class="btn btn-outline" style="margin-top:10px;">Tableau de bord</a>
+            <a href="{{ route('decks.show', { id: deck.id }) }}" class="btn btn-primary">{{ t('study.back_to_deck') }}</a>
+            <a href="{{ route('home') }}" class="btn btn-outline" style="margin-top:10px;">{{ t('study.dashboard') }}</a>
           @endif
         </div>
       </div>
@@ -425,20 +425,20 @@
       <div class="card details-card">
         <div class="details-header">
           <h2>
-            Détail de la session
+            {{ t('study.details_title') }}
           </h2>
         </div>
         <table class="questions-list">
           <thead>
             <tr>
               <th>
-                Question
+                {{ t('card.front_label').replace('Recto (Question)', 'Question').replace('Front (Question)', 'Question') }}
               </th>
               <th>
-                Réponse
+                {{ t('card.back_label').replace('Verso (Réponse)', 'Réponse').replace('Back (Answer)', 'Answer') }}
               </th>
               <th>
-                Statut
+                {{ t('study.status') }}
               </th>
             </tr>
           </thead>
@@ -455,9 +455,9 @@
                 <td>
                   <!-- Check if card ID is in results array (which contains correct IDs) -->
                   @if(results && results.includes(card.id))
-                    <span class="status-badge status-correct">Correct</span>
+                    <span class="status-badge status-correct">{{ t('study.correct') }}</span>
                   @else
-                    <span class="status-badge status-wrong">Incorrect</span>
+                    <span class="status-badge status-wrong">{{ t('study.incorrect') }}</span>
                   @endif
                 </td>
               </tr>

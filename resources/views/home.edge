@@ -859,7 +859,7 @@
           <div class="top-section top-creators-section">
             <div>
               <div class="top-creators-title">
-                Top créateurs (abonnés)
+                {{ t('messages.top_creators_followers') }}
               </div>
               <div class="top-creators-list">
                 @each(creator in topCreatorsByFollowers)
@@ -876,7 +876,7 @@
                         onclick="event.stopPropagation();"
                       >{{ creator.username }}</a>
                       <div class="creator-stat" title="Nombre total d'abonnés">
-                        👥 {{ creator.$extras.followers_count }} abonnés
+                        👥 {{ creator.$extras.followers_count }} {{ t('messages.subscribers') }}
                       </div>
                     </div>
                   </div>
@@ -885,7 +885,7 @@
             </div>
             <div>
               <div class="top-creators-title">
-                Top créateurs (decks)
+                {{ t('messages.top_creators_decks') }}
               </div>
               <div class="top-creators-list">
                 @each(creator in topCreatorsByDecks)
@@ -902,7 +902,7 @@
                         onclick="event.stopPropagation();"
                       >{{ creator.username }}</a>
                       <div class="creator-stat" title="Nombre total de decks publics">
-                        📚 {{ creator.$extras.decks_count }} decks
+                        📚 {{ creator.$extras.decks_count }} {{ t('messages.decks') }}
                       </div>
                     </div>
                   </div>
@@ -918,7 +918,7 @@
           @if(deckOfTheDay)
             <div class="top-section">
               <h2 class="top-liked-title">
-                Deck du jour
+                {{ t('messages.deck_of_the_day') }}
               </h2>
               <div class="deck-of-the-day">
                 <div class="top-item" onclick="window.location.href='/deck/{{ deckOfTheDay.id }}'">
@@ -943,7 +943,7 @@
                       title="{{ deckOfTheDay.likes?.some(like => like.user_id === user?.id) ? 'Retirer le like' : 'Liker ce deck' }}"
                     >
                       <span class="heart-emoji">{{ deckOfTheDay.likes?.some(like => like.user_id === user?.id) ? '❤️' : '🤍' }}</span>
-                      <span class="like-count">{{ deckOfTheDay.likes?.length }}</span>
+                      <span class="like-count">{{ deckOfTheDay.$extras.likes_count }}</span>
                     </button>
                   </div>
                 </div>
@@ -952,8 +952,8 @@
           @end
           
           <div class="top-section">
-            <h2 class="top-liked-title">
-              Decks les plus likés
+             <h2 class="top-liked-title">
+              {{ t('messages.top_liked_decks') }}
             </h2>
             <div class="top-liked-grid">
               @each(deck in topLikedDecks)
@@ -986,7 +986,7 @@
     <!-- Campo CSRF escondido para uso no JS -->
     <input type="hidden" id="csrfToken" value="{{ csrfField() | safe }}" style="display:none;" />
 
-    <a href="{{ route('decks.create') }}" class="add-deck-btn" title="Créer un nouveau deck">
+    <a href="{{ route('decks.create') }}" class="add-deck-btn" title="{{ t('messages.create_deck') }}">
       <span>+</span>
     </a>
 

@@ -1,0 +1,14 @@
+{
+    "title": "Resultados da Busca",
+    "tab_decks": "Baralhos",
+    "tab_users": "Usuários",
+    "found_decks": "baralho(s) encontrado(s)",
+    "found_users": "usuário(s) encontrado(s)",
+    "no_decks": "Nenhum baralho encontrado",
+    "no_users": "Nenhum usuário encontrado",
+    "try_others": "Tente outras palavras-chave",
+    "prev": "Anterior",
+    "next": "Próximo",
+    "page_info": "Página {current} de {total}",
+    "view_profile": "Ver Perfil →"
+}

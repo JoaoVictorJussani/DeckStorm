@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="{{ i18n.locale }}">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <title>
-      Ajouter une carte - DeckStorm
+      {{ t('card.new_title') }} - DeckStorm
     </title>
     <link rel="shortcut icon" href="/images/icone.ico" type="image/x-icon" />
     <script>
@@ -233,12 +233,12 @@
             🔒
           </div>
           <h2 style="margin-bottom: 1rem;">
-            Accès Refusé
+            {{ t('card.access_denied') }}
           </h2>
           <p class="alert alert-error">
-            Vous devez être connecté pour créer une carte.
+            {{ t('card.login_required_create') }}
           </p>
-          <a href="{{ route('login') }}" class="btn btn-primary">Se connecter</a>
+          <a href="{{ route('login') }}" class="btn btn-primary">{{ t('auth.login_btn') }}</a>
         </div>
       @else
         <div class="page-header">
@@ -246,10 +246,10 @@
             🎴
           </div>
           <h1 class="page-title">
-            Nouvelle Carte
+            {{ t('card.new_title') }}
           </h1>
           <p class="page-subtitle">
-            Ajoutez une question à votre deck <strong>{{ deck.title }}</strong>
+            {{ t('card.new_subtitle') }} <strong>{{ deck.title }}</strong>
           </p>
         </div>
 
@@ -267,7 +267,7 @@
           @endif
           
           <div class="form-group">
-            <label class="form-label" for="question">Recto (Question)</label>
+            <label class="form-label" for="question">{{ t('card.front_label') }}</label>
             <input
               class="form-input"
               type="text"
@@ -275,14 +275,14 @@
               name="question"
               value="{{ flashMessages.get('old.question', '') }}"
               required
-              placeholder="Ex: Quelle est la formule de l'eau ?"
+              placeholder="{{ t('card.front_placeholder') }}"
               autofocus
             />
           </div>
 
           <div class="form-group">
-            <label class="form-label" for="answer">Verso (Réponse)</label>
-            <textarea class="form-textarea" id="answer" name="answer" required placeholder="Ex: H2O">{{ flashMessages.get('old.answer', '') }}</textarea>
+            <label class="form-label" for="answer">{{ t('card.back_label') }}</label>
+            <textarea class="form-textarea" id="answer" name="answer" required placeholder="{{ t('card.back_placeholder') }}">{{ flashMessages.get('old.answer', '') }}</textarea>
           </div>
 
           <div class="actions">
@@ -291,10 +291,10 @@
               class="btn btn-secondary"
               onclick="window.location.href='{{ route('decks.show', { id: deck.id }) }}'"
             >
-              Annuler
+              {{ t('deck.cancel_btn') }}
           </button>
             <button type="submit" class="btn btn-primary">
-              Ajouter la carte
+              {{ t('card.add_btn') }}
           </button>
           </div>
         </form>

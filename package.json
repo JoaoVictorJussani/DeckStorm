@@ -59,6 +59,7 @@
     "@adonisjs/auth": "^9.3.1",
     "@adonisjs/bouncer": "^3.1.6",
     "@adonisjs/core": "^6.17.0",
+    "@adonisjs/i18n": "^2.2.3",
     "@adonisjs/limiter": "^2.4.0",
     "@adonisjs/lucid": "^21.5.1",
     "@adonisjs/session": "^7.5.0",
@@ -75,8 +76,8 @@
     "luxon": "^3.7.2",
     "pg": "^8.16.3",
     "reflect-metadata": "^0.2.2",
-    "uuid": "^13.0.0",
-    "ts-node-maintained": "^10.9.4"
+    "ts-node-maintained": "^10.9.4",
+    "uuid": "^13.0.0"
   },
   "hotHook": {
     "boundaries": [

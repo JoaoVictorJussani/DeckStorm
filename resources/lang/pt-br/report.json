@@ -1,0 +1,19 @@
+{
+    "title": "Relatório da Sessão",
+    "export_excel": "📥 Exportar Excel",
+    "total_sessions": "Sessões Totais",
+    "attempts_recorded": "Tentativas Registradas",
+    "students": "Alunos",
+    "unique_users": "Usuários Únicos",
+    "select_all": "Selecionar Tudo",
+    "calc_avg": "Calcular Média do Grupo",
+    "no_data": "Nenhum dado disponível para este baralho.",
+    "details_answers": "Detalhes das Respostas",
+    "card_deleted": "Carta excluída",
+    "modal_avg_title": "Média da Seleção",
+    "selected_students": "Alunos Selecionados",
+    "avg_correct": "Média Respostas Corretas",
+    "avg_wrong": "Média Respostas Erradas",
+    "avg_rate": "Média Taxa de Sucesso",
+    "close": "Fechar"
+}

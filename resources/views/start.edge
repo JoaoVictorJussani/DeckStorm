@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="{{ i18n.locale }}">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
-      Commencer - DeckStorm
+      {{ t('study.start_title') }} - DeckStorm
     </title>
     <link rel="shortcut icon" href="/images/icone.ico" type="image/x-icon" />
     <script>
@@ -283,7 +283,7 @@
         onsubmit="handleSubmit(this)"
       >
         <h1 class="section-title">
-          Commencer une session
+          {{ t('study.start_title') }}
         </h1>
 
         <input type="hidden" name="startTime" id="startTime" />
@@ -292,7 +292,7 @@
 
         <!-- Modes -->
         <div class="section-subtitle">
-          Mode d'exercice
+          {{ t('study.mode_label') }}
         </div>
         <div class="radio-grid">
 
@@ -304,10 +304,10 @@
                   ⏱
                 </div>
                 <div class="mode-title">
-                  Chronométré
+                  {{ t('deck.mode_chrono') }}
                 </div>
                 <div class="mode-desc">
-                  Répondez le plus vite possible sans erreurs.
+                  {{ t('deck.mode_chrono_desc') }}
                 </div>
               </label>
             </div>
@@ -321,10 +321,10 @@
                   📚
                 </div>
                 <div class="mode-title">
-                  Basique
+                  {{ t('deck.mode_basic') }}
                 </div>
                 <div class="mode-desc">
-                  Parcourez le deck carte par carte, sans stress.
+                  {{ t('deck.mode_basic_desc') }}
                 </div>
               </label>
             </div>
@@ -338,10 +338,10 @@
                   🎯
                 </div>
                 <div class="mode-title">
-                  Jusqu'au bout
+                  {{ t('deck.mode_until_done') }}
                 </div>
                 <div class="mode-desc">
-                  Répétez les erreurs jusqu'à 100% de réussite.
+                  {{ t('deck.mode_until_done_desc') }}
                 </div>
               </label>
             </div>
@@ -355,10 +355,10 @@
                   ❓
                 </div>
                 <div class="mode-title">
-                  Quiz
+                  {{ t('deck.mode_quiz') }}
                 </div>
                 <div class="mode-desc">
-                  Choisissez la bonne réponse parmi 4 choix.
+                  {{ t('deck.mode_quiz_desc') }}
                 </div>
               </label>
             </div>
@@ -368,14 +368,14 @@
 
         <!-- Direction -->
         <div class="section-subtitle">
-          Sens d'apprentissage
+          {{ t('study.direction_label') }}
         </div>
         <div class="radio-grid" style="grid-template-columns: 1fr 1fr;">
           <div class="radio-card">
             <input type="radio" id="dir_qa" name="direction" value="question" checked />
             <label for="dir_qa" class="radio-card-label">
               <div class="mode-title">
-                Question → Réponse
+                {{ t('study.direction_qa') }}
               </div>
             </label>
           </div>
@@ -383,7 +383,7 @@
             <input type="radio" id="dir_aq" name="direction" value="answer" />
             <label for="dir_aq" class="radio-card-label">
               <div class="mode-title">
-                Réponse → Question
+                {{ t('study.direction_aq') }}
               </div>
             </label>
           </div>
@@ -397,15 +397,15 @@
         <input type="hidden" name="attempts" value="{{ attempts || 1 }}" />
 
         <div style="margin-top: auto;">
-          <button type="submit" class="btn-start">🚀 Commencer</button>
-          <a href="{{ route('decks.show', { id: deck.id }) }}" class="btn-cancel">Annuler</a>
+          <button type="submit" class="btn-start">{{ t('study.start_btn') }}</button>
+          <a href="{{ route('decks.show', { id: deck.id }) }}" class="btn-cancel">{{ t('deck.cancel_btn') }}</a>
         </div>
       </form>
 
       <!-- Info Column -->
       <div class="card info-section">
         <div class="section-subtitle">
-          À propos du Deck
+          {{ t('study.about_deck') }}
         </div>
         <h2 style="font-size: 1.5rem; margin-bottom: 0.5rem;">
           {{ deck.title }}
@@ -415,16 +415,16 @@
         </p>
 
         <div class="deck-stat-row">
-          <span class="stat-label">Cartes</span>
+          <span class="stat-label">{{ t('study.cards_count') }}</span>
           <span class="stat-val">{{ deck.cards ? deck.cards.length : 0 }}</span>
         </div>
         <div class="deck-stat-row">
-          <span class="stat-label">Visibilité</span>
-          <span class="stat-val">{{ deck.visibility === 'public' ? 'Public 🌍' : 'Privé 🔒' }}</span>
+          <span class="stat-label">{{ t('deck.visibility_label') }}</span>
+          <span class="stat-val">{{ deck.visibility === 'public' ? t('deck.public') + ' 🌍' : t('deck.private') + ' 🔒' }}</span>
         </div>
         <div class="deck-stat-row">
-          <span class="stat-label">Créateur</span>
-          <span class="stat-val">{{ (auth.user && deck.user && auth.user.id === deck.user.id) ? 'Vous' : (deck.user ? deck.user.username : 'Inconnu') }}</span>
+          <span class="stat-label">{{ t('study.creator') }}</span>
+          <span class="stat-val">{{ (auth.user && deck.user && auth.user.id === deck.user.id) ? t('study.you') : (deck.user ? deck.user.username : t('study.unknown')) }}</span>
         </div>
       </div>
 

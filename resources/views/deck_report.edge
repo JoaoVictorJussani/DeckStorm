@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="{{ i18n.locale }}">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <title>
-      Rapport - {{ deck.title }}
+      {{ t('report.title') }} - {{ deck.title }}
     </title>
     <link rel="shortcut icon" href="/images/icone.ico" type="image/x-icon" />
     <script>
@@ -431,16 +431,16 @@
       <div class="report-header">
         <div class="report-title">
           <h1>
-            Rapport de Session
+            {{ t('report.title') }}
           </h1>
           <p>
             Deck: <strong>{{ deck.title }}</strong>
           </p>
         </div>
         <div class="header-actions">
-          <a href="{{ route('decks.show', { id: deck.id }) }}" class="btn btn-outline">← Retour</a>
+          <a href="{{ route('decks.show', { id: deck.id }) }}" class="btn btn-outline">← {{ t('deck.cancel_btn').replace('Cancel', 'Return').replace('Annuler', 'Retour') }}</a>
           <a href="{{ route('decks.report.export', { id: deck.id }) }}" class="btn btn-success">
-            📥 Exporter Excel
+            {{ t('report.export_excel') }}
         </a>
         </div>
       </div>
@@ -449,25 +449,25 @@
       <div class="summary-grid">
         <div class="summary-card">
           <div class="summary-label">
-            Total Sessions
+            {{ t('report.total_sessions') }}
           </div>
           <div class="summary-value">
             {{ reportByUser.length }}
           </div>
           <div class="summary-sub">
-            Tentatives enregistrées
+            {{ t('report.attempts_recorded') }}
           </div>
         </div>
         <!-- You could calculate global stats server side or JS, placeholder for now -->
         <div class="summary-card">
           <div class="summary-label">
-            Étudiants
+            {{ t('report.students') }}
           </div>
           <div class="summary-value">
             {{ new Set(reportByUser.map(r => r.user.id)).size }}
           </div>
           <div class="summary-sub">
-            Utilisateurs uniques
+            {{ t('report.unique_users') }}
           </div>
         </div>
       </div>
@@ -477,16 +477,16 @@
         <div class="tool-bar">
           <label class="checkbox-label">
             <input type="checkbox" id="selectAll" style="transform: scale(1.2);" />
-            Tout sélectionner
+            {{ t('report.select_all') }}
         </label>
           <button id="btnCalcAvg" class="btn btn-primary" disabled>
-            Calculer Moyenne Groupe
+            {{ t('report.calc_avg') }}
         </button>
         </div>
 
         @if(reportByUser.length === 0)
           <div style="text-align:center; padding: 3rem; color: var(--text-muted);">
-            Aucune donnée disponible pour ce deck.
+            {{ t('report.no_data') }}
           </div>
         @else
           <div id="reportsList">
@@ -524,13 +524,13 @@
                 </div>
                 <div class="report-details">
                   <h4 style="margin-bottom:1rem; color:var(--text-muted);">
-                    Détail des réponses
+                    {{ t('report.details_answers') }}
                   </h4>
                   @each(attempt in report.attempts)
                     <div class="detail-item">
-                      <span style="flex:1;">{{ attempt.card ? attempt.card.question : 'Carte supprimée' }}</span>
+                      <span style="flex:1;">{{ attempt.card ? attempt.card.question : t('report.card_deleted') }}</span>
                       <span style="font-weight:bold; color: {{ attempt.isCorrect ? 'var(--success)' : 'var(--danger)' }}">
-                        {{ attempt.isCorrect ? 'Correct' : 'Incorrect' }}
+                        {{ attempt.isCorrect ? t('study.correct') : t('study.incorrect') }}
                      </span>
                     </div>
                   @endeach
@@ -547,28 +547,28 @@
       <div class="modal-card">
         <button class="modal-close" onclick="closeModal()">×</button>
         <h2 style="margin-bottom:1.5rem; text-align:center;">
-          Moyenne Sélection
+          {{ t('report.modal_avg_title') }}
         </h2>
 
         <div class="stat-row">
-          <span>Étudiants sélectionnés</span>
+          <span>{{ t('report.selected_students') }}</span>
           <span class="stat-val" id="modCount">0</span>
         </div>
         <div class="stat-row">
-          <span>Moyenne Réponses Correctes</span>
+          <span>{{ t('report.avg_correct') }}</span>
           <span class="stat-val" style="color:var(--success)" id="modCorrect">0</span>
         </div>
         <div class="stat-row">
-          <span>Moyenne Réponses Fausses</span>
+          <span>{{ t('report.avg_wrong') }}</span>
           <span class="stat-val" style="color:var(--danger)" id="modWrong">0</span>
         </div>
         <div class="stat-row" style="border:none;">
-          <span>Taux de réussite moyen</span>
+          <span>{{ t('report.avg_rate') }}</span>
           <span class="stat-val" style="color:var(--primary)" id="modRate">0%</span>
         </div>
 
         <div style="margin-top:1.5rem; text-align:center;">
-          <button class="btn btn-outline" onclick="closeModal()">Fermer</button>
+          <button class="btn btn-outline" onclick="closeModal()">{{ t('report.close') }}</button>
         </div>
       </div>
     </div>
@@ -589,7 +589,7 @@
       
       function updateBtn() {
         const count = document.querySelectorAll(".card-checkbox:checked").length;
-        btnCalc.textContent = `Calculer Moyenne (${count})`;
+        btnCalc.textContent = `{{ t('report.calc_avg') }} (${count})`;
         btnCalc.disabled = count === 0;
       }
       

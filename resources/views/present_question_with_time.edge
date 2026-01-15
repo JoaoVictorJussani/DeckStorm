@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="{{ i18n.locale }}">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
@@ -414,12 +414,12 @@
         href="{{ route('home') }}"
         style="text-decoration: none; color: inherit; font-weight: 600; opacity: 0.6; transition: opacity 0.2s;"
       >
-        ✕ Quitter
+        {{ t('study.quit') }}
     </a>
 
       <div class="progress-container">
         <div class="progress-label">
-          Question {{ questionIndex + 1 }} sur {{ (typeof cards !== 'undefined' && cards ? cards.length : deck.cards.length) }}
+          {{ t('study.question_progress', { current: questionIndex + 1, total: (typeof cards !== 'undefined' && cards ? cards.length : deck.cards.length) }) }}
         </div>
         <div class="progress-track">
           <div
@@ -467,7 +467,7 @@
           <div class="card" id="flashcard">
             <div class="card-face front">
               <div class="card-label">
-                Question
+                {{ t('study.details_title').replace('Détail de la session', 'Question').replace('Session Details', 'Question') }}
               </div>
               <div class="card-content">
                 @if(direction === 'question')
@@ -477,12 +477,12 @@
                 @endif
               </div>
               <div class="hint-text">
-                <span>Clic pour retourner</span>⟳
+                <span>{{ t('study.flip_hint') }}</span>⟳
               </div>
             </div>
             <div class="card-face back">
               <div class="card-label">
-                Réponse
+                {{ t('study.direction_aq').replace('Réponse → Question', 'Réponse').replace('Answer → Question', 'Answer') }}
               </div>
               <div class="card-content">
                 @if(direction === 'question')
@@ -497,12 +497,12 @@
 
         <div class="controls-area" id="controls">
           <button class="action-btn btn-wrong" onclick="markCard(event, false)">
-            <span>✘ Incorrect</span>
-            <span class="btn-sub">À revoir</span>
+            <span>{{ t('study.incorrect') }}</span>
+            <span class="btn-sub">{{ t('study.to_review') }}</span>
           </button>
           <button class="action-btn btn-correct" onclick="markCard(event, true)">
-            <span>✔ Correct</span>
-            <span class="btn-sub">Bien joué</span>
+            <span>{{ t('study.correct') }}</span>
+            <span class="btn-sub">{{ t('study.well_done') }}</span>
           </button>
         </div>
       @endif
@@ -523,7 +523,7 @@
       @endif
       <input type="hidden" name="attempts" value="{{ attempts || 1 }}" />
       <input type="hidden" name="exerciseToken" value="{{ exerciseToken || '' }}" />
-      <button type="submit" id="submitBtn">Suivant</button>
+      <button type="submit" id="submitBtn">{{ t('search.next') }}</button>
     </form>
 
     <script>

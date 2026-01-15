@@ -1,0 +1,19 @@
+{
+    "title": "Rapport de Session",
+    "export_excel": "📥 Exporter Excel",
+    "total_sessions": "Total Sessions",
+    "attempts_recorded": "Tentatives Enregistrées",
+    "students": "Élèves",
+    "unique_users": "Utilisateurs Uniques",
+    "select_all": "Tout Sélectionner",
+    "calc_avg": "Calculer Moyenne Groupe",
+    "no_data": "Aucune donnée disponible pour ce deck.",
+    "details_answers": "Détails des Réponses",
+    "card_deleted": "Carte supprimée",
+    "modal_avg_title": "Moyenne de la Sélection",
+    "selected_students": "Élèves Sélectionnés",
+    "avg_correct": "Moy. Bonnes Réponses",
+    "avg_wrong": "Moy. Mauvaises Réponses",
+    "avg_rate": "Moy. Taux de Réussite",
+    "close": "Fermer"
+}

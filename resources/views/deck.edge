@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="{{ i18n.locale }}">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <title>
-      Créer un deck
+      {{ t('deck.create_title') }}
     </title>
     <link rel="shortcut icon" href="/images/icone.ico" type="image/x-icon" />
     <script>
@@ -410,7 +410,7 @@
 
     <div class="main-content">
       <h1>
-        Créer un nouveau deck
+        {{ t('deck.create_title') }}
       </h1>
       <div class="form-container">
         @if (flashMessages.has('error'))
@@ -425,10 +425,10 @@
         @endif
         <form action="{{ route('decks.store') }}" method="POST">
           {{ csrfField() }}
-        <label for="title">Titre du deck :</label>
+        <label for="title">{{ t('deck.title_label') }}</label>
           <input type="text" id="title" name="title" value="{{ flashMessages.get('old.title', '') }}" required />
 
-          <label for="description">Description :</label>
+          <label for="description">{{ t('deck.description_label') }}</label>
           <div class="description-container">
             <textarea id="description" name="description" maxlength="125" onkeyup="updateCounter()" required>{{ flashMessages.get('old.description', '') }}</textarea>
             <div
@@ -439,63 +439,63 @@
             </div>
           </div>
 
-          <label for="visibility">Visibilité :</label>
+          <label for="visibility">{{ t('deck.visibility_label') }}</label>
           <select id="visibility" name="visibility" required>
             <option
               value="private"
               {{ flashMessages.get('old.visibility', 'private') === 'private' ? 'selected' : '' }}
             >
-              Privé
+              {{ t('deck.private') }}
             </option>
             <option
               value="public"
               {{ flashMessages.get('old.visibility', 'private') === 'public' ? 'selected' : '' }}
             >
-              Public
+              {{ t('deck.public') }}
             </option>
             <option
               value="restricted"
               {{ flashMessages.get('old.visibility', 'private') === 'restricted' ? 'selected' : '' }}
             >
-              Restreint
+              {{ t('deck.restricted') }}
             </option>
           </select>
 
-          <label>Modes autorisés :</label>
+          <label>{{ t('deck.allowed_modes_label') }}</label>
           <div class="checkbox-group">
             <div class="checkbox-item">
               <input type="checkbox" id="mode_chronometre" name="allowed_modes[]" value="chronometre" checked />
-              <label for="mode_chronometre">Chronomètre</label>
+              <label for="mode_chronometre">{{ t('deck.mode_chrono') }}</label>
             </div>
             <div class="checkbox-item">
               <input type="checkbox" id="mode_basique" name="allowed_modes[]" value="basique" checked />
-              <label for="mode_basique">Basique</label>
+              <label for="mode_basique">{{ t('deck.mode_basic') }}</label>
             </div>
             <div class="checkbox-item">
               <input type="checkbox" id="mode_jusquaubout" name="allowed_modes[]" value="jusquaubout" checked />
-              <label for="mode_jusquaubout">Jusqu'au bout</label>
+              <label for="mode_jusquaubout">{{ t('deck.mode_until_done') }}</label>
             </div>
             <div class="checkbox-item">
               <input type="checkbox" id="mode_quiz" name="allowed_modes[]" value="quiz" checked />
-              <label for="mode_quiz">Quiz</label>
+              <label for="mode_quiz">{{ t('deck.mode_quiz') }}</label>
             </div>
           </div>
 
-          <label for="attempt_limit">Tentatives limitées (facultatif) :</label>
+          <label for="attempt_limit">{{ t('deck.attempt_limit_label') }}</label>
           <div style="font-size: 0.9rem; color: #666; margin-bottom: 0.5rem; text-align: left;">
-            Laissez vide pour un nombre illimité de tentatives.
+            {{ t('deck.attempt_limit_help') }}
           </div>
           <input
             type="number"
             id="attempt_limit"
             name="attempt_limit"
             min="1"
-            placeholder="Ex: 3"
+            placeholder="{{ t('deck.attempt_limit_placeholder') }}"
             value="{{ flashMessages.get('old.attempt_limit', '') }}"
           />
 
-          <button type="submit" class="submit-button">Créer</button>
-          <button type="button" class="abandon-button" onclick="window.location.href='{{ route('home') }}'">Abandonner</button>
+          <button type="submit" class="submit-button">{{ t('deck.create_btn') }}</button>
+          <button type="button" class="abandon-button" onclick="window.location.href='{{ route('home') }}'">{{ t('deck.abandon_btn') }}</button>
         </form>
       </div>
     </div>

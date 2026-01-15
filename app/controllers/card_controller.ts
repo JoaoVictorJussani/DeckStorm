@@ -12,13 +12,13 @@ export default class CardController {
   }
 
   // Enregistre une nouvelle carte
-  async store({ params, request, response, session, auth }: HttpContext) {
+  async store({ params, request, response, session, auth, i18n }: HttpContext) {
     await auth.use('web').authenticate()
     const { question, answer } = request.only(['question', 'answer']) // Récupère les champs nécessaires
 
     // Vérifie si la question est vide
     if (!question || question.trim().length === 0) {
-      session.flash('error', 'Le champ "Question" ne peut pas être vide.')
+      session.flash('error', i18n.t('card.question_required'))
       session.flash('old', { question, answer }) // Conserve les anciennes données saisies
       return response.redirect().back()
     }
@@ -32,7 +32,7 @@ export default class CardController {
 
     // Vérifie si la réponse est vide
     if (!answer || answer.trim().length === 0) {
-      session.flash('error', 'Le champ "Réponse" ne peut pas être vide.')
+      session.flash('error', i18n.t('card.answer_required'))
       session.flash('old', { question, answer }) // Conserve les anciennes données saisies
       return response.redirect().back()
     }
@@ -44,7 +44,7 @@ export default class CardController {
       .first()
 
     if (existingCard) {
-      session.flash('error', 'Une carte avec cette question existe déjà dans ce deck.')
+      session.flash('error', i18n.t('card.exists_error'))
       session.flash('old', { question, answer }) // Conserve les anciennes données saisies
       return response.redirect().back()
     }
@@ -52,7 +52,7 @@ export default class CardController {
     // Crée une nouvelle carte
     await Card.create({ question: question.trim(), answer: answer.trim(), deckId: params.deckId })
 
-    session.flash('success', 'Carte créée avec succès !') // Message de succès
+    session.flash('success', i18n.t('card.created_success')) // Message de succès
     return response.redirect().toRoute('decks.show', { id: params.deckId }) // Redirige vers la page du deck
   }
 
@@ -73,12 +73,12 @@ export default class CardController {
   }
 
   // Met à jour une carte
-  async update({ params, request, response, session, auth, bouncer }: HttpContext) {
+  async update({ params, request, response, session, auth, bouncer, i18n }: HttpContext) {
     await auth.use('web').authenticate()
     const deck = await Deck.find(params.deckId) // Récupère le deck par ID
 
     if (!deck) {
-      session.flash('error', 'Deck introuvable.')
+      session.flash('error', i18n.t('card.deck_not_found'))
       return response.redirect().toRoute('home')
     }
     await bouncer.with('DeckPolicy').authorize('edit', deck)
@@ -88,21 +88,21 @@ export default class CardController {
       const data = request.only(['question', 'answer']) // Récupère les champs nécessaires
       card.merge(data) // Met à jour les champs de la carte
       await card.save() // Enregistre les modifications
-      session.flash('success', 'Carte mise à jour avec succès.') // Message de succès
+      session.flash('success', i18n.t('card.updated_success')) // Message de succès
       return response.redirect().toRoute('decks.show', { id: deck.id }) // Redirige vers la page du deck
     }
 
-    session.flash('error', 'Carte introuvable.')
+    session.flash('error', i18n.t('card.card_not_found'))
     return response.redirect().toRoute('decks.show', { id: deck.id })
   }
 
   // Supprime une carte
-  async destroy({ params, response, session, auth, bouncer }: HttpContext) {
+  async destroy({ params, response, session, auth, bouncer, i18n }: HttpContext) {
     await auth.use('web').authenticate()
     const deck = await Deck.find(params.deckId) // Récupère le deck par ID
 
     if (!deck) {
-      session.flash('error', 'Deck introuvable.')
+      session.flash('error', i18n.t('card.deck_not_found'))
       return response.redirect().toRoute('home')
     }
     await bouncer.with('DeckPolicy').authorize('edit', deck) // Editing deck implies deleting cards
@@ -110,11 +110,11 @@ export default class CardController {
     const card = await Card.find(params.cardId) // Récupère la carte par ID
     if (card) {
       await card.delete() // Supprime la carte
-      session.flash('success', 'Carte supprimée avec succès.') // Message de succès
+      session.flash('success', i18n.t('card.deleted_success')) // Message de succès
       return response.redirect().toRoute('decks.show', { id: deck.id }) // Redirige vers la page du deck
     }
 
-    session.flash('error', 'Carte introuvable.') // Message d'erreur
+    session.flash('error', i18n.t('card.card_not_found')) // Message d'erreur
     return response.redirect().toRoute('decks.show', { id: deck.id })
   }
 }

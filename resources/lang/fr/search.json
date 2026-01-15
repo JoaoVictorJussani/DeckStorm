@@ -1,0 +1,14 @@
+{
+    "title": "Résultats de recherche",
+    "tab_decks": "Decks",
+    "tab_users": "Utilisateurs",
+    "found_decks": "deck(s) trouvé(s)",
+    "found_users": "utilisateur(s) trouvé(s)",
+    "no_decks": "Aucun deck trouvé",
+    "no_users": "Aucun utilisateur trouvé",
+    "try_others": "Essayez d'autres mots-clés",
+    "prev": "Précédent",
+    "next": "Suivant",
+    "page_info": "Page {current} sur {total}",
+    "view_profile": "Voir le Profil →"
+}

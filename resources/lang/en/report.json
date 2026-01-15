@@ -1,0 +1,19 @@
+{
+    "title": "Session Report",
+    "export_excel": "📥 Export Excel",
+    "total_sessions": "Total Sessions",
+    "attempts_recorded": "Attempts Recorded",
+    "students": "Students",
+    "unique_users": "Unique Users",
+    "select_all": "Select All",
+    "calc_avg": "Calculate Group Average",
+    "no_data": "No data available for this deck.",
+    "details_answers": "Answer Details",
+    "card_deleted": "Card deleted",
+    "modal_avg_title": "Selection Average",
+    "selected_students": "Selected Students",
+    "avg_correct": "Avg Correct Answers",
+    "avg_wrong": "Avg Wrong Answers",
+    "avg_rate": "Avg Success Rate",
+    "close": "Close"
+}

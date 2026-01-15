@@ -1,11 +1,9 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="{{ i18n.locale }}">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>
-      Résultats de recherche - DeckStorm
-    </title>
+    <title>{{ t('search.title') }} - DeckStorm</title>
     <link rel="shortcut icon" href="/images/icone.ico" type="image/x-icon" />
     <script>
       (function() {
@@ -435,7 +433,7 @@
     <div class="container">
       <div class="search-header">
         <h1 class="search-title">
-          Résultats de recherche
+          {{ t('search.title') }}
         </h1>
         <div class="search-query">
           "{{ query }}"
@@ -445,18 +443,18 @@
         <div class="search-tabs">
           <button class="tab-btn active" id="decksTab" onclick="switchTab('decks')">
             <span>📚</span>
-            <span>Decks</span>
+            <span>{{ t('search.tab_decks') }}</span>
           </button>
           <button class="tab-btn" id="usersTab" onclick="switchTab('users')">
             <span>👤</span>
-            <span>Utilisateurs</span>
+            <span>{{ t('search.tab_users') }}</span>
           </button>
         </div>
 
         <div class="search-count" id="searchCount">
           <span id="countIcon">📚</span>
           <span id="countValue">{{ publicDecks.length }}</span>
-          <span id="countLabel">deck(s) trouvé(s)</span>
+          <span id="countLabel">{{ t('search.found_decks') }}</span>
         </div>
       </div>
 
@@ -491,20 +489,29 @@
                 </a>
                 </div>
               </div>
-            @end
+            @endeach
           </div>
 
           <!-- Pagination Controls -->
           <div class="pagination" id="pagination" style="display: none;">
             <button class="pagination-btn" id="prevBtn" onclick="changePage(-1)">
-              ← Précédent
-          </button>
+              ← {{ t('search.prev') }}
+            </button>
             <span class="pagination-info">
-              Page <span id="currentPage">1</span> sur <span id="totalPages">1</span>
+              @let(pageInfo = t('search.page_info', { current: '[[CURRENT]]', total: '[[TOTAL]]' }))
+              @let(parts = pageInfo.split('[[CURRENT]]'))
+              {{ parts[0] }} 
+              <span id="currentPage">1</span> 
+              @if(parts[1])
+                @let(rest = parts[1].split('[[TOTAL]]'))
+                {{ rest[0] }} 
+                <span id="totalPages">1</span>
+                {{ rest[1] || '' }}
+              @endif
             </span>
             <button class="pagination-btn" id="nextBtn" onclick="changePage(1)">
-              Suivant →
-          </button>
+              {{ t('search.next') }} →
+            </button>
           </div>
         @else
           <div class="empty-state">
@@ -512,10 +519,10 @@
               🔍
             </div>
             <h2 class="empty-title">
-              Aucun deck trouvé
+              {{ t('search.no_decks') }}
             </h2>
             <p class="empty-text">
-              Essayez avec d'autres mots-clés
+              {{ t('search.try_others') }}
             </p>
           </div>
         @endif
@@ -531,16 +538,16 @@
             👤
           </div>
           <h2 class="empty-title">
-            Aucun utilisateur trouvé
+            {{ t('search.no_users') }}
           </h2>
           <p class="empty-text">
-            Essayez avec d'autres mots-clés
+            {{ t('search.try_others') }}
           </p>
         </div>
       </div>
     </div>
 
-    <a href="{{ route('decks.create') }}" class="fab" title="Créer un nouveau deck">
+    <a href="{{ route('decks.create') }}" class="fab" title="{{ t('deck.create_deck') }}">
       <span>+</span>
     </a>
 
@@ -590,7 +597,7 @@
           const deckCount = document.querySelectorAll(".deck-item").length;
           document.getElementById("countIcon").textContent = "📚";
           document.getElementById("countValue").textContent = deckCount;
-          document.getElementById("countLabel").textContent = "deck(s) trouvé(s)";
+          document.getElementById("countLabel").textContent = "{{ t('search.found_decks') }}";
         } else {
           // Load users if not already loaded
           if (!usersLoaded) {
@@ -598,7 +605,7 @@
           }
           document.getElementById("countIcon").textContent = "👤";
           document.getElementById("countValue").textContent = usersData.length;
-          document.getElementById("countLabel").textContent = "utilisateur(s) trouvé(s)";
+          document.getElementById("countLabel").textContent = "{{ t('search.found_users') }}";
         }
       }
       
@@ -619,7 +626,7 @@
                                   <div class="user-info">
                                     <div class="user-name">${username}</div>
                                     <div class="user-stats">
-                                      <span>Voir le profil →</span>
+                                      <span>{{ t('search.view_profile') }}</span>
                                     </div>
                                   </div>
                                 </div>

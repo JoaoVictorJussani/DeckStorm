@@ -37,12 +37,12 @@ router
 // Route pour la page de connexion
 router.get('/login', async ({ view }) => {
   return view.render('auth/login') // Affiche la vue de connexion
-})
+}).as('login')
 
 // Route pour la page d'inscription
 router.get('/register', async ({ view }) => {
   return view.render('auth/register') // Affiche la vue d'inscription
-})
+}).as('register')
 
 // Route pour gérer l'inscription
 router

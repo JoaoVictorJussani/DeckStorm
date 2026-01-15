@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="{{ i18n.locale }}">
   <head>
     <meta charset="UTF-8" />
     <title>
-      Carte
+      {{ t('card.new_title').replace('Nouvelle ', '') }}
     </title>
     <link rel="shortcut icon" href="/images/icone.ico" type="image/x-icon" />
 
@@ -141,13 +141,13 @@
         <button onclick="window.location.href='{{ route('decks.show', { id: card.deck_id }) }}'">OK</button>
         <button
           onclick="window.location.href='{{ route('cards.edit', { deckId: card.deck_id, cardId: card.id }) }}'"
-        >Modifier</button>
-        <button class="abandon-button" onclick="confirmDelete()">Supprimer</button>
+        >{{ t('card.edit_title').split(' ')[0] }}</button>
+        <button class="abandon-button" onclick="confirmDelete()">{{ t('deck.delete_btn') }}</button>
       </div>
     </div>
     <script>
       function confirmDelete() {
-        if (confirm("Êtes-vous sûr de vouloir supprimer cette carte ?")) {
+        if (confirm("{{ t('deck.confirm_delete_title') }} {{ t('deck.confirm_delete_msg') }}")) {
           document.getElementById("delete-form").submit();
         }
       }

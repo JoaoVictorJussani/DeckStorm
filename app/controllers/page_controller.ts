@@ -9,7 +9,7 @@ import UserStats from '#models/user_stats'
 export default class PageController {
   // Méthode pour afficher la page d'accueil
   async home({ view, auth }: HttpContext) {
-    const user = auth.user // Corrigido para garantir que é o usuário autenticado
+    const user = auth.user
     let notifications: Notification[] = []
     if (user) {
       notifications = await Notification.query()
@@ -20,7 +20,6 @@ export default class PageController {
     }
 
     // Get deck of the day (using date as seed for consistent daily selection)
-    // Get deck of the day (deterministic based on date)
     const publicDecksQuery = Deck.query().where('visibility', 'public')
     const countResult = await publicDecksQuery.clone().count('* as total')
     const totalDecks = Number(countResult[0].$extras.total)
@@ -35,9 +34,11 @@ export default class PageController {
 
       deckOfTheDay = await publicDecksQuery
         .clone()
-        .preload('cards' as any)
         .preload('user' as any)
-        .preload('likes' as any)
+        .preload('likes', (query) => {
+          query.where('user_id', user?.id ?? -1)
+        })
+        .withCount('likes' as any)
         .offset(offset)
         .first()
     }
@@ -45,9 +46,10 @@ export default class PageController {
     // Get top 10 most liked decks
     const topLikedDecks = await Deck.query()
       .where('visibility', 'public')
-      .preload('cards' as any)
       .preload('user' as any)
-      .preload('likes' as any)
+      .preload('likes', (query) => {
+        query.where('user_id', user?.id ?? -1)
+      })
       .withCount('likes' as any)
       .orderBy('likes_count', 'desc')
       .limit(10)
@@ -69,7 +71,7 @@ export default class PageController {
       .orderBy('decks_count', 'desc')
       .limit(5)
 
-    return view.render('home', {
+    const result = await view.render('home', {
       user,
       topLikedDecks,
       topCreatorsByFollowers,
@@ -77,6 +79,8 @@ export default class PageController {
       deckOfTheDay,
       notifications,
     })
+
+    return result
   }
 
   // Méthode pour rechercher des decks publics

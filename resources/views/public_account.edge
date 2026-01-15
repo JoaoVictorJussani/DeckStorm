@@ -459,15 +459,15 @@
         <div class="stats-grid">
           <div class="stat-item" onclick="showModal('followers-modal')">
             <span class="stat-value">{{ followersCount }}</span>
-            <span class="stat-label">Abonnés</span>
+            <span class="stat-label">{{ t('messages.followers') }}</span>
           </div>
           <div class="stat-item" onclick="showModal('following-modal')">
             <span class="stat-value">{{ followingCount }}</span>
-            <span class="stat-label">Abonnements</span>
+            <span class="stat-label">{{ t('messages.following') }}</span>
           </div>
           <div class="stat-item">
             <span class="stat-value">{{ publicDecks.length }}</span>
-            <span class="stat-label">Decks</span>
+            <span class="stat-label">{{ t('messages.decks') }}</span>
           </div>
         </div>
 
@@ -478,7 +478,7 @@
           >
             {{ csrfField() }}
           <button type="submit" class="btn {{ isFollowing ? 'btn-unfollow' : 'btn-follow' }}">
-              {{ isFollowing ? '✓ Abonné' : '+ Suivre' }}
+              {{ isFollowing ? t('messages.subscribed') : t('messages.follow') }}
           </button>
           </form>
         @endif
@@ -487,7 +487,7 @@
       <!-- Decks Section -->
       <div class="decks-section">
         <h2 class="section-title">
-          Decks publics de {{ user.username }}
+          {{ t('messages.public_decks_of', { name: user.username }) }}
         </h2>
 
         @if(publicDecks.length)
@@ -509,7 +509,7 @@
           </div>
         @else
           <div class="empty-state">
-            Aucun deck public disponible pour le moment.
+            {{ t('messages.no_public_decks') }}
           </div>
         @endif
       </div>
@@ -525,7 +525,7 @@
       <div class="modal-card">
         <div class="modal-header">
           <h3 class="modal-title">
-            Abonnés ({{ followersCount }})
+            {{ t('messages.followers') }} ({{ followersCount }})
           </h3>
           <button class="modal-close" onclick="closeModal('followers-modal')">&times;</button>
         </div>
@@ -543,7 +543,7 @@
             @end
           @else
             <li style="text-align:center; color: var(--text-muted); padding: 2rem;">
-              Aucun abonné
+              {{ t('messages.no_followers') }}
             </li>
           @endif
         </ul>
@@ -559,7 +559,7 @@
       <div class="modal-card">
         <div class="modal-header">
           <h3 class="modal-title">
-            Abonnements ({{ followingCount }})
+            {{ t('messages.following') }} ({{ followingCount }})
           </h3>
           <button class="modal-close" onclick="closeModal('following-modal')">&times;</button>
         </div>
@@ -577,7 +577,7 @@
             @end
           @else
             <li style="text-align:center; color: var(--text-muted); padding: 2rem;">
-              Aucun abonnement
+              {{ t('messages.no_following') }}
             </li>
           @endif
         </ul>

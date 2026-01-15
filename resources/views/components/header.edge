@@ -56,8 +56,8 @@
   }
   
   .header-navbar button {
-    color: black;
-    padding: 0.7rem 1.2rem;
+    color: var(--header-color, #222);
+    padding: 0.7rem 1rem;
     border-radius: 8px;
     cursor: pointer;
     font-size: 1rem;
@@ -323,11 +323,6 @@
     .theme-switch span:not(.theme-switch-slider) {
       display: none;
     }
-    
-    /* Hide Welcome Text */
-    .header-welcome {
-      display: none;
-    }
 
     #notif-bell {
       font-size: 1.5rem !important;
@@ -485,10 +480,11 @@
       transform: translateY(0);
     }
   }
+
 </style>
 
 <div class="header-navbar">
-  <a href="{{ route('home') }}" title="Retourner à l'accueil">
+  <a href="{{ route('home') }}" title="{{ t('messages.back_home') }}">
     <img src="/images/icone.ico" alt="Logo DeckStorm" title="Logo DeckStorm" />DeckStorm
   </a>
 
@@ -499,16 +495,33 @@
       <input
         type="text"
         id="headerSearch"
-        placeholder="Rechercher des decks..."
-        title="Rechercher des decks par titre, description ou auteur"
+        placeholder="{{ t('messages.search_placeholder') }}"
+        title="{{ t('messages.search_placeholder') }}"
         onkeyup="headerSearchDecks(event)"
       />
     </div>
   </div>
 
   <div style="display: flex; align-items: center; gap: 1rem;">
+
+    <!-- Language Switch -->
+    <div class="header-dropdown" id="header-langDropdown">
+      <button
+        class="header-dropdown-toggle"
+        onclick="toggleLangDropdown()"
+        title="Changer la langue / Change language / Mudar idioma"
+      >
+        <span id="current-lang-flag" style="font-weight:bold;">{{ t('language.current') }}</span>
+        <span style="font-size: 0.8em;">▼</span>
+      </button>
+      <div class="header-dropdown-menu" id="lang-dropdownMenu" style="min-width:140px;">
+         <a href="#" onclick="return changeLang('fr')"><span style="font-weight:bold; width:25px; display:inline-block;">FR</span> {{ t('language.fr') }}</a>
+         <a href="#" onclick="return changeLang('pt-br')"><span style="font-weight:bold; width:25px; display:inline-block;">PT</span> {{ t('language.pt_br') }}</a>
+         <a href="#" onclick="return changeLang('en')"><span style="font-weight:bold; width:25px; display:inline-block;">EN</span> {{ t('language.en') }}</a>
+      </div>
+    </div>
     <!-- Theme switch -->
-    <div class="theme-switch" title="Changer le thème clair/sombre">
+    <div class="theme-switch" title="{{ t('messages.toggle_theme') }}">
       <span style="font-size:1.2rem;user-select:none;">🌞</span>
       <input type="checkbox" id="themeSwitch" class="theme-switch-input" style="display:none;" />
       <span class="theme-switch-slider" onclick="document.getElementById('themeSwitch').click()"></span>
@@ -516,7 +529,7 @@
     </div>
 
     <!-- Notificações -->
-    <div style="position:relative;">
+    <div style="position:relative; display: flex; align-items: center;">
       <button
         id="notif-bell"
         style="color: #1976d2; background: none; border: none; cursor: pointer; font-size: 1.8rem; padding: 0; position:relative;"
@@ -535,7 +548,7 @@
         style="display:none;"
       >
         <div style="padding:1rem;">
-          <b>Notifications</b>
+          <b>{{ t('messages.notifications') }}</b>
           <ul style="list-style:none;padding:0;margin:0;max-height:350px;overflow-y:auto;">
             @if(notifications?.length)
               @each(n in notifications)
@@ -564,7 +577,7 @@
               @endeach
             @else
               <li style="color:#888;">
-                Aucune notifications.
+                {{ t('messages.no_notifications') }}
               </li>
             @endif
           </ul>
@@ -580,17 +593,17 @@
         title="Ouvrir le menu utilisateur"
       >
         @if(auth?.user)
-          <span>{{ auth.user.username }}</span>
+          <span>{{ t('messages.welcome') }} {{ auth.user.username }}</span>
         @endif
         <span>▼</span>
       </button>
-      <div class="header-dropdown-menu" id="header-dropdownMenu">
+       <div class="header-dropdown-menu" id="header-dropdownMenu">
         @if(auth?.user)
-          <a href="/account/{{ auth.user.id }}" title="Gérer votre profil et vos decks">Profil</a>
+          <a href="/account/{{ auth.user.id }}" title="Gérer votre profil">{{ t('messages.profile') }}</a>
         @endif
         <form action="/logout" method="POST" style="margin:0;">
           {{ csrfField() }}
-          <button type="submit" class="header-logout-btn" title="Se déconnecter de l'application">Déconnexion</button>
+          <button type="submit" class="header-logout-btn" title="{{ t('messages.logout') }}">{{ t('messages.logout') }}</button>
         </form>
       </div>
     </div>
@@ -624,11 +637,37 @@
   function headerToggleDropdown() {
     document.getElementById("header-userDropdown").classList.toggle("open");
   }
+
+  function toggleLangDropdown() {
+    document.getElementById("header-langDropdown").classList.toggle("open");
+  }
+
+  function changeLang(lang) {
+      // Store preference
+      localStorage.setItem('deckstorm_lang', lang);
+      
+      // Update URL with new lang param while preserving others (like 'q')
+      const url = new URL(window.location.href);
+      url.searchParams.set('lang', lang);
+      window.location.href = url.toString();
+      
+      return false; // Prevent default link behavior
+  }
+
+  // Update flag on load based on localStorage (visual only, real change requires backend)
+  document.addEventListener("DOMContentLoaded", () => {
+       // Logic handled by server-side translation of 'language.current'
+  });
   
   document.addEventListener("click", function(event) {
     const dropdown = document.getElementById("header-userDropdown");
     if (dropdown && !dropdown.contains(event.target)) {
       dropdown.classList.remove("open");
+    }
+
+    const langDropdown = document.getElementById("header-langDropdown");
+    if (langDropdown && !langDropdown.contains(event.target)) {
+      langDropdown.classList.remove("open");
     }
 
     // Fermer dropdown de notifications si clic en dehors (mais PAS si clic sur la cloche ou le menu)
@@ -648,6 +687,8 @@
       window.location.href = "/deck/search?q=" + encodeURIComponent(query);
     }
   }
+
+
   // Theme switch logic
   
   function setTheme(theme) {

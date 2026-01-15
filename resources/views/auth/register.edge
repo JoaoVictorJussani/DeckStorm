@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="{{ i18n.locale }}">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <title>
-      Inscription - DeckStorm
+      {{ t('auth.register_title') }} - DeckStorm
     </title>
     <link rel="shortcut icon" href="/images/icone.ico" type="image/x-icon" />
     <script>
@@ -234,7 +234,7 @@
     <div class="main-content">
       <div class="register-card">
         <h2>
-          Créer un compte
+          {{ t('auth.create_account') }}
         </h2>
 
         @if(flashMessages.has('error'))
@@ -246,51 +246,39 @@
         <form action="/register" method="POST">
           {{ csrfField() }}
           <div class="form-group">
-            <label for="username">Nom d'utilisateur</label>
-            <input type="text" id="username" name="username" required placeholder="Votre pseudo" />
+            <label class="form-label" for="username">{{ t('auth.username_placeholder') }}</label>
+            <input type="text" id="username" name="username" required placeholder="{{ t('auth.your_username_placeholder') }}" />
           </div>
 
           <div class="form-group">
-            <label for="password">Mot de passe</label>
-            <input type="password" id="password" name="password" required placeholder="• • • • • • • •" />
+            <label class="form-label" for="password">{{ t('auth.password_placeholder') }}</label>
+            <input type="password" id="password" name="password" required placeholder="{{ t('auth.password_dots_placeholder') }}" />
             <div style="margin-top: 5px;">
-              <p id="rule-length" class="validation-msg invalid">
-                8 caractères minimum
-              </p>
-              <p id="rule-upper" class="validation-msg invalid">
-                Une majuscule
-              </p>
-              <p id="rule-lower" class="validation-msg invalid">
-                Une minuscule
-              </p>
-              <p id="rule-digit" class="validation-msg invalid">
-                Un chiffre
-              </p>
-              <p id="rule-special" class="validation-msg invalid">
-                Un caractère spécial (                $!%*?&)
-              </p>
+              <li id="rule-length" class="invalid">📏 {{ t('auth.password_rule_length') }}</li>
+              <li id="rule-uppercase" class="invalid">🔠 {{ t('auth.password_rule_upper') }}</li>
+              <li id="rule-lowercase" class="invalid">🔡 {{ t('auth.password_rule_lower') }}</li>
+              <li id="rule-number" class="invalid">🔢 {{ t('auth.password_rule_digit') }}</li>
+              <li id="rule-special" class="invalid">#️⃣ {{ t('auth.password_rule_special') }}</li>
             </div>
           </div>
 
           <div class="form-group">
-            <label for="confirm_password">Confirmation</label>
+            <label class="form-label" for="password_confirmation">{{ t('auth.confirm_password_label') }}</label>
             <input
               type="password"
               id="confirm_password"
               name="confirm_password"
               required
-              placeholder="Répétez le mot de passe"
+              placeholder="{{ t('auth.confirm_password_placeholder') }}"
             />
-            <p id="password-match-msg" class="validation-msg invalid">
-              Les mots de passe correspondent
-            </p>
+            <p id="password-match-msg" class="validation-msg invalid"></p>
           </div>
 
-          <button type="submit" id="submit-button" disabled>S'inscrire</button>
+          <button type="submit" id="submit-button" disabled>{{ t('auth.register_btn') }}</button>
         </form>
 
         <p class="footer-text">
-          Déjà un compte ? <a href="/login">Se connecter</a>
+          {{ t('auth.have_account') }} <a href="{{ route('login') }}">{{ t('auth.login_btn') }}</a>
         </p>
       </div>
     </div>
@@ -302,9 +290,9 @@
         const confirmPasswordInput = document.querySelector("#confirm_password");
         const submitButton = document.querySelector("#submit-button");
         const ruleLength = document.getElementById("rule-length");
-        const ruleUpper = document.getElementById("rule-upper");
-        const ruleLower = document.getElementById("rule-lower");
-        const ruleDigit = document.getElementById("rule-digit");
+        const ruleUpper = document.getElementById("rule-uppercase");
+        const ruleLower = document.getElementById("rule-lowercase");
+        const ruleDigit = document.getElementById("rule-number");
         const ruleSpecial = document.getElementById("rule-special");
         const passwordMatchMsg = document.getElementById("password-match-msg");
         function updateRule(element, isValid) {
@@ -334,11 +322,11 @@
           if (passwordsMatch) {
             passwordMatchMsg.classList.remove("invalid");
             passwordMatchMsg.classList.add("valid");
-            passwordMatchMsg.innerHTML = "Les mots de passe correspondent";
+            passwordMatchMsg.innerHTML = "{{ t('auth.password_match') }}";
           } else {
             passwordMatchMsg.classList.remove("valid");
             passwordMatchMsg.classList.add("invalid");
-            passwordMatchMsg.innerHTML = "Les mots de passe ne correspondent pas";
+            passwordMatchMsg.innerHTML = "{{ t('auth.password_mismatch') }}";
           }
           if (usernameValid && passwordValid && passwordsMatch) {
             submitButton.disabled = false;
