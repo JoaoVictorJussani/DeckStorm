@@ -20,5 +20,21 @@
     "answer_required": "O campo \"Resposta\" não pode estar vazio.",
     "exists_error": "Já existe uma carta com esta pergunta neste baralho.",
     "deck_not_found": "Baralho não encontrado.",
-    "card_not_found": "Carta não encontrada."
+    "card_not_found": "Carta não encontrada.",
+    "image_occlusion_title": "Oclusão de Imagem",
+    "image_occlusion_subtitle": "Crie uma carta de oclusão de imagem para anatomia, geografia ou código",
+    "upload_image": "Carregar Imagem",
+    "draw_zones": "Desenhar Zonas de Oclusão",
+    "zone_label": "Rótulo da Zona",
+    "add_zone": "Adicionar Zona",
+    "clear_zones": "Limpar Todas as Zonas",
+    "image_required": "Por favor, carregue uma imagem.",
+    "occlusion_zones_required": "Por favor, crie pelo menos uma zona de oclusão.",
+    "occlusion_zones_invalid": "As zonas de oclusão são inválidas.",
+    "image_upload_error": "Erro ao carregar a imagem.",
+    "card_type_text": "Carta Textual",
+    "card_type_image_occlusion": "Oclusão de Imagem",
+    "select_card_type": "Selecione o Tipo de Carta",
+    "reveal_answer": "Revelar Resposta",
+    "hide_answer": "Ocultar Resposta"
 }

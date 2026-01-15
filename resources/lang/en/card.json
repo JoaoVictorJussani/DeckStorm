@@ -20,5 +20,21 @@
     "answer_required": "The \"Answer\" field cannot be empty.",
     "exists_error": "A card with this question already exists in this deck.",
     "deck_not_found": "Deck not found.",
-    "card_not_found": "Card not found."
+    "card_not_found": "Card not found.",
+    "image_occlusion_title": "Image Occlusion",
+    "image_occlusion_subtitle": "Create an image occlusion card for anatomy, geography, or code",
+    "upload_image": "Upload Image",
+    "draw_zones": "Draw Occlusion Zones",
+    "zone_label": "Zone Label",
+    "add_zone": "Add Zone",
+    "clear_zones": "Clear All Zones",
+    "image_required": "Please upload an image.",
+    "occlusion_zones_required": "Please create at least one occlusion zone.",
+    "occlusion_zones_invalid": "The occlusion zones are invalid.",
+    "image_upload_error": "Error uploading image.",
+    "card_type_text": "Text Card",
+    "card_type_image_occlusion": "Image Occlusion",
+    "select_card_type": "Select Card Type",
+    "reveal_answer": "Reveal Answer",
+    "hide_answer": "Hide Answer"
 }

@@ -20,5 +20,21 @@
     "answer_required": "Le champ \"Réponse\" ne peut pas être vide.",
     "exists_error": "Une carte avec cette question existe déjà dans ce deck.",
     "deck_not_found": "Deck introuvable.",
-    "card_not_found": "Carte introuvable."
+    "card_not_found": "Carte introuvable.",
+    "image_occlusion_title": "Occlusion d'Image",
+    "image_occlusion_subtitle": "Créez une carte d'occlusion d'image pour l'anatomie, la géographie ou le code",
+    "upload_image": "Télécharger une image",
+    "draw_zones": "Dessiner des zones d'occlusion",
+    "zone_label": "Étiquette de la zone",
+    "add_zone": "Ajouter une zone",
+    "clear_zones": "Effacer toutes les zones",
+    "image_required": "Veuillez télécharger une image.",
+    "occlusion_zones_required": "Veuillez créer au moins une zone d'occlusion.",
+    "occlusion_zones_invalid": "Les zones d'occlusion sont invalides.",
+    "image_upload_error": "Erreur lors du téléchargement de l'image.",
+    "card_type_text": "Carte Textuelle",
+    "card_type_image_occlusion": "Occlusion d'Image",
+    "select_card_type": "Sélectionnez le type de carte",
+    "reveal_answer": "Révéler la réponse",
+    "hide_answer": "Masquer la réponse"
 }

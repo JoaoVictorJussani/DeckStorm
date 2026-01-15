@@ -29,6 +29,7 @@
         --border: #e2e8f0;
         --danger: #ef4444;
         --success: #22c55e;
+        --accent: #8b5cf6;
       }
       
       .theme-dark {
@@ -39,6 +40,7 @@
         --text-main: #f8fafc;
         --text-muted: #94a3b8;
         --border: #334155;
+        --accent: #a78bfa;
       }
       
       * {
@@ -64,7 +66,7 @@
       
       .container {
         width: 100%;
-        max-width: 600px;
+        max-width: 900px;
         padding: 3rem 1.5rem;
         display: flex;
         flex-direction: column;
@@ -88,6 +90,51 @@
       .page-subtitle {
         color: var(--text-muted);
         font-size: 1rem;
+      }
+      
+      .card-type-selector {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+        margin-bottom: 2rem;
+      }
+      
+      .card-type-option {
+        background: var(--bg-card);
+        border: 2px solid var(--border);
+        border-radius: 12px;
+        padding: 1.5rem;
+        cursor: pointer;
+        transition: all 0.3s;
+        text-align: center;
+      }
+      
+      .card-type-option:hover {
+        border-color: var(--primary);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(59, 130, 246, 0.15);
+      }
+      
+      .card-type-option.active {
+        border-color: var(--primary);
+        background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(37, 99, 235, 0.05));
+        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+      }
+      
+      .card-type-icon {
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+      }
+      
+      .card-type-title {
+        font-weight: 600;
+        font-size: 1.1rem;
+        margin-bottom: 0.25rem;
+      }
+      
+      .card-type-desc {
+        font-size: 0.85rem;
+        color: var(--text-muted);
       }
       
       .edit-card {
@@ -134,6 +181,105 @@
         border-color: var(--primary);
         box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
         background: var(--bg-card);
+      }
+      
+      .image-upload-area {
+        border: 2px dashed var(--border);
+        border-radius: 12px;
+        padding: 2rem;
+        text-align: center;
+        transition: all 0.3s;
+        background: var(--bg-body);
+        cursor: pointer;
+      }
+      
+      .image-upload-area:hover {
+        border-color: var(--primary);
+        background: rgba(59, 130, 246, 0.05);
+      }
+      
+      .image-upload-area.has-image {
+        border-style: solid;
+        padding: 0;
+        cursor: default;
+      }
+      
+      .upload-icon {
+        font-size: 3rem;
+        margin-bottom: 0.5rem;
+        opacity: 0.5;
+      }
+      
+      .canvas-container {
+        position: relative;
+        display: inline-block;
+        max-width: 100%;
+      }
+      
+      #occlusionCanvas {
+        max-width: 100%;
+        height: auto;
+        border-radius: 8px;
+        cursor: crosshair;
+      }
+      
+      .canvas-controls {
+        display: flex;
+        gap: 1rem;
+        margin-top: 1rem;
+        flex-wrap: wrap;
+      }
+      
+      .zone-list {
+        margin-top: 1rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+      
+      .zone-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0.75rem 1rem;
+        background: var(--bg-body);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        transition: all 0.2s;
+      }
+      
+      .zone-item:hover {
+        border-color: var(--primary);
+        background: rgba(59, 130, 246, 0.05);
+      }
+      
+      .zone-info {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+      }
+      
+      .zone-color {
+        width: 24px;
+        height: 24px;
+        border-radius: 4px;
+        border: 2px solid var(--border);
+      }
+      
+      .btn-delete-zone {
+        background: transparent;
+        border: 1px solid var(--danger);
+        color: var(--danger);
+        padding: 0.4rem 0.8rem;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 0.85rem;
+        transition: all 0.2s;
+      }
+      
+      .btn-delete-zone:hover {
+        background: var(--danger);
+        color: white;
       }
       
       .actions {
@@ -183,6 +329,11 @@
         background: rgba(255,255,255,0.05);
       }
       
+      .btn-small {
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+      }
+      
       .alert {
         padding: 1rem;
         border-radius: 8px;
@@ -221,6 +372,10 @@
           transform: translateY(-10px);
         }
       }
+      
+      .hidden {
+        display: none !important;
+      }
     </style>
   </head>
   <body>
@@ -253,8 +408,25 @@
           </p>
         </div>
 
-        <form class="edit-card" action="{{ route('cards.store', { deckId: deck.id }) }}" method="POST">
+        <!-- Card Type Selector -->
+        <div class="card-type-selector">
+          <div class="card-type-option active" data-type="text">
+            <div class="card-type-icon">📝</div>
+            <div class="card-type-title">{{ t('card.card_type_text') }}</div>
+            <div class="card-type-desc">{{ t('card.new_subtitle') }}</div>
+          </div>
+          <div class="card-type-option" data-type="image_occlusion">
+            <div class="card-type-icon">🖼️</div>
+            <div class="card-type-title">{{ t('card.card_type_image_occlusion') }}</div>
+            <div class="card-type-desc">{{ t('card.image_occlusion_subtitle') }}</div>
+          </div>
+        </div>
+
+        <!-- Text Card Form -->
+        <form id="textCardForm" class="edit-card" action="{{ route('cards.store', { deckId: deck.id }) }}" method="POST">
           {{ csrfField() }}
+          <input type="hidden" name="card_type" value="text">
+          
           @if (flashMessages.has('error'))
             <div class="alert alert-error">
               {{ flashMessages.get('error') }}
@@ -298,8 +470,291 @@
           </button>
           </div>
         </form>
+
+        <!-- Image Occlusion Form -->
+        <form id="imageOcclusionForm" class="edit-card hidden" action="{{ route('cards.store', { deckId: deck.id }) }}" method="POST" enctype="multipart/form-data">
+          {{ csrfField() }}
+          <input type="hidden" name="card_type" value="image_occlusion">
+          <input type="hidden" name="occlusion_zones" id="occlusionZonesInput">
+          
+          @if (flashMessages.has('error'))
+            <div class="alert alert-error">
+              {{ flashMessages.get('error') }}
+            </div>
+          @endif
+          
+          <div class="form-group">
+            <label class="form-label">{{ t('card.upload_image') }}</label>
+            <div class="image-upload-area" id="imageUploadArea">
+              <div id="uploadPrompt">
+                <div class="upload-icon">📤</div>
+                <p style="margin-bottom: 0.5rem; font-weight: 600;">{{ t('card.upload_image') }}</p>
+                <p style="font-size: 0.85rem; color: var(--text-muted);">JPG, PNG, GIF, WEBP (max 10MB)</p>
+              </div>
+              <div id="canvasWrapper" class="hidden">
+                <canvas id="occlusionCanvas"></canvas>
+              </div>
+            </div>
+            <input type="file" id="imageInput" name="occlusion_image" accept="image/*" style="display: none;">
+          </div>
+
+          <div id="occlusionControls" class="hidden">
+            <div class="form-group">
+              <label class="form-label">{{ t('card.draw_zones') }}</label>
+              <div class="canvas-controls">
+                <button type="button" class="btn btn-secondary btn-small" id="clearZonesBtn">
+                  {{ t('card.clear_zones') }}
+                </button>
+                <button type="button" class="btn btn-secondary btn-small" id="changeImageBtn">
+                  🔄 {{ t('card.upload_image') }}
+                </button>
+              </div>
+              <div id="zoneList" class="zone-list"></div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="occlusion_question">{{ t('card.front_label') }} ({{ t('deck.optional') }})</label>
+              <input
+                class="form-input"
+                type="text"
+                id="occlusion_question"
+                name="question"
+                placeholder="{{ t('card.image_occlusion_title') }}"
+              />
+            </div>
+
+            <div class="actions">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                onclick="window.location.href='{{ route('decks.show', { id: deck.id }) }}'"
+              >
+                {{ t('deck.cancel_btn') }}
+              </button>
+              <button type="submit" class="btn btn-primary">
+                {{ t('card.add_btn') }}
+              </button>
+            </div>
+          </div>
+        </form>
       @endif
     </div>
+
+    <script>
+      // Card type selector
+      const cardTypeOptions = document.querySelectorAll('.card-type-option');
+      const textCardForm = document.getElementById('textCardForm');
+      const imageOcclusionForm = document.getElementById('imageOcclusionForm');
+
+      cardTypeOptions.forEach(option => {
+        option.addEventListener('click', () => {
+          cardTypeOptions.forEach(opt => opt.classList.remove('active'));
+          option.classList.add('active');
+          
+          const type = option.dataset.type;
+          if (type === 'text') {
+            textCardForm.classList.remove('hidden');
+            imageOcclusionForm.classList.add('hidden');
+          } else {
+            textCardForm.classList.add('hidden');
+            imageOcclusionForm.classList.remove('hidden');
+          }
+        });
+      });
+
+      // Image Occlusion Logic
+      const imageUploadArea = document.getElementById('imageUploadArea');
+      const imageInput = document.getElementById('imageInput');
+      const uploadPrompt = document.getElementById('uploadPrompt');
+      const canvasWrapper = document.getElementById('canvasWrapper');
+      const canvas = document.getElementById('occlusionCanvas');
+      const ctx = canvas.getContext('2d');
+      const occlusionControls = document.getElementById('occlusionControls');
+      const zoneList = document.getElementById('zoneList');
+      const clearZonesBtn = document.getElementById('clearZonesBtn');
+      const changeImageBtn = document.getElementById('changeImageBtn');
+      const occlusionZonesInput = document.getElementById('occlusionZonesInput');
+
+      let uploadedImage = null;
+      let occlusionZones = [];
+      let isDrawing = false;
+      let startX, startY;
+      let zoneIdCounter = 1;
+
+      const zoneColors = [
+        '#ef4444', '#f59e0b', '#10b981', '#3b82f6', 
+        '#8b5cf6', '#ec4899', '#14b8a6', '#f97316'
+      ];
+
+      imageUploadArea.addEventListener('click', () => {
+        if (!uploadedImage) {
+          imageInput.click();
+        }
+      });
+
+      changeImageBtn.addEventListener('click', () => {
+        imageInput.click();
+      });
+
+      imageInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = (event) => {
+            const img = new Image();
+            img.onload = () => {
+              uploadedImage = img;
+              setupCanvas(img);
+              uploadPrompt.classList.add('hidden');
+              canvasWrapper.classList.remove('hidden');
+              imageUploadArea.classList.add('has-image');
+              occlusionControls.classList.remove('hidden');
+              occlusionZones = [];
+              zoneIdCounter = 1;
+              updateZoneList();
+            };
+            img.src = event.target.result;
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+
+      function setupCanvas(img) {
+        const maxWidth = 800;
+        const scale = Math.min(1, maxWidth / img.width);
+        canvas.width = img.width * scale;
+        canvas.height = img.height * scale;
+        redrawCanvas();
+      }
+
+      function redrawCanvas() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        if (uploadedImage) {
+          ctx.drawImage(uploadedImage, 0, 0, canvas.width, canvas.height);
+          
+          // Draw occlusion zones (convert percentages back to pixels)
+          occlusionZones.forEach((zone, index) => {
+            const x = zone.x * canvas.width;
+            const y = zone.y * canvas.height;
+            const width = zone.width * canvas.width;
+            const height = zone.height * canvas.height;
+            
+            ctx.fillStyle = zoneColors[index % zoneColors.length] + '80';
+            ctx.fillRect(x, y, width, height);
+            ctx.strokeStyle = zoneColors[index % zoneColors.length];
+            ctx.lineWidth = 3;
+            ctx.strokeRect(x, y, width, height);
+            
+            // Draw zone number
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'bold 20px Arial';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(zone.id, x + width / 2, y + height / 2);
+          });
+        }
+      }
+
+      canvas.addEventListener('mousedown', (e) => {
+        const rect = canvas.getBoundingClientRect();
+        startX = e.clientX - rect.left;
+        startY = e.clientY - rect.top;
+        isDrawing = true;
+      });
+
+      canvas.addEventListener('mousemove', (e) => {
+        if (!isDrawing) return;
+        
+        const rect = canvas.getBoundingClientRect();
+        const currentX = e.clientX - rect.left;
+        const currentY = e.clientY - rect.top;
+        
+        redrawCanvas();
+        
+        // Draw preview rectangle
+        const width = currentX - startX;
+        const height = currentY - startY;
+        ctx.strokeStyle = '#3b82f6';
+        ctx.lineWidth = 2;
+        ctx.setLineDash([5, 5]);
+        ctx.strokeRect(startX, startY, width, height);
+        ctx.setLineDash([]);
+      });
+
+      canvas.addEventListener('mouseup', (e) => {
+        if (!isDrawing) return;
+        isDrawing = false;
+        
+        const rect = canvas.getBoundingClientRect();
+        const endX = e.clientX - rect.left;
+        const endY = e.clientY - rect.top;
+        
+        const width = endX - startX;
+        const height = endY - startY;
+        
+        // Only add zone if it's large enough
+        if (Math.abs(width) > 20 && Math.abs(height) > 20) {
+          // Store zones as percentages of canvas dimensions for proper scaling
+          const zone = {
+            id: zoneIdCounter++,
+            x: Math.min(startX, endX) / canvas.width,  // Store as percentage
+            y: Math.min(startY, endY) / canvas.height, // Store as percentage
+            width: Math.abs(width) / canvas.width,     // Store as percentage
+            height: Math.abs(height) / canvas.height   // Store as percentage
+          };
+          occlusionZones.push(zone);
+          updateZoneList();
+          redrawCanvas();
+        }
+      });
+
+      function updateZoneList() {
+        zoneList.innerHTML = '';
+        occlusionZones.forEach((zone, index) => {
+          const zoneItem = document.createElement('div');
+          zoneItem.className = 'zone-item';
+          // Display in pixels for user readability
+          const displayWidth = Math.round(zone.width * canvas.width);
+          const displayHeight = Math.round(zone.height * canvas.height);
+          zoneItem.innerHTML = `
+            <div class="zone-info">
+              <div class="zone-color" style="background-color: ${zoneColors[index % zoneColors.length]};"></div>
+              <span><strong>{{ t('card.zone_label') }} ${zone.id}</strong> (${displayWidth} × ${displayHeight}px)</span>
+            </div>
+            <button type="button" class="btn-delete-zone" data-zone-id="${zone.id}">🗑️ {{ t('deck.delete_btn') }}</button>
+          `;
+          zoneList.appendChild(zoneItem);
+        });
+
+        // Add delete event listeners
+        document.querySelectorAll('.btn-delete-zone').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            const zoneId = parseInt(e.currentTarget.dataset.zoneId);
+            occlusionZones = occlusionZones.filter(z => z.id !== zoneId);
+            updateZoneList();
+            redrawCanvas();
+          });
+        });
+
+        // Update hidden input
+        occlusionZonesInput.value = JSON.stringify(occlusionZones);
+      }
+
+      clearZonesBtn.addEventListener('click', () => {
+        occlusionZones = [];
+        zoneIdCounter = 1;
+        updateZoneList();
+        redrawCanvas();
+      });
+
+      // Form validation
+      imageOcclusionForm.addEventListener('submit', (e) => {
+        if (occlusionZones.length === 0) {
+          e.preventDefault();
+          alert('{{ t('card.occlusion_zones_required') }}');
+        }
+      });
+    </script>
 
   </body>
 </html>

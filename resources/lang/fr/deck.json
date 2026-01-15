@@ -47,5 +47,6 @@
     "notes_label": "Bloc-notes",
     "notes_placeholder": "Ajoutez des notes, des rappels ou des documents ici...",
     "notepad": "Bloc-notes",
-    "save_notes": "Enregistrer les notes"
+    "save_notes": "Enregistrer les notes",
+    "optional": "optionnel"
 }

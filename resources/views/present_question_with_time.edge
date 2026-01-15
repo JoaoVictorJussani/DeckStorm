@@ -469,13 +469,23 @@
               <div class="card-label">
                 {{ t('study.details_title').replace('Détail de la session', 'Question').replace('Session Details', 'Question') }}
               </div>
-              <div class="card-content">
-                @if(direction === 'question')
-                  {{ card.question }}
-                @else
-                  {{ card.answer }}
-                @endif
-              </div>
+              
+              @if(card.cardType === 'image_occlusion')
+                <!-- Image Occlusion Card -->
+                <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; position: relative;">
+                  <canvas id="occlusionCanvas" style="max-width: 100%; max-height: 100%; border-radius: 8px;"></canvas>
+                </div>
+              @else
+                <!-- Text Card -->
+                <div class="card-content">
+                  @if(direction === 'question')
+                    {{ card.question }}
+                  @else
+                    {{ card.answer }}
+                  @endif
+                </div>
+              @endif
+              
               <div class="hint-text">
                 <span>{{ t('study.flip_hint') }}</span>⟳
               </div>
@@ -484,13 +494,22 @@
               <div class="card-label">
                 {{ t('study.direction_aq').replace('Réponse → Question', 'Réponse').replace('Answer → Question', 'Answer') }}
               </div>
-              <div class="card-content">
-                @if(direction === 'question')
-                  {{ card.answer }}
-                @else
-                  {{ card.question }}
-                @endif
-              </div>
+              
+              @if(card.cardType === 'image_occlusion')
+                <!-- Image Occlusion Revealed -->
+                <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; position: relative;">
+                  <canvas id="occlusionCanvasRevealed" style="max-width: 100%; max-height: 100%; border-radius: 8px;"></canvas>
+                </div>
+              @else
+                <!-- Text Card Answer -->
+                <div class="card-content">
+                  @if(direction === 'question')
+                    {{ card.answer }}
+                  @else
+                    {{ card.question }}
+                  @endif
+                </div>
+              @endif
             </div>
           </div>
         </div>
@@ -616,6 +635,95 @@
           // But for smooth entry, we can zero it first? 
           // Actually current implementation sets width in HTML so it will just be there.
         }, 100);
+        
+        // Image Occlusion Rendering
+        const cardType = "{{ card.cardType || 'text' }}";
+        if (cardType === "image_occlusion") {
+          const imagePath = "{{ card.imagePath }}";
+          const occlusionZonesStr = `{{ JSON.stringify(card.occlusionZones || []) }}`.replace(/&quot;/g, '"');
+          let occlusionZones = [];
+          
+          try {
+            occlusionZones = JSON.parse(occlusionZonesStr);
+          } catch (e) {
+            console.error("Failed to parse occlusion zones:", e);
+          }
+          
+          const zoneColors = [
+            '#ef4444', '#f59e0b', '#10b981', '#3b82f6', 
+            '#8b5cf6', '#ec4899', '#14b8a6', '#f97316'
+          ];
+          
+          // Load and render front (with occlusions)
+          const canvasFront = document.getElementById("occlusionCanvas");
+          const ctxFront = canvasFront ? canvasFront.getContext("2d") : null;
+          
+          // Load and render back (revealed)
+          const canvasBack = document.getElementById("occlusionCanvasRevealed");
+          const ctxBack = canvasBack ? canvasBack.getContext("2d") : null;
+          
+          if (imagePath && (ctxFront || ctxBack)) {
+            const img = new Image();
+            img.onload = () => {
+              const maxWidth = 600;
+              const scale = Math.min(1, maxWidth / img.width);
+              const width = img.width * scale;
+              const height = img.height * scale;
+              
+              // Setup front canvas (with occlusions)
+              if (canvasFront && ctxFront) {
+                canvasFront.width = width;
+                canvasFront.height = height;
+                ctxFront.drawImage(img, 0, 0, width, height);
+                
+                // Draw occlusion zones (convert percentages to pixels)
+                occlusionZones.forEach((zone, index) => {
+                  const x = zone.x * width;
+                  const y = zone.y * height;
+                  const zoneWidth = zone.width * width;
+                  const zoneHeight = zone.height * height;
+                  
+                  ctxFront.fillStyle = zoneColors[index % zoneColors.length];
+                  ctxFront.fillRect(x, y, zoneWidth, zoneHeight);
+                  
+                  // Draw zone number
+                  ctxFront.fillStyle = '#ffffff';
+                  ctxFront.font = 'bold 24px Arial';
+                  ctxFront.textAlign = 'center';
+                  ctxFront.textBaseline = 'middle';
+                  ctxFront.fillText(zone.id, x + zoneWidth / 2, y + zoneHeight / 2);
+                });
+              }
+              
+              // Setup back canvas (revealed - just the image)
+              if (canvasBack && ctxBack) {
+                canvasBack.width = width;
+                canvasBack.height = height;
+                ctxBack.drawImage(img, 0, 0, width, height);
+                
+                // Draw zone outlines for reference (convert percentages to pixels)
+                occlusionZones.forEach((zone, index) => {
+                  const x = zone.x * width;
+                  const y = zone.y * height;
+                  const zoneWidth = zone.width * width;
+                  const zoneHeight = zone.height * height;
+                  
+                  ctxBack.strokeStyle = zoneColors[index % zoneColors.length];
+                  ctxBack.lineWidth = 3;
+                  ctxBack.strokeRect(x, y, zoneWidth, zoneHeight);
+                  
+                  // Draw zone number in corner
+                  ctxBack.fillStyle = zoneColors[index % zoneColors.length];
+                  ctxBack.font = 'bold 16px Arial';
+                  ctxBack.textAlign = 'left';
+                  ctxBack.textBaseline = 'top';
+                  ctxBack.fillText(zone.id, x + 5, y + 5);
+                });
+              }
+            };
+            img.src = imagePath;
+          }
+        }
       });
     </script>
   </body>
