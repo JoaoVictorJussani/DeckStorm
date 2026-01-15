@@ -40,5 +40,8 @@
     "restricted": "Restrito",
     "author": "Autor",
     "cards": "cartas",
-    "card": "carta"
+    "card": "carta",
+    "private_desc": "Apenas para você",
+    "public_desc": "Visível para todos",
+    "restricted_desc": "Acesso por convite"
 }

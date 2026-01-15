@@ -40,5 +40,8 @@
     "restricted": "Restricted",
     "author": "Author",
     "cards": "cards",
-    "card": "card"
+    "card": "card",
+    "private_desc": "Only for you",
+    "public_desc": "Visible to everyone",
+    "restricted_desc": "Access by invitation"
 }

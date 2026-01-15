@@ -236,13 +236,73 @@
       }
       
       @keyframes float {
-        0%, 100% {
-          transform: translateY(0);
-        }
-      
         50% {
           transform: translateY(-10px);
         }
+      }
+
+      /* Visibility Radio Cards */
+      .visibility-options {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+        margin-top: 0.5rem;
+      }
+      
+      .visibility-card {
+        position: relative;
+        cursor: pointer;
+      }
+      
+      .visibility-card input {
+        position: absolute;
+        opacity: 0;
+        width: 0;
+        height: 0;
+      }
+      
+      .visibility-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 1.25rem 1rem;
+        background: var(--bg-body);
+        border: 2px solid var(--border);
+        border-radius: 12px;
+        transition: all 0.2s;
+        text-align: center;
+        height: 100%;
+      }
+      
+      .visibility-card:hover .visibility-content {
+        border-color: var(--primary);
+        transform: translateY(-2px);
+      }
+      
+      .visibility-card input:checked + .visibility-content {
+        background: var(--bg-card);
+        border-color: var(--primary);
+        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+      }
+      
+      .visibility-icon {
+        font-size: 1.8rem;
+        margin-bottom: 0.5rem;
+      }
+      
+      .visibility-label {
+        font-weight: 700;
+        font-size: 1rem;
+        color: var(--text-main);
+        display: block;
+      }
+      
+      .visibility-desc {
+        font-size: 0.8rem;
+        color: var(--text-muted);
+        margin-top: 6px;
+        line-height: 1.3;
       }
     </style>
   </head>
@@ -296,18 +356,33 @@
 
         <!-- Visibilité -->
         <div class="form-group">
-          <label class="form-label" for="visibility">{{ t('deck.visibility_label') }}</label>
-          <select class="form-select" id="visibility" name="visibility" required>
-            <option value="private" {{ deck.visibility === 'private' ? 'selected' : '' }}>
-              🔒 {{ t('deck.private') }}
-            </option>
-            <option value="public" {{ deck.visibility === 'public' ? 'selected' : '' }}>
-              🌍 {{ t('deck.public') }}
-            </option>
-            <option value="restricted" {{ deck.visibility === 'restricted' ? 'selected' : '' }}>
-              🔐 {{ t('deck.restricted') }}
-            </option>
-          </select>
+          <label class="form-label">{{ t('deck.visibility_label') }}</label>
+          <div class="visibility-options">
+            <label class="visibility-card">
+              <input type="radio" name="visibility" value="private" {{ deck.visibility === 'private' ? 'checked' : '' }} required>
+              <div class="visibility-content">
+                <span class="visibility-icon">🔒</span>
+                <span class="visibility-label">{{ t('deck.private') }}</span>
+                <span class="visibility-desc">{{ t('deck.private_desc') }}</span>
+              </div>
+            </label>
+            <label class="visibility-card">
+              <input type="radio" name="visibility" value="public" {{ deck.visibility === 'public' ? 'checked' : '' }}>
+              <div class="visibility-content">
+                <span class="visibility-icon">🌍</span>
+                <span class="visibility-label">{{ t('deck.public') }}</span>
+                <span class="visibility-desc">{{ t('deck.public_desc') }}</span>
+              </div>
+            </label>
+            <label class="visibility-card">
+              <input type="radio" name="visibility" value="restricted" {{ deck.visibility === 'restricted' ? 'checked' : '' }}>
+              <div class="visibility-content">
+                <span class="visibility-icon">🔐</span>
+                <span class="visibility-label">{{ t('deck.restricted') }}</span>
+                <span class="visibility-desc">{{ t('deck.restricted_desc') }}</span>
+              </div>
+            </label>
+          </div>
           <div class="form-helper">
             {{ t('deck.visibility_help') }}
           </div>
