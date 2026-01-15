@@ -5,7 +5,7 @@ import Like from '#models/like'
 export default class DeckController {
   // Création d'un deck
   async store({ request, response, session, auth }: HttpContext) {
-    const data = request.only(['title', 'description', 'visibility']) // Récupère uniquement les champs nécessaires
+    const data = request.only(['title', 'description', 'visibility', 'notes']) // Récupère uniquement les champs nécessaires
     const allowedModes = request.input('allowed_modes', [])
 
     // Vérifie qu'au moins un mode est sélectionné
@@ -40,6 +40,7 @@ export default class DeckController {
     deck.visibility = data.visibility // Définit la visibilité
     deck.allowed_modes = allowedModes // Définit les modes autorisés
     deck.attempt_limit = attemptLimit
+    deck.notes = data.notes
     if (auth.user) {
       deck.user_id = auth.user.id // Associe le deck à l'utilisateur connecté
     } else {
@@ -56,7 +57,7 @@ export default class DeckController {
   // Mise à jour d'un deck
   async update({ params, request, response, session, bouncer }: HttpContext) {
     const deck = await Deck.find(params.id)
-    const data = request.only(['title', 'description', 'visibility'])
+    const data = request.only(['title', 'description', 'visibility', 'notes'])
     const allowedModes = request.input('allowed_modes', [])
     const attemptLimit = request.input('attempt_limit')
       ? Number.parseInt(request.input('attempt_limit'))
@@ -369,5 +370,19 @@ export default class DeckController {
 
     const buffer = await workbook.xlsx.writeBuffer()
     return response.send(buffer)
+  }
+
+  async updateNotes({ params, request, response, session, bouncer }: HttpContext) {
+    const deck = await Deck.find(params.id)
+    if (!deck) {
+      return response.notFound('Deck not found')
+    }
+    await bouncer.with('DeckPolicy').authorize('update', deck)
+
+    deck.notes = request.input('notes')
+    await deck.save()
+
+    session.flash('success', 'Notes enregistrées !')
+    return response.redirect().back()
   }
 }

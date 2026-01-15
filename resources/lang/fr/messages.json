@@ -69,5 +69,9 @@
     "error_500_msg": "Quelque chose s'est mal passé de notre côté.",
     "limit_reached_title": "Limite Atteinte",
     "limit_attempts_reached": "Limite de tentatives atteinte",
-    "limit_attempts_msg": "Vous avez atteint le nombre maximum de tentatives autorisées pour le deck"
+    "limit_attempts_msg": "Vous avez atteint le nombre maximum de tentatives autorisées pour le deck",
+    "notepad": "Bloc-notes",
+    "save_notes": "Enregistrer les notes",
+    "notes_placeholder": "Ajoutez des notes, des rappels ou des documents ici...",
+    "notes_label": "Bloc-notes"
 }

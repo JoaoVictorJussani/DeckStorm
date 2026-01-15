@@ -37,6 +37,9 @@ export default class Deck extends BaseModel {
   @column()
   declare attempt_limit: number | null // Limite de tentatives (null = illimité)
 
+  @column()
+  declare notes: string | null
+
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
 

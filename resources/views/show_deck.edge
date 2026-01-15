@@ -602,6 +602,30 @@
         gap: 1rem;
         margin-top: 1.5rem;
       }
+      
+      .notepad-textarea {
+        width: 100%;
+        min-height: 300px;
+        padding: 1rem;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        background: var(--bg-body);
+        color: var(--text-main);
+        font-family: inherit;
+        line-height: 1.6;
+        resize: vertical;
+        margin-bottom: 1rem;
+      }
+      
+      .deck-notes-content {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 1.5rem;
+        line-height: 1.6;
+        white-space: pre-wrap;
+        color: var(--text-main);
+      }
     </style>
   </head>
   <body>
@@ -649,6 +673,7 @@
             {{ deck.description || 'Aucune description disponible pour ce deck.' }}
           </p>
 
+
           <div class="deck-actions">
             @if(deck.cards.length > 0)
               <a href="{{ route('exercise.start', { deckId: deck.id }) }}" class="btn btn-primary btn-lg">
@@ -658,7 +683,10 @@
             
             @if(deck.user_id === user.id)
               <a href="{{ route('decks.edit', { id: deck.id }) }}" class="btn btn-outline">✏ {{ t('deck.edit_title').replace('Configuration du Deck', 'Modifier').replace('Deck Configuration', 'Edit') }}</a>
+              <button onclick="openNotepadModal()" class="btn btn-outline">{{ t('deck.notepad') }}</button>
               <button onclick="confirmDelete()" class="btn btn-danger">🗑 {{ t('deck.delete_btn') }}</button>
+            @elseif(deck.notes)
+              <button onclick="openNotepadModal()" class="btn btn-outline">{{ t('messages.notepad') }}</button>
             @endif
             
             @if(deck.visibility === 'restricted' && user && deck.user_id === user.id)
@@ -786,6 +814,34 @@
       </div>
     @endif
 
+    <!-- Notepad Modal -->
+    <div id="notepadModal" class="invite-modal">
+      <div class="invite-modal-content" style="max-width: 800px;">
+        <button class="close-modal" onclick="document.getElementById('notepadModal').classList.remove('active')">&times;</button>
+        <h3 style="margin-bottom: 1.5rem; font-size: 1.8rem;">
+          {{ t('messages.notes_label') }}
+        </h3>
+        
+        @if(deck.user_id === user.id)
+          <form action="{{ route('decks.saveNotes', { id: deck.id }) }}" method="POST">
+            {{ csrfField() }}
+            <textarea name="notes" class="notepad-textarea" placeholder="{{ t('messages.notes_placeholder') }}">{{ deck.notes || '' }}</textarea>
+            <div class="modal-actions">
+              <button type="button" class="btn-cancel-modal" onclick="document.getElementById('notepadModal').classList.remove('active')">{{ t('deck.cancel_btn') }}</button>
+              <button type="submit" class="btn btn-primary" style="width: 100%;">{{ t('messages.save_notes') }}</button>
+            </div>
+          </form>
+        @else
+          <div class="deck-notes-content" style="max-height: 60vh; overflow-y: auto; text-align: left;">
+            {{ deck.notes || '' }}
+          </div>
+          <div class="modal-actions">
+            <button type="button" class="btn btn-primary" style="width: 100%;" onclick="document.getElementById('notepadModal').classList.remove('active')">Fermer</button>
+          </div>
+        @endif
+      </div>
+    </div>
+
     <!-- Delete Confirmation Modal -->
     <div id="deleteModal" class="invite-modal danger-modal">
         <div class="invite-modal-content">
@@ -860,6 +916,10 @@
       
       function openInviteModal() {
         document.getElementById("inviteModal").classList.add("active");
+      }
+
+      function openNotepadModal() {
+        document.getElementById("notepadModal").classList.add("active");
       }
       // Like Logic
       

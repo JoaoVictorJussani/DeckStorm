@@ -28,9 +28,9 @@
     "no_cards": "Este baralho ainda não contém cartas.",
     "invite_user": "Convidar usuário",
     "invite_btn": "Convidar",
-    "report_btn": "📊 Relatório",
-    "start_practice": "▶ Praticar",
-    "copy_link": "🔗 Copiar Link",
+    "report_btn": "Relatório",
+    "start_practice": "Praticar",
+    "copy_link": "Copiar Link",
     "characters": "caracteres",
     "confirm_delete_title": "Excluir ?",
     "confirm_delete_msg": "Esta ação é irreversível.",
@@ -43,5 +43,9 @@
     "card": "carta",
     "private_desc": "Apenas para você",
     "public_desc": "Visível para todos",
-    "restricted_desc": "Acesso por convite"
+    "restricted_desc": "Acesso por convite",
+    "notes_label": "Bloco de notas",
+    "notes_placeholder": "Adicione notas, lembretes ou documentos aqui...",
+    "notepad": "Bloco de notas",
+    "save_notes": "Salvar Notas"
 }

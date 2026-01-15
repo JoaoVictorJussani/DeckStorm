@@ -69,5 +69,9 @@
     "error_500_msg": "Algo deu errado do nosso lado.",
     "limit_reached_title": "Limite Atingido",
     "limit_attempts_reached": "Limite de Tentativas Atingido",
-    "limit_attempts_msg": "Você atingiu o número máximo de tentativas permitidas para o baralho"
+    "limit_attempts_msg": "Você atingiu o número máximo de tentativas permitidas para o baralho",
+    "notepad": "Bloco de notas",
+    "save_notes": "Salvar Notas",
+    "notes_placeholder": "Adicione notas, lembretes ou documentos aqui...",
+    "notes_label": "Bloco de notas"
 }

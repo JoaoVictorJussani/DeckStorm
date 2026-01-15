@@ -69,5 +69,9 @@
     "error_500_msg": "Something went wrong on our end.",
     "limit_reached_title": "Limit Reached",
     "limit_attempts_reached": "Attempt Limit Reached",
-    "limit_attempts_msg": "You have reached the maximum number of attempts allowed for the deck"
+    "limit_attempts_msg": "You have reached the maximum number of attempts allowed for the deck",
+    "notepad": "Notepad",
+    "save_notes": "Save Notes",
+    "notes_placeholder": "Add notes, reminders or documents here...",
+    "notes_label": "Notepad"
 }

@@ -155,6 +155,9 @@ router
 // Route pour le rapport de deck
 router.get('/deck/:id/report', [DeckController, 'report']).as('decks.report').use(middleware.auth())
 
+// Route pour enregistrer les notes du deck
+router.post('/deck/:id/notes', [DeckController, 'updateNotes']).as('decks.saveNotes').use(middleware.auth())
+
 // Route pour exporter le rapport de deck en Excel
 router
   .get('/deck/:id/report/export', [DeckController, 'exportReport'])

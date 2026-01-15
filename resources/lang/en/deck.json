@@ -28,9 +28,9 @@
     "no_cards": "This deck does not contain any cards yet.",
     "invite_user": "Invite a user",
     "invite_btn": "Invite",
-    "report_btn": "📊 Report",
-    "start_practice": "▶ Practice",
-    "copy_link": "🔗 Copy Link",
+    "report_btn": "Report",
+    "start_practice": "Practice",
+    "copy_link": "Copy Link",
     "characters": "characters",
     "confirm_delete_title": "Delete ?",
     "confirm_delete_msg": "This action is irreversible.",
@@ -43,5 +43,9 @@
     "card": "card",
     "private_desc": "Only for you",
     "public_desc": "Visible to everyone",
-    "restricted_desc": "Access by invitation"
+    "restricted_desc": "Access by invitation",
+    "notes_label": "Notepad",
+    "notes_placeholder": "Add notes, reminders or documents here...",
+    "notepad": "Notepad",
+    "save_notes": "Save Notes"
 }

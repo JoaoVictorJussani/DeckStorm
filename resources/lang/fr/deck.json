@@ -28,9 +28,9 @@
     "no_cards": "Ce deck ne contient encore aucune carte.",
     "invite_user": "Inviter un utilisateur",
     "invite_btn": "Inviter",
-    "report_btn": "📊 Rapport",
-    "start_practice": "▶ S'entraîner",
-    "copy_link": "🔗 Copier le lien",
+    "report_btn": "Rapport",
+    "start_practice": "S'entraîner",
+    "copy_link": "Copier le lien",
     "characters": "caractères",
     "confirm_delete_title": "Supprimer ?",
     "confirm_delete_msg": "Cette action est irréversible.",
@@ -43,5 +43,9 @@
     "card": "carte",
     "private_desc": "Uniquement pour vous",
     "public_desc": "Visible par tous",
-    "restricted_desc": "Accès par invitation"
+    "restricted_desc": "Accès par invitation",
+    "notes_label": "Bloc-notes",
+    "notes_placeholder": "Ajoutez des notes, des rappels ou des documents ici...",
+    "notepad": "Bloc-notes",
+    "save_notes": "Enregistrer les notes"
 }
