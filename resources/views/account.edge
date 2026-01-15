@@ -1193,7 +1193,7 @@
                   onkeyup="searchDecks()"
                 />
               </div>
-              <table>
+              <table style="width: 100%">
                 <thead>
                   <tr>
                     <th>
@@ -1255,6 +1255,7 @@
                   type="text"
                   id="likedDeckSearch"
                   class="search-input"
+                  style="width: 100%; max-width: 500px;"
                   placeholder="{{ t('messages.search_liked_decks') }}"
                   onkeyup="searchLikedDecks()"
                 />
@@ -1315,7 +1316,7 @@
               onkeyup="searchRestrictedDecks()"
               placeholder="{{ t('messages.search_restricted_decks') }}"
               class="search-input"
-              style="width: 100%; max-width: 400px; margin-bottom: 1rem;"
+              style="width: 100%; max-width: 500px; margin-bottom: 1rem;"
             />
             <div style="overflow-x: auto;">
               <table style="width: 100%; text-align: left; border-collapse: separate; border-spacing: 0 0.8rem;">
