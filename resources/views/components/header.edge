@@ -223,13 +223,14 @@
     cursor: pointer;
     transition: background 0.2s;
     display: inline-block;
+    border: 1px solid #222;
   }
   
   .theme-switch-slider:before {
     content: '';
     position: absolute;
-    left: 3px;
-    top: 3px;
+    left: 2px;
+    top: 2px;
     width: 18px;
     height: 18px;
     background: #fff;
@@ -277,6 +278,10 @@
     --input-color: #e0e0e0;
     --search-border: rgba(25, 118, 210, 0.25);
   }
+
+  body.theme-dark .theme-switch-slider {
+    border-color: #fff;
+  }
   
   @media (max-width: 768px) {
     /* .header-search {
@@ -302,8 +307,8 @@
     }
     
     /* Hide text 'DeckStorm' */
-    .header-navbar > a {
-      font-size: 0; 
+    .brand-text {
+      display: none; 
     }
     .header-navbar > a img {
       margin-right: 0;
@@ -481,14 +486,236 @@
     }
   }
 
-</style>
+  /* Hamburger Menu Styles (Integrated) */
+  .mobile-hamburger {
+    display: none;
+    font-size: 1.8rem;
+    margin-right: 0.5rem;
+    vertical-align: middle;
+  }
+  
+  /* Legacy class if needed, otherwise safe to ignore */
+  .hamburger-btn {
+    display: none;
+    background: none;
+    border: none;
+    font-size: 1.8rem;
+    color: var(--header-color, #222);
+    cursor: pointer;
+    margin-right: 0.5rem;
+    padding: 0.5rem;
+  }
 
+  /* Mobile Menu Container */
+  .mobile-menu-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,0.5);
+    z-index: 9998;
+    backdrop-filter: blur(2px);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  
+  .mobile-menu-overlay.open {
+    display: block;
+    opacity: 1;
+  }
+
+  .mobile-menu {
+    position: fixed;
+    top: 0;
+    left: -100%;
+    width: 85%;
+    max-width: 320px;
+    height: 100vh;
+    background: var(--header-bg, rgba(255,255,255,0.98));
+    backdrop-filter: blur(15px);
+    box-shadow: 2px 0 20px rgba(0,0,0,0.1);
+    z-index: 9999;
+    transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    padding: 2rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    overflow-y: auto;
+  }
+  
+  body.theme-dark .mobile-menu {
+    background: #181c23;
+    border-right: 1px solid #1976d2;
+  }
+
+  .mobile-menu.open {
+    left: 0;
+  }
+
+  .close-mobile-menu {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: none;
+    border: none;
+    font-size: 2rem;
+    color: var(--header-color, #222);
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: background 0.2s;
+  }
+  
+  body.theme-dark .close-mobile-menu {
+     color: #fff;
+  }
+
+  .close-mobile-menu:hover {
+    background: rgba(0,0,0,0.05);
+  }
+
+  /* Mobile Item Styles */
+  .mobile-section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+    padding-bottom: 1rem;
+  }
+  
+  body.theme-dark .mobile-section {
+    border-bottom-color: rgba(255,255,255,0.05);
+  }
+
+  .mobile-section:last-child {
+    border-bottom: none;
+  }
+
+  .mobile-logo {
+     display: flex;
+     align-items: center;
+     font-size: 1.5rem;
+     font-weight: bold;
+     color: var(--primary, #1976d2);
+     text-decoration: none;
+     margin-bottom: 0.5rem;
+  }
+  
+  .mobile-search input {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    border-radius: 12px;
+    border: 1px solid var(--search-border, #ddd);
+    background: var(--search-bg, #f5f5f5);
+    color: var(--input-color, #333);
+  }
+
+  .mobile-item-btn {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: none;
+    border: none;
+    color: var(--header-color, #222);
+    font-size: 1.1rem;
+    font-weight: 500;
+    padding: 0.8rem;
+    cursor: pointer;
+    border-radius: 12px;
+    width: 100%;
+    text-align: left;
+    transition: background 0.2s;
+    text-decoration: none;
+  }
+  
+  body.theme-dark .mobile-item-btn {
+    color: #e0e0e0;
+  }
+
+  .mobile-item-btn:hover {
+    background: rgba(25, 118, 210, 0.08);
+    color: var(--primary, #1976d2);
+  }
+  
+  .mobile-lang-options {
+    display: flex;
+    gap: 0.5rem;
+    padding-left: 1rem;
+  }
+  
+  .mobile-lang-btn {
+     padding: 0.5rem 1rem;
+     border: 1px solid var(--primary, #1976d2);
+     border-radius: 8px;
+     color: var(--primary, #1976d2);
+     background: transparent;
+     text-decoration: none;
+     font-weight: 600;
+     font-size: 0.9rem;
+  }
+  
+  .mobile-lang-btn.active {
+     background: var(--primary, #1976d2);
+     color: white;
+  }
+
+  @media (max-width: 900px) {
+    .mobile-hamburger {
+      display: inline-block;
+    }
+    /* Hide logo image on mobile as it is in the menu */
+    .logo-trigger img {
+        display: none;
+    }
+    
+    /* Styling explicit trigger area */
+    .logo-trigger {
+        cursor: pointer;
+        padding: 0.4rem 0.8rem;
+        border-radius: 8px;
+        transition: background 0.2s;
+        display: flex;
+        align-items: center;
+        text-decoration: none;
+        color: inherit; /* Ensure text color inherits */
+    }
+    
+    .logo-trigger:active {
+        background: rgba(0,0,0,0.08);
+    }
+    
+    body.theme-dark .logo-trigger:active {
+        background: rgba(255,255,255,0.1);
+    }
+
+    
+    .desktop-only {
+      display: none !important;
+    }
+    .header-navbar {
+      justify-content: flex-start;
+      gap: 0.5rem;
+    }
+    
+    /* On mobile, only show hamburger and logo in the main header bar */
+  }
+</style>
 <div class="header-navbar">
-  <a href="{{ route('home') }}" title="{{ t('messages.back_home') }}">
-    <img src="/images/icone.ico" alt="Logo DeckStorm" title="Logo DeckStorm" />DeckStorm
+  <a href="{{ route('home') }}" class="logo-trigger" title="{{ t('messages.back_home') }}" onclick="if(window.innerWidth <= 900) { event.preventDefault(); toggleMobileMenu(); }">
+    <span class="mobile-hamburger">☰</span>
+    <img src="/images/icone.ico" alt="Logo DeckStorm" title="Logo DeckStorm" />
+    <span class="brand-text">DeckStorm</span>
   </a>
 
+  <!-- Desktop Search -->
   <div
+    class="header-search-container desktop-only"
     style="display: flex; align-items: center; gap: 1rem; flex: 1; justify-content: center; max-width: 800px;"
   >
     <div class="header-search">
@@ -502,7 +729,8 @@
     </div>
   </div>
 
-  <div style="display: flex; align-items: center; gap: 1rem;">
+  <!-- Desktop Actions -->
+  <div class="header-actions-container desktop-only" style="display: flex; align-items: center; gap: 1rem;">
 
     <!-- Language Switch -->
     <div class="header-dropdown" id="header-langDropdown">
@@ -593,7 +821,7 @@
         title="Ouvrir le menu utilisateur"
       >
         @if(auth?.user)
-          <span>{{ t('messages.welcome') }} {{ auth.user.username }}</span>
+          <span>{{ auth.user.username }}</span>
         @endif
         <span>▼</span>
       </button>
@@ -608,6 +836,95 @@
       </div>
     </div>
   </div>
+</div>
+
+<!-- Mobile Menu Markup -->
+<div class="mobile-menu-overlay" onclick="closeMobileMenu()"></div>
+<div class="mobile-menu" id="mobileMenu">
+  <button class="close-mobile-menu" onclick="closeMobileMenu()">×</button>
+  
+  <!-- 1. Logo -->
+  <div class="mobile-section">
+     <a href="{{ route('home') }}" class="mobile-logo">
+      <img src="/images/icone.ico" style="width:32px;height:32px;margin-right:10px;" alt="Logo" />
+      DeckStorm
+    </a>
+  </div>
+
+  <!-- 2. Search -->
+  <div class="mobile-section mobile-search">
+    <input 
+      type="text" 
+      id="mobileHeaderSearch"
+      placeholder="{{ t('messages.search_placeholder') }}" 
+      onkeyup="headerSearchDecks(event)"
+    />
+  </div>
+
+  <!-- 3. Language Switch -->
+  <div class="mobile-section">
+    <div style="padding: 0 0.5rem; font-weight: 600; color: #888; font-size:0.9rem; margin-bottom:0.5rem;">LANGUE / LANGUAGE</div>
+    <div class="mobile-lang-options">
+       <a href="#" onclick="return changeLang('fr')" class="mobile-lang-btn {{ t('language.current') == 'FR' ? 'active' : '' }}">FR</a>
+       <a href="#" onclick="return changeLang('en')" class="mobile-lang-btn {{ t('language.current') == 'EN' ? 'active' : '' }}">EN</a>
+       <a href="#" onclick="return changeLang('pt-br')" class="mobile-lang-btn {{ t('language.current') == 'PT' ? 'active' : '' }}">PT</a>
+    </div>
+  </div>
+
+  <!-- 4. Theme Switch -->
+  <div class="mobile-section">
+    <div onclick="toggleTheme()" class="mobile-item-btn" style="justify-content: space-between;">
+      <div style="display:flex;align-items:center;gap:0.5rem;">
+        <span>🌓</span>
+        <span>{{ t('messages.toggle_theme') }}</span>
+      </div>
+      <div class="theme-switch" style="margin:0;">
+          <input type="checkbox" id="mobileThemeSwitch" class="theme-switch-input" />
+          <span class="theme-switch-slider"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. Notifications -->
+  <div class="mobile-section">
+    <button class="mobile-item-btn" onclick="toggleNotifDropdown(); closeMobileMenu();">
+      <div style="display:flex;align-items:center;gap:0.5rem;">
+         <span style="font-size:1.5rem;">🔔</span>
+         <span>{{ t('messages.notifications') }}</span>
+      </div>
+      @if(notifications?.length > 0)
+        <span style="background:#ff4d4d;color:white;padding:2px 8px;border-radius:10px;font-size:0.8rem;">
+          {{ notifications.length }}
+        </span>
+      @endif
+    </button>
+  </div>
+
+  <!-- 6. Account -->
+  <div class="mobile-section">
+    @if(auth?.user)
+      <a href="/account/{{ auth.user.id }}" class="mobile-item-btn">
+        <div style="display:flex;align-items:center;gap:0.5rem;">
+           <span style="font-size:1.5rem;">👤</span>
+           <span>{{ auth.user.username }}</span>
+        </div>
+      </a>
+      <form action="/logout" method="POST" style="width:100%;">
+          {{ csrfField() }}
+          <button type="submit" class="mobile-item-btn" style="color:#ff4d4d;">
+            <div style="display:flex;align-items:center;gap:0.5rem;">
+               <span>🚪</span>
+               <span>{{ t('messages.logout') }}</span>
+            </div>
+          </button>
+      </form>
+    @else
+      <a href="/login" class="mobile-item-btn">
+         <span>🔐 Se connecter</span>
+      </a>
+    @endif
+  </div>
+  
 </div>
 
 
@@ -660,7 +977,13 @@
   });
   
   document.addEventListener("click", function(event) {
-    const dropdown = document.getElementById("header-userDropdown");
+     const mobileMenu = document.getElementById("mobileMenu");
+     const hamburger = document.querySelector(".hamburger-btn");
+     const overlay = document.querySelector(".mobile-menu-overlay");
+     
+     // Close mobile menu if swipe or click outside (handled by overlay click actually)
+     
+     const dropdown = document.getElementById("header-userDropdown");
     if (dropdown && !dropdown.contains(event.target)) {
       dropdown.classList.remove("open");
     }
@@ -680,14 +1003,24 @@
 
   // Fonction de recherche dynamique
   
+  function toggleMobileMenu() {
+    document.getElementById("mobileMenu").classList.add("open");
+    document.querySelector(".mobile-menu-overlay").classList.add("open");
+  }
+  
+  function closeMobileMenu() {
+    document.getElementById("mobileMenu").classList.remove("open");
+    document.querySelector(".mobile-menu-overlay").classList.remove("open");
+  }
+
   function headerSearchDecks(event) {
-    const input = document.getElementById("headerSearch");
-    const query = input.value.trim();
+    // Handle both desktop and mobile inputs
+    const target = event.target;
+    const query = target.value.trim();
     if (event.key === "Enter" && query.length > 0) {
       window.location.href = "/deck/search?q=" + encodeURIComponent(query);
     }
   }
-
 
   // Theme switch logic
   
@@ -695,15 +1028,18 @@
     document.body.classList.remove("theme-light", "theme-dark");
     document.body.classList.add(theme);
     localStorage.setItem("theme", theme);
-    var input = document.getElementById("themeSwitch");
-    if (input) {
-      input.checked = theme === "theme-dark";
-    }
+    
+    // Update all theme switches (desktop & mobile)
+    const inputs = document.querySelectorAll(".theme-switch-input");
+    inputs.forEach(input => {
+        input.checked = (theme === "theme-dark");
+    });
   }
   
   function toggleTheme() {
-    var isDark = document.getElementById("themeSwitch").checked;
-    setTheme(isDark ? "theme-dark" : "theme-light");
+    var isDark = document.body.classList.contains("theme-dark");
+    var newTheme = isDark ? "theme-light" : "theme-dark";
+    setTheme(newTheme);
   }
   // Inicialização do tema ao carregar
   
@@ -713,13 +1049,14 @@
       theme = "theme-light";
     }
     setTheme(theme);
+    
     // Corrige o estado do switch se o usuário navegar entre páginas
-    var input = document.getElementById("themeSwitch");
-    if (input) {
+    const inputs = document.querySelectorAll(".theme-switch-input");
+    inputs.forEach(input => {
       input.onchange = toggleTheme;
-      // Garante que o switch está correto conforme o fundo
-      input.checked = document.body.classList.contains("theme-dark");
-    }
+    });
+    // Garante que o switch está correto conforme o fundo
+    // (handled by setTheme above)
     // Affichage du dot selon notifications et sessionStorage
     const dot = document.getElementById("notif-dot");
     const notificationsCount = {{ notifications?.length || 0 }};
