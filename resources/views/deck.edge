@@ -505,6 +505,128 @@
         cursor: pointer;
         padding-top: 2px;
       }
+
+      /* Mode Selection Cards */
+      .mode-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 1rem;
+        margin-top: 0.5rem;
+        margin-bottom: 1.5rem;
+      }
+      
+      .mode-card {
+        position: relative;
+        cursor: pointer;
+      }
+      
+      .mode-card input {
+        position: absolute;
+        opacity: 0;
+        width: 0;
+        height: 0;
+      }
+      
+      .mode-content {
+        display: flex;
+        align-items: center;
+        padding: 1rem;
+        background: #f2f6fc;
+        border: 2px solid #1976d233;
+        border-radius: 14px;
+        transition: all 0.2s;
+        gap: 1rem;
+        height: 100%;
+        text-align: left;
+      }
+      
+      body.theme-dark .mode-content {
+        background: #23272f;
+        border-color: #1976d233;
+      }
+      
+      .mode-card:hover .mode-content {
+        border-color: #1976d288;
+        transform: translateY(-2px);
+      }
+      
+      .mode-card input:checked + .mode-content {
+        background: #e3f2fd;
+        border-color: #1976d2;
+        box-shadow: 0 4px 12px rgba(25, 118, 210, 0.15);
+      }
+      
+      body.theme-dark .mode-card input:checked + .mode-content {
+        background: #1976d222;
+        border-color: #1976d2;
+      }
+      
+      .mode-icon {
+        font-size: 2rem;
+        flex-shrink: 0;
+        filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+      }
+      
+      .mode-info {
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+        min-width: 0;
+      }
+      
+      .mode-title {
+        font-weight: 700;
+        font-size: 1rem;
+        color: #1976d2;
+        margin-bottom: 2px;
+      }
+      
+      body.theme-dark .mode-title {
+        color: #90caf9;
+      }
+      
+      .mode-desc {
+        font-size: 0.78rem;
+        color: #666;
+        line-height: 1.3;
+      }
+      
+      body.theme-dark .mode-desc {
+        color: #94a3b8;
+      }
+      
+      .mode-check {
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        border: 2px solid #1976d233;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        transition: all 0.2s;
+        background: white;
+      }
+      
+      body.theme-dark .mode-check {
+        background: #181c23;
+      }
+      
+      .mode-card input:checked + .mode-content .mode-check {
+        background: #1976d2;
+        border-color: #1976d2;
+      }
+      
+      .mode-check svg {
+        width: 14px;
+        height: 14px;
+        fill: white;
+        display: none;
+      }
+      
+      .mode-card input:checked + .mode-content .mode-check svg {
+        display: block;
+      }
     </style>
   </head>
   <body>
@@ -570,23 +692,59 @@
           </div>
 
           <label>{{ t('deck.allowed_modes_label') }}</label>
-          <div class="checkbox-group">
-            <div class="checkbox-item">
-              <input type="checkbox" id="mode_chronometre" name="allowed_modes[]" value="chronometre" checked />
-              <label for="mode_chronometre">{{ t('deck.mode_chrono') }}</label>
-            </div>
-            <div class="checkbox-item">
-              <input type="checkbox" id="mode_basique" name="allowed_modes[]" value="basique" checked />
-              <label for="mode_basique">{{ t('deck.mode_basic') }}</label>
-            </div>
-            <div class="checkbox-item">
-              <input type="checkbox" id="mode_jusquaubout" name="allowed_modes[]" value="jusquaubout" checked />
-              <label for="mode_jusquaubout">{{ t('deck.mode_until_done') }}</label>
-            </div>
-            <div class="checkbox-item">
-              <input type="checkbox" id="mode_quiz" name="allowed_modes[]" value="quiz" checked />
-              <label for="mode_quiz">{{ t('deck.mode_quiz') }}</label>
-            </div>
+          <div class="mode-grid">
+            <label class="mode-card">
+              <input type="checkbox" name="allowed_modes[]" value="chronometre" checked />
+              <div class="mode-content">
+                <span class="mode-icon">⏱️</span>
+                <div class="mode-info">
+                  <span class="mode-title">{{ t('deck.mode_chrono') }}</span>
+                  <span class="mode-desc">{{ t('deck.mode_chrono_desc') }}</span>
+                </div>
+                <div class="mode-check">
+                  <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+                </div>
+              </div>
+            </label>
+            <label class="mode-card">
+              <input type="checkbox" name="allowed_modes[]" value="basique" checked />
+              <div class="mode-content">
+                <span class="mode-icon">📚</span>
+                <div class="mode-info">
+                  <span class="mode-title">{{ t('deck.mode_basic') }}</span>
+                  <span class="mode-desc">{{ t('deck.mode_basic_desc') }}</span>
+                </div>
+                <div class="mode-check">
+                  <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+                </div>
+              </div>
+            </label>
+            <label class="mode-card">
+              <input type="checkbox" name="allowed_modes[]" value="jusquaubout" checked />
+              <div class="mode-content">
+                <span class="mode-icon">🔥</span>
+                <div class="mode-info">
+                  <span class="mode-title">{{ t('deck.mode_until_done') }}</span>
+                  <span class="mode-desc">{{ t('deck.mode_until_done_desc') }}</span>
+                </div>
+                <div class="mode-check">
+                  <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+                </div>
+              </div>
+            </label>
+            <label class="mode-card">
+              <input type="checkbox" name="allowed_modes[]" value="quiz" checked />
+              <div class="mode-content">
+                <span class="mode-icon">💡</span>
+                <div class="mode-info">
+                  <span class="mode-title">{{ t('deck.mode_quiz') }}</span>
+                  <span class="mode-desc">{{ t('deck.mode_quiz_desc') }}</span>
+                </div>
+                <div class="mode-check">
+                  <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+                </div>
+              </div>
+            </label>
           </div>
 
           <label for="attempt_limit">{{ t('deck.attempt_limit_label') }}</label>
