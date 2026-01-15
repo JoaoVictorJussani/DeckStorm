@@ -460,20 +460,40 @@
         background: var(--bg-body);
       }
       
-      .mode-card input:checked + .mode-content .mode-check {
-        background: var(--primary);
-        border-color: var(--primary);
-      }
-      
-      .mode-check svg {
-        width: 12px;
-        height: 12px;
-        fill: white;
-        display: none;
-      }
-      
       .mode-card input:checked + .mode-content .mode-check svg {
         display: block;
+      }
+
+      /* Floating Animation */
+      .card-icon {
+        font-size: 3.5rem;
+        text-align: center;
+        margin-bottom: 0.5rem;
+        animation: float 3s ease-in-out infinite;
+        filter: drop-shadow(0 4px 12px rgba(25, 118, 210, 0.2));
+      }
+      
+      @keyframes float {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-12px); }
+      }
+
+      @media (max-width: 700px) {
+        .main-content {
+          padding: 1.2rem 0.2rem;
+        }
+      
+        .form-container {
+          padding: 1.2rem 1rem;
+          width: min(92%, 520px);
+          max-width: 100%;
+          margin-left: max(1rem, env(safe-area-inset-left));
+          margin-right: max(1rem, env(safe-area-inset-right));
+        }
+
+        h1 {
+          font-size: 1.8rem;
+        }
       }
     </style>
   </head>
@@ -481,6 +501,7 @@
     @include('components/header')
 
     <div class="main-content">
+      <div class="card-icon">⚙️</div>
       <h1>
         {{ t('deck.edit_title') }}
       </h1>
