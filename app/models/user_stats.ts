@@ -28,6 +28,12 @@ export default class UserStats extends BaseModel {
   @column()
   declare longest_streak: number
 
+  @column()
+  declare xp: number
+
+  @column()
+  declare level: number
+
   @column.date()
   declare last_study_date: DateTime | null
 

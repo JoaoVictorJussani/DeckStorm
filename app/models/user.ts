@@ -1,12 +1,13 @@
 import { DateTime } from 'luxon'
 import hash from '@adonisjs/core/services/hash'
 import { compose } from '@adonisjs/core/helpers'
-import { BaseModel, column, hasMany } from '@adonisjs/lucid/orm'
-import type { HasMany as HasManyRelation } from '@adonisjs/lucid/types/relations'
+import { BaseModel, column, hasMany, manyToMany } from '@adonisjs/lucid/orm'
+import type { HasMany as HasManyRelation, ManyToMany } from '@adonisjs/lucid/types/relations'
 import { withAuthFinder } from '@adonisjs/auth/mixins/lucid'
 import Follow from '#models/follow'
 import Like from '#models/like'
 import Deck from '#models/deck'
+import Group from '#models/group'
 import UserStats from '#models/user_stats'
 import { hasOne } from '@adonisjs/lucid/orm'
 import type { HasOne } from '@adonisjs/lucid/types/relations'
@@ -60,4 +61,15 @@ export default class User extends compose(BaseModel, AuthFinder) {
 
   @hasOne(() => UserStats, { foreignKey: 'user_id' })
   public stats!: HasOne<typeof UserStats>
+
+  @hasMany(() => Group, { foreignKey: 'teacherId' })
+  public createdGroups!: HasManyRelation<typeof Group>
+
+  @manyToMany(() => Group, {
+    pivotTable: 't_group_member',
+    pivotForeignKey: 'user_id',
+    pivotRelatedForeignKey: 'group_id',
+    pivotTimestamps: false,
+  })
+  public joinedGroups!: ManyToMany<typeof Group>
 }

@@ -11,10 +11,49 @@ export default class ExerciseController {
       .where('id', params.deckId)
       .preload('cards')
       .preload('user')
+      .preload('groups', (q) => {
+        q.select('id')
+        q.preload('members', (mq) => mq.select('id'))
+      }) // Preload groups to check access permissions
       .first()
+
     if (!deck) {
       return view.render('./pages/errors/not_found')
     }
+
+    // --- SECURITY CHECK (Authorization) ---
+    const user = auth?.user
+    let isAuthorized = false
+
+    // 1. Owner or Public
+    if (deck.visibility === 'public') isAuthorized = true
+    if (user && deck.user_id === user.id) isAuthorized = true
+
+    // 2. Restricted (Explicitly Allowed Users)
+    if (user && deck.visibility === 'restricted' && deck.allowed_users_ids && deck.allowed_users_ids.includes(user.id)) {
+      isAuthorized = true
+    }
+
+    // 3. Group Access (If deck is private/restricted but part of a group the user is in)
+    if (!isAuthorized && user && deck.groups) {
+      // Check if user is a member of any group that has this deck
+      for (const group of deck.groups) {
+        // We need to check if user.id is in group.members
+        // Since we preloaded members, we can check in memory
+        const isMember = group.members.some(m => m.id === user.id)
+        if (isMember) {
+          isAuthorized = true
+          break
+        }
+      }
+    }
+
+    if (!isAuthorized) {
+      // If fail, check if we are just a guest trying to access a private deck
+      // Or a logged in user trying to access someone else's private deck without group access
+      return view.render('pages/errors/unauthorized')
+    }
+    // --------------------------------------
     // Pour le mode jusqu'au bout, possibilité de passer une liste de cartes à réviser
     let retryCardIds = request.input('retryCardIds', null)
     if (retryCardIds && !Array.isArray(retryCardIds)) {
@@ -27,7 +66,7 @@ export default class ExerciseController {
     }
     let attempts = Number.parseInt(request.input('attempts', '1'), 10) || 1
     const direction = request.input('direction', 'question')
-    const user = auth?.user // Ajout de l'utilisateur authentifié
+    // const user = auth?.user // REMOVED: Already declared above for security check
 
     // Vérifier la limite de tentatives si elle existe
     if (user && deck.attempt_limit !== null) {
@@ -127,6 +166,9 @@ export default class ExerciseController {
       const incorrectCards = cards.filter((card: Card) => !resultsList.includes(card.id))
       const elapsedTime = Number.parseInt(request.input('elapsedTime', '0'), 10)
 
+      let earnedXP = 0
+      let levelUp = false
+
       // --- LOGIQUE DE SAUVEGARDE (Dupliquée depuis finish pour garantir la persistence) ---
       if (auth.user) {
         // ... (Pas de vérification de token stricte ici pour éviter de bloquer la fin, mais on pourrait l'ajouter)
@@ -172,6 +214,26 @@ export default class ExerciseController {
         if (mode !== 'jusquaubout' || incorrectCards.length === 0) {
           userStats.decks_studied += 1
         }
+
+        // +10 XP per correct answer
+        earnedXP = resultsList.length * 10
+
+        if (mode !== 'jusquaubout' || incorrectCards.length === 0) {
+          // +50 XP Bonus for finishing deck
+          earnedXP += 50
+        }
+
+        userStats.xp = (userStats.xp || 0) + earnedXP
+
+        // Level Formula: Threshold = 100 * Level^2
+        const currentLevel = userStats.level || 1
+        const nextLevelThreshold = 100 * Math.pow(currentLevel, 2)
+
+        if (userStats.xp >= nextLevelThreshold) {
+          userStats.level = currentLevel + 1
+          levelUp = true
+        }
+
         await userStats.save()
 
         const attemptsToCreate: any[] = []
@@ -216,6 +278,8 @@ export default class ExerciseController {
         direction,
         typedAnswers,
         typedAnswersJson: typedAnswersStr, // Pass raw for form submission
+        earnedXP,
+        levelUp,
       })
     }
 
@@ -292,6 +356,10 @@ export default class ExerciseController {
       typedAnswers = JSON.parse(typedAnswersStr)
     } catch (e) { }
 
+    // Initialize variables (default for guests)
+    let earnedXP = 0
+    let levelUp = false
+
     // --- MISE À JOUR DES STATISTIQUES UTILISATEUR ET SAUVEGARDE DES TENTATIVES ---
     if (auth.user) {
       // Validate Token
@@ -320,6 +388,8 @@ export default class ExerciseController {
         userStats.total_study_time = 0
         userStats.current_streak = 0
         userStats.longest_streak = 0
+        userStats.xp = 0
+        userStats.level = 1
       }
 
       const today = DateTime.now().startOf('day')
@@ -348,9 +418,26 @@ export default class ExerciseController {
       userStats.wrong_answers += incorrectCards.length
       userStats.total_study_time += Number.isNaN(elapsedTime) ? 0 : elapsedTime
 
+      // XP Calculation:
+      // +10 XP per correct answer
+      earnedXP += results.length * 10
+
       // On incrémente decks_studied seulement si l'exercice est terminé (pas de retry ou hors mode jusquaubout)
       if (mode !== 'jusquaubout' || incorrectCards.length === 0) {
         userStats.decks_studied += 1
+        // +50 XP Bonus for finishing deck
+        earnedXP += 50
+      }
+
+      userStats.xp = (userStats.xp || 0) + earnedXP
+
+      // Level Formula: Threshold = 100 * Level^2
+      const currentLevel = userStats.level || 1
+      const nextLevelThreshold = 100 * Math.pow(currentLevel, 2)
+
+      if (userStats.xp >= nextLevelThreshold) {
+        userStats.level = currentLevel + 1
+        levelUp = true
       }
 
       await userStats.save()
@@ -402,6 +489,8 @@ export default class ExerciseController {
         direction,
         exerciseToken,
         typedAnswers,
+        earnedXP,      // Pass earnedXP
+        levelUp        // Pass levelUp
       })
     }
 
@@ -418,6 +507,8 @@ export default class ExerciseController {
       direction,
       user: auth.user, // Ajout de l'utilisateur authentifié
       typedAnswers,
+      earnedXP,      // Pass earnedXP
+      levelUp        // Pass levelUp
     })
   }
 }

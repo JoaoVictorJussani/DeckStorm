@@ -19,6 +19,7 @@ const CardController = () => import('#controllers/card_controller') // Contrôle
 
 const ExerciseController = () => import('#controllers/exercise_controller') // Contrôleur pour les exercices
 const FollowController = () => import('#controllers/follow_controller') // Contrôleur pour le suivi
+const GroupsController = () => import('#controllers/groups_controller') // Contrôleur pour les groupes
 import User from '#models/user'
 import Notification from '#models/notification'
 import type { HttpContext } from '@adonisjs/core/http' // Import du type HttpContext
@@ -54,12 +55,17 @@ router
 // Route pour afficher la page d'édition d'un deck
 router
   .get('/deck/:id/edit', async ({ params, view, bouncer, auth }) => {
-    const deck = await Deck.find(params.id) // Récupère le deck par ID
+    const deck = await Deck.find(params.id)
     if (!deck) return view.render('pages/errors/not_found')
 
     await bouncer.with('DeckPolicy').authorize('edit', deck)
 
-    return view.render('edit_deck', { deck, user: auth.use('web').user })
+    const user = auth.use('web').user!
+
+    // Fetch user's created groups to populate dropdown
+    await user.load('createdGroups')
+
+    return view.render('edit_deck', { deck, user, createdGroups: user.createdGroups })
   })
   .as('decks.edit')
   .use(middleware.auth()) // Nécessite une authentification
@@ -147,7 +153,14 @@ router
       hasLiked = !!deck.likes.find((like) => auth.user && like.user_id === auth.user.id)
     }
 
-    return view.render('show_deck', { deck, user: auth.use('web').user, hasLiked })
+    const user = auth.use('web').user
+    let createdGroups: any[] = []
+    if (user && deck.user_id === user.id && deck.visibility === 'restricted') {
+      await user.load('createdGroups')
+      createdGroups = user.createdGroups
+    }
+
+    return view.render('show_deck', { deck, user, hasLiked, createdGroups })
   })
   .as('decks.show')
   .use(middleware.auth())
@@ -332,11 +345,15 @@ router
   })
   .use(middleware.auth())
 
-// Route pour inviter un utilisateur à rejoindre un deck
 router
   .post('/deck/:id/invite-user', [DeckController, 'inviteUser'])
   .as('decks.inviteUser')
   .use(middleware.auth()) // Nécessite une authentification
+
+router
+  .post('/deck/:id/invite-group', [DeckController, 'inviteGroup'])
+  .as('decks.inviteGroup')
+  .use(middleware.auth())
 
 router
   .get('/api/user-suggestions', async ({ request, response, auth }: HttpContext) => {
@@ -350,6 +367,18 @@ router
     return response.json(users.map((u) => u.username))
   })
   .use(middleware.auth())
+
+// Routes pour les groupes d'étude
+router.group(() => {
+  router.get('/groups', [GroupsController, 'index']).as('groups.index')
+  router.get('/groups/create', [GroupsController, 'create']).as('groups.create')
+  router.post('/groups', [GroupsController, 'store']).as('groups.store')
+  router.post('/groups/join', [GroupsController, 'join']).as('groups.join')
+  router.get('/groups/:id', [GroupsController, 'show']).as('groups.show')
+  router.post('/groups/:id/remove-member', [GroupsController, 'removeMember']).as('groups.removeMember')
+  router.post('/groups/:id/add-deck', [GroupsController, 'addDeck']).as('groups.addDeck')
+  router.post('/groups/:id/remove-deck', [GroupsController, 'removeDeck']).as('groups.removeDeck')
+}).use(middleware.auth())
 
 // Aceitar convite para deck restrito
 router

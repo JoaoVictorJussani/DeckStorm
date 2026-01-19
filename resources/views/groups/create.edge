@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="{{ i18n.locale }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>{{ t('messages.create_group') }} - DeckStorm</title>
+    <style>
+      :root {
+        --primary: #1976d2;
+        --primary-rgb: 25, 118, 210;
+        --primary-hover: #1565c0;
+        --primary-light: #e3f2fd;
+        --bg-body: #f7faff;
+        --bg-navbar: rgba(255, 255, 255, 0.95);
+        --bg-card: rgba(255, 255, 255, 0.95);
+        --text-main: #222222;
+        --text-muted: #666666;
+        --border-color: rgba(25, 118, 210, 0.12);
+        --shadow-soft: 0 4px 20px rgba(0, 0, 0, 0.05);
+        --shadow-hover: 0 8px 30px rgba(25, 118, 210, 0.15);
+      }
+      body.theme-dark {
+        --bg-body: #0a0c10;
+        --bg-navbar: rgba(30, 30, 35, 0.95);
+        --bg-card: rgba(30, 35, 45, 0.6);
+        --text-main: #e6e9ef;
+        --text-muted: #a0a0a0;
+        --primary-light: rgba(25, 118, 210, 0.2);
+        --border-color: rgba(255, 255, 255, 0.10);
+        --shadow-soft: 0 4px 20px rgba(0, 0, 0, 0.3);
+      }
+      body { background: var(--bg-body); color: var(--text-main); font-family: 'Segoe UI', sans-serif; transition: background 0.4s, color 0.4s; margin: 0; padding: 0; }
+      * { box-sizing: border-box; }
+      
+      .main-content { max-width: 1400px; margin: 100px auto; padding: 2rem; display: grid; grid-template-columns: 1fr; gap: 4rem; }
+      
+      @media(min-width: 850px) {
+        .main-content { grid-template-columns: 1fr 450px; align-items: start; }
+      }
+
+      /* Benefits Section */
+      .benefits-section h1 { font-size: 2.5rem; color: var(--primary); font-weight: 800; margin-bottom: 1rem; line-height: 1.2; }
+      .benefits-section p { font-size: 1.1rem; color: var(--text-muted); margin-bottom: 2rem; line-height: 1.6; }
+      
+      .benefit-item { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; }
+      .benefit-icon { 
+        width: 48px; height: 48px; border-radius: 12px; background: var(--primary-light); color: var(--primary); 
+        display: flex; align-items: center; justify-content: center; font-size: 1.5rem; flex-shrink: 0;
+      }
+      .benefit-text { font-weight: 600; font-size: 1.05rem; }
+
+      /* Form Card */
+      .form-card {
+        background: var(--bg-card);
+        padding: 2.5rem;
+        border-radius: 20px;
+        box-shadow: var(--shadow-soft);
+        border: 1px solid var(--border-color);
+        backdrop-filter: blur(10px);
+      }
+      
+      .form-title { font-size: 1.5rem; font-weight: 700; margin-bottom: 2rem; text-align: center; }
+
+      .input-group { margin-bottom: 1.5rem; }
+      label { display: block; margin-bottom: 0.6rem; font-weight: 600; color: var(--text-main); font-size: 0.95rem; }
+      
+      .input-field { 
+        width: 100%; padding: 1rem 1.2rem; border-radius: 12px; border: 1.5px solid var(--border-color); 
+        background: var(--bg-body); color: var(--text-main); font-size: 1rem; transition: all 0.2s; font-family: inherit;
+      }
+      .input-field:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 4px var(--primary-light); }
+      textarea.input-field { min-height: 120px; resize: vertical; line-height: 1.5; }
+
+      .btn { padding: 1rem 1.5rem; border-radius: 12px; border: none; font-weight: 700; cursor: pointer; transition: all 0.2s; text-decoration: none; display: flex; align-items: center; justify-content: center; font-size: 1rem; width: 100%; }
+      .btn-primary { background: linear-gradient(135deg, var(--primary), var(--primary-hover)); color: #fff; box-shadow: 0 4px 15px rgba(25, 118, 210, 0.3); }
+      .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(25, 118, 210, 0.4); }
+      
+      .btn-ghost { background: transparent; color: var(--text-muted); margin-top: 1rem; }
+      .btn-ghost:hover { color: var(--text-main); background: var(--primary-light); }
+
+    </style>
+    <script>
+      (function() {
+        let theme = localStorage.getItem("theme");
+        if (!theme) {
+             theme = "theme-light";
+        }
+        document.documentElement.className = theme;
+        document.body.classList.add(theme);
+      })();
+    </script>
+</head>
+<body class="{{ auth.user?.theme || 'theme-light' }}">
+    @include('components/header')
+    
+    <div class="main-content">
+        <!-- Left Side: Hero content -->
+        <div class="benefits-section">
+            <h1>{{ t('messages.create_group_title') }}</h1>
+            <p>{{ t('messages.create_group_subtitle') }}</p>
+            
+            <h3 style="margin-bottom: 1.5rem; color: var(--text-main);">{{ t('messages.create_group_benefit_title') }}</h3>
+            
+            <div class="benefit-item">
+                <div class="benefit-icon">📈</div>
+                <div class="benefit-text">{{ t('messages.create_group_benefit_1') }}</div>
+            </div>
+            <div class="benefit-item">
+                <div class="benefit-icon">🔐</div>
+                <div class="benefit-text">{{ t('messages.create_group_benefit_2') }}</div>
+            </div>
+            <div class="benefit-item">
+                <div class="benefit-icon">🏆</div>
+                <div class="benefit-text">{{ t('messages.create_group_benefit_3') }}</div>
+            </div>
+
+            <div style="margin-top: 3rem; padding: 1.5rem; background: var(--primary-light); border-radius: 16px; color: var(--primary); font-size: 0.95rem; line-height: 1.6;">
+                <strong>💡 {{ t('messages.create_group_tip_label') }}</strong> {{ t('messages.create_group_tip_content') }}
+            </div>
+        </div>
+
+        <!-- Right Side: Form -->
+        <div class="form-card">
+            <form action="{{ route('groups.store') }}" method="POST">
+                {{ csrfField() }}
+                
+                <div class="input-group">
+                    <label for="name">{{ t('messages.group_name') }}</label>
+                    <input type="text" id="name" name="name" class="input-field" placeholder="{{ t('messages.group_name_placeholder') }}" required autocomplete="off">
+                </div>
+                
+                <div class="input-group">
+                    <label for="description">{{ t('messages.group_description') }} <span style="font-weight:normal; color:var(--text-muted); font-size:0.85rem;">(Optional)</span></label>
+                    <textarea id="description" name="description" class="input-field" placeholder="{{ t('messages.group_desc_placeholder') }}"></textarea>
+                </div>
+                
+                <button type="submit" class="btn btn-primary">
+                    {{ t('messages.create_group') }}
+                </button>
+                <a href="{{ route('groups.index') }}" class="btn btn-ghost">{{ t('messages.cancel') }}</a>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

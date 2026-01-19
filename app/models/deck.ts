@@ -4,6 +4,8 @@ import type { HasMany, BelongsTo } from '@adonisjs/lucid/types/relations'
 import Card from '#models/card'
 import Like from '#models/like'
 
+import Group from '#models/group'
+
 export default class Deck extends BaseModel {
   public static table = 't_deck'
 
@@ -54,7 +56,17 @@ export default class Deck extends BaseModel {
 
   @hasMany(() => Like, { foreignKey: 'deck_id' })
   public likes!: HasMany<typeof Like>
+
+  @manyToMany(() => Group, {
+    pivotTable: 't_group_deck',
+    pivotForeignKey: 'deck_id',
+    pivotRelatedForeignKey: 'group_id',
+    pivotTimestamps: true,
+  })
+  declare groups: ManyToMany<typeof Group>
 }
+import { manyToMany } from '@adonisjs/lucid/orm'
+import type { ManyToMany } from '@adonisjs/lucid/types/relations'
 
 // Import User after the class definition to avoid circular reference issues
 import User from '#models/user'

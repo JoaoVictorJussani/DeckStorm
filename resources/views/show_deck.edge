@@ -810,6 +810,33 @@
             />
             <button type="submit" class="btn btn-primary" style="width: 100%;">{{ t('deck.invite_btn') }}</button>
           </form>
+
+          <div style="margin: 1.5rem 0; border-top: 1px solid var(--border); position: relative; text-align: center;">
+             <span style="background: var(--bg-card); padding: 0 10px; color: var(--text-muted); position: relative; top: -10px; font-size: 0.9rem;">OU / OR</span>
+          </div>
+
+          <h3 style="margin-bottom: 1rem; font-size: 1.5rem;">
+            {{ t('messages.invite_group') }}
+          </h3>
+          @if(createdGroups && createdGroups.length > 0)
+            <form action="/deck/{{ deck.id }}/invite-group" method="POST">
+              {{ csrfField() }}
+              <p style="margin-bottom: 0.5rem; color: var(--text-muted);">
+                {{ t('messages.select_group_msg') }}
+              </p>
+              <select name="group_id" class="form-input">
+                  @each(group in createdGroups)
+                    <option value="{{ group.id }}">{{ group.name }}</option>
+                  @endeach
+              </select>
+              <button type="submit" class="btn btn-primary" style="width: 100%;">{{ t('messages.invite_group_btn') }}</button>
+            </form>
+          @else
+            <div style="text-align: center; color: var(--text-muted); padding: 1rem; background: var(--bg-body); border-radius: 8px;">
+               <p>{{ t('messages.no_groups_created') }}</p>
+               <a href="{{ route('groups.create') }}" style="color: var(--primary); font-weight: bold; margin-top: 0.5rem; display: inline-block;">{{ t('messages.create_group') }}</a>
+            </div>
+          @endif
         </div>
       </div>
     @endif

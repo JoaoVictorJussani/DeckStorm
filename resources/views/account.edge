@@ -1122,6 +1122,28 @@
             @if(userStats)
               <ul style="list-style:none;padding:0;">
                 <li>
+                  <div style="display: flex; justify-content: space-between; align-items: start;">
+                    <span style="display:inline-flex; align-items:center; gap:0.5rem; color:var(--primary); font-weight:700; font-size: 1.2rem;">
+                      ⭐ {{ t('messages.level_short') }} {{ userStats.level || 1 }}
+                    </span>
+                    <span style="color:var(--text-muted); font-size: 0.9rem; font-weight: 600;">
+                      {{ userStats.xp || 0 }} {{ t('messages.total_xp') }}
+                    </span>
+                  </div>
+                  
+                  @if(xpProgress)
+                  <div style="margin-top: 0.5rem; margin-bottom: 1.5rem;">
+                    <div style="display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.3rem; font-weight: 600;">
+                        <span>{{ t('messages.xp_to_next_level', { remaining: xpProgress.total - xpProgress.current, level: (userStats.level || 1) + 1 }) }}</span>
+                        <span>{{ xpProgress.percent }}%</span>
+                    </div>
+                    <div style="height: 10px; width: 100%; background: rgba(0,0,0,0.05); border: 1px solid rgba(0,0,0,0.1); border-radius: 50px; overflow: hidden;">
+                        <div style="height: 100%; width: {{ xpProgress.percent }}%; background: linear-gradient(90deg, #FFD700, #FDB931); border-radius: 50px; transition: width 0.5s ease; box-shadow: 0 0 10px rgba(255, 215, 0, 0.4);"></div>
+                    </div>
+                  </div>
+                  @endif
+                </li>
+                <li>
                   {{ t('messages.decks_studied') }}: <b>{{ userStats.decks_studied }}</b>
                 </li>
                 <li>

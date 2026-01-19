@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>{{ t('messages.study_groups') }} - DeckStorm</title>
+    <!-- Common CSS -->
+    <style>
+      :root {
+        --primary: #1976d2;
+        --primary-rgb: 25, 118, 210;
+        --primary-hover: #1565c0;
+        --primary-light: #e3f2fd;
+        --bg-body: #f7faff;
+        --bg-navbar: rgba(255, 255, 255, 0.95);
+        --bg-card: rgba(255, 255, 255, 0.95);
+        --text-main: #222222;
+        --text-muted: #666666;
+        --text-inverse: #ffffff;
+        --border-color: rgba(25, 118, 210, 0.12);
+        --shadow-soft: 0 4px 20px rgba(0, 0, 0, 0.05);
+        --shadow-hover: 0 8px 30px rgba(25, 118, 210, 0.15);
+      }
+      body.theme-dark {
+        --bg-body: #0a0c10;
+        --bg-navbar: rgba(30, 30, 35, 0.95);
+        --bg-card: rgba(30, 35, 45, 0.6);
+        --text-main: #e6e9ef;
+        --text-muted: #a0a0a0;
+        --primary-light: rgba(25, 118, 210, 0.2);
+        --border-color: rgba(255, 255, 255, 0.10);
+        --shadow-soft: 0 4px 20px rgba(0, 0, 0, 0.3);
+        --shadow-hover: 0 8px 30px rgba(0, 0, 0, 0.5);
+      }
+      body { background: var(--bg-body); color: var(--text-main); font-family: 'Segoe UI', sans-serif; transition: background 0.4s, color 0.4s; margin: 0; padding: 0; }
+      * { box-sizing: border-box; }
+      
+      .main-content { max-width: 1600px; margin: 100px auto; padding: 2rem; }
+      
+      /* Dashboard Grid */
+      .dashboard-grid { display: grid; grid-template-columns: 1fr; gap: 3rem; }
+      @media(min-width: 900px) {
+        .dashboard-grid { grid-template-columns: 350px 1fr; align-items: start; }
+      }
+
+      /* Sections */
+      .section-title { font-size: 1.5rem; color: var(--text-main); font-weight: 700; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem; }
+      .section-badge { background: var(--primary-light); color: var(--primary); font-size: 0.8rem; padding: 0.2rem 0.6rem; border-radius: 12px; }
+
+      /* Join Card */
+      .join-card {
+        background: linear-gradient(135deg, var(--bg-card), var(--bg-card)), linear-gradient(to right, rgba(25,118,210,0.1), rgba(25,118,210,0.05));
+        border: 1px solid var(--border-color);
+        padding: 2rem;
+        border-radius: 16px;
+        box-shadow: var(--shadow-soft);
+        backdrop-filter: blur(10px);
+      }
+      .join-title { font-size: 1.3rem; margin-bottom: 0.5rem; font-weight: bold; color: var(--primary); }
+      .join-desc { color: var(--text-muted); margin-bottom: 1.5rem; font-size: 0.95rem; }
+      
+      .join-form { display: flex; flex-direction: column; gap: 1rem; }
+      .input-group { position: relative; }
+      .input-field { 
+        width: 100%; padding: 1rem; padding-left: 2.8rem; border-radius: 12px; border: 1.5px solid var(--border-color); 
+        background: var(--bg-body); color: var(--text-main); font-size: 1rem; transition: all 0.2s; 
+      }
+      .input-field:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 4px var(--primary-light); }
+      .input-icon { position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 1.2rem; }
+
+      /* Buttons */
+      .btn { 
+        padding: 0.9rem 1.5rem; border-radius: 12px; border: none; font-weight: 600; cursor: pointer; 
+        transition: transform 0.2s, box-shadow 0.2s; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; font-size: 1rem;
+      }
+      .btn-primary { background: linear-gradient(135deg, var(--primary), var(--primary-hover)); color: #fff; box-shadow: 0 4px 15px rgba(25, 118, 210, 0.3); width: 100%; }
+      .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(25, 118, 210, 0.4); }
+      .btn-outline { background: transparent; border: 2px dashed var(--border-color); color: var(--text-muted); width: 100%; justify-content: center; padding: 1.5rem; border-radius: 16px; transition: all 0.2s; }
+      .btn-outline:hover { border-color: var(--primary); color: var(--primary); background: var(--primary-light); }
+      
+      /* Group Cards */
+      .groups-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; }
+      .group-card { 
+        background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 1.5rem; 
+        transition: all 0.2s; cursor: pointer; text-decoration: none; color: inherit; display: flex; flex-direction: column; 
+        position: relative; overflow: hidden; backdrop-filter: blur(10px);
+      }
+      .group-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-hover); border-color: var(--primary); }
+      .group-card::before {
+          content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: var(--primary); opacity: 0; transition: opacity 0.2s;
+      }
+      .group-card:hover::before { opacity: 1; }
+
+      .group-icon { 
+        width: 48px; height: 48px; background: var(--primary-light); color: var(--primary); border-radius: 12px; 
+        display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin-bottom: 1rem; 
+      }
+      .group-name { font-size: 1.25rem; font-weight: bold; margin-bottom: 0.5rem; color: var(--text-main); }
+      .group-desc { color: var(--text-muted); margin-bottom: 1.5rem; font-size: 0.9rem; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; flex: 1; }
+      
+      .group-footer { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); padding-top: 1rem; font-size: 0.85rem; color: var(--text-muted); }
+      .group-stat { display: flex; align-items: center; gap: 0.4rem; }
+
+      .code-display {
+        background: var(--bg-body); border: 1px dashed var(--border-color); padding: 0.3rem 0.6rem; 
+        border-radius: 6px; font-family: monospace; font-weight: bold; color: var(--primary); letter-spacing: 1px;
+      }
+
+      .empty-state {
+          text-align: center; padding: 3rem 1rem; background: var(--bg-card); border-radius: 16px; border: 1px solid var(--border-color);
+      }
+      .empty-icon { font-size: 3rem; margin-bottom: 1rem; opacity: 0.5; }
+      .empty-text { color: var(--text-muted); font-size: 1rem; }
+
+      /* Create Button (Desktop) */
+      .create-btn-floating {
+          display: none;
+      }
+      @media(min-width: 900px) {
+        .create-btn-wrapper { margin-left: auto; }
+      }
+    </style>
+    <script>
+      (function() {
+        let theme = localStorage.getItem("theme");
+        if (!theme) {
+             theme = "theme-light";
+        }
+        document.documentElement.className = theme;
+        document.body.classList.add(theme);
+      })();
+    </script>
+</head>
+<body class="{{ auth.user?.theme || 'theme-light' }}">
+    @include('components/header')
+
+    <div class="main-content">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 2rem;">
+            <div>
+                <h1 style="font-size: 2.2rem; color: var(--primary); font-weight: 800; margin-bottom: 0.5rem;">{{ t('messages.study_groups') }}</h1>
+                <p style="color: var(--text-muted);">{{ t('messages.groups_subtitle') }}</p>
+            </div>
+        </div>
+
+        <!-- Quick Stats Row -->
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-bottom: 3rem;">
+            <div style="background: var(--bg-card); padding: 1.5rem; border-radius: 16px; border: 1px solid var(--border-color); display: flex; align-items: center; gap: 1rem; box-shadow: var(--shadow-soft);">
+                <div style="width: 50px; height: 50px; background: rgba(59, 130, 246, 0.1); color: #3b82f6; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">📚</div>
+                <div>
+                    <div style="font-size: 1.5rem; font-weight: 800; color: var(--text-main);">{{ createdGroups ? createdGroups.length : 0 }}</div>
+                    <div style="color: var(--text-muted); font-size: 0.9rem;">{{ t('messages.groups_teaching_stat') }}</div>
+                </div>
+            </div>
+            <div style="background: var(--bg-card); padding: 1.5rem; border-radius: 16px; border: 1px solid var(--border-color); display: flex; align-items: center; gap: 1rem; box-shadow: var(--shadow-soft);">
+                <div style="width: 50px; height: 50px; background: rgba(16, 185, 129, 0.1); color: #10b981; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">👥</div>
+                <div>
+                    <div style="font-size: 1.5rem; font-weight: 800; color: var(--text-main);">{{ totalStudents || 0 }}</div>
+                    <div style="color: var(--text-muted); font-size: 0.9rem;">{{ t('messages.total_students_stat') }}</div>
+                </div>
+            </div>
+            <div style="background: var(--bg-card); padding: 1.5rem; border-radius: 16px; border: 1px solid var(--border-color); display: flex; align-items: center; gap: 1rem; box-shadow: var(--shadow-soft);">
+                <div style="width: 50px; height: 50px; background: rgba(245, 158, 11, 0.1); color: #f59e0b; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">🎓</div>
+                <div>
+                    <div style="font-size: 1.5rem; font-weight: 800; color: var(--text-main);">{{ joinedGroups ? joinedGroups.length : 0 }}</div>
+                    <div style="color: var(--text-muted); font-size: 0.9rem;">{{ t('messages.groups_joined_stat') }}</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="dashboard-grid">
+            <!-- Sidebar / Actions -->
+            <div style="display: flex; flex-direction: column; gap: 2rem;">
+                <!-- Join Card -->
+                <div class="join-card">
+                    <div class="join-title">👋 {{ t('messages.join_group') }}</div>
+                    <div class="join-desc">{{ t('messages.join_group_desc') }}</div>
+                    <form action="{{ route('groups.join') }}" method="POST" class="join-form">
+                        {{ csrfField() }}
+                        <div class="input-group">
+                            <span class="input-icon">#</span>
+                            <input type="text" name="code" class="input-field" placeholder="{{ t('messages.enter_invite_code') }}" required maxlength="8" style="text-transform: uppercase;">
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <span>🚀</span> {{ t('messages.join_group') }}
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Feature Highlight (Sidebar) -->
+                <div class="join-card" style="background: linear-gradient(135deg, var(--primary), var(--primary-hover)); color: white;">
+                    <div class="join-title" style="color: white;">⚡ {{ t('messages.did_you_know') }}</div>
+                    <div class="join-desc" style="color: rgba(255,255,255,0.9);">
+                       {{ t('messages.feature_tip_desc') }}
+                    </div>
+                    <div style="background: rgba(255,255,255,0.2); border-radius: 8px; padding: 0.8rem; font-size: 0.9rem; margin-top: 1rem;">
+                        <strong>{{ t('messages.pro_tip_label') }}</strong> {{ t('messages.pro_tip_content') }}
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Main Content -->
+            <div style="display: flex; flex-direction: column; gap: 3rem;">
+                
+                <!-- Teaching Section -->
+                <div>
+                    <div class="section-title">
+                        <span>📚 {{ t('messages.my_groups_teaching') }}</span>
+                        <span class="section-badge">{{ createdGroups ? createdGroups.length : 0 }}</span>
+                    </div>
+
+                    @if(createdGroups && createdGroups.length > 0)
+                        <div class="groups-list">
+                            @each(group in createdGroups)
+                                <a href="{{ route('groups.show', { id: group.id }) }}" class="group-card">
+                                    <div style="display:flex; justify-content:space-between; align-items:start;">
+                                        <div class="group-icon">🎓</div>
+                                        <div class="code-display" title="Invite Code">{{ group.inviteCode }}</div>
+                                    </div>
+                                    <div class="group-name">{{ group.name }}</div>
+                                    <div class="group-desc">{{ group.description || t('messages.no_description') }}</div>
+                                    <div class="group-footer">
+                                        <div class="group-stat">
+                                            <span>👥</span>
+                                            <span>{{ group.members ? group.members.length : 0 }} {{ t('messages.members') }}</span>
+                                        </div>
+                                        <div style="color: var(--primary); font-weight:bold;">{{ t('messages.manage') }} &rarr;</div>
+                                    </div>
+                                </a>
+                            @endeach
+                             <!-- Quick Add Card -->
+                             <a href="{{ route('groups.create') }}" class="group-card" style="border: 2px dashed var(--border-color); align-items: center; justify-content: center; text-align: center; background: transparent; box-shadow: none;">
+                                <div style="font-size: 2rem; color: var(--primary); margin-bottom: 0.5rem;">+</div>
+                                <div style="font-weight: 600; color: var(--primary);">{{ t('messages.create_group') }}</div>
+                             </a>
+                        </div>
+                    @else
+                        <div class="empty-state">
+                            <div class="empty-icon">🎓</div>
+                            <div class="empty-text">{{ t('messages.no_groups_created') }}</div>
+                            <a href="{{ route('groups.create') }}" style="color: var(--primary); font-weight: bold; margin-top: 1rem; display: inline-block;">{{ t('messages.start_first_class') }} &rarr;</a>
+                        </div>
+                    @endif
+                </div>
+
+                <!-- Joined Section -->
+                <div>
+                    <div class="section-title">
+                        <span>🙋‍♂️ {{ t('messages.my_groups_joined') }}</span>
+                        <span class="section-badge">{{ joinedGroups ? joinedGroups.length : 0 }}</span>
+                    </div>
+
+                    @if(joinedGroups && joinedGroups.length > 0)
+                        <div class="groups-list">
+                            @each(group in joinedGroups)
+                                <a href="{{ route('groups.show', { id: group.id }) }}" class="group-card">
+                                    <div class="group-icon">📖</div>
+                                    <div class="group-name">{{ group.name }}</div>
+                                    <div class="group-desc">{{ group.description || t('messages.no_description') }}</div>
+                                    <div class="group-footer">
+                                        <div class="group-stat">
+                                            <span>👨‍🏫</span>
+                                            <span>{{ group.teacher.username }}</span>
+                                        </div>
+                                        <div style="color: var(--primary); font-weight:bold;">{{ t('messages.view') }} &rarr;</div>
+                                    </div>
+                                </a>
+                            @endeach
+                        </div>
+                    @else
+                        <div class="empty-state">
+                            <div class="empty-icon">📂</div>
+                            <div class="empty-text">{{ t('messages.no_groups_joined') }}</div>
+                        </div>
+                    @endif
+                </div>
+
+            </div>
+        </div>
+    </div>
+</body>
+</html>

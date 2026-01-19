@@ -170,6 +170,17 @@ export default class PageController {
         .orderBy('created_at', 'desc')
         .limit(10)
     }
+
+    // XP Progress Calculation
+    const currentLevel = userStats?.level || 1
+    const currentXP = userStats?.xp || 0
+    const nextLevelThreshold = 100 * Math.pow(currentLevel, 2)
+    const prevLevelThreshold = currentLevel === 1 ? 0 : 100 * Math.pow(currentLevel - 1, 2)
+
+    const xpInLevel = currentXP - prevLevelThreshold
+    const xpNeededForLevel = nextLevelThreshold - prevLevelThreshold
+    const xpProgressPercent = xpNeededForLevel > 0 ? Math.min(100, Math.max(0, Math.round((xpInLevel / xpNeededForLevel) * 100))) : 0
+
     return view.render('account', {
       user,
       userDecks,
@@ -181,6 +192,11 @@ export default class PageController {
       followingList,
       userStats,
       notifications,
+      xpProgress: {
+        current: xpInLevel,
+        total: xpNeededForLevel,
+        percent: xpProgressPercent
+      }
     })
   }
 
@@ -230,6 +246,8 @@ export default class PageController {
         .orderBy('created_at', 'desc')
         .limit(10)
     }
+    const userStats = await UserStats.findBy('user_id', user.id)
+
     return view.render('public_account', {
       user,
       publicDecks,
@@ -240,6 +258,7 @@ export default class PageController {
       followersList,
       followingList,
       notifications,
+      userStats,
     })
   }
 

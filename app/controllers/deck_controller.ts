@@ -259,53 +259,116 @@ export default class DeckController {
     })
   }
 
-  // Convidar usuário para deck restrito
-  async inviteUser({ params, request, response, session, auth, bouncer }: HttpContext) {
+  // Inviter un utilisateur spécifique via email/username
+  async inviteUser({ params, request, response, session, auth, bouncer, i18n }: HttpContext) {
     const user = auth.user!
     const deck = await Deck.find(params.id)
-    if (!deck) {
-      session.flash('error', 'Deck non trouvé')
-      return response.redirect().back()
-    }
+    if (!deck) return response.notFound('Deck not found')
 
     await bouncer.with('DeckPolicy').authorize('edit', deck)
 
     if (deck.visibility !== 'restricted') {
-      session.flash('error', "Ce deck n'est pas restreint.")
+      session.flash('error', i18n.t('messages.deck_not_restricted'))
       return response.redirect().back()
     }
-    const username = request.input('invite_username', '').trim()
-    if (!username) {
-      session.flash('error', "Nom d'utilisateur requis.")
-      return response.redirect().back()
-    }
-    // Busca usuário pelo nome
+
+    const username = request.input('username')
     const UserModule = await import('#models/user')
     const User = UserModule.default
+
     const invitedUser = await User.findBy('username', username)
-    if (!invitedUser || invitedUser.id === user.id) {
-      session.flash('error', 'Utilisateur invalide ou vous-même.')
+    if (!invitedUser) {
+      session.flash('error', i18n.t('messages.user_not_found'))
       return response.redirect().back()
     }
-    // Atualiza allowed_users_ids
+
+    if (invitedUser.id === user.id) {
+      session.flash('error', i18n.t('messages.cannot_invite_self'))
+      return response.redirect().back()
+    }
+
     let allowed = deck.allowed_users_ids ?? []
     if (!allowed.includes(invitedUser.id)) {
       allowed.push(invitedUser.id)
-      deck.allowed_users_ids = allowed // Force reassign to trigger dirty state if needed, though pushing to array might not be enough for Lucid to detect change on JSON column sometimes, so reassignment is safer.
+      deck.allowed_users_ids = allowed
       await deck.save()
       // Notificação
       const NotificationModule = await import('#models/notification')
       const Notification = NotificationModule.default
       await Notification.create({
         user_id: invitedUser.id,
-        message: `Vous avez été invité à accéder au deck restreint «${deck.title}» (ID:${deck.id}) par «${user.username}»`,
+        message: i18n.t('messages.invite_notification', { deckTitle: deck.title, username: user.username, groupName: 'Direct' }), // 'Direct' is hardcoded here, but maybe fine or need a key
         type: 'invite',
         deck_id: deck.id,
       })
-      session.flash('success', 'Utilisateur invité avec succès.')
+      session.flash('success', i18n.t('messages.user_invited_success'))
     } else {
-      session.flash('error', 'Utilisateur déjà autorisé.')
+      session.flash('error', i18n.t('messages.user_already_authorized'))
     }
+    return response.redirect().back()
+  }
+
+  // Inviter tout un groupe
+  async inviteGroup({ params, request, response, session, auth, bouncer, i18n }: HttpContext) {
+    const user = auth.user!
+    const deck = await Deck.find(params.id)
+    if (!deck) return response.notFound('Deck not found')
+
+    await bouncer.with('DeckPolicy').authorize('edit', deck)
+
+    if (deck.visibility !== 'restricted') {
+      session.flash('error', i18n.t('messages.deck_not_restricted'))
+      return response.redirect().back()
+    }
+
+    const groupId = request.input('group_id')
+    const GroupModule = await import('#models/group')
+    const Group = GroupModule.default
+
+    const group = await Group.find(groupId)
+    if (!group) {
+      session.flash('error', i18n.t('messages.group_not_found'))
+      return response.redirect().back()
+    }
+
+    // Verify ownership (optional, but good practice allow inviting any group? usually only groups the teacher owns)
+    // For now, let's assume teacher can only invite groups they created
+    if (group.teacherId !== user.id) {
+      session.flash('error', i18n.t('messages.invite_own_only'))
+      return response.redirect().back()
+    }
+
+    await group.load('members')
+
+    let allowed = deck.allowed_users_ids ?? []
+    let invitedCount = 0
+    const NotificationModule = await import('#models/notification')
+    const Notification = NotificationModule.default
+
+    for (const member of group.members) {
+      if (member.id === user.id) continue;
+
+      if (!allowed.includes(member.id)) {
+        allowed.push(member.id)
+        invitedCount++
+
+        await Notification.create({
+          user_id: member.id,
+          message: i18n.t('messages.invite_notification', { deckTitle: deck.title, username: user.username, groupName: group.name }),
+          type: 'invite',
+          deck_id: deck.id,
+        })
+      }
+    }
+
+    if (invitedCount > 0) {
+      deck.allowed_users_ids = allowed
+      await deck.save()
+      session.flash('success', i18n.t('messages.members_invited_success', { count: invitedCount, groupName: group.name }))
+    } else {
+      session.flash('info', i18n.t('messages.all_members_already_authorized'))
+    }
+
     return response.redirect().back()
   }
   async exportReport({ params, response, bouncer }: HttpContext) {

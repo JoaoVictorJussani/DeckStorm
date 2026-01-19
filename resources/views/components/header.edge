@@ -95,7 +95,7 @@
     cursor: pointer;
     font-size: 1rem;
     transition: background 0.2s, color 0.2s;
-    font-weight: 600;
+    font-weight: 400;
     display: flex;
     align-items: center;
     gap: 0.5rem;
@@ -162,9 +162,20 @@
     background: #ff4d4d !important;
     color: #fff;
   }
+
+  .dropdown-arrow {
+    font-size: 0.75rem;
+    opacity: 0.7;
+    margin-top: 2px; /* Visual alignment */
+  }
   
 
   
+  .header-username {
+    font-weight: 400 !important;
+    font-size: 1rem;
+  }
+
   /* Search bar styles */
   
   .header-search {
@@ -767,6 +778,21 @@
           <span style="font-weight: 700; color: #f59e0b; font-size: 1rem;">{{ userStats.current_streak }}</span>
         </div>
       @endif
+
+      <!-- XP / Level Badge -->
+      @if(userStats)
+        @let(curLevel = userStats.level || 1)
+        @let(nextThresh = 100 * curLevel * curLevel)
+        @let(prevThresh = curLevel === 1 ? 0 : 100 * (curLevel - 1) * (curLevel - 1))
+        @let(xpInLvl = (userStats.xp || 0) - prevThresh)
+        @let(xpNeeded = nextThresh - prevThresh)
+        @let(progPct = xpNeeded > 0 ? Math.round((xpInLvl / xpNeeded) * 100) : 0)
+        
+        <div class="streak-badge" style="background: rgba(59, 130, 246, 0.1); border-color: rgba(59, 130, 246, 0.3);" title="{{ t('messages.level_tooltip', { level: curLevel, current: xpInLvl, total: xpNeeded }) }} ({{ xpNeeded - xpInLvl }} XP -> {{ t('messages.level_short') }} {{ curLevel + 1 }})">
+          <span style="font-size: 1.2rem;">⭐</span>
+          <span style="font-weight: 700; color: var(--primary); font-size: 1rem;">{{ t('messages.level_short') }} {{ curLevel }}</span>
+        </div>
+      @endif
     @endif
 
     <!-- Notificações (Always visible) -->
@@ -837,7 +863,7 @@
         title="Changer la langue / Change language / Mudar idioma"
       >
         <span id="current-lang-flag" style="font-weight:bold;">{{ t('language.current') }}</span>
-        <span style="font-size: 0.8em;">▼</span>
+        <span class="dropdown-arrow">▼</span>
       </button>
       <div class="header-dropdown-menu" id="lang-dropdownMenu" style="min-width:140px;">
          <a href="#" onclick="return changeLang('fr')"><span style="font-weight:bold; width:25px; display:inline-block;">FR</span> {{ t('language.fr') }}</a>
@@ -862,13 +888,14 @@
         title="Ouvrir le menu utilisateur"
       >
         @if(auth?.user)
-          <span>{{ auth.user.username }}</span>
+          <span class="header-username">{{ auth.user.username }}</span>
         @endif
-        <span>▼</span>
+        <span class="dropdown-arrow">▼</span>
       </button>
        <div class="header-dropdown-menu" id="header-dropdownMenu">
         @if(auth?.user)
           <a href="/account/{{ auth.user.id }}" title="Gérer votre profil">{{ t('messages.profile') }}</a>
+          <a href="{{ route('groups.index') }}">{{ t('messages.study_groups') }}</a>
         @endif
         <form action="/logout" method="POST" style="margin:0;">
           {{ csrfField() }}
@@ -935,6 +962,12 @@
         <div style="display:flex;align-items:center;gap:0.5rem;">
            <span style="font-size:1.5rem;">👤</span>
            <span>{{ auth.user.username }}</span>
+        </div>
+      </a>
+      <a href="{{ route('groups.index') }}" class="mobile-item-btn">
+        <div style="display:flex;align-items:center;gap:0.5rem;">
+           <span style="font-size:1.5rem;">👥</span>
+           <span>{{ t('messages.study_groups') }}</span>
         </div>
       </a>
       <form action="/logout" method="POST" style="width:100%;">

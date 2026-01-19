@@ -645,7 +645,7 @@
             
             <div class="typed-actions">
               <button class="action-btn btn-wrong" onclick="markCard(event, false)" style="padding: 0.8rem 1.5rem; font-size: 1rem;">
-                {{ t('study.incorrect') }} (Override)
+                {{ t('study.incorrect') }}
               </button>
               <button class="action-btn btn-correct" onclick="markCard(event, true)" style="padding: 0.8rem 1.5rem; font-size: 1rem;">
                 {{ t('messages.continue') }}
@@ -877,7 +877,7 @@
           overrideBtn.textContent = "{{ t('study.incorrect') }}";
           overrideBtn.onclick = (e) => markCard(e, false);
           
-          continueBtn.textContent = "Je l'avais ! (Forcer Correct)";
+          continueBtn.textContent = "{{{ t('messages.force_correct') }}}";
           continueBtn.style.background = '#f59e0b'; // Orange/Yellow for override
           continueBtn.style.fontSize = '0.9rem';
           continueBtn.onclick = (e) => markCard(e, true);
