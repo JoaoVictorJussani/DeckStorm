@@ -10,7 +10,7 @@
     "creator": "Creator",
     "you": "You",
     "unknown": "Unknown",
-    "quit": "✕ Quit",
+    "quit": "Quit",
     "question_progress": "Question {current} of {total}",
     "flip_hint": "Click to flip",
     "correct": "✔ Correct",

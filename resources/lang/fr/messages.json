@@ -166,5 +166,6 @@
     "total_xp": "XP Total",
     "xp_to_next_level": "{remaining} XP vers Niv {level}",
     "level_tooltip": "Niveau {level} | XP: {current} / {total}",
-    "level_up_msg": "🎉 NIVEAU SUPÉRIEUR ! 🎉"
+    "level_up_msg": "🎉 NIVEAU SUPÉRIEUR ! 🎉",
+    "listen": "Écouter"
 }

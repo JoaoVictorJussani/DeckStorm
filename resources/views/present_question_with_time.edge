@@ -35,6 +35,11 @@
         --card-bg-dark: #1f2937;
         --text-light: #1f2937;
         --text-dark: #f3f4f6;
+        --text-muted: #6b7280;
+      }
+      
+      .theme-dark {
+        --text-muted: #9ca3af;
       }
       
       * {
@@ -75,31 +80,59 @@
         padding-bottom: 1.5rem;
         padding-left: max(2rem, env(safe-area-inset-left));
         padding-right: max(2rem, env(safe-area-inset-right));
-        display: flex;
-        justify-content: space-between;
+        display: grid;
+        grid-template-columns: 1fr minmax(200px, 400px) 1fr;
         align-items: center;
-        max-width: 1200px;
+        max-width: 1400px;
+        margin: 0 auto;
+        gap: 1rem;
+      }
+      
+      .top-bar-left {
+        justify-self: start;
+        display: flex;
+        align-items: center;
+      }
+      
+      .top-bar-center {
+        justify-self: center;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      
+      .top-bar-right {
+        justify-self: end;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
       }
       
       .progress-container {
-        flex: 1;
-        max-width: 300px;
-        margin: 0 2rem;
+        width: 100%;
+        margin: 0;
       }
       
       .progress-label {
         text-align: center;
-        font-size: 0.9rem;
-        font-weight: 600;
+        font-size: 0.8rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--text-light);
+        opacity: 0.6;
         margin-bottom: 0.5rem;
-        opacity: 0.8;
-        letter-spacing: 0.05em;
+      }
+
+      body.theme-dark .progress-label {
+        color: var(--text-dark);
       }
       
       .progress-track {
-        height: 8px;
-        background: rgba(0,0,0,0.1);
-        border-radius: 4px;
+        height: 6px;
+        background: rgba(0,0,0,0.05);
+        border-radius: 10px;
         overflow: hidden;
       }
       
@@ -111,18 +144,38 @@
         height: 100%;
         background: var(--primary);
         width: 0%;
-        /* JS will set this */
+        border-radius: 10px;
         transition: width 0.5s ease;
       }
       
-      .timer-badge {
-        font-variant-numeric: tabular-nums;
+      .quit-btn {
+        text-decoration: none;
+        color: var(--text-light);
         font-weight: 600;
-        background: rgba(var(--primary), 0.1);
-        color: var(--primary);
-        padding: 0.5rem 1rem;
-        border-radius: 20px;
-        font-size: 0.9rem;
+        opacity: 0.6;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 1rem;
+        padding: 0.5rem 0.5rem 0.5rem 0;
+      }
+      
+      body.theme-dark .quit-btn {
+        color: var(--text-dark);
+      }
+      
+      .quit-btn:hover {
+        opacity: 1;
+        transform: translateX(-2px);
+      }
+
+      .timer-badge {
+         font-family: 'Outfit', monospace;
+         font-weight: 600;
+         color: var(--primary);
+         font-size: 1rem;
+         opacity: 0.9;
       }
       
       /* Main Content */
@@ -399,10 +452,17 @@
           padding-left: 1rem;
           padding-right: 1rem;
           padding-bottom: 0.5rem;
+          display: flex;
+          flex-wrap: wrap;
+          gap: 1rem;
         }
 
-        .progress-container {
-          margin: 0 0.5rem;
+        .top-bar-left { order: 1; }
+        .top-bar-right { order: 2; margin-left: auto; }
+        .top-bar-center {
+          order: 3;
+          width: 100%;
+          margin: 0;
         }
       }
 
@@ -533,40 +593,180 @@
         justify-content: center;
         margin-top: 1.5rem;
       }
+      
+      /* Text-To-Speech Button */
+      /* Text-To-Speech Button */
+      .tts-btn {
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: var(--primary);
+        opacity: 0.6;
+        margin-left: 0.5rem;
+        transition: all 0.2s;
+        vertical-align: middle;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 8px;
+        border-radius: 50%;
+      }
+      
+      .tts-btn svg {
+        width: 1.5rem;
+        height: 1.5rem;
+        stroke-width: 2;
+      }
+      
+      .tts-btn:hover {
+        opacity: 1;
+        background: rgba(79, 70, 229, 0.1);
+        transform: scale(1.1);
+        color: var(--primary-hover);
+      }
+      
+      body.theme-dark .tts-btn:hover {
+        background: rgba(255,255,255,0.1);
+      }
+      
+      .tts-btn:active {
+        transform: scale(0.95);
+      }
+      
+      .tts-btn.playing {
+        animation: pulse-audio 1s infinite;
+        color: var(--success);
+        opacity: 1;
+      }
+      
+      @keyframes pulse-audio {
+        0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
+        70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); }
+        100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+      }
+
+      /* Language Selector Styling */
+      .tts-selector-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        background: rgba(0,0,0,0.03);
+        padding: 0.25rem 0.6rem;
+        border-radius: 6px;
+        transition: all 0.2s ease;
+        border: 1px solid rgba(0,0,0,0.05);
+      }
+      
+      .tts-selector-wrapper:hover {
+        background: rgba(0,0,0,0.06);
+        border-color: rgba(0,0,0,0.1);
+        transform: translateY(-1px);
+        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+      }
+      
+      body.theme-dark .tts-selector-wrapper {
+        background: rgba(255,255,255,0.03);
+        border-color: rgba(255,255,255,0.05);
+      }
+      
+      body.theme-dark .tts-selector-wrapper:hover {
+        background: rgba(255,255,255,0.08);
+      }
+      
+      .tts-selector-wrapper:focus-within {
+        box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.4);
+        border-color: var(--primary);
+      }
+
+      .tts-select {
+        appearance: none;
+        background: transparent;
+        border: none;
+        font-family: 'Outfit', sans-serif;
+        font-family: 'Outfit', sans-serif;
+        font-size: 1rem; /* 16px to prevent iOS zoom */
+        font-weight: 500;
+        color: var(--text-muted);
+        cursor: pointer;
+        outline: none;
+        padding-right: 1rem;
+        background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23666%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+        background-repeat: no-repeat;
+        background-position: right 0 top 55%;
+        background-size: 0.6em auto;
+        opacity: 0.8;
+      }
+      
+      .tts-selector-wrapper:hover .tts-select {
+        color: var(--primary);
+        opacity: 1;
+        background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%234f46e5%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+      }
+
+      body.theme-dark .tts-select {
+        background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%239CA3AF%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+      }
+      
+      /* SVG Icons helper */
+      .icon-sm {
+        width: 1.2rem;
+        height: 1.2rem;
+        stroke-width: 2;
+      }
     </style>
   </head>
   <body>
 
     <div class="top-bar">
-      <a
-        href="{{ route('home') }}"
-        style="text-decoration: none; color: inherit; font-weight: 600; opacity: 0.6; transition: opacity 0.2s;"
-      >
-        {{ t('study.quit') }}
-    </a>
+      <div class="top-bar-left">
+        <a href="{{ route('home') }}" class="quit-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            {{ t('study.quit') }}
+        </a>
+      </div>
 
-      <div class="progress-container">
-        <div class="progress-label">
-          {{ t('study.question_progress', { current: questionIndex + 1, total: (typeof cards !== 'undefined' && cards ? cards.length : deck.cards.length) }) }}
-        </div>
-        <div class="progress-track">
-          <div
-            class="progress-fill"
-            style="width: {{ ((questionIndex + 1) / (typeof cards !== 'undefined' && cards ? cards.length : deck.cards.length)) * 100 }}%"
-          >
-          </div>
+      <div class="top-bar-center">
+        <div class="progress-container">
+            <div class="progress-label">
+            {{ t('study.question_progress', { current: questionIndex + 1, total: (typeof cards !== 'undefined' && cards ? cards.length : deck.cards.length) }) }}
+            </div>
+            <div class="progress-track">
+            <div
+                class="progress-fill"
+                style="width: {{ ((questionIndex + 1) / (typeof cards !== 'undefined' && cards ? cards.length : deck.cards.length)) * 100 }}%"
+            >
+            </div>
+            </div>
         </div>
       </div>
 
-      @if(mode === 'chronometre')
-        <div class="timer-badge" id="elapsed-time">
-          0m 0s
-        </div>
-      @else
-        <div style="width: 60px;">
-        </div>
-        <!-- Spacer for balance -->
-      @endif
+      <div class="top-bar-right">
+          <!-- Timer (Conditional) -->
+          @if(mode === 'chronometre')
+            <div class="timer-badge" id="elapsed-time">
+              0m 0s
+            </div>
+          @endif
+
+          <!-- TTS Selector (Conditional: Hidden in quiz/typed) -->
+          @if(mode !== 'quiz' && mode !== 'typed')
+            <div class="tts-selector-wrapper" title="Langue de synthèse vocale / TTS Language">
+                 <span style="color: var(--text-muted); display: flex; align-items: center;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="22"></line><line x1="8" y1="22" x2="16" y2="22"></line></svg>
+                 </span>
+                 <select id="tts-lang-select" class="tts-select" onchange="updateTTSLang(this.value)">
+                     <option value="fr-FR">Français</option>
+                     <option value="en-US">English</option>
+                     <option value="es-ES">Español</option>
+                     <option value="de-DE">Deutsch</option>
+                     <option value="pt-BR">Português</option>
+                     <option value="it-IT">Italiano</option>
+                     <option value="ja-JP">日本語</option>
+                     <option value="zh-CN">中文</option>
+                 </select>
+            </div>
+          @endif
+      </div>
     </div>
 
     <div class="study-container">
@@ -672,8 +872,14 @@
                 <div class="card-content">
                   @if(direction === 'question')
                     {{ card.question }}
+                    <button class="tts-btn" data-text="{{ card.question }}" onclick="speakText(this)" title="{{ t('messages.listen') }}">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path></svg>
+                    </button>
                   @else
                     {{ card.answer }}
+                    <button class="tts-btn" data-text="{{ card.answer }}" onclick="speakText(this)" title="{{ t('messages.listen') }}">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path></svg>
+                    </button>
                   @endif
                 </div>
               @endif
@@ -697,8 +903,10 @@
                 <div class="card-content">
                   @if(direction === 'question')
                     {{ card.answer }}
+                    <button class="tts-btn" data-text="{{ card.answer }}" onclick="speakText(this)" title="{{ t('messages.listen') }}">🔊</button>
                   @else
                     {{ card.question }}
+                    <button class="tts-btn" data-text="{{ card.question }}" onclick="speakText(this)" title="{{ t('messages.listen') }}">🔊</button>
                   @endif
                 </div>
               @endif
@@ -796,6 +1004,61 @@
         // Submit immediately
         document.getElementById("next-form").submit();
       }
+      // Text-To-Speech Logic
+      let synth = window.speechSynthesis;
+      let currentUtterance = null;
+      // Default to French or browser default, but will be overwritten by selector
+      let selectedLang = localStorage.getItem('deckstorm_tts_lang') || 'fr-FR';
+
+      // Set initial value of selector
+      document.addEventListener("DOMContentLoaded", () => {
+          const sel = document.getElementById('tts-lang-select');
+          if(sel) {
+              sel.value = selectedLang;
+          }
+      });
+
+      function updateTTSLang(lang) {
+          selectedLang = lang;
+          localStorage.setItem('deckstorm_tts_lang', lang);
+      }
+
+      function speakText(btn, textOverride) {
+        if (event) event.stopPropagation(); // Prevent card flip
+        
+        const text = textOverride || btn.getAttribute('data-text');
+        if (!text) return;
+        
+        // If speaking, stop.
+        if (synth.speaking) {
+          synth.cancel();
+          document.querySelectorAll('.tts-btn').forEach(b => b.classList.remove('playing'));
+          // If we clicked the same button, just stop.
+          if (btn.classList.contains('playing')) return; 
+        }
+
+        const utterance = new SpeechSynthesisUtterance(text);
+        
+        // Use the selected language
+        utterance.lang = selectedLang; 
+
+        utterance.onstart = () => {
+          btn.classList.add('playing');
+        };
+        
+        utterance.onend = () => {
+          btn.classList.remove('playing');
+          currentUtterance = null;
+        };
+        
+        utterance.onerror = () => {
+            btn.classList.remove('playing');
+        }
+
+        currentUtterance = utterance;
+        synth.speak(utterance);
+      }
+      
       // Quiz Logic
       
       function checkQuizAnswer(btn, isCorrect) {
