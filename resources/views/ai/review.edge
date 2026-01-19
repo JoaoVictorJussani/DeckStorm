@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="{{ i18n.locale }}">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ t('messages.ai.review_title') }} - DeckStorm</title>
+  <link rel="shortcut icon" href="/images/icone.ico" type="image/x-icon" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+  @include('partials/theme_vars')
+  <style>
+    :root {
+      --primary-color: #1976d2;
+      --primary-gradient: linear-gradient(135deg, #1976d2 0%, #1565c0 100%);
+      --surface-glass: rgba(255, 255, 255, 0.7);
+      --border-glass: rgba(255, 255, 255, 0.3);
+    }
+
+    .theme-dark {
+      --surface-glass: rgba(30, 41, 59, 0.7);
+      --border-glass: rgba(255, 255, 255, 0.1);
+    }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: var(--bg-main);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      transition: all 0.3s ease;
+    }
+
+    /* Premium Background Mesh */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: 
+        radial-gradient(circle at 0% 0%, rgba(79, 70, 229, 0.05) 0%, transparent 50%),
+        radial-gradient(circle at 100% 100%, rgba(124, 58, 237, 0.05) 0%, transparent 50%);
+      z-index: -1;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 2rem auto;
+      padding: 0 1.5rem;
+      width: 100%;
+      box-sizing: border-box;
+      padding-bottom: 8rem;
+    }
+
+    /* Header Section */
+    .header-card {
+      background: var(--surface-glass);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--border-glass);
+      border-radius: 32px;
+      padding: 2.5rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
+      animation: fadeInDown 0.6s ease-out;
+    }
+
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 2.2rem;
+      font-weight: 800;
+      background: var(--primary-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 0.5rem;
+    }
+
+    .subtitle {
+      color: var(--text-muted);
+      font-size: 1.1rem;
+      margin: 0;
+    }
+
+    /* Form Elements */
+    .deck-meta {
+      display: grid;
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+
+    .field-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+
+    label {
+      font-weight: 700;
+      font-size: 0.8rem;
+      color: var(--primary-color);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      padding-left: 0.5rem;
+    }
+
+    input[type="text"], textarea {
+      background: rgba(255, 255, 255, 0.5);
+      border: 2px solid transparent;
+      border-radius: 16px;
+      padding: 1.2rem;
+      font-family: inherit;
+      font-size: 1.05rem;
+      color: var(--text-main);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+    }
+
+    .theme-dark input[type="text"], .theme-dark textarea {
+      background: rgba(15, 23, 42, 0.5);
+    }
+
+    input:focus, textarea:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      background: var(--bg-main);
+      box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+      transform: translateY(-1px);
+    }
+
+    /* Card List */
+    .card-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .review-item {
+      background: var(--surface-glass);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--border-glass);
+      border-radius: 24px;
+      padding: 2rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr auto;
+      gap: 2rem;
+      align-items: center;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      animation: fadeInUp 0.6s ease-out backwards;
+      position: relative;
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .review-item:hover {
+      transform: scale(1.02) translateY(-4px);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+      border-color: var(--primary-color);
+      z-index: 10;
+    }
+
+    /* Delete Button */
+    .delete-btn {
+      background: rgba(239, 68, 68, 0.1);
+      color: #ef4444;
+      border: none;
+      width: 48px;
+      height: 48px;
+      border-radius: 16px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+      align-self: flex-end;
+      margin-bottom: 0.5rem;
+    }
+
+    .delete-btn:hover {
+      background: #ef4444;
+      color: white;
+      transform: rotate(9deg) scale(1.1);
+    }
+
+    /* Action Bar */
+    .action-bar {
+      position: fixed;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      width: calc(100% - 3rem);
+      max-width: 600px;
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      padding: 1.25rem 2.5rem;
+      border-radius: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.25);
+      z-index: 100;
+      animation: slideUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+
+    .theme-dark .action-bar {
+      background: rgba(30, 41, 59, 0.85);
+      border-color: rgba(255, 255, 255, 0.1);
+    }
+
+    @keyframes slideUp {
+      from { transform: translate(-50%, 100%); opacity: 0; }
+      to { transform: translate(-50%, 0); opacity: 1; }
+    }
+
+    .btn-create {
+      background: var(--primary-gradient);
+      color: white;
+      padding: 1rem 2.5rem;
+      border-radius: 18px;
+      font-size: 1.1rem;
+      font-weight: 800;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s;
+      box-shadow: 0 10px 20px rgba(79, 70, 229, 0.3);
+    }
+
+    .btn-create:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 15px 30px rgba(79, 70, 229, 0.4);
+      filter: brightness(1.1);
+    }
+
+    .btn-cancel {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-weight: 700;
+      transition: all 0.2s;
+      padding: 0.5rem 1rem;
+    }
+
+    .btn-cancel:hover {
+      color: #ef4444;
+    }
+
+    @media (max-width: 850px) {
+      .review-item {
+        grid-template-columns: 1fr;
+        gap: 1.2rem;
+      }
+      .delete-btn {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+      }
+    }
+  </style>
+</head>
+<body class="theme-light">
+  <!-- JavaScript for dynamic theme if needed -->
+  <script>
+    const theme = localStorage.getItem('theme') || 'theme-light';
+    document.body.className = theme;
+  </script>
+
+  <div class="container">
+    <div class="header-card">
+      <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+         <span style="font-size: 2.5rem;">📚</span>
+         <div>
+            <h1>{{ t('messages.ai.review_title') }}</h1>
+            <p class="subtitle">{{ t('messages.ai.review_subtitle') }}</p>
+         </div>
+      </div>
+      
+      <form id="main-form" action="{{ route('ai.confirm') }}" method="POST">
+        {{ csrfField() }}
+        <div class="deck-meta">
+          <div class="field-group">
+            <label>{{ t('messages.ai.title_label') }}</label>
+            <input type="text" name="title" value="{{ draft.title }}" required>
+          </div>
+          <div class="field-group">
+            <label>{{ t('messages.ai.description_label') }}</label>
+            <textarea name="description" rows="3">{{ draft.description }}</textarea>
+          </div>
+        </div>
+    </div>
+
+    <div class="card-list">
+      @each((card, index) in draft.cards)
+        <div class="review-item" id="card-{{ index }}" style="animation-delay: {{ index * 50 }}ms;">
+          <div class="field-group">
+            <label>{{ t('messages.ai.edit_question') }}</label>
+            <textarea name="questions[]" rows="3" required>{{ card.question }}</textarea>
+          </div>
+          <div class="field-group">
+            <label>{{ t('messages.ai.edit_answer') }}</label>
+            <textarea name="answers[]" rows="3" required>{{ card.answer }}</textarea>
+          </div>
+          <button type="button" class="delete-btn" onclick="removeCard({{ index }})">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"></path><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path></svg>
+          </button>
+        </div>
+      @endeach
+    </div>
+    </form>
+
+    <div class="action-bar">
+      <a href="{{ route('decks.create') }}" class="btn-cancel">{{ t('messages.ai.cancel_btn') }}</a>
+      <div style="color: var(--text-muted); font-weight: 600; font-size: 0.9rem;" id="card-counter">
+        {{ draft.cards.length }} {{ t('messages.ai.cards') }}
+      </div>
+      <button type="submit" form="main-form" class="btn-create">
+        {{ t('messages.ai.save_deck_btn') }}
+      </button>
+    </div>
+  </div>
+
+  <script>
+    function removeCard(index) {
+      const card = document.getElementById('card-' + index);
+      if (card) {
+        card.style.opacity = '0';
+        card.style.transform = 'translateX(50px) scale(0.9)';
+        setTimeout(() => {
+          card.remove();
+          updateCounter();
+        }, 300);
+      }
+    }
+
+    function updateCounter() {
+      const count = document.querySelectorAll('.review-item').length;
+      document.getElementById('card-counter').textContent = count + ' {{ t('messages.ai.cards') }}';
+    }
+  </script>
+</body>
+</html>

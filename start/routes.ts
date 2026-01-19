@@ -385,6 +385,8 @@ router.group(() => {
 router.group(() => {
   router.get('/ai', [AiDecksController, 'index']).as('ai.index')
   router.post('/ai/generate', [AiDecksController, 'generate']).as('ai.generate')
+  router.get('/ai/review', [AiDecksController, 'review']).as('ai.review')
+  router.post('/ai/confirm', [AiDecksController, 'confirm']).as('ai.confirm')
 }).use(middleware.auth())
 
 // Aceitar convite para deck restrito

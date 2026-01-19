@@ -760,6 +760,7 @@
         border-radius: 12px;
         margin-bottom: 1.5rem;
         border: 1px solid #e2e8f0;
+        gap: 4px;
       }
 
       body.theme-dark .ai-input-toggle {
@@ -769,7 +770,7 @@
 
       .toggle-btn {
         flex: 1;
-        padding: 8px;
+        padding: 8px 4px;
         border: none;
         background: transparent;
         color: #64748b;
@@ -777,7 +778,10 @@
         cursor: pointer;
         border-radius: 8px;
         transition: all 0.2s;
-        font-size: 0.9rem;
+        font-size: 0.85rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
 
       .toggle-btn.active {
@@ -1049,7 +1053,7 @@
           {{ t('messages.ai.subtitle') }}
         </p>
 
-        <form action="{{ route('ai.generate') }}" method="POST" id="magic-form">
+        <form action="{{ route('ai.generate') }}" method="POST" id="magic-form" enctype="multipart/form-data">
           {{ csrfField() }}
           <input type="hidden" name="mode" id="ai-mode-input" value="topic">
 
@@ -1059,6 +1063,9 @@
             </button>
             <button type="button" class="toggle-btn" id="btn-mode-text" onclick="switchAiInput('text')">
               {{ t('messages.ai.by_text') }}
+            </button>
+            <button type="button" class="toggle-btn" id="btn-mode-image" onclick="switchAiInput('image')">
+              {{ t('messages.ai.by_image') }}
             </button>
           </div>
 
@@ -1082,12 +1089,26 @@
             ></textarea>
           </div>
 
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+          <div id="ai-group-image" class="ai-field-group" style="display: none;">
+            <label for="image">{{ t('messages.ai.upload_image_label') }}</label>
+            <div style="background: rgba(25, 118, 210, 0.05); border: 2px dashed rgba(25, 118, 210, 0.2); border-radius: 12px; padding: 20px; text-align: center; position: relative; transition: all 0.2s;" id="drop-zone">
+              <input type="file" name="image" id="image" accept="image/*" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer;" onchange="previewImage(this)">
+              <div id="preview-container" style="display: none; margin-bottom: 10px;">
+                <img id="image-preview" src="#" alt="Preview" style="max-height: 150px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+              </div>
+              <div id="upload-placeholder">
+                <span style="font-size: 2rem; display: block; margin-bottom: 5px;">📷</span>
+                <span style="font-size: 0.9rem; color: #1976d2; font-weight: 600;">{{ i18n.locale === 'fr' ? 'Cliquez pour choisir une photo' : 'Click to choose a photo' }}</span>
+              </div>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
             <div>
               <label>{{ t('messages.ai.difficulty_label') }}</label>
               <select name="difficulty">
-                <option value="beginner" selected>{{ t('messages.ai.diff_beginner') }}</option>
-                <option value="intermediate">{{ t('messages.ai.diff_intermediate') }}</option>
+                <option value="beginner">{{ t('messages.ai.diff_beginner') }}</option>
+                <option value="intermediate" selected>{{ t('messages.ai.diff_intermediate') }}</option>
                 <option value="expert">{{ t('messages.ai.diff_expert') }}</option>
               </select>
             </div>
@@ -1100,6 +1121,16 @@
                 <option value="es">Español 🇪🇸</option>
               </select>
             </div>
+          </div>
+
+          <div style="margin-bottom: 1.5rem;">
+            <label>{{ t('messages.ai.card_types_label') }}</label>
+            <select name="card_type" style="width: 100%;">
+              <option value="flashcard" selected>{{ t('messages.ai.type_flashcard') }}</option>
+              <option value="mcq">{{ t('messages.ai.type_mcq') }}</option>
+              <option value="truefalse">{{ t('messages.ai.type_truefalse') }}</option>
+              <option value="mixed">{{ t('messages.ai.type_mixed') }}</option>
+            </select>
           </div>
 
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
@@ -1287,28 +1318,62 @@
       function switchAiInput(mode) {
         const groupTopic = document.getElementById('ai-group-topic');
         const groupText = document.getElementById('ai-group-text');
+        const groupImage = document.getElementById('ai-group-image');
+        
         const btnTopic = document.getElementById('btn-mode-topic');
         const btnText = document.getElementById('btn-mode-text');
+        const btnImage = document.getElementById('btn-mode-image');
+        
         const modeInput = document.getElementById('ai-mode-input');
+        
         const topicArea = document.getElementById('topic');
         const textArea = document.getElementById('source_text');
+        const imageFile = document.getElementById('image');
 
         modeInput.value = mode;
 
+        // Reset visibility
+        groupTopic.style.display = 'none';
+        groupText.style.display = 'none';
+        groupImage.style.display = 'none';
+        btnTopic.classList.remove('active');
+        btnText.classList.remove('active');
+        btnImage.classList.remove('active');
+        
+        topicArea.removeAttribute('required');
+        textArea.removeAttribute('required');
+        imageFile.removeAttribute('required');
+
         if (mode === 'topic') {
           groupTopic.style.display = 'block';
-          groupText.style.display = 'none';
           btnTopic.classList.add('active');
-          btnText.classList.remove('active');
           topicArea.setAttribute('required', '');
-          textArea.removeAttribute('required');
-        } else {
-          groupTopic.style.display = 'none';
+        } else if (mode === 'text') {
           groupText.style.display = 'block';
-          btnTopic.classList.remove('active');
           btnText.classList.add('active');
-          topicArea.removeAttribute('required');
           textArea.setAttribute('required', '');
+        } else if (mode === 'image') {
+          groupImage.style.display = 'block';
+          btnImage.classList.add('active');
+          imageFile.setAttribute('required', '');
+        }
+      }
+
+      function previewImage(input) {
+        const preview = document.getElementById('image-preview');
+        const container = document.getElementById('preview-container');
+        const placeholder = document.getElementById('upload-placeholder');
+        const dropZone = document.getElementById('drop-zone');
+
+        if (input.files && input.files[0]) {
+          const reader = new FileReader();
+          reader.onload = function(e) {
+            preview.src = e.target.result;
+            container.style.display = 'block';
+            placeholder.style.display = 'none';
+            dropZone.style.borderStyle = 'solid';
+          }
+          reader.readAsDataURL(input.files[0]);
         }
       }
 
