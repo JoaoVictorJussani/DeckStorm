@@ -55,4 +55,5 @@ export default await Env.create(new URL('../', import.meta.url), {
   |----------------------------------------------------------
   */
   LIMITER_STORE: Env.schema.enum(['database', 'memory'] as const),
+  GEMINI_API_KEY: Env.schema.string.optional(),
 })

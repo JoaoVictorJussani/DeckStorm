@@ -20,6 +20,7 @@ const CardController = () => import('#controllers/card_controller') // Contrôle
 const ExerciseController = () => import('#controllers/exercise_controller') // Contrôleur pour les exercices
 const FollowController = () => import('#controllers/follow_controller') // Contrôleur pour le suivi
 const GroupsController = () => import('#controllers/groups_controller') // Contrôleur pour les groupes
+const AiDecksController = () => import('#controllers/ai_decks_controller') // Contrôleur pour l'IA
 import User from '#models/user'
 import Notification from '#models/notification'
 import type { HttpContext } from '@adonisjs/core/http' // Import du type HttpContext
@@ -380,6 +381,12 @@ router.group(() => {
   router.post('/groups/:id/remove-deck', [GroupsController, 'removeDeck']).as('groups.removeDeck')
 }).use(middleware.auth())
 
+// AI Generation Routes
+router.group(() => {
+  router.get('/ai', [AiDecksController, 'index']).as('ai.index')
+  router.post('/ai/generate', [AiDecksController, 'generate']).as('ai.generate')
+}).use(middleware.auth())
+
 // Aceitar convite para deck restrito
 router
   .post('/deck/:id/accept-invite', async ({ params, auth, response, session }) => {
@@ -404,7 +411,7 @@ router
       await deck.save()
     }
 
-    // Marca notificação como lida
+    // Marca notificação comme lida
     await Notification.query()
       .where('user_id', user.id)
       .where('type', 'invite')
@@ -424,7 +431,7 @@ router
 
     const deckId = Number(params.id)
 
-    // Marca notificação como lida
+    // Marca notificação comme lida
     await Notification.query()
       .where('user_id', user.id)
       .where('type', 'invite')

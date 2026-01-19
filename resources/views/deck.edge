@@ -627,16 +627,276 @@
       .mode-card input:checked + .mode-content .mode-check svg {
         display: block;
       }
+
+      /* Creation Method Selector */
+      .creation-methods {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+        margin-bottom: 2rem;
+        width: 100%;
+        max-width: 520px;
+      }
+
+      .method-card {
+        cursor: pointer;
+        padding: 1.5rem;
+        border-radius: 16px;
+        background: #fff;
+        border: 2px solid #1976d21a;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(25, 118, 210, 0.05);
+      }
+
+      body.theme-dark .method-card {
+        background: #181c23;
+        border-color: #ffffff1a;
+      }
+
+      .method-card:hover {
+        transform: translateY(-4px);
+        border-color: #1976d288;
+        box-shadow: 0 8px 24px rgba(25, 118, 210, 0.12);
+      }
+
+      .method-card.active {
+        border-color: #1976d2;
+        background: #f0f7ff;
+        box-shadow: 0 8px 32px rgba(25, 118, 210, 0.15);
+      }
+
+      body.theme-dark .method-card.active {
+        background: #1976d21a;
+      }
+
+      .method-icon {
+        font-size: 2.2rem;
+        margin-bottom: 0.8rem;
+      }
+
+      .method-title {
+        font-weight: 700;
+        color: #1976d2;
+        font-size: 1.1rem;
+      }
+
+      /* AI Magic Form Styles (Simplified from generate.edge) */
+      .ai-magic-badge {
+        background: linear-gradient(135deg, #1976d2, #64b5f6);
+        color: white;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        margin-bottom: 1rem;
+        display: inline-block;
+      }
+      /* Simple & Dark Loading Overlay */
+      .loading-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(4px);
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+        color: white;
+      }
+
+      .loading-card {
+        background: #fff;
+        padding: 2.5rem;
+        border-radius: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 90%;
+        max-width: 380px;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        color: #1976d2;
+      }
+
+      body.theme-dark .loading-card {
+        background: #181c23;
+        color: #90caf9;
+      }
+
+      .spinner-magic {
+        font-size: 3rem;
+        margin-bottom: 1.5rem;
+        animation: spinMagic 2s linear infinite;
+      }
+
+      @keyframes spinMagic {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+      }
+
+      .loading-title {
+        font-size: 1.4rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+      }
+
+      .loading-step {
+        font-size: 0.95rem;
+        opacity: 0.8;
+      }
+
+      /* AI Input Type Switch */
+      .ai-input-toggle {
+        display: flex;
+        background: #f1f5f9;
+        padding: 4px;
+        border-radius: 12px;
+        margin-bottom: 1.5rem;
+        border: 1px solid #e2e8f0;
+      }
+
+      body.theme-dark .ai-input-toggle {
+        background: #1e293b;
+        border-color: #334155;
+      }
+
+      .toggle-btn {
+        flex: 1;
+        padding: 8px;
+        border: none;
+        background: transparent;
+        color: #64748b;
+        font-weight: 600;
+        cursor: pointer;
+        border-radius: 8px;
+        transition: all 0.2s;
+        font-size: 0.9rem;
+      }
+
+      .toggle-btn.active {
+        background: #fff;
+        color: #1976d2;
+        box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+      }
+
+      body.theme-dark .toggle-btn.active {
+        background: #334155;
+        color: #90caf9;
+      }
+
+      .ai-field-group {
+         animation: fadeIn 0.3s ease-out;
+      }
+
+      @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(5px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+
+      /* Premium Toggle Switch */
+      .premium-toggle-container {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        background: rgba(25, 118, 210, 0.05);
+        padding: 10px 15px;
+        border-radius: 12px;
+        border: 1px solid rgba(25, 118, 210, 0.1);
+        cursor: pointer;
+        transition: all 0.2s;
+        width: 100%;
+        user-select: none;
+      }
+
+      body.theme-dark .premium-toggle-container {
+        background: rgba(144, 202, 249, 0.05);
+        border-color: rgba(144, 202, 249, 0.1);
+      }
+
+      .premium-toggle-container:hover {
+        background: rgba(25, 118, 210, 0.1);
+      }
+
+      .toggle-switch {
+        position: relative;
+        width: 44px;
+        height: 24px;
+        background: #cbd5e1;
+        border-radius: 20px;
+        transition: all 0.3s;
+        flex-shrink: 0;
+      }
+
+      body.theme-dark .toggle-switch {
+        background: #475569;
+      }
+
+      .toggle-switch::after {
+        content: '';
+        position: absolute;
+        width: 18px;
+        height: 18px;
+        background: white;
+        border-radius: 50%;
+        top: 3px;
+        left: 3px;
+        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      }
+
+      input#smart_title:checked + .toggle-switch {
+        background: #1976d2;
+      }
+
+      input#smart_title:checked + .toggle-switch::after {
+        left: 23px;
+      }
+
+      .toggle-label {
+        font-size: 0.95rem;
+        font-weight: 700;
+        color: #1976d2;
+        margin: 0 !important;
+        pointer-events: none;
+      }
+
+      body.theme-dark .toggle-label {
+        color: #90caf9;
+      }
     </style>
   </head>
   <body>
     @include('components/header')
 
+    <div id="ai-loading" class="loading-overlay">
+      <div class="loading-card">
+        <div class="spinner-magic">✨</div>
+        <div class="loading-title">{{ t('messages.ai.generating_title_simple') }}</div>
+        <div class="loading-step" id="loading-text">{{ t('messages.ai.generating_step_1') }}</div>
+      </div>
+    </div>
+
     <div class="main-content">
-      <h1>
-        {{ t('deck.create_title') }}
-      </h1>
-      <div class="form-container">
+      <div class="creation-methods">
+        <div class="method-card active" id="method-manual" onclick="switchMethod('manual')">
+          <span class="method-icon">📝</span>
+          <span class="method-title">{{ t('messages.ai.manual_title') }}</span>
+        </div>
+        <div class="method-card" id="method-ai" onclick="switchMethod('ai')">
+          <span class="method-icon">✨</span>
+          <span class="method-title">{{ t('messages.ai.ai_magic_title') }}</span>
+        </div>
+      </div>
+
+      <div class="form-container" id="manual-form">
+        <h2 style="margin-top: 0; margin-bottom: 1.5rem; font-size: 1.5rem;">{{ t('messages.ai.manual_creation') }}</h2>
         @if (flashMessages.has('error'))
           <div class="message error">
             {{ flashMessages.get('error') }}
@@ -777,6 +1037,205 @@
           <button type="button" class="abandon-button" onclick="window.location.href='{{ route('home') }}'">{{ t('deck.abandon_btn') }}</button>
         </form>
       </div>
+
+      <!-- AI Magic Form (Hidden by default) -->
+      <div class="form-container" id="ai-form" style="display: none;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+          <div class="ai-magic-badge">Smart AI</div>
+          <span style="font-size: 0.75rem; color: #1976d2; font-weight: 800; opacity: 0.6;">BETA</span>
+        </div>
+        <h2 style="margin-top: 0; margin-bottom: 0.5rem; font-size: 1.6rem; letter-spacing: -0.5px;">{{ t('messages.ai.ai_generator_title') }}</h2>
+        <p style="color: #64748b; margin-bottom: 2rem; font-size: 0.95rem; line-height: 1.5;">
+          {{ t('messages.ai.subtitle') }}
+        </p>
+
+        <form action="{{ route('ai.generate') }}" method="POST" id="magic-form">
+          {{ csrfField() }}
+          <input type="hidden" name="mode" id="ai-mode-input" value="topic">
+
+          <div class="ai-input-toggle">
+            <button type="button" class="toggle-btn active" id="btn-mode-topic" onclick="switchAiInput('topic')">
+              {{ t('messages.ai.by_topic') }}
+            </button>
+            <button type="button" class="toggle-btn" id="btn-mode-text" onclick="switchAiInput('text')">
+              {{ t('messages.ai.by_text') }}
+            </button>
+          </div>
+
+          <div id="ai-group-topic" class="ai-field-group">
+            <label for="topic">{{ t('messages.ai.topic_label') }}</label>
+            <textarea 
+              id="topic" 
+              name="topic" 
+              placeholder="{{ t('messages.ai.topic_placeholder') }}" 
+              style="min-height: 80px;"
+            ></textarea>
+          </div>
+
+          <div id="ai-group-text" class="ai-field-group" style="display: none;">
+            <label for="source_text">{{ t('messages.ai.source_text_label') }}</label>
+            <textarea 
+              id="source_text" 
+              name="source_text" 
+              placeholder="..." 
+              style="min-height: 150px;"
+            ></textarea>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div>
+              <label>{{ t('messages.ai.difficulty_label') }}</label>
+              <select name="difficulty">
+                <option value="beginner" selected>{{ t('messages.ai.diff_beginner') }}</option>
+                <option value="intermediate">{{ t('messages.ai.diff_intermediate') }}</option>
+                <option value="expert">{{ t('messages.ai.diff_expert') }}</option>
+              </select>
+            </div>
+            <div>
+              <label>{{ t('messages.ai.language_label') }}</label>
+              <select name="language">
+                <option value="fr" {{ i18n.locale === 'fr' ? 'selected' : '' }}>Français 🇫🇷</option>
+                <option value="en" {{ i18n.locale === 'en' ? 'selected' : '' }}>English 🇬🇧</option>
+                <option value="pt-br" {{ i18n.locale === 'pt-br' ? 'selected' : '' }}>Português 🇧🇷</option>
+                <option value="es">Español 🇪🇸</option>
+              </select>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div>
+              <label>{{ t('messages.ai.card_count_label') }}</label>
+              <select name="count">
+                <option value="5">5 {{ t('messages.ai.cards') }}</option>
+                <option value="10" selected>10 {{ t('messages.ai.cards') }}</option>
+                <option value="15">15 {{ t('messages.ai.cards') }}</option>
+                <option value="20">20 {{ t('messages.ai.cards') }}</option>
+              </select>
+            </div>
+            <div style="display: flex; align-items: flex-end; padding-bottom: 1.2rem;">
+               <label class="premium-toggle-container" for="smart_title">
+                 <input type="checkbox" name="smart_title" id="smart_title" value="true" checked style="display: none;">
+                 <div class="toggle-switch"></div>
+                 <span class="toggle-label">{{ t('messages.ai.smart_title') }}</span>
+               </label>
+            </div>
+          </div>
+
+          <label>{{ t('deck.visibility_label') }}</label>
+          <div class="visibility-options">
+            <label class="visibility-card">
+              <input type="radio" name="visibility" value="private" checked required>
+              <div class="visibility-content">
+                <span class="visibility-icon">🔒</span>
+                <span class="visibility-label">{{ t('deck.private') }}</span>
+                <span class="visibility-desc">{{ t('deck.private_desc', {}, i18n.locale === 'fr' ? 'Uniquement pour vous' : (i18n.locale === 'pt-br' ? 'Apenas para você' : 'Only for you')) }}</span>
+              </div>
+            </label>
+            <label class="visibility-card">
+              <input type="radio" name="visibility" value="public">
+              <div class="visibility-content">
+                <span class="visibility-icon">🌍</span>
+                <span class="visibility-label">{{ t('deck.public') }}</span>
+                <span class="visibility-desc">{{ t('deck.public_desc', {}, i18n.locale === 'fr' ? 'Visible par tous' : (i18n.locale === 'pt-br' ? 'Visível para todos' : 'Visible to everyone')) }}</span>
+              </div>
+            </label>
+            <label class="visibility-card">
+              <input type="radio" name="visibility" value="restricted">
+              <div class="visibility-content">
+                <span class="visibility-icon">🔐</span>
+                <span class="visibility-label">{{ t('deck.restricted') }}</span>
+                <span class="visibility-desc">{{ t('deck.restricted_desc', {}, i18n.locale === 'fr' ? 'Accès par invitation' : (i18n.locale === 'pt-br' ? 'Acesso por convite' : 'Access by invitation')) }}</span>
+              </div>
+            </label>
+          </div>
+
+          <label>{{ t('deck.allowed_modes_label') }}</label>
+          <div class="mode-grid">
+            <label class="mode-card">
+              <input type="checkbox" name="allowed_modes[]" value="chronometre" checked />
+              <div class="mode-content">
+                <span class="mode-icon">⏱️</span>
+                <div class="mode-info">
+                   <span class="mode-title">{{ t('deck.mode_chrono') }}</span>
+                   <span class="mode-desc">{{ t('deck.mode_chrono_desc') }}</span>
+                </div>
+                <div class="mode-check">
+                  <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+                </div>
+              </div>
+            </label>
+            <label class="mode-card">
+              <input type="checkbox" name="allowed_modes[]" value="basique" checked />
+              <div class="mode-content">
+                <span class="mode-icon">📚</span>
+                <div class="mode-info">
+                   <span class="mode-title">{{ t('deck.mode_basic') }}</span>
+                   <span class="mode-desc">{{ t('deck.mode_basic_desc') }}</span>
+                </div>
+                <div class="mode-check">
+                   <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+                </div>
+              </div>
+            </label>
+            <label class="mode-card">
+              <input type="checkbox" name="allowed_modes[]" value="jusquaubout" checked />
+              <div class="mode-content">
+                <span class="mode-icon">🔥</span>
+                <div class="mode-info">
+                   <span class="mode-title">{{ t('deck.mode_until_done') }}</span>
+                   <span class="mode-desc">{{ t('deck.mode_until_done_desc') }}</span>
+                </div>
+                <div class="mode-check">
+                   <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+                </div>
+              </div>
+            </label>
+            <label class="mode-card">
+              <input type="checkbox" name="allowed_modes[]" value="quiz" checked />
+              <div class="mode-content">
+                <span class="mode-icon">💡</span>
+                <div class="mode-info">
+                   <span class="mode-title">{{ t('deck.mode_quiz') }}</span>
+                   <span class="mode-desc">{{ t('deck.mode_quiz_desc') }}</span>
+                </div>
+                <div class="mode-check">
+                   <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+                </div>
+              </div>
+            </label>
+            <label class="mode-card">
+              <input type="checkbox" name="allowed_modes[]" value="typed" checked />
+              <div class="mode-content">
+                <span class="mode-icon">✍️</span>
+                <div class="mode-info">
+                   <span class="mode-title">{{ t('deck.mode_typed') }}</span>
+                   <span class="mode-desc">{{ t('deck.mode_typed_desc') }}</span>
+                </div>
+                <div class="mode-check">
+                   <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+                </div>
+              </div>
+            </label>
+          </div>
+
+          <label for="ai_attempt_limit">{{ t('deck.attempt_limit_label') }}</label>
+          <div style="font-size: 0.9rem; color: #666; margin-bottom: 0.5rem; text-align: left;">
+            {{ t('deck.attempt_limit_help') }}
+          </div>
+          <input
+            type="number"
+            id="ai_attempt_limit"
+            name="attempt_limit"
+            min="1"
+            placeholder="{{ t('deck.attempt_limit_placeholder') }}"
+          />
+
+          <button type="submit" class="submit-button" style="margin-top: 2rem;">
+            ✨ {{ t('messages.ai.generate_btn') }}
+          </button>
+          <button type="button" class="abandon-button" onclick="switchMethod('manual')">{{ t('deck.abandon_btn') }}</button>
+        </form>
+      </div>
     </div>
 
     <script>
@@ -798,10 +1257,82 @@
       }
       // Initialisation au chargement
       
-      document.addEventListener("DOMContentLoaded", updateCounter);
+      document.addEventListener("DOMContentLoaded", () => {
+        updateCounter();
+        switchMethod('manual'); // Set initial method to manual
+      });
       // Mise à jour à chaque changement
       
       textarea.addEventListener("input", updateCounter);
+
+      function switchMethod(method) {
+        const manualForm = document.getElementById('manual-form');
+        const aiForm = document.getElementById('ai-form');
+        const btnManual = document.getElementById('method-manual');
+        const btnAi = document.getElementById('method-ai');
+
+        if (method === 'manual') {
+          manualForm.style.display = 'flex';
+          aiForm.style.display = 'none';
+          btnManual.classList.add('active');
+          btnAi.classList.remove('active');
+        } else {
+          manualForm.style.display = 'none';
+          aiForm.style.display = 'flex';
+          btnManual.classList.remove('active');
+          btnAi.classList.add('active');
+        }
+      }
+
+      function switchAiInput(mode) {
+        const groupTopic = document.getElementById('ai-group-topic');
+        const groupText = document.getElementById('ai-group-text');
+        const btnTopic = document.getElementById('btn-mode-topic');
+        const btnText = document.getElementById('btn-mode-text');
+        const modeInput = document.getElementById('ai-mode-input');
+        const topicArea = document.getElementById('topic');
+        const textArea = document.getElementById('source_text');
+
+        modeInput.value = mode;
+
+        if (mode === 'topic') {
+          groupTopic.style.display = 'block';
+          groupText.style.display = 'none';
+          btnTopic.classList.add('active');
+          btnText.classList.remove('active');
+          topicArea.setAttribute('required', '');
+          textArea.removeAttribute('required');
+        } else {
+          groupTopic.style.display = 'none';
+          groupText.style.display = 'block';
+          btnTopic.classList.remove('active');
+          btnText.classList.add('active');
+          topicArea.removeAttribute('required');
+          textArea.setAttribute('required', '');
+        }
+      }
+
+      const magicForm = document.getElementById('magic-form');
+      const loadingOverlay = document.getElementById('ai-loading');
+      const loadingText = document.getElementById('loading-text');
+
+      if (magicForm) {
+        magicForm.addEventListener('submit', () => {
+          loadingOverlay.style.display = 'flex';
+          
+          const steps = [
+            "{{ t('messages.ai.generating_step_1') }}",
+            "{{ t('messages.ai.generating_step_2') }}",
+            "{{ t('messages.ai.generating_step_3') }}",
+            "{{ t('messages.ai.generating_step_4') }}"
+          ];
+          let stepIdx = 0;
+          setInterval(() => {
+            stepIdx = (stepIdx + 1) % steps.length;
+            loadingText.textContent = steps[stepIdx];
+          }, 2500);
+        });
+      }
     </script>
   </body>
 </html>
